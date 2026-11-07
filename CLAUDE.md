@@ -49,6 +49,7 @@ The repository layout the plan targets is `containers/`, `t0/`, `slice/` (driven
   - Install it from git at a pinned commit. The PyPI 2.0 release (2022) has the old API and no `classic.yaml` or `jwst.yaml` packs.
   - PAHFIT returns no fit uncertainties; use Monte Carlo refits.
   - The classic pack has no 11.0 µm feature.
+  - Fit with `maxiter=10000`: the default 1000 leaves fits unconverged without raising; check `model.fitter.message`.
 - **PySR**
   - Run it unweighted: the labels are exact and PAHFIT gives no sigma. If weights are ever used, they go to `fit()`, not the constructor.
   - `pysr.install()` no longer exists. `procs` needs `parallelism="multiprocessing"`.
@@ -62,6 +63,7 @@ The repository layout the plan targets is `containers/`, `t0/`, `slice/` (driven
 - **cuEquivariance:** use 0.10.x in both stacks; 0.13 is outside both stacks' pins. NGC PyTorch 25.08 and later is CUDA 13.
 - **NGC 26.10** (checked 2026-11-07 against the registry): `26.10-py3` has an arm64 image with PyTorch 2.15.0a0 and CUDA 13.4, and it sets `TORCH_ALLOW_TF32_CUBLAS_OVERRIDE=1`. The cueq 0.10.0 torch ops extension does not link libtorch (nanobind; it needs only `libcue_ops`, `libcuda`), so there is no PyTorch ABI dependency.
 - **MPS:** at most 60 clients per device (48 on older drivers). "Batch 100" means total work, not 100 processes.
+- **TorchSim units:** metal units, so `timestep` is in ps and γ in ps⁻¹ (10 for the plan's 0.01 fs⁻¹). Its default γ is 20 ps⁻¹; always pass it.
 - **Batched PyTorch:** TorchSim is the primary candidate and concatenated ASE `Atoms` the fallback; a week-4 pilot decides. The selected mode is never cut from the schedule.
 - **Orion Bar**
   - 6.2/11.2 is *higher* in DF3 (Chown+2024 §4.3). Template order and agreement between templates are reported, never used as gates.
