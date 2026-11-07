@@ -93,7 +93,7 @@ The images live on local NVMe in `/var/tmp/jjlee-pah/sif/`, with the Apptainer c
 
 Pilot criteria of plan §4.3 for TorchSim: installs on aarch64 ✓; batched forces match isolated ASE + MACE within 1e-3 ✓; no neighbour edges between molecules ✓; 100-molecule 1 ps run completes ✓. This settles feasibility, not the week-4 choice: the pilot still has to be repeated on the 20 PAHdb species with the chosen neighbour-list settings.
 
-Scripts: `/var/tmp/jjlee-pah/test/c_pahfit.py`, `b_torchsim_pilot.py`, `b_torchsim_fwd.py`.
+Scripts: `containers/tests/` (`c_pahfit.py`, `b_torchsim_pilot.py`, `b_torchsim_fwd.py`, and the earlier container checks). `containers/tests/run_all.sh [sif_dir] [work_dir]` re-runs every check in this record against the built images, about 10 minutes on the project node.
 
 ## Still open
 
