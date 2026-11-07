@@ -1,0 +1,24 @@
+Bootstrap: docker
+From: nvcr.io/nvidia/pytorch:26.10-py3
+# Container B: NGC PyTorch + mace-torch + cuEquivariance 0.10 (plan Section 3.3).
+# Built for driver 615.71; on driver 595.45 it relies on CUDA forward compatibility. Fallback base: 26.03-py3.
+%post
+  set -e
+  python -m pip list --format=freeze | grep -i -E '^(torch|triton|nvidia-)' > /opt/ngc-constraints.txt
+  # NGC 26.10 ships with pip-check conflicts of its own; record them and fail only on new ones.
+  python -m pip check > /opt/pip-check-ngc-base.txt 2>&1 || true
+  python -m pip install -c /opt/ngc-constraints.txt \
+      "mace-torch[cueq,cueq-cuda-13]" "cuequivariance==0.10.0" "cuequivariance-torch==0.10.0" \
+      "cuequivariance-ops-torch-cu13==0.10.0" ase h5py
+  python -m pip check > /opt/pip-check-after.txt 2>&1 || true
+  echo "--- pip check, NGC base:"; cat /opt/pip-check-ngc-base.txt
+  if grep -vxF -f /opt/pip-check-ngc-base.txt /opt/pip-check-after.txt; then echo "NEW pip-check problems above"; exit 1; fi
+  python -m pip list --format=freeze | grep -i -E '^(torch|triton)[=@ ]' > /tmp/after.txt
+  grep -i -E '^(torch|triton)[=@ ]' /opt/ngc-constraints.txt > /tmp/before.txt
+  diff /tmp/before.txt /tmp/after.txt   # NGC torch/triton must be untouched
+  python -c "import torch; print(torch.__version__, torch.version.cuda)"
+  python -m pip list --format=freeze > /opt/requirements-frozen.txt
+%environment
+  unset TORCH_ALLOW_TF32_CUBLAS_OVERRIDE
+%labels
+  project pah-sr T0 container B

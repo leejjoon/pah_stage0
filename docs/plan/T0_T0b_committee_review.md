@@ -293,3 +293,10 @@ Any of these can silently move the 5× decision, and TF32 can break the 1e-3 eV/
 - The `PYTHON_JULIAPKG_OFFLINE` variable name.
 - That duo-only species actually give weak 11.2 µm strength in PAHFIT fits. This is reasoned from the band assignments, not fitted.
 - Whether jax-md 0.2.29 and mace-jax are compatible on the same e3nn-jax release.
+
+**Status 2026-11-07** (measured on the project GH200; see `GH200_feasibility_check_2026-11-07.md`):
+- TorchSim and `nvalchemi-toolkit-ops`: *install and batched forces verified* on aarch64 + H100, with PyPI torch 2.15.0+cu132: 6.5e-7 eV/Å against per-molecule ASE. Re-checked inside the NGC 26.10 image the same day: 9.7e-7 eV/Å, and a 100-molecule batched Langevin run executes. The 1 ps pilot run with its unit and physics checks is still open.
+- `TORCH_ALLOW_TF32_CUBLAS_OVERRIDE=1` in NGC images: *verified* from the registry config of the `26.10-py3` arm64 image.
+- `PYTHON_JULIAPKG_OFFLINE`: *verified*. juliapkg reads `PYTHON_JULIAPKG_` + option name. An offline `import pysr` worked and wrote `lock.pid` into the project directory, confirming the writable-project requirement.
+- jax-md 0.2.29 and mace-jax on the same e3nn-jax: *verified at smoke level*. Both ran in one environment on e3nn-jax 0.21.0 (jax 0.11.2).
+- Duo-only 11.2 µm strength: still open (science, not environment).

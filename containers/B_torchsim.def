@@ -1,0 +1,12 @@
+Bootstrap: localimage
+From: B_torch.sif
+# TorchSim candidate image built on top of the verified container B (plan Section 3.3).
+%post
+  set -e
+  python -m pip install -c /opt/ngc-constraints.txt torch-sim-atomistic
+  python -m pip check > /opt/pip-check-torchsim.txt 2>&1 || true
+  if grep -vxF -f /opt/pip-check-ngc-base.txt /opt/pip-check-torchsim.txt; then echo "NEW pip-check problems above"; exit 1; fi
+  python -c "import torch; print(torch.__version__, torch.version.cuda)"
+  python -m pip list --format=freeze > /opt/requirements-frozen.txt
+%labels
+  project pah-sr T0 container B + TorchSim

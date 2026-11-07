@@ -4,10 +4,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project state
 
-This is the planning stage of the **T0 / T0b** work for the "Interpretable PAH Diagnostics by Symbolic Regression" project. No code exists yet, and this directory is not a git repository. It holds:
+This is the planning stage of the **T0 / T0b** work for the "Interpretable PAH Diagnostics by Symbolic Regression" project. No code exists yet; the repository (git, branch `main`) holds:
 
 - `docs/plan/T0_T0b_execution_plan_GH200.md`: the authoritative work plan.
 - `docs/plan/T0_T0b_plan_review.md`: the first readiness review, dated 2026-11-06.
+- `docs/plan/GH200_feasibility_check_2026-11-07.md`: measured checks on the project GH200 node (venvs first, then the built containers). The plan's GH200 facts cite it.
+- `containers/`: the four tested Apptainer recipes (`A_jax`, `B_torch`, `B_torchsim`, `C_cpu`), the in-image package lists and the image hashes. Images are built to local NVMe, `/var/tmp/jjlee-pah/sif/`, not into the repo.
 - `docs/plan/T0_T0b_committee_review.md`: a later three-round committee review (Fable 5.1 and GPT-6-Astra, with Opus 5.5 as a non-voting reviewer). It corrects several of the first review's fixes.
 
 **Both reviews have been fully applied to the plan.** Read them before changing any criterion, config snippet or species rule: they explain why the plan says what it says. Where the two reviews disagree, the committee review wins.
@@ -109,4 +111,12 @@ When citing a claim, give the paper and section or page, as the review does (e.g
 ## Target hardware
 
 - GH200 node: aarch64. Every container, wheel and binary must be built for ARM; x86 images will not run.
+- The project node (`gh200`) is a **dual** GH200: 2 GPUs (144 GB HBM3e each), 144 cores, 18 NUMA nodes. T0 uses one superchip: `CUDA_VISIBLE_DEVICES=0 numactl --cpunodebind=0 --membind=0`.
+- Kernel with 64 KiB pages; driver 595.45.04 (CUDA 13.2). NGC `26.10-py3` is built for driver 615.71 but runs here through CUDA forward compatibility (verified); `26.03-py3` is the native match for 595.45 if that ever breaks.
+- Apptainer 1.5.5 (setuid) is installed; build with `apptainer build --fakeroot`. AppArmor blocks unprivileged user namespaces, so a non-setuid Apptainer would not work.
+- Container A must hold exactly one CUDA (no CUDA-toolkit base). Otherwise importing cuEquivariance before JAX makes JAX silently fall back to the CPU. `JAX_PLATFORMS=cuda` guards against it.
+- Container C must use uv's CPython, not Ubuntu's `python3.12`. Ubuntu's OpenSSL 3.0 forces Julia 1.11.9, which segfaults in PySR here.
+- MPS limit measured at 60 clients on 595.45. Keep `CUDA_MPS_PIPE_DIRECTORY` short (e.g. `/dev/shm/mps-$USER`): over 108 bytes, the daemon dies and clients silently run without MPS.
+- Container A: install CPU torch *before* mace-jax (its `e3nn==0.4.4` dependency pulls CUDA torch). `mace-jax-from-torch --torch-model` fails on PyTorch ≥ 2.6 (`weights_only`); use `--foundation off --model-name small`. mace-jax's cuEquivariance is on only with `"equivariance_config": {"backend": "cueq"}` in the bundle JSON.
+- Use local NVMe (`/`) for scratch; `/home` is NFS.
 - Fast CPU↔GPU NVLink-C2C makes the PyTorch baseline look better here than it will on the production cluster. Note this in the T0 memo.

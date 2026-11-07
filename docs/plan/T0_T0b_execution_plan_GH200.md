@@ -2,7 +2,7 @@
 
 Stack benchmark and vertical slice for the symbolic-regression PAH diagnostics project · Oct 30, 2026 · @이재준
 
-*Revised 2026-11-06 with the fixes from `T0_T0b_plan_review.md` and then `T0_T0b_committee_review.md`.*
+*Revised 2026-11-06 with the fixes from `T0_T0b_plan_review.md` and then `T0_T0b_committee_review.md`. GH200 facts in Sections 3, 4.3 and 7 updated 2026-11-07 from measurements on the project node (`GH200_feasibility_check_2026-11-07.md`).*
 
 ## 1. Purpose and what success looks like
 
@@ -62,7 +62,7 @@ This document is a self-contained work plan for the first two months of the proj
 
 ### 3.1 Before you start
 
-- An account on the GH200 node with a scratch allocation of at least 200 GB and the ability to run Apptainer (or Docker, if the node allows it).
+- An account on the GH200 node with a scratch allocation of at least 200 GB and the ability to run Apptainer (or Docker, if the node allows it). On the project node (checked 2026-11-07) no container runtime was installed, and Ubuntu 24.04's `kernel.apparmor_restrict_unprivileged_userns=1` blocks unprivileged Apptainer. Install the `apptainer-suid` package, or add an AppArmor profile for Apptainer. Put scratch on local NVMe, not the NFS `/home`: the Julia lock files, the Apptainer cache and the MPS pipes all live there.
 - A GitHub account; the project repository will hold every script you write. Commit daily.
 - Read: the PDRs4All Orion Bar paper (Chown et al. 2024) for what the data look like, the PAHdb v4.00 paper (Ricca et al. 2025) or the website "about" page for how computed spectra are produced, the MACE and PySR documentation front pages. Two days of reading is enough to start; deeper reading comes with each stage.
 
@@ -70,18 +70,22 @@ This document is a self-contained work plan for the first two months of the proj
 
 The GH200 is one Grace CPU (72 ARM Neoverse V2 cores, up to 480 GB LPDDR5X) connected to one H100 GPU (96 GB HBM3 or 144 GB HBM3e, depending on the variant; read the actual figure from `nvidia-smi`) by NVLink-C2C, which lets the GPU address CPU memory directly. Two consequences matter for us. First, every binary must be built for aarch64; an x86 container or wheel will not run. Second, moving data between CPU and GPU is much cheaper than on a conventional node, so the PyTorch-plus-ASE baseline will look better here than on the production cluster. Record this in the T0 memo and plan to repeat the key timing on one node of the target cluster later.
 
+**The project node is a dual GH200** (checked 2026-11-07): two superchips, each a 72-core Grace with about 480 GB LPDDR5X plus a GH200 144G HBM3e GPU. That makes 144 cores, 2 GPUs and 18 NUMA nodes (each GPU's memory also appears as a NUMA node: ATS addressing, C2C on). The unit of T0 is **one superchip**: one GPU and its own Grace cores and memory. Pin every T0 run with `CUDA_VISIBLE_DEVICES=0 numactl --cpunodebind=0 --membind=0` (GPU0 ↔ CPUs 0–71). Otherwise PyTorch workers or MPS clients can straddle sockets and cross the slower inter-socket link. Keep the other superchip idle during timed runs, and record the pinning in the CSV. The kernel uses **64 KiB pages**; every component in Section 3.3, including Julia, was checked to work with that.
+
 Check the node first:
 
 ```
 uname -m            # must print aarch64
-nvidia-smi          # shows the H100 and the driver version; note the CUDA version it supports
-nproc               # 72
+nvidia-smi          # shows the GPU(s) and the driver version; note the CUDA version it supports
+nvidia-smi topo -m  # which CPUs and NUMA node belong to each GPU
+nproc               # 72 per Grace; 144 on a dual-GH200 node
+getconf PAGESIZE    # 65536 on the project node (64 KiB-page kernel)
 apptainer --version
 ```
 
 ### 3.3 Build the container
 
-Use NVIDIA's aarch64 base images and install everything with pinned versions. Build in two containers, one per stack, so that a problem in one does not block the other; a third small container holds PySR and PAHFIT (CPU only).
+The four recipes below were built with `apptainer build --fakeroot` and tested on the project node on 2026-11-07. They are kept verbatim in `containers/*.def`, with the in-image `pip list` in `containers/requirements-*-container.txt` and the image hashes in `containers/images-sha256-2026-11-07.txt` (results: `GH200_feasibility_check_2026-11-07.md`). Use aarch64 base images and install everything with pinned versions. Build in two containers, one per stack, so that a problem in one does not block the other; a third small container holds PySR and PAHFIT (CPU only).
 
 Two rules apply to all three recipes. First, use Python 3.12: current JAX needs ≥ 3.12 and current mace-torch needs ≥ 3.11, so a Python 3.10 base (Ubuntu 22.04, or NGC PyTorch images before the Ubuntu 24.04 switch) silently resolves to old releases or fails. Second, install into one virtual environment per container and always call `python -m pip`, so that `pip` and `python` cannot point at different interpreters (Ubuntu has no bare `python` command outside a venv).
 
@@ -89,22 +93,28 @@ Two rules apply to all three recipes. First, use Python 3.12: current JAX needs 
 
 ```
 Bootstrap: docker
-From: nvcr.io/nvidia/cuda:12.8.1-cudnn-devel-ubuntu24.04
+From: ubuntu:24.04          # NOT a CUDA-toolkit base: jax[cuda12] brings its own CUDA 12.9 wheels; see below
 %post
-  apt-get update && apt-get install -y python3.12 python3.12-venv git
+  set -e
+  apt-get update && apt-get install -y python3.12 python3.12-venv git ca-certificates
   python3.12 -m venv /opt/venv && . /opt/venv/bin/activate
   python -m pip install --upgrade pip
-  python -m pip install "mace-jax[jax-cuda12] @ git+https://github.com/ACEsuit/mace-jax"   # pulls a compatible JAX (< 0.12) and cuEquivariance-JAX
+  python -m pip install torch --index-url https://download.pytorch.org/whl/cpu   # FIRST: CPU torch, so no second CUDA runtime beside JAX's
+  python -m pip install "mace-jax[jax-cuda12] @ git+https://github.com/ACEsuit/mace-jax@e8a6f2d3e793e2020439df1736a32703c9cac170"   # 2026-10-29; JAX 0.11.2, cuEquivariance-JAX 0.10.0
   python -m pip install jax-md flax optax ase numpy scipy h5py matplotlib
-  python -m pip install torch --index-url https://download.pytorch.org/whl/cpu   # CPU torch: avoids a second CUDA runtime beside JAX's
   python -m pip install mace-torch      # needed only by the weight converter (it imports mace.calculators)
+  python -c "import torch; assert torch.__version__.endswith('+cpu'), torch.__version__"
   python -m pip check
+  python -m pip list --format=freeze > /opt/requirements-frozen.txt
+  # cuequivariance_ops loads libcue_ops.so before JAX has loaded its CUDA libraries: put them on the loader path
+  echo "export LD_LIBRARY_PATH=$(ls -d /opt/venv/lib/python3.12/site-packages/nvidia/*/lib | tr '\n' ':')\${LD_LIBRARY_PATH}" >> $APPTAINER_ENVIRONMENT
 %environment
   export PATH=/opt/venv/bin:$PATH
   export JAX_DEFAULT_MATMUL_PRECISION=highest   # no TF32; see Section 4.4
+  export JAX_PLATFORMS=cuda                     # fail loudly instead of silently falling back to CPU (run with --nv)
 ```
 
-Let mace-jax choose the JAX version: it caps JAX below 0.12 and pins cuEquivariance to 0.10.x for its backend, and a separately installed newer JAX will conflict. PyTorch is used here only for the conversion. The CPU wheel is installed first because the default PyPI wheel for Linux aarch64 pulls the CUDA 13 libraries. Neither jax-md nor mace-jax pins `e3nn-jax`, so after the build run the jax-md Lennard-Jones example and smoke test 3, to confirm that both work on the release pip resolved. Pin the exact versions once the first build works (`python -m pip freeze > requirements-jax.txt`) and rebuild from the frozen list. Verify that JAX sees the GPU:
+Let mace-jax choose the JAX version: it caps JAX below 0.12 and pins cuEquivariance to 0.10.x for its backend, and a separately installed newer JAX will conflict. PyTorch is used here only for the conversion. The CPU wheel must be installed *before* mace-jax. mace-jax depends on `e3nn==0.4.4`, the PyTorch e3nn, so installing it first pulls PyPI's default aarch64 torch (`2.15.0+cu132`, with the CUDA 13 libraries). After that, the CPU-index install is a silent no-op ("already satisfied"). Checked on the project node 2026-11-07; the assert above catches it. **Keep exactly one CUDA in this image** (checked 2026-11-07). The first build used the `cuda:12.8.1-cudnn-devel` base, so its CUDA 12.8 libraries sat beside the CUDA 12.9 wheels that `jax[cuda12]` installs. When `cuequivariance_ops` was imported before JAX, which mace-jax's own CLIs do, the 12.8 libraries loaded first. JAX's cuSPARSE then failed to load, and JAX **silently fell back to the CPU**, still writing predictions. Hence the plain `ubuntu:24.04` base. `cuequivariance_ops` still needs `libnvrtc.so.12` and `libcublas.so.12` before JAX has loaded them, hence the `LD_LIBRARY_PATH` line. Without it, the import, and with it `mace-jax-from-torch`, fails with `libnvrtc.so.12: cannot open shared object file`. `JAX_PLATFORMS=cuda` turns any CPU fallback into an error. Every MD driver should still assert that `jax.devices()[0].platform == 'gpu'`. The image is 7.1 GB. mace-jax also offers a `jax-cuda13` extra. Neither jax-md nor mace-jax pins `e3nn-jax`, so after the build run the jax-md Lennard-Jones example and smoke test 3, to confirm that both work on the release pip resolved. Pin the exact versions once the first build works (`python -m pip freeze > requirements-jax.txt`) and rebuild from the frozen list. Verify that JAX sees the GPU:
 
 ```
 python -c "import jax; print(jax.devices())"   # expect [CudaDevice(id=0)]
@@ -114,27 +124,33 @@ python -c "import jax; print(jax.devices())"   # expect [CudaDevice(id=0)]
 
 ```
 Bootstrap: docker
-From: nvcr.io/nvidia/pytorch:26.10-py3        # verified 2026-11-07: tag has an arm64 image; PyTorch 2.15.0a0, CUDA 13.4
+From: nvcr.io/nvidia/pytorch:26.10-py3        # verified 2026-11-07: tag has an arm64 image; PyTorch 2.15.0a0, CUDA 13.4, built for driver 615.71 (see below)
 %post
+  set -e
   python -m pip list --format=freeze | grep -i -E '^(torch|triton|nvidia-)' > /opt/ngc-constraints.txt
+  python -m pip check > /opt/pip-check-ngc-base.txt 2>&1 || true     # 26.10 already fails pip check; see below
   python -m pip install -c /opt/ngc-constraints.txt \
       "mace-torch[cueq,cueq-cuda-13]" "cuequivariance==0.10.0" "cuequivariance-torch==0.10.0" \
       "cuequivariance-ops-torch-cu13==0.10.0" ase h5py
-  python -m pip check
+  python -m pip check > /opt/pip-check-after.txt 2>&1 || true
+  if grep -vxF -f /opt/pip-check-ngc-base.txt /opt/pip-check-after.txt; then exit 1; fi   # fail only on NEW problems
   python -c "import torch; print(torch.__version__, torch.version.cuda)"   # must match the NGC release notes
+  python -m pip list --format=freeze > /opt/requirements-frozen.txt
 %environment
   unset TORCH_ALLOW_TF32_CUBLAS_OVERRIDE        # 26.10 sets this to 1 (checked in the image config); see Section 4.4
 ```
 
-Use `pip list --format=freeze`, not `pip freeze`: NGC's locally built PyTorch can appear as `torch @ file://…`, and pip rejects URLs in a constraints file.
+Use `pip list --format=freeze`, not `pip freeze`: NGC's locally built PyTorch can appear as `torch @ file://…`, and pip rejects URLs in a constraints file. A plain `pip check` fails on the untouched 26.10 image. It reports `cupti-python` (missing `nvidia-cuda-cupti`), `triton-kernels` (missing `pytest`) and `quack-kernels`/`flash-attn-4` (`nvidia-cutlass-dsl` 4.8.0 against 4.6.x), all NVIDIA's own packages. So the recipe records the base's complaints and fails only on new ones. The install added none. NGC's torch and triton were unchanged, and the image is 12 GB.
 
 **Build TorchSim as a separate candidate image**, so that a failure cannot break the baseline. First build and verify the ASE + MACE image above. Then build a second image from it that adds `torch-sim-atomistic` under the same constraints, and re-run `pip check` and the PyTorch-version check. If the candidate fails, keep the verified baseline image and pilot the concatenated-`Atoms` fallback (Section 4.3).
 
 **cuEquivariance 0.10.0 and the NGC PyTorch.** The 0.10.0 ops wheels (April 2026) declare no PyTorch version range. That is not an ABI risk: the cp312 aarch64 extension is a nanobind module that links only `libcue_ops.so`, `libcuda.so.1` and system libraries, with no `libtorch`/`libc10` (checked with `readelf` on 2026-11-07). The kernels should therefore load against the NGC 26.10 PyTorch (2.15.0a0). Still, the build must check that MACE reports the cuEquivariance backend at model load. If it does not, step back to an earlier 2026 NGC tag rather than forward to cuEquivariance 0.13.
 
+**Driver match (checked 2026-11-07).** The project node's driver is 595.45.04 (CUDA 13.2). The 26.10 image is built for driver 615.71.09 and runs on 595 only through CUDA forward compatibility: it puts `/usr/local/cuda/compat/lib` on `LD_LIBRARY_PATH`. So the first check after building is `apptainer exec --nv pytorch.sif python -c "import torch; torch.zeros(1).cuda()"`. **Result on the project node: it works.** Inside the image, the compat `libcuda.so.615.71.09` comes ahead of the host driver on `LD_LIBRARY_PATH`. Smoke test 2 passed with cuEquivariance active (88 modules) and `TORCH_ALLOW_TF32_CUBLAS_OVERRIDE` unset. Forward compatibility applies only to data-centre GPUs and only to supported driver branches, so re-check it after any driver change and on the production cluster. If it fails, use **`26.03-py3`**. Its `CUDA_DRIVER_VERSION` is exactly 595.45.04 (CUDA 13.2.0, PyTorch 2.11.0a0, still ≥ 2.10 for `nvalchemi-toolkit-ops[torch]`). Driver requirements of the 2026 tags, read from the registry: 26.01–02 → 590.48; 26.03 → 595.45; 26.04–05 → 595.58; 26.06–07 → 610.43; 26.08 → 615.65; 26.09–10 → 615.71. A second tested fallback is PyPI `torch` on a CUDA 13 base: on aarch64 the default wheel is `2.15.0+cu132`. With mace-torch 0.3.17 and cuEquivariance 0.10.0 (cu13), it passed smoke test 2 and the force gate on the project node, and the cuEquivariance backend was confirmed active (88 `cuequivariance_torch` modules in the loaded model).
+
 This container deliberately has no venv: the NGC image's own Python is the one with the CUDA-enabled PyTorch, and the constraints file stops pip from replacing that PyTorch with a PyPI build. NGC PyTorch has shipped CUDA 13 since release 25.08, so use the `-cu13` cuEquivariance packages, not `-cu12`. If you choose an older CUDA 12 tag instead, switch all of them to `-cu12` together.
 
-`cuequivariance` provides the fused kernels that make MACE fast. Pin **0.10.x in both stacks**. mace-torch 0.3.17 caps the ops packages below 0.11 and `cuequivariance-torch` below 0.12, and mace-jax requires the 0.10 family. The newer 0.13 wheels install on aarch64 but fall outside both stacks' declared ranges. Because mace-jax uses the same backend, cuEquivariance is a variable for *both* stacks, not a handicap for one (Section 4.4). TorchSim (`torch-sim-atomistic`) is the candidate batched PyTorch driver (Section 4.3). Its dependencies resolve on aarch64 on paper (checked 2026-11-07): `torch-sim-atomistic` 0.6.2 and `nvalchemi-toolkit-ops` 0.5.0 are pure-Python wheels; `nvalchemi-toolkit-ops[torch]` needs torch ≥ 2.10, and 26.10 ships 2.15.0a0; and `warp-lang` 1.19.0 has a `manylinux_2_34_aarch64` wheel. Whether it runs on the H100 is still unverified, which is why it gets its own image. Verify:
+`cuequivariance` provides the fused kernels that make MACE fast. Pin **0.10.x in both stacks**. mace-torch 0.3.17 caps the ops packages below 0.11 and `cuequivariance-torch` below 0.12, and mace-jax requires the 0.10 family. The newer 0.13 wheels install on aarch64 but fall outside both stacks' declared ranges. Because mace-jax uses the same backend, cuEquivariance is a variable for *both* stacks, not a handicap for one (Section 4.4). TorchSim (`torch-sim-atomistic`) is the candidate batched PyTorch driver (Section 4.3). Its dependencies resolve on aarch64 on paper (checked 2026-11-07): `torch-sim-atomistic` 0.6.2 and `nvalchemi-toolkit-ops` 0.5.0 are pure-Python wheels; `nvalchemi-toolkit-ops[torch]` needs torch ≥ 2.10, and 26.10 ships 2.15.0a0; and `warp-lang` 1.19.0 has a `manylinux_2_34_aarch64` wheel. On the project node (2026-11-07, PyPI torch 2.15.0+cu132), it installed without replacing torch. `MaceTorchSimModel(..., dtype=torch.float32, compute_stress=False)` on a mixed three-molecule batch matched per-molecule ASE + MACE to 6.5e-7 eV/Å. Inside the NGC 26.10 image (`B_torchsim.def`, built on top of B), it installed under the constraints without changing torch. Batched forces matched ASE to 9.7e-7 eV/Å, and a 100-molecule batched Langevin run of 200 steps executed on the GPU. That run's units and physics were not checked. The 1 ps pilot run of Section 4.3 is still to be done. It keeps its own image. Verify:
 
 ```
 python -c "import torch; print(torch.cuda.is_available(), torch.cuda.get_device_name(0))"
@@ -146,14 +162,21 @@ python -c "import torch; print(torch.cuda.is_available(), torch.cuda.get_device_
 Bootstrap: docker
 From: ubuntu:24.04
 %post
-  apt-get update && apt-get install -y python3.12 python3.12-venv git
-  python3.12 -m venv /opt/venv && . /opt/venv/bin/activate
+  set -e
+  apt-get update && apt-get install -y git ca-certificates curl
+  curl -LsSf https://astral.sh/uv/0.12.12/install.sh | env UV_INSTALL_DIR=/usr/local/bin UV_NO_MODIFY_PATH=1 sh
+  export UV_PYTHON_INSTALL_DIR=/opt/python
+  uv python install 3.12                     # NOT Ubuntu's python3.12: see "Julia version" below
+  uv venv --seed -p 3.12 /opt/venv && . /opt/venv/bin/activate
+  python -m pip install --upgrade pip
   python -m pip install pysr astropy specutils scikit-learn pandas h5py matplotlib jupyter
   python -m pip install "git+https://github.com/PAHFIT/pahfit.git@ca599f9a1eb57a9ed3305651e77fcc9d8e039333"   # master HEAD, 2024-11-01; has packs/science/classic.yaml and packs/instrument/jwst.yaml. NOT `pip install pahfit`; see below
   python -m pip install "git+https://github.com/PAHdb/AmesPAHdbPythonSuite.git@e8961b2bf8b0ae663663a6790d452e1fe9fd1bd3"   # HEAD, 2026-07-30; the latest tag (v0.5.0) is from 2022
   export JULIA_DEPOT_PATH=/opt/julia_depot PYTHON_JULIAPKG_PROJECT=/opt/julia_env
   python -c "import pysr"        # first import downloads Julia and compiles the backend via juliacall
-  chmod -R a+rX /opt/julia_depot /opt/julia_env
+  chmod -R a+rX /opt/julia_depot /opt/julia_env /opt/python
+  python -c "import json; print('julia', json.load(open('/opt/julia_env/pyjuliapkg/meta.json'))['version'])"   # expect 1.13.x
+  python -m pip check
 %environment
   export PATH=/opt/venv/bin:$PATH
   export PYTHON_JULIAPKG_PROJECT=/opt/julia_env     # must be writable at run time: bind a copy over it (see below)
@@ -161,20 +184,22 @@ From: ubuntu:24.04
   export JULIA_DEPOT_PATH=${SCRATCH:-$HOME}/julia_depot:/opt/julia_depot   # writable depot first, baked one second
 ```
 
+**Julia version (checked 2026-11-07).** juliacall pins `OpenSSL_jll` to the OpenSSL that the *Python interpreter* links. Ubuntu 24.04's `python3.12` links OpenSSL 3.0, which forces Julia 1.11 (1.11.9 was installed). On the project node, PySR then segfaulted inside Julia's type inference (`jl_decode_value_array`) on the first fit. The root cause was not investigated further. Ubuntu's Python also lacks the shared `libpython3.12.so` that PythonCall needs, so the build failed until `libpython3.12-dev` was added. uv's python-build-standalone CPython 3.12.14 links OpenSSL 3.5 and ships `libpython`. With it, juliapkg installs Julia 1.13.3, and PySR works in both serial-deterministic and multiprocessing mode. The image is 1.3 GB, and the writable `/opt/julia_env` copy is 1.1 GB, because it contains the Julia installation.
+
 **Run-time Julia setup.** Both the juliapkg project and the first Julia depot must be writable at run time. juliapkg takes a lock file inside the project directory before it checks anything, even in offline mode. So, per job:
 1. Copy the baked project out of the image once: `apptainer exec pysr.sif cp -r /opt/julia_env $SCRATCH/julia_env`.
-2. Bind the copy over the baked path, keeping that path: `apptainer run --containall --bind $SCRATCH/julia_env:/opt/julia_env --bind $SCRATCH/julia_depot pysr.sif …`.
+2. Bind the copy over the baked path, keeping that path: `apptainer run --containall --env SCRATCH=$SCRATCH --bind $SCRATCH --bind $SCRATCH/julia_env:/opt/julia_env pysr.sif …`. `--containall` implies `--cleanenv`, so pass `SCRATCH` explicitly, or the depot path falls back to the container's empty `$HOME`. Without the `julia_env` bind, `import pysr` fails on juliapkg's lock file (checked).
 3. Under `--containall`, bind the writable depot explicitly, as above, and keep `/opt/julia_depot` second in `JULIA_DEPOT_PATH`.
 
 **PAHFIT must come from git.** PyPI holds a single release, 2.0 from February 2022. It has the old API and `scipack_classic.yml`, and lacks `Model.from_yaml`, the `classic.yaml` science pack and the `instrument/jwst.yaml` pack that Sections 5.5–5.6 rely on. Those exist only from tag v2.5 onward and on the trunk, which the PAHFIT install page recommends. The import name is the same, so a plain `pip install pahfit` fails only at Section 5.6. Pin a commit that contains `pahfit/packs/science/classic.yaml` and `pahfit/packs/instrument/jwst.yaml`, and record its hash: it is "the PAHFIT version" in the Section 5.11 provenance, because no release carries the packs.
 
-PySR no longer has an install step: `pysr.install()` was removed and now only prints a warning. Julia and its packages are fetched through `juliacall` on the first `import pysr`, which takes several minutes, so do it during the build with the depot set to a path inside the image. At run time the image is read-only, so follow the run-time setup above. `PYTHON_JULIAPKG_OFFLINE=yes` is juliapkg's documented offline mode. It stops package installation, but it does not remove the need for a writable project directory. PySR's repository ships an `Apptainer.def` that is a useful starting point. Julia supports Linux aarch64 as a full platform. Verify as a non-root user with `apptainer run --containall`, using the PySR quick-start example on a 100-point synthetic dataset.
+PySR no longer has an install step: `pysr.install()` was removed and now only prints a warning. Julia and its packages are fetched through `juliacall` on the first `import pysr`, which takes several minutes, so do it during the build with the depot set to a path inside the image. At run time the image is read-only, so follow the run-time setup above. `PYTHON_JULIAPKG_OFFLINE=yes` is juliapkg's documented offline mode. It stops package installation, but it does not remove the need for a writable project directory. PySR's repository ships an `Apptainer.def` that is a useful starting point. Julia supports Linux aarch64 as a full platform. On the project node's 64 KiB-page kernel (2026-11-07), PySR 2.7.2 with juliacall 0.9.36 installed Julia 1.13.3 at first import (about 2 minutes). The quick-start recovered its formula both with `deterministic=True, parallelism="serial"` and with `parallelism="multiprocessing", procs=4`. juliapkg puts the Julia binary itself inside the project directory (`/opt/julia_env/pyjuliapkg/install/`), so the writable copy of step 1 contains it. Project plus depot came to about 1.5 GB. Verify as a non-root user with `apptainer run --containall`, using the PySR quick-start example on a 100-point synthetic dataset.
 
 ### 3.4 Smoke tests (do all four before any real work)
 
 1. *JAX MD:* run the jax-md Lennard-Jones example on the GPU for 1,000 steps; confirm it runs and that `jax.devices()` shows the GPU.
 2. *MACE on PyTorch:* load the small MACE-OFF23 model with `mace_off(model="small", default_dtype="float32", device="cuda")`. The explicit dtype matters: `mace_off` defaults to float64, while `mace_mp` defaults to float32. Compute energy and forces for coronene, and print the force on the first atom. Coronene is not in ASE's built-in molecule list, so write an XYZ file from the PAHdb geometry and read that.
-3. *Same molecule in mace-jax:* convert *the exact checkpoint used in smoke test 2*: either `mace-jax-from-torch --torch-model <file>.model` on the same file, recording its checksum, or `--foundation off --model-name small`. If you leave out `--model-name`, the converter falls back to `mace_off()`'s default, which is *medium*, and the two numbers will not agree. The converter has no dtype option, so cast the parameters to float32 when you load them and assert that `jax.config.jax_enable_x64` is off. Then compute energy and forces and print the same number. The two numbers should agree to better than 1e-3 eV/Å, the same float32 tolerance as Section 4.2. If they do not, stop and resolve it: T0 depends on this.
+3. *Same molecule in mace-jax:* convert *the exact checkpoint used in smoke test 2*, using `--foundation off --model-name small`, and record the checksum of the cached `MACE-OFF23_small.model` that both sides load. `--torch-model <file>.model` fails under PyTorch ≥ 2.6: `torch.load` defaults to `weights_only=True` and rejects the pickled MACE model (checked 2026-11-07). If you need it for a non-foundation checkpoint, load the file yourself with `weights_only=False`, and only for a trusted file. If you leave out `--model-name`, the converter falls back to `mace_off()`'s default, which is *medium*, and the two numbers will not agree. The converter has no dtype option. The loader has one (`load_model_bundle(path, "float32")`, `mace-jax-predict --dtype float32`), but it only switches `jax_enable_x64` off and leaves float64 leaves in the parameter tree. So still cast the parameters to float32 and assert that `jax.config.jax_enable_x64` is off. Then compute energy and forces and print the same number. mace-jax uses cuEquivariance only when the bundle JSON says so: `"equivariance_config": {"backend": "cueq"}`. The default is the plain-JAX path. On the project node, benzene agreed to 2e-6 eV/Å in every torch/jax × cuEq on/off pairing (2026-11-07). The two numbers should agree to better than 1e-3 eV/Å, the same float32 tolerance as Section 4.2. If they do not, stop and resolve it: T0 depends on this.
 4. *PAHFIT:* build a model with `Model.from_yaml('classic.yaml')` and fit one short synthetic spectrum whose `meta['instrument']` is a `jwst.miri.mrs.*` segment name from `jwst.yaml`. Plot the result. This exercises exactly the packs used in Section 5.6; the generic documentation example does not.
 
 When all four pass, tag the repository `env-ok` and record the container image hashes in the README.
@@ -211,9 +236,9 @@ Both drivers must use: the Langevin thermostat at 600 K with friction 0.01 fs⁻
 
 - *Sequential*, which is how the standard workflow behaves: ASE `Atoms` for each molecule, `ase.md.langevin.Langevin`, the *b* molecules one after another in one process. This scales linearly, so measure it at batch 1 and 10 and extrapolate to 100, rather than spending about 10 GPU-hours per repeat on it.
 - *Concurrent (MPS pool)*: P worker processes share the GPU through CUDA MPS (`nvidia-cuda-mps-control -d`) and take the *b* trajectory jobs from a shared queue. Each worker handles at most ⌈b/P⌉ jobs, so the allocation can be uneven. Assert that exactly *b* jobs completed, and set a CPU thread limit per worker (`OMP_NUM_THREADS`, `torch.set_num_threads`) so the workers do not oversubscribe the cores.
-  - MPS accepts at most 60 client contexts per device on current drivers (Release 620, default `CUDA_DEVICE_MAX_CONNECTIONS=2`), and 48 on older ones. Exceeding the limit makes context creation fail.
+  - MPS accepts at most 60 client contexts per device on current drivers (default `CUDA_DEVICE_MAX_CONNECTIONS=2`), and 48 on older ones. Measured on the project node's driver 595.45 (2026-11-07): the 61st client fails `cuInit` with error 808 (`CUDA_ERROR_MPS_MAX_CLIENTS_REACHED`).
   - Keep P ≤ 48 and below the number of cores; try two or three values and record P.
-  - A client that cannot reach the MPS daemon silently runs *without* MPS. Confirm in the MPS server log that all P clients attached.
+  - A client that cannot reach the MPS daemon silently runs *without* MPS. Confirm in the MPS server log that all P clients attached. One concrete cause: `CUDA_MPS_PIPE_DIRECTORY` holds a Unix socket, and socket paths are limited to 108 bytes. On a long path the control daemon exits at start-up, and every client then runs without MPS and reports success. Use a short path such as `/dev/shm/mps-$USER/pipe` and the matching `CUDA_MPS_LOG_DIRECTORY`, so that a per-user daemon needs no root. Start it inside the same `CUDA_VISIBLE_DEVICES=0`/`numactl` pinning as the workers.
 - *Batched*: many molecules in one GPU call, which is the PyTorch analogue of the JAX batch and the real answer to "you did not batch PyTorch". There are two candidates. A **week-4 pilot on the GH200** decides which one is used, and the memo must say which.
   - **Primary: TorchSim** (`torch-sim-atomistic`) with MACE 0.3.17's first-party adapter, `MaceTorchSimModel(..., dtype=torch.float32, compute_forces=True, compute_stress=False)`. Its default dtype is float64, and its default computes stress, which is extra work the JAX driver does not do. TorchSim runs batched Langevin NVT natively.
   - **Fallback: concatenated ASE `Atoms`**: all *b* molecules in one `Atoms` object, at least 30 Å apart (more than twice the model cutoff), so that one MACE call evaluates the whole batch. Assert at the end of the run that the minimum distance between molecules stayed above twice the cutoff.
@@ -453,17 +478,26 @@ Three repeats of the T0 timing can drop to two. The first things to cut are the 
 - *"exec format error" or "no matching manifest":* the image or wheel is x86. Always pull `linux/arm64` images and check `uname -m` inside the container.
 - *pip finds no wheel and tries to compile:* the package has no aarch64 build, or no build for your Python version. Check the Python version first (Section 3.3), then try conda-forge (very good aarch64 coverage) before building from source.
 - *pip installs a surprisingly old release:* the package's newest version needs a newer Python than the container has (current JAX needs 3.12, mace-torch 3.11). Fix the base image rather than pinning old versions.
+- *JAX silently runs on the CPU (predictions appear, no error) or logs `Unable to load cuSPARSE`:* two CUDA copies in container A (a CUDA-toolkit base plus the pip wheels), with cuEquivariance imported before JAX. Use the single-CUDA recipe (Section 3.3); `JAX_PLATFORMS=cuda` makes this an error.
+- *PySR segfaults inside Julia (`signal 11`, `jl_decode_value_array`) or the build says `Could not find Python library`:* container C uses Ubuntu's Python, which means OpenSSL 3.0, Julia 1.11 and no shared libpython. Use the uv-managed Python (Section 3.3).
+- *`pip check` fails in container B before you installed anything:* NGC 26.10 ships with conflicts of its own; compare against the recorded base (Section 3.3).
 - *JAX does not see the GPU:* mismatch between the jaxlib CUDA build and the driver's supported CUDA version shown by `nvidia-smi`. Reinstall mace-jax with the matching extra (`[jax-cuda12]` or `[jax-cuda13]`), or use NVIDIA's JAX container for Grace Hopper.
 - *MACE is slow in either stack:* check whether cuEquivariance is actually in use (mace prints the backend at model load; mace-jax selects it in its configuration). Record it in the CSV. If pip pulled cuEquivariance 0.13, you are outside both stacks' pins; reinstall 0.10.x.
 - *`pip install pahfit` worked but `Model.from_yaml` or `classic.yaml` is missing:* you have the 2022 PyPI release. Install from git (Section 3.3).
 - *PySR fails at run time with a read-only file system or lock-file error:* either the juliapkg project or the first Julia depot is not writable. Bind a writable copy of `/opt/julia_env` over it, and put a writable depot first in `JULIA_DEPOT_PATH` (Section 3.3, run-time Julia setup).
 - *PyTorch version changed after installing mace-torch in container B:* pip replaced the NGC build. Rebuild with the constraints file.
+- *Container A has a CUDA torch (`+cu13x`) instead of `+cpu`:* mace-jax was installed before the CPU torch; its `e3nn==0.4.4` dependency pulled the default wheel. Install the CPU torch first (Section 3.3).
+- *`libcue_ops.so` / `libnvrtc.so.12: cannot open shared object file` when importing mace-jax or running `mace-jax-from-torch`:* the CUDA 12 libraries are not on the system path (non-`devel` base or bare venv). Use the `-cudnn-devel` base, call `jax.devices()` before importing cuEquivariance, or add `site-packages/nvidia/{cuda_nvrtc,cublas}/lib` to `LD_LIBRARY_PATH`.
+- *`Weights only load failed … ScaleShiftMACE` from `mace-jax-from-torch --torch-model`:* PyTorch ≥ 2.6 default. Use `--foundation off --model-name small` (Section 3.4).
+- *`CUDA_ERROR_SYSTEM_DRIVER_MISMATCH` or "forward compatibility was attempted on non supported HW" in the NGC image:* the image needs a newer driver than the node has. Use the NGC tag whose `CUDA_DRIVER_VERSION` matches the node's driver (`26.03-py3` for 595.45; Section 3.3).
+- *`uv pip check` says `nvidia-cusparselt-cu13` "was built for a different platform":* harmless. The wheel carries the non-standard `manylinux2014_sbsa` tag; it loads and runs.
+- *Timings vary between runs on a dual-GH200 node:* the run is not pinned to one superchip. Use `numactl --cpunodebind=0 --membind=0` with `CUDA_VISIBLE_DEVICES=0` (Section 3.2).
 
 **MACE and mace-jax**
 
 - *Forces disagree between frameworks:* compare cutoff radius, the neighbour-list convention (whether pairs are counted once or twice), float32 versus float64 (`mace_off` defaults to float64), TF32 (JAX uses it by default on the H100; set `JAX_DEFAULT_MATMUL_PRECISION=highest`), and whether the JAX model applies the same per-atom energy shifts. Check a single two-atom system first.
 - *JAX is suspiciously fast, or the force gate fails by about 1e-3:* TF32 is on. Check the precision settings printed at start-up (Section 4.4).
-- *MPS workers fail to start, or run no faster than sequential:* the MPS client limit (60 per device on current drivers, 48 on older ones) was exceeded, or the clients silently ran without MPS. Lower P and check the MPS server log.
+- *MPS workers fail to start, or run no faster than sequential:* the MPS client limit (60 per device on current drivers, including 595.45; 48 on older ones) was exceeded, or the clients silently ran without MPS. Lower P and check the MPS server log. If the control log shows the daemon starting and nothing more, the pipe-directory path is probably too long for a Unix socket (Section 4.3).
 - *Temperature looks right but the VDOS is shifted:* masses or time units are wrong in jax-md. Masses default to 1.0, and one time unit is about 10.18 fs in eV/Å/amu (Section 4.3).
 - *JAX recompiles every step or every molecule:* shapes are changing. Pad every batch to fixed node and edge caps; bucket species by atom count if `N_max` would otherwise be far above most molecules.
 - *JAX out of memory at batch 100:* reduce the scan chunk length (fewer steps per compiled call) before reducing the batch; the memory cost is in the trajectory buffer, not the model.

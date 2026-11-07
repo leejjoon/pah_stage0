@@ -1,0 +1,27 @@
+Bootstrap: docker
+From: ubuntu:24.04
+# Container A: JAX + mace-jax (plan Section 3.3). Build: apptainer build --fakeroot A_jax.sif A_jax.def
+# One CUDA copy only: the pip CUDA 12.9 wheels that jax[cuda12] installs. A CUDA-toolkit base image (12.8) adds a
+# second copy; when cuequivariance is imported before jax, the 12.8 libs load first, JAX's cuSPARSE fails and
+# JAX silently falls back to CPU (seen on the GH200, 2026-11-07).
+%post
+  set -e
+  export DEBIAN_FRONTEND=noninteractive
+  apt-get update && apt-get install -y python3.12 python3.12-venv git ca-certificates
+  python3.12 -m venv /opt/venv && . /opt/venv/bin/activate
+  python -m pip install --upgrade pip
+  python -m pip install torch --index-url https://download.pytorch.org/whl/cpu   # FIRST: CPU torch (mace-jax's e3nn==0.4.4 would pull CUDA torch)
+  python -m pip install "mace-jax[jax-cuda12] @ git+https://github.com/ACEsuit/mace-jax@e8a6f2d3e793e2020439df1736a32703c9cac170"
+  python -m pip install jax-md flax optax ase numpy scipy h5py matplotlib
+  python -m pip install mace-torch
+  python -c "import torch; assert torch.__version__.endswith('+cpu'), torch.__version__"
+  python -m pip check
+  python -m pip list --format=freeze > /opt/requirements-frozen.txt
+  # cuequivariance_ops loads libcue_ops.so before JAX has loaded its CUDA libs, so put them on the loader path.
+  echo "export LD_LIBRARY_PATH=$(ls -d /opt/venv/lib/python3.12/site-packages/nvidia/*/lib | tr '\n' ':')\${LD_LIBRARY_PATH}" >> $APPTAINER_ENVIRONMENT
+%environment
+  export PATH=/opt/venv/bin:$PATH
+  export JAX_DEFAULT_MATMUL_PRECISION=highest
+  export JAX_PLATFORMS=cuda      # fail loudly instead of silently falling back to CPU (run with --nv)
+%labels
+  project pah-sr T0 container A
