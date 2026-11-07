@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "papertrail": {
+      "type": "stdio",
+      "command": "/home/jjlee/projects/pah_check01/.venv/bin/papertrail",
+      "args": ["mcp", "--corpus", "/home/jjlee/projects/pah_check01/corpora/references"]
+    }
+  }
+}

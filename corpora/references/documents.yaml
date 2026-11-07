@@ -1,0 +1,119 @@
+documents:
+- doc_id: Mai2025_MNRAS
+  title: Computing anharmonic infrared spectra of polycyclic aromatic hydrocarbons
+    using machine learning molecular dynamics
+  authors: null
+  year: null
+  journal: null
+  has_fulltext: true
+  fulltext_source: author_draft
+  extra: {}
+- doc_id: Tielens2008_ARAA
+  title: ANNUAL REVIEWS Further
+  authors: null
+  year: null
+  journal: null
+  has_fulltext: true
+  fulltext_source: author_draft
+  extra: {}
+- doc_id: Chown2024_AA_PDRs4All_IV
+  title: PDRs4All
+  authors: null
+  year: null
+  journal: null
+  has_fulltext: true
+  fulltext_source: author_draft
+  extra: {}
+- doc_id: Peeters2024_AA_PDRs4All_III
+  title: PDRs4All
+  authors: null
+  year: null
+  journal: null
+  has_fulltext: true
+  fulltext_source: author_draft
+  extra: {}
+- doc_id: Bauschlicher2018_ApJS_PAHdb_v3
+  title: 'The NASA Ames PAH IR Spectroscopic Database: Computational Version 3.00
+    with Updated Content and the Introduction of Multiple Scaling Factors'
+  authors: null
+  year: null
+  journal: null
+  has_fulltext: true
+  fulltext_source: author_draft
+  extra: {}
+- doc_id: Ricca2025_ApJS_PAHdb_v4
+  title: 'The NASA Ames PAH IR Spectroscopic Database: Computational Version 4.00,
+    Software Tools, Website, and Documentation'
+  authors: null
+  year: null
+  journal: null
+  has_fulltext: true
+  fulltext_source: author_draft
+  extra: {}
+- doc_id: Smith2007_ApJ_PAHFIT
+  title: 'THE MID-INFRARED SPECTRUM OF STAR-FORMING GALAXIES: GLOBAL PROPERTIES OF
+    POLYCYCLIC AROMATIC HYDROCARBON EMISSION'
+  authors: null
+  year: null
+  journal: null
+  has_fulltext: true
+  fulltext_source: author_draft
+  extra: {}
+- doc_id: Argyriou2023_AA_MIRI_MRS
+  title: 'JWST MIRI flight performance: The Medium-Resolution Spectrometer'
+  authors: null
+  year: null
+  journal: null
+  has_fulltext: true
+  fulltext_source: author_draft
+  extra: {}
+- doc_id: Batatia2022_NeurIPS_MACE
+  title: 'MACE: Higher Order Equivariant Message Passing Neural Networks for Fast
+    and Accurate Force Fields'
+  authors: null
+  year: null
+  journal: null
+  has_fulltext: true
+  fulltext_source: author_draft
+  extra: {}
+- doc_id: Batatia2025_JCP_MACE-MP-0
+  title: A foundation model for atomistic materials chemistry F
+  authors: null
+  year: null
+  journal: null
+  has_fulltext: true
+  fulltext_source: author_draft
+  extra: {}
+- doc_id: Schoenholz2020_NeurIPS_JAXMD
+  title: JAX, M.D.A Framework for Differentiable Physics
+  authors: null
+  year: null
+  journal: null
+  has_fulltext: true
+  fulltext_source: author_draft
+  extra: {}
+- doc_id: Cranmer2023_arXiv_PySR
+  title: Interpretable Machine Learning for Science with PySR and SymbolicRegression.jl
+  authors: null
+  year: null
+  journal: null
+  has_fulltext: true
+  fulltext_source: author_draft
+  extra: {}
+- doc_id: Wang2026_AA_L17
+  title: LETTER TO THE EDITOR
+  authors: null
+  year: null
+  journal: null
+  has_fulltext: true
+  fulltext_source: author_draft
+  extra: {}
+- doc_id: Kovacs2025_JACS_MACE-OFF
+  title: 'MACE-OFF: Short-Range Transferable Machine Learning Force Fields for Organic
+    Molecules'
+  authors: null
+  year: null
+  journal: null
+  has_fulltext: true
+  fulltext_source: author_draft
+  extra: {}

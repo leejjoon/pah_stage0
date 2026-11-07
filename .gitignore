@@ -1,0 +1,13 @@
+# Secrets
+.env
+
+# Local environment
+.venv/
+__pycache__/
+
+# Third-party source PDFs and raw downloads (large, copyrighted; kept locally)
+docs/references/
+
+# Raw papertrail pipeline output (large; kb.sqlite and sections are kept)
+corpora/references/data/marker/
+corpora/references/data/assets/

@@ -1,0 +1,11 @@
+corpus:
+  name: references
+  title: PAH plan references
+source:
+  marker_dir: data/marker
+  documents_file: documents.yaml
+identity:
+  citation_style: plain
+navigation:
+  year_pages: false
+wiki_headings: []
