@@ -208,7 +208,7 @@ When all four pass, tag the repository `env-ok` and record the container image h
 
 | Data | Where | Size | Used in |
 | --- | --- | --- | --- |
-| PAHdb computational library v4.00 (XML or the Python suite's cached format) | astrochemistry.org/pahdb, download page | \~2 GB | T0 geometries, T0b spectra |
+| PAHdb computational library v4.00 (XML or the Python suite's cached format) | astrochemistry.org/pahdb, download page (an e-mail form; the link arrives by e-mail and the file needs the retrieve page's session cookie) | 49 MB gzipped, 503 MB XML, 267 MB suite cache (measured 2026-11-07) | T0 geometries, T0b spectra |
 | MACE foundation-model weights (MACE-MP-0 small and medium, or MACE-OFF23) | MACE GitHub releases | \~100 MB | T0 |
 | PDRs4All Orion Bar template spectra (five zones, NIRSpec + MIRI MRS) | MIRI: CDS catalogue J/A+A/685/A75 (Chown et al. 2024); NIRSpec: CDS J/A+A/685/A74 (Peeters et al. 2024); apertures and cubes: MAST PDRs4All HLSP, doi:10.17909/wqwy-p406 | \~50 MB | T0b |
 | JWST MIRI MRS resolving-power curves | The per-band polynomials in PAHFIT's instrument pack `pahfit/packs/instrument/jwst.yaml` (use these so that simulation and fitting share one instrument model). Note that the pack's MIRI coefficients are pre-flight estimates (Labiano et al. 2021); the flight-derived trend is Argyriou et al. 2023, Eq. 1, R = 4603 − 128λ. Compare a few values and note the difference in the report: sharing the pack gives consistency, not independent validation. | small | T0b instrument model |

@@ -72,6 +72,7 @@ The repository layout the plan targets is `containers/`, `t0/`, `slice/` (driven
 - **11.2 µm denominator:** it is weak for duo-only compact species. Check it at population level, and do *not* add a solo-H selection rule (that is the Wang 2026 Fig. 1 selection bias).
 - **MACE-OFF** is neutral/closed-shell only and cannot produce cation trajectories.
 - **Mai+2025** used NeuralIL (JAX) with an ASE driver, not MACE.
+- **PAHdb v4 data** (downloaded 2026-11-07, not in the repo): `/var/tmp/jjlee-pah/data/pahdb-complete-theoretical-v4.00.xml(.gz)`, hash in `t0/pahdb-v4.00.sha256`. Load it with `--env TMPDIR=<local disk>` (the suite caches a 267 MB pickle in the temp dir). Its `symmetry` field is the electronic state, not the point group. T0's 20 species are in `t0/species_T0.csv`.
 - **PAHdb v4** has few small cations (30 with 21–30 C). Select neutral/cation pairs first, and derive solo/duo/trio counts with `Geometry.bec()`.
 
 ## Querying the reference corpus
