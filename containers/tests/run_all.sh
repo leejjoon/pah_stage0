@@ -23,3 +23,9 @@ echo "== B+TorchSim: 1 ps, 100-molecule pilot (~5 min)";                 "${PIN[
 echo "== B+TorchSim: force-call timing and profile";                     "${PIN[@]}" "${GPU[@]}" "$SIF/B_torchsim.sif" python /t/b_torchsim_fwd.py
 echo "== C: PySR, PAHFIT packs, PAHdb suite";                            "${PIN[@]}" "${CPU[@]}" "$SIF/C_cpu.sif" python /t/c_tools.py
 echo "== C: PAHFIT closure fit, maxiter 10000, single-threaded";         "${PIN[@]}" "${CPU[@]}" "${ONE[@]}" --env MAXIT=10000 "$SIF/C_cpu.sif" python /t/c_pahfit.py
+echo "== 20-species equivalence (plan 4.2), idealised lattice PAHs until PAHdb is downloaded"
+apptainer exec --bind "$WORK":/t "$SIF/B_torch.sif" python /t/eq_species.py
+"${PIN[@]}" "${GPU[@]}" "$SIF/B_torch.sif" python /t/eq_torch.py
+for b in "" _cueq; do "${PIN[@]}" "${GPU[@]}" --env XLA_PYTHON_CLIENT_PREALLOCATE=false "$SIF/A_jax.sif" \
+  mace-jax-predict /t/ctr_off_small$b.npz /t/eq_frames.xyz --dtype float32 --no-progress --output /t/eq_jax$b.npz; done
+apptainer exec --bind "$WORK":/t "$SIF/B_torch.sif" python /t/eq_compare.py
