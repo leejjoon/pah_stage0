@@ -10,7 +10,11 @@ fr = read("/t/eq_frames.xyz", ":")
 nat = np.array([len(a) for a in fr]); sidx = np.array([a.info["species"] for a in fr])
 sp = list(csv.DictReader(open("/t/eq_species.csv")))
 T = {(d, c): np.load(f"/t/torch_{d}_cueq{c}.npz", allow_pickle=True) for d in ("float32", "float64") for c in (0, 1)}
-J = {(d, c): np.load(f"/t/jax_{d}{'_cueq' if c else ''}.npz", allow_pickle=True) for d in ("float32", "float64") for c in (0, 1)}
+import os
+SUF = {0: "", 1: "_cueq", 2: "_cueqf"}   # 2 = cueq backend with conv_fusion (uniform_1d kernel); included if present
+JV = [c for c in SUF if all(os.path.exists(f"/t/jax_{d}{SUF[c]}.npz") for d in ("float32", "float64"))]
+J = {(d, c): np.load(f"/t/jax_{d}{SUF[c]}.npz", allow_pickle=True) for d in ("float32", "float64") for c in JV}
+print("JAX variants: cueq=0 default bundle, 1 backend cueq, 2 backend cueq + conv_fusion; present:", JV)
 f = lambda x: np.asarray(x, np.float64)
 def maxdf(A, B): return np.array([np.abs(f(a) - f(b)).max() for a, b in zip(A, B)])
 res = {}
@@ -22,14 +26,15 @@ print("== dtypes of saved outputs")
 for k, v in {**{('torch',) + k: T[k] for k in T}, **{('jax',) + k: J[k] for k in J}}.items():
     print(f"  {k}: energy {np.asarray(v['energy']).dtype}, interaction_energy {np.asarray(v['interaction_energy']).dtype}")
 
-print("== are the JAX cueq on/off outputs identical? (both bundles trace the same cuex 'naive' calls)")
+print("== JAX bundle variants against the default bundle (same model; differences are summation order)")
 for d in ("float32", "float64"):
-    a, b = J[(d, 0)], J[(d, 1)]
-    print(f"  jax {d}: max|dE| {np.abs(f(a['energy']) - f(b['energy'])).max():.1e} eV, max|dF| {maxdf(a['forces'], b['forces']).max():.1e} eV/A, "
+  for c in JV[1:]:
+    a, b = J[(d, 0)], J[(d, c)]
+    print(f"  jax {d} cueq=0 vs {c}: max|dE| {np.abs(f(a['energy']) - f(b['energy'])).max():.1e} eV, max|dF| {maxdf(a['forces'], b['forces']).max():.1e} eV/A, "
           f"bit-identical energies: {np.array_equal(a['energy'], b['energy'])}")
 
 print("== gate 1 and 2: float32, every cuEquivariance combination")
-for jc in (0, 1):
+for jc in JV:
     for tc in (0, 1):
         j, t = J[("float32", jc)], T[("float32", tc)]
         gate(f"forces f32, jax cueq={jc} vs torch cueq={tc}", maxdf(j["forces"], t["forces"]).max(), 1e-3, "eV/A")
@@ -37,13 +42,13 @@ for jc in (0, 1):
              (np.abs(f(j["interaction_energy"]) - f(t["interaction_energy"])) / nat).max(), 1e-4, "eV/atom")
 
 print("== gate 3: float64 totals, x64-converted bundle")
-for jc in (0, 1):
+for jc in JV:
     for tc in (0, 1):
         j, t = J[("float64", jc)], T[("float64", tc)]
         gate(f"total energy f64, jax cueq={jc} vs torch cueq={tc}", (np.abs(f(j["energy"]) - f(t["energy"])) / nat).max(), 1e-6, "eV/atom")
 
 print("== reported, not gated")
-for jc in (0, 1):
+for jc in JV:
     for tc in (0, 1):
         dE = np.abs(f(J[("float32", jc)]["energy"]) - f(T[("float32", tc)]["energy"])) / nat
         print(f"  total energy f32, jax cueq={jc} vs torch cueq={tc}: max {dE.max():.1e} eV/atom")

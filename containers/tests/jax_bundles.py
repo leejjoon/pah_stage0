@@ -1,6 +1,7 @@
 # From the x64 master bundle (mace-jax-from-torch under JAX_ENABLE_X64=1), write:
 #   off_small_x64_cueq: same parameters, cuEquivariance backend on
-#   off_small_f32{,_cueq}: every floating leaf cast to float32 (benchmark precision), cueq off/on
+#   off_small_x64_cueqf: cuEquivariance backend with conv_fusion (the only switch that reaches a uniform_1d CUDA kernel)
+#   off_small_f32{,_cueq,_cueqf}: every floating leaf cast to float32 (benchmark precision)
 import json, numpy as np
 from flax import serialization
 src = "/t/off_small_x64"
@@ -14,9 +15,9 @@ def kinds(d, out):
     return out
 Pc = cast(P)
 for name, params in (("x64", P), ("f32", Pc)):
-    for cq in ("", "_cueq"):
+    for cq, eq in (("", None), ("_cueq", {"backend": "cueq"}), ("_cueqf", {"backend": "cueq", "conv_fusion": True})):
         c = dict(C)
-        if cq: c["cueq_config"] = None; c["equivariance_config"] = {"backend": "cueq"}
+        if eq: c["cueq_config"] = None; c["equivariance_config"] = eq
         open(f"/t/off_small_{name}{cq}.npz", "wb").write(serialization.to_bytes(params))
         json.dump(c, open(f"/t/off_small_{name}{cq}.json", "w"))
         print(f"off_small_{name}{cq}: leaf dtypes {sorted(kinds(params, set()))}, equivariance_config {c.get('equivariance_config')}")

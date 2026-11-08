@@ -35,7 +35,10 @@ else
 fi
 # Plan 4.2 gates (revised 2026-11-08): float32 forces and interaction energies, float64 totals from the x64 bundle.
 "${PIN[@]}" "${GPU[@]}" "$SIF/B_torch.sif" python /t/eq_torch_gates.py
-for p in f32:float32 x64:float64; do for cq in "" _cueq; do "${PIN[@]}" "${GPU[@]}" --env XLA_PYTHON_CLIENT_PREALLOCATE=false --env JAX_DEFAULT_MATMUL_PRECISION=highest \
+for p in f32:float32 x64:float64; do for cq in "" _cueq _cueqf; do "${PIN[@]}" "${GPU[@]}" --env XLA_PYTHON_CLIENT_PREALLOCATE=false --env JAX_DEFAULT_MATMUL_PRECISION=highest \
   "$SIF/A_jax.sif" python /t/jax_predict_logged.py /t/off_small_${p%%:*}$cq.npz /t/eq_frames.xyz --dtype ${p##*:} --full-outputs --no-progress \
   --output /t/jax_${p##*:}$cq.npz 2>&1 | grep -E "cuex|x64|rror"; done; done
 apptainer exec --bind "$WORK":/t "$SIF/B_torch.sif" python /t/eq_gates.py
+echo "== JAX force-call timing per bundle variant (float32; quick check, not the T0 benchmark)"
+for n in 100 1; do for v in "" _cueq _cueqf; do "${PIN[@]}" "${GPU[@]}" --env XLA_PYTHON_CLIENT_PREALLOCATE=false --env JAX_DEFAULT_MATMUL_PRECISION=highest \
+  "$SIF/A_jax.sif" python /t/jax_time.py /t/off_small_f32$v.npz float32 $n 30 2>&1 | grep "call median"; done; done
