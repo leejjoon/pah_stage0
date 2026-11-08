@@ -22,7 +22,7 @@ This is the planning stage of the **T0 / T0b** work for the "Interpretable PAH D
 - **T0, the stack benchmark:** jax-md + mace-jax against ASE + MACE (PyTorch) on a GH200 (aarch64 Grace + H100). The question is whether JAX is more than 5× faster in wall-clock time per ns per molecule at a batch of 100.
   - Run a 2×2 grid: each stack with and without cuEquivariance.
   - The PyTorch baseline includes CUDA-MPS concurrent processes, not just sequential runs.
-  - Gate: torch and jax forces must agree to within 1e-3 eV/Å (float32).
+  - Gate (plan §4.2): forces within 1e-3 eV/Å and interaction energies within 1e-4 eV/atom, both float32 (`ScaleShiftMACE` asserted, interaction energy taken directly from the model); float64 totals within 1e-6 eV/atom from an x64 conversion. Float32 totals are reported, not gated: they sit at the float32 rounding floor.
 - **T0b, the vertical slice:** one tiny end-to-end pipeline:
   1. PAHdb v4.00 spectra
   2. emission cascade
@@ -56,7 +56,7 @@ The repository layout the plan targets is `containers/`, `t0/`, `slice/` (driven
   - The exact single-ratio inverse is c1 + c2/(c3−r), which is complexity 7.
 - **Precision parity**
   - `mace_off` defaults to float64, and so does `MaceTorchSimModel`. JAX uses TF32 for float32 matmuls on the H100. Set everything explicitly.
-  - `mace-jax-from-torch` has no dtype flag; cast the parameters when loading them.
+  - `mace-jax-from-torch` has no dtype flag and rounds the float64 checkpoint to float32 unless run with `JAX_ENABLE_X64=1`. Convert under x64, keep that float64 bundle as the master, and cast float32 copies when loading them.
   - Without `--model-name`, the converter falls back to the *medium* MACE-OFF. Always convert the exact checkpoint the PyTorch side loads.
 - **Centre of mass:** the libraries' defaults differ, so set one explicit COM policy for every MD mode.
 - **Julia in container C:** the juliapkg project (`/opt/julia_env`) must also be writable at run time (it takes a lock file), so bind a writable copy over it.

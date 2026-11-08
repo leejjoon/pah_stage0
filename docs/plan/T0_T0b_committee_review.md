@@ -300,3 +300,18 @@ Any of these can silently move the 5× decision, and TF32 can break the 1e-3 eV/
 - `PYTHON_JULIAPKG_OFFLINE`: *verified*. juliapkg reads `PYTHON_JULIAPKG_` + option name. An offline `import pysr` worked and wrote `lock.pid` into the project directory, confirming the writable-project requirement.
 - jax-md 0.2.29 and mace-jax on the same e3nn-jax: *verified at smoke level*. Both ran in one environment on e3nn-jax 0.21.0 (jax 0.11.2).
 - Duo-only 11.2 µm strength: still open (science, not environment).
+
+## Addendum 2026-11-08: the T0 energy gate
+
+The §4.2 equivalence check was run on the project GH200 on 2026-11-07 (20 PAHdb v4.00 species, 120 frames; `GH200_feasibility_check_2026-11-07.md` §I). Forces passed in every cuEquivariance combination (max 2.3e-5 eV/Å). The float32 energy gate of 1e-4 eV/atom failed (cross-stack 5.8–6.5e-4 eV/atom), and each stack was further from its own float64 result (9e-4 eV/atom) than from the other stack. Both stacks in float64 differed by 2.1e-5 eV/atom (3.0e-3 eV total). The run's author proposed moving the energy comparison to float64 (Claude Doc "T0 equivalence gate: proposed energy-criterion change"). Fable and Astra reviewed it over three rounds.
+
+**Findings.**
+- The float32 failure comes from the total energy: MACE totals include the atomic reference energies (−2e4 to −1e5 eV), whose float32 spacing is close to the whole per-atom budget. Forces derive from the interaction energy only, so they never see this floor.
+- `ScaleShiftMACE` in both MACE and mace-jax sums `interaction_energy` separately, before adding E0, so it can be gated at float32. MACE's ASE calculator does not return it; take it from the model directly.
+- The float64 residual is explained by the converter: `mace-jax-from-torch` builds its template in JAX's default dtype (float32 unless x64 is on) and casts every floating torch tensor to it, so the float64 checkpoint was rounded at conversion. The earlier instruction to cast to float32 at load remains right for benchmarking, but it omitted preserving float64 precision during conversion; later promotion cannot recover precision already lost.
+- Round 2's claim that MACE's cuEquivariance modules are built under torch's global float32 default was wrong: `convert_e3nn_cueq.run` sets the default dtype from the source model. The mace-jax cuEquivariance math dtype remains unverified.
+
+**Adopted (plan §4.2, with §3.4 smoke test 3, §4.1, §4.4 Precision and Correctness rows, §6 week 3).** Three gates: float32 forces < 1e-3 eV/Å and float32 interaction energies < 1e-4 eV/atom for every cuEquivariance combination, with `ScaleShiftMACE` asserted; float64 totals < 1e-6 eV/atom from an x64 conversion, with cuEquivariance off and on, verified effective math dtype, and "unresolved" if float64 cannot be shown. Float32 totals are reported, not gated. Failures are diagnosed by decomposition (Σ_Z n_Z ΔE0_Z, constancy across geometries of one composition), not from the threshold. NVE drift is measured on interaction plus kinetic energy.
+
+**Not yet passed.** The 2026-11-07 runs predate the x64 conversion and the interaction-energy extraction. The new gates must be rerun before they are recorded as passed.
+
