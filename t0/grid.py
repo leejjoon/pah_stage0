@@ -35,7 +35,8 @@ COLS = ["cell", "stack", "mode", "batched_impl", "cueq", "cueq_version", "conv_f
 ap = argparse.ArgumentParser()
 ap.add_argument("--phase", required=True, choices=["calib", "full"])
 ap.add_argument("--repeats", type=int, default=None, help="default: 1 for calib, 3 for full")
-ap.add_argument("--workers", default="4,16,32", help="MPS pool sizes P")
+ap.add_argument("--workers", default="10:4;100:16,32", help="MPS pool sizes P per batch, e.g. 10:4;100:16,32 "
+                "(P=4 at batch 100 was dropped on 2026-11-09: 10.4 s/mol-ps vs 3.1-3.7 at P=16/32 in calibration, 7.5 h per repeat)")
 ap.add_argument("--only", default="", help="comma list of key=value filters on cell fields, e.g. mode=mps,batch=100")
 ap.add_argument("--out", default=None, help="output CSV (default reports/t0_timing_<phase>.csv)")
 ap.add_argument("--md", default=f"{ROOT}/md/grid", help="scratch dir for npz files and logs")
@@ -46,7 +47,7 @@ args = ap.parse_args()
 reps = args.repeats or (1 if args.phase == "calib" else 3)
 EQUIL, PROD = (100, 400) if args.phase == "calib" else (2000, 20000)
 out = args.out or os.path.join(REPO, "reports", f"t0_timing_{args.phase}.csv")
-P_LIST = [int(p) for p in args.workers.split(",")]
+P_BY_B = {int(k): [int(p) for p in v.split(",")] for k, v in (kv.split(":") for kv in args.workers.split(";"))}
 
 
 def cells():
@@ -61,7 +62,7 @@ def cells():
                 for impl in ("torchsim", "concat"):
                     yield dict(stack="torch", mode="batched", impl=impl, cueq=cq, batch=b, P="", repeat=r)
                 if b >= 10:
-                    for P in P_LIST:
+                    for P in P_BY_B.get(b, []):
                         if P <= b: yield dict(stack="torch", mode="mps_pool", impl="", cueq=cq, batch=b, P=P, repeat=r)
 
 
