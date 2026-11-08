@@ -1,0 +1,49 @@
+{
+ "pahdb_version": "4.00",
+ "pahdb_date": "2024-06-27",
+ "bins": [
+  [
+   20,
+   30
+  ],
+  [
+   30,
+   45
+  ],
+  [
+   45,
+   60
+  ],
+  [
+   60,
+   80
+  ],
+  [
+   80,
+   110
+  ]
+ ],
+ "quota": {
+  "compact": [
+   4,
+   4,
+   4,
+   3,
+   3
+  ],
+  "irregular": [
+   1,
+   1,
+   1,
+   2,
+   2
+  ]
+ },
+ "compact_definition": "no trio and no quartet CH (plan 5.1); bay-free species preferred among compact; n_bay = count of '1' segments in the boundary-edge code",
+ "pairs_available": 1218,
+ "achieved": {
+  "compact": 15,
+  "irregular": 10
+ },
+ "note": "plan 5.1 asks for about 18 compact / 7 irregular; the 20-30 C bin has a single compact neutral/cation pair (coronene), so its other slots are irregular, and 30-45 C needs a bay-bearing compact species (C44H18)"
+}

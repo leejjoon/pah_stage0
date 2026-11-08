@@ -1,0 +1,72 @@
+PAHdb 4.00 (2024-06-27), 10749 species
+filters: {'not fully hydrogenated / holes': 32, 'neutral not closed-shell': 755, 'non-hexagon ring': 34} -> 3334 pure hexagon-only PAHs (neutral closed-shell or cation), 20-110 C
+bec counts vs stored n_solo/n_duo/n_trio/n_quartet: 3334/3334 agree; vs geometric count: 3334/3334 agree
+21-30 C after filters: 286 neutral, 24 cation (Ricca+2025 Table 1, pure PAHs before our filters: 786 / 30)
+neutral/cation pairs: 1218
+pairs per bin (compact/irregular): [('20-30', 1, 16), ('30-45', 6, 164), ('45-60', 25, 281), ('60-80', 38, 311), ('80-110', 104, 272)]
+  bin 20-30 compact: only 1 pairs for 4 slots; the rest go to irregular
+pair,uid,formula,n_c,n_h,charge,class,n_solo,n_duo,n_trio,n_quartet,n_bay,bec,symmetry,method
+0,18,C24H12,24,12,0,compact,0,12,0,0,0,333333,1-A1G,RB3LYP
+0,19,C24H12,24,12,1,compact,0,12,0,0,0,333333,2-AU,UB3LYP
+1,284,C22H12,22,12,0,irregular,0,6,6,0,1,433341,1-A',RB3LYP
+1,7316,C22H12,22,12,1,irregular,0,6,6,0,1,433341,2-A2,UB3LYP
+2,204,C24H14,24,14,0,irregular,3,4,3,4,1,52234312,1-A',RB3LYP
+2,205,C24H14,24,14,1,irregular,3,4,3,4,1,52234312,2-A",UB3LYP
+3,814,C26H16,26,16,0,irregular,8,0,0,8,0,5222252222,1-AG,RB3LYP
+3,815,C26H16,26,16,1,irregular,8,0,0,8,0,5222252222,2-AU,UB3LYP
+4,2226,C28H14,28,14,0,irregular,4,4,6,0,0,43224322,1-AG,RB3LYP
+4,3158,C28H14,28,14,1,irregular,4,4,6,0,0,43224322,2-BG,UB3LYP
+5,4,C32H14,32,14,0,compact,2,12,0,0,0,33323332,1-AG,RB3LYP
+5,5,C32H14,32,14,1,compact,2,12,0,0,0,33323332,2-B2G,UB3LYP
+6,625,C40H16,40,16,0,compact,4,12,0,0,0,3332233322,1-AG,RB3LYP
+6,626,C40H16,40,16,1,compact,4,12,0,0,0,3332233322,2-AU,UB3LYP
+7,620,C42H16,42,16,0,compact,4,12,0,0,0,3323233232,1-AG,RB3LYP
+7,3167,C42H16,42,16,1,compact,4,12,0,0,0,3323233232,2-B3U,UB3LYP
+8,10644,C44H18,44,18,0,compact,2,16,0,0,2,333321333321,1-AG,RB3LYP
+8,10630,C44H18,44,18,1,compact,2,16,0,0,2,333321333321,2-BG,UB3LYP
+9,3164,C38H16,38,16,0,irregular,6,4,6,0,0,4232242322,1-AG,RB3LYP
+9,3165,C38H16,38,16,1,irregular,6,4,6,0,0,4232242322,2-AU,UB3LYP
+10,635,C48H18,48,18,0,compact,6,12,0,0,0,333222333222,1-AG,RB3LYP
+10,636,C48H18,48,18,1,compact,6,12,0,0,0,333222333222,2-B2G,UB3LYP
+11,3173,C52H18,52,18,0,compact,6,12,0,0,0,332322332322,1-AG,RB3LYP
+11,3174,C52H18,52,18,1,compact,6,12,0,0,0,332322332322,2-BG,UB3LYP
+12,37,C54H18,54,18,0,compact,6,12,0,0,0,323232323232,1-A1G,RB3LYP
+12,38,C54H18,54,18,1,compact,6,12,0,0,0,323232323232,2-B2G,UB3LYP
+13,3179,C56H20,56,20,0,compact,8,12,0,0,0,33322223332222,1-AG,RB3LYP
+13,3180,C56H20,56,20,1,compact,8,12,0,0,0,33322223332222,2-AU,UB3LYP
+14,10452,C52H20,52,20,0,irregular,8,6,6,0,1,43122242322322,1-A',RB3LYP
+14,10480,C52H20,52,20,1,irregular,8,6,6,0,1,43122242322322,2-A",UB3LYP
+15,115,C66H20,66,20,0,compact,8,12,0,0,0,32323223232322,1-AG,RB3LYP
+15,117,C66H20,66,20,1,compact,8,12,0,0,0,32323223232322,2-AU,UB3LYP
+16,3194,C72H22,72,22,0,compact,10,12,0,0,0,3323222233232222,1-AG,RB3LYP
+16,3195,C72H22,72,22,1,compact,10,12,0,0,0,3323222233232222,2-BG,UB3LYP
+17,3197,C76H22,76,22,0,compact,10,12,0,0,0,3322322233223222,1-AG,RB3LYP
+17,3198,C76H22,76,22,1,compact,10,12,0,0,0,3322322233223222,2-BG,UB3LYP
+18,3594,C66H24,66,24,0,irregular,1,4,15,4,9,513141413141414121,1-A,RB3LYP
+18,3590,C66H24,66,24,1,irregular,1,4,15,4,9,513141413141414121,2-A,UB3LYP
+19,6600,C74H22,74,22,0,irregular,9,10,3,0,1,4222322332223231,1-A',RB3LYP
+19,6640,C74H22,74,22,1,irregular,9,10,3,0,1,4222322332223231,2-A",UB3LYP
+20,618,C90H24,90,24,0,compact,12,12,0,0,0,332223222332223222,1-AG,RB3LYP
+20,3209,C90H24,90,24,1,compact,12,12,0,0,0,332223222332223222,2-BU,UB3LYP
+21,108,C96H24,96,24,0,compact,12,12,0,0,0,322322322322322322,1-AG,RB3LYP
+21,111,C96H24,96,24,1,compact,12,12,0,0,0,322322322322322322,2-AU,UB3LYP
+22,3214,C102H26,102,26,0,compact,14,12,0,0,0,32323222223232322222,1-AG,RB3LYP
+22,3215,C102H26,102,26,1,compact,14,12,0,0,0,32323222223232322222,2-B2G,UB3LYP
+23,3367,C90H28,90,28,0,irregular,1,6,21,0,11,4141413131414131414121,1-A,RB3LYP
+23,3385,C90H28,90,28,1,irregular,1,6,21,0,11,4141413131414131414121,2-A,UB3LYP
+24,7492,C100H26,100,26,0,irregular,10,10,6,0,3,42223222412323132321,1-A,RB3LYP
+24,7506,C100H26,100,26,1,irregular,10,10,6,0,3,42223222412323132321,2-B,UB3LYP
+achieved: {'compact': 15, 'irregular': 10} (plan: about 18 compact / 7 irregular)
+method by charge: [(0, 'RB3LYP'), (1, 'UB3LYP')]
+== Nc range per compactness class (neutral and cation are the same molecules by construction):
+  compact   neutral: n=15, Nc 24-102, median 54
+  compact   cation : n=15, Nc 24-102, median 54
+  irregular neutral: n=10, Nc 22-100, median 45
+  irregular cation : n=10, Nc 22-100, median 45
+== fraction of molecules without solo H, per size bin:
+  20-30 C: 2/5 without solo H
+  30-45 C: 0/5 without solo H
+  45-60 C: 0/5 without solo H
+  60-80 C: 0/5 without solo H
+  80-110 C: 0/5 without solo H
+wrote species.csv, species_meta.json, species_check.png
