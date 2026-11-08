@@ -51,6 +51,7 @@ ap.add_argument("--ensemble", default="nvt", choices=["nvt", "nve"])
 ap.add_argument("--save-vel", type=int, default=0, help="save per-step velocities of the first K trajectories (VDOS)")
 ap.add_argument("--edge-slack", type=float, default=1.3)
 ap.add_argument("--check", action="store_true", help="run the correctness checks and exit")
+ap.add_argument("--profile", action="store_true", help="time the energy+forces call and its parts, then exit")
 ap.add_argument("--out", default="md_jax")
 ap.add_argument("--csv", default=None)
 ap.add_argument("--repeat", type=int, default=0)
@@ -195,19 +196,47 @@ if args.check:
     print("cuex calls traced:", sorted(TRACED) or "none")
     sys.exit(0)
 
+# ---- profile: where a step's time goes ------------------------------------------------------------------------
+if args.profile:
+    import time
+    def tmed(f, x, n=30):
+        jax.block_until_ready(f(x)); ts = []
+        for _ in range(n):
+            t = time.perf_counter(); jax.block_until_ready(f(x)); ts.append(time.perf_counter() - t)
+        return 1e3 * float(np.median(ts))
+    ef = make_ef(cap)
+    PI, PJ = jnp.asarray(pi), jnp.asarray(pj)
+    def edges(R):
+        d = jnp.linalg.norm(R[PI] - R[PJ], axis=1); mask = d < rmax
+        return jnp.nonzero(mask, size=cap, fill_value=-1)[0], mask.sum()
+    idx, _ = jax.jit(edges)(R0); idx = np.asarray(idx); ok = idx >= 0
+    J = lambda g: jax.tree_util.tree_map(lambda a: jnp.asarray(a) if isinstance(a, np.ndarray) else a, g)
+    tg = template(cap)
+    s_ = np.where(ok, pi[np.clip(idx, 0, None)], N); r_ = np.where(ok, pj[np.clip(idx, 0, None)], N)
+    g_fixed = J(tg._replace(senders=s_.astype(tg.senders.dtype), receivers=r_.astype(tg.receivers.dtype)))
+    g_exact = J(jraph.pad_with_graphs(jraph.batch_np(g_list), n_node=N + 1, n_edge=exact_edges + 1, n_graph=b + 1))
+    on = lambda g: jax.jit(lambda R: model(g._replace(nodes=g.nodes._replace(positions=R))))
+    t_ef = tmed(jax.jit(ef), R0); t_edges = tmed(jax.jit(edges), R0)
+    t_model = tmed(on(g_fixed), R0); t_exact = tmed(on(g_exact), R0)
+    print(f"profile b={b}, {N} atoms, {len(pi)} pairs, cap {cap}: energy+forces {t_ef:.2f} ms | edge build {t_edges:.2f} ms | "
+          f"model on fixed graph at cap {t_model:.2f} ms | model on exact graph ({exact_edges} edges, no slack) {t_exact:.2f} ms")
+    sys.exit(0)
+
 # ---- run ---------------------------------------------------------------------------------------------------
 COMPILED, COMPILE_S = {}, {}
-def get_chunk(cap, st):
-    """One compiled executable per edge cap; compile time recorded separately and excluded from the timing."""
-    if cap not in COMPILED:
+def get_chunk(cap, st, length):
+    """One compiled executable per (edge cap, chunk length); compile time recorded separately, excluded from timing."""
+    if (cap, length) not in COMPILED:
         t0 = time.perf_counter()
-        COMPILED[cap] = make_chunk(cap, args.chunk)[0].lower(st).compile()
-        COMPILE_S[cap] = time.perf_counter() - t0
-    return COMPILED[cap]
+        COMPILED[cap, length] = make_chunk(cap, length)[0].lower(st).compile()
+        COMPILE_S[cap, length] = time.perf_counter() - t0
+    return COMPILED[cap, length]
 
 def run(st, nsteps):
     global cap
-    chunk = get_chunk(cap, st)
+    L = min(args.chunk, nsteps)
+    assert nsteps % L == 0, f"{nsteps} steps is not a multiple of the chunk length {L}"
+    chunk = get_chunk(cap, st, L)
     obs, t_wall, done = [], 0.0, 0
     while done < nsteps:
         t0 = time.perf_counter()
@@ -217,13 +246,13 @@ def run(st, nsteps):
         if o["edges"].max() > cap:
             cap = int(np.ceil(o["edges"].max() * args.edge_slack))
             print(f"  edge cap overflow ({o['edges'].max()} edges): re-running the chunk with cap {cap}")
-            chunk = get_chunk(cap, st); continue
-        st = st1; obs.append(o); t_wall += dt_; done += args.chunk
+            chunk = get_chunk(cap, st, L); continue
+        st = st1; obs.append(o); t_wall += dt_; done += L
     return st, ({k: np.concatenate([o[k] for o in obs]) for k in obs[0]} if obs else {}), t_wall
 
 st, cnt0 = init_state(jax.jit(make_ef(cap)))
-get_chunk(cap, st)
-print(f"compile {COMPILE_S[cap]:.1f} s")
+for n_ in {args.equil, args.prod} - {0}: get_chunk(cap, st, min(args.chunk, n_))   # compile before any timing
+print(f"compile {sum(COMPILE_S.values()):.1f} s ({len(COMPILE_S)} executable(s))")
 st, eq_obs, eq_wall = run(st, args.equil)
 st, obs, wall = run(st, args.prod)
 compile_s = sum(COMPILE_S.values())

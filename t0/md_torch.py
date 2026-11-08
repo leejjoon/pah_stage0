@@ -243,7 +243,7 @@ def main():
             ke = np.bincount(mol, 0.5 * (m[:, None] * v ** 2).sum(1) * C.AMU_A2_PER_FS2_IN_EV, minlength=b)
             Ts.append(2 * ke / (3 * nat * C.KB)); E.append(a.get_potential_energy())
             D.append(np.array([q[mol == k] @ a.positions[mol == k] for k in range(b)]))
-        if equil: dyn.run(equil)
+        if args.equil: dyn.run(args.equil)
         dyn.attach(record, interval=1)
         torch.cuda.synchronize(); t0 = time.perf_counter(); dyn.run(args.prod); torch.cuda.synchronize(); wall = time.perf_counter() - t0
         ms = min_sep(a.positions)
