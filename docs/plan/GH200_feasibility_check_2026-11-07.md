@@ -136,6 +136,6 @@ Scripts: `containers/tests/` (`c_pahfit.py`, `b_torchsim_pilot.py`, `b_torchsim_
 ## Still open
 
 1. ~~Decide the energy-gate wording.~~ Done: the committee adopted a three-part gate (2026-11-08), and it passes (§J).
-2. ~~Which code path mace-jax's "cueq" bundle runs.~~ Settled (§J): the JAX "cueq on" column must use `conv_fusion: true`; even then only the convolution uses a cuEquivariance kernel in mace-jax 0.2.0. Recheck if mace-jax is upgraded.
+2. ~~Which code path mace-jax's "cueq" bundle runs.~~ Settled (§J): the JAX "cueq on" column must use `conv_fusion: true`; even then only the convolution uses a cuEquivariance kernel in mace-jax 0.2.0. Recheck if mace-jax is upgraded. Checked 2026-11-09: mace-jax `main` (`357931b`, one commit after container A's `e8a6f2d`) and `dev` still hardcode `method="naive"` for Linear, FCTP and SymmetricContraction. The definition and its "convolution only" label await committee confirmation (doc https://claude.ai/artifact/QT16Jn6kV6Vw2E8i22hUbk).
 3. Optional: trace the systematic float64 residual of −1.7e-7 eV/atom (§J) to its parameter.
 4. Forward compatibility depends on the driver branch. Re-run the B check after any driver update and on the production cluster. While B runs on the compat libcuda, the MPS daemon must run inside the image (§K); on a cluster whose driver matches the image natively, a host daemon should work but must be checked.
