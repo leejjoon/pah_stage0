@@ -315,3 +315,5 @@ The §4.2 equivalence check was run on the project GH200 on 2026-11-07 (20 PAHdb
 
 **Not yet passed.** The 2026-11-07 runs predate the x64 conversion and the interaction-energy extraction. The new gates must be rerun before they are recorded as passed.
 
+**Rerun 2026-11-08: all three gates pass** (`GH200_feasibility_check_2026-11-07.md` §J). Forces 3.0e-5 eV/Å and interaction energies 4.2e-6 eV/atom at float32 in every cuEquivariance combination; float64 totals 2.7e-7 eV/atom from the x64 bundle, cueq off and on, with float64 math dtype shown in both stacks. Two findings: the float64 residual is systematic (about −1.7e-7 eV/atom, all in the interaction energy, E0 part below 2e-10 eV), so not rounding, but within the gate; and mace-jax's cueq bundle traced only `naive` cuex calls, the same as the default bundle, which the T0 2 × 2 grid must account for.
+

@@ -33,10 +33,9 @@ if [ -f "$PAHDB" ]; then
 else
   apptainer exec --bind "$WORK":/t "$SIF/B_torch.sif" python /t/eq_species.py
 fi
-"${PIN[@]}" "${GPU[@]}" "$SIF/B_torch.sif" python /t/eq_torch.py
-for b in "" _cueq; do "${PIN[@]}" "${GPU[@]}" --env XLA_PYTHON_CLIENT_PREALLOCATE=false "$SIF/A_jax.sif" \
-  mace-jax-predict /t/ctr_off_small$b.npz /t/eq_frames.xyz --dtype float32 --no-progress --output /t/eq_jax$b.npz; done
-apptainer exec --bind "$WORK":/t "$SIF/B_torch.sif" python /t/eq_compare.py
-"${PIN[@]}" "${GPU[@]}" --env XLA_PYTHON_CLIENT_PREALLOCATE=false "$SIF/A_jax.sif" \
-  mace-jax-predict /t/ctr_off_small.npz /t/eq_frames.xyz --dtype float64 --no-progress --output /t/eq_jax_f64.npz
-apptainer exec --bind "$WORK":/t "$SIF/B_torch.sif" python /t/eq_compare_f64.py
+# Plan 4.2 gates (revised 2026-11-08): float32 forces and interaction energies, float64 totals from the x64 bundle.
+"${PIN[@]}" "${GPU[@]}" "$SIF/B_torch.sif" python /t/eq_torch_gates.py
+for p in f32:float32 x64:float64; do for cq in "" _cueq; do "${PIN[@]}" "${GPU[@]}" --env XLA_PYTHON_CLIENT_PREALLOCATE=false --env JAX_DEFAULT_MATMUL_PRECISION=highest \
+  "$SIF/A_jax.sif" python /t/jax_predict_logged.py /t/off_small_${p%%:*}$cq.npz /t/eq_frames.xyz --dtype ${p##*:} --full-outputs --no-progress \
+  --output /t/jax_${p##*:}$cq.npz 2>&1 | grep -E "cuex|x64|rror"; done; done
+apptainer exec --bind "$WORK":/t "$SIF/B_torch.sif" python /t/eq_gates.py
