@@ -10,6 +10,7 @@ This is the planning stage of the **T0 / T0b** work for the "Interpretable PAH D
 - `docs/plan/T0_T0b_plan_review.md`: the first readiness review, dated 2026-11-06.
 - `docs/plan/GH200_feasibility_check_2026-11-07.md`: measured checks on the project GH200 node (venvs first, then the built containers). The plan's GH200 facts cite it.
 - `containers/`: the four tested Apptainer recipes (`A_jax`, `B_torch`, `B_torchsim`, `C_cpu`), the in-image package lists, the image hashes and `tests/` (`run_all.sh` re-runs the feasibility checks). Images are built to local NVMe, `/var/tmp/jjlee-pah/sif/`, not into the repo.
+  - `containers/C_cpu_x86.def` rebuilds container C for x86-64 CPU-only machines, pinned to the GH200 versions through `containers/C_cpu_lock/`. It has been tested only on ARM so far. Build, test and run instructions are in `containers/C_cpu_x86.md`, and `tests/run_c.sh` holds the C checks.
 - `docs/plan/T0_T0b_committee_review.md`: a later three-round committee review (Fable 5.1 and GPT-6-Astra, with Opus 5.5 as a non-voting reviewer). It corrects several of the first review's fixes.
 
 **Both reviews have been fully applied to the plan.** Read them before changing any criterion, config snippet or species rule: they explain why the plan says what it says. Where the two reviews disagree, the committee review wins.
