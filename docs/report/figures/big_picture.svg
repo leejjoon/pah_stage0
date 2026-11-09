@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 360" width="980" height="360" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" role="img"><title>From a UV photon to a band-ratio formula</title><defs><marker id="ah-52514e" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#52514e"/></marker></defs><rect width="980" height="360" fill="#ffffff"/><rect x="20" y="110" width="140" height="130" rx="8" fill="#fdf1d6" stroke="#eda100" stroke-width="1.4"/>
+<text x="90.0" y="162.4" font-size="12.5" fill="#0b0b0b" text-anchor="middle" font-weight="600">UV photon</text>
+<text x="90.0" y="181.3" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">from a hot star</text>
+<text x="90.0" y="195.6" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">(a few to 13.6 eV)</text>
+<rect x="180" y="110" width="140" height="130" rx="8" fill="#f1f0ed" stroke="#8a8984" stroke-width="1.4"/>
+<text x="250.0" y="155.3" font-size="12.5" fill="#0b0b0b" text-anchor="middle" font-weight="600">PAH absorbs it</text>
+<text x="250.0" y="174.1" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">flat C/H molecule,</text>
+<text x="250.0" y="188.4" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">heats to several</text>
+<text x="250.0" y="202.7" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">hundred K</text>
+<rect x="340" y="110" width="140" height="130" rx="8" fill="#fbe9f0" stroke="#e87ba4" stroke-width="1.4"/>
+<text x="410.0" y="148.2" font-size="12.5" fill="#0b0b0b" text-anchor="middle" font-weight="600">IR emission</text>
+<text x="410.0" y="167.0" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">cools by emitting at its</text>
+<text x="410.0" y="181.3" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">vibration frequencies:</text>
+<text x="410.0" y="195.6" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">3.3, 6.2, 7.7, 8.6,</text>
+<text x="410.0" y="209.9" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">11.2, 12.7 µm bands</text>
+<rect x="500" y="110" width="140" height="130" rx="8" fill="#ebe8fa" stroke="#6250d6" stroke-width="1.4"/>
+<text x="570.0" y="140.0" font-size="12.5" fill="#0b0b0b" text-anchor="middle" font-weight="600">JWST MIRI</text>
+<text x="570.0" y="156.3" font-size="12.5" fill="#0b0b0b" text-anchor="middle" font-weight="600">spectrum</text>
+<text x="570.0" y="175.1" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">bands from millions of</text>
+<text x="570.0" y="189.4" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">molecules, + dust</text>
+<text x="570.0" y="203.7" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">continuum, gas lines,</text>
+<text x="570.0" y="218.0" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">noise</text>
+<rect x="660" y="110" width="140" height="130" rx="8" fill="#dff4ec" stroke="#1baf7a" stroke-width="1.4"/>
+<text x="730.0" y="155.3" font-size="12.5" fill="#0b0b0b" text-anchor="middle" font-weight="600">PAHFIT</text>
+<text x="730.0" y="174.1" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">decomposes the</text>
+<text x="730.0" y="188.4" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">spectrum; returns</text>
+<text x="730.0" y="202.7" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">band strengths</text>
+<rect x="820" y="110" width="140" height="130" rx="8" fill="#f1f0ed" stroke="#0b0b0b" stroke-width="1.4"/>
+<text x="890.0" y="155.3" font-size="12.5" fill="#0b0b0b" text-anchor="middle" font-weight="600">Formula</text>
+<text x="890.0" y="174.1" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">f ≈ c₁ + c₂ / (c₃ − r)</text>
+<text x="890.0" y="188.4" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">r = 6.2/11.2 ratio</text>
+<text x="890.0" y="202.7" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">f = ionised fraction</text>
+<path d="M162,175 Q170.0,175.0 178,175" fill="none" stroke="#52514e" stroke-width="1.6" marker-end="url(#ah-52514e)"/>
+<path d="M322,175 Q330.0,175.0 338,175" fill="none" stroke="#52514e" stroke-width="1.6" marker-end="url(#ah-52514e)"/>
+<path d="M482,175 Q490.0,175.0 498,175" fill="none" stroke="#52514e" stroke-width="1.6" marker-end="url(#ah-52514e)"/>
+<path d="M642,175 Q650.0,175.0 658,175" fill="none" stroke="#52514e" stroke-width="1.6" marker-end="url(#ah-52514e)"/>
+<path d="M802,175 Q810.0,175.0 818,175" fill="none" stroke="#52514e" stroke-width="1.6" marker-end="url(#ah-52514e)"/>
+<path d="M20,92 L20,80 L640,80 L640,92" fill="none" stroke="#2a78d6" stroke-width="1.6"/>
+<text x="330.0" y="50.0" font-size="13" fill="#2a78d6" text-anchor="middle" font-weight="600">Nature (and our forward model): we can compute every step for a known population</text>
+<text x="330.0" y="68.0" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">PAHdb DFT spectra → cascade emission model → population mix → instrument model + noise</text>
+<path d="M500,258 L500,270 L960,270 L960,258" fill="none" stroke="#eb6834" stroke-width="1.6"/>
+<text x="730.0" y="292.0" font-size="13" fill="#eb6834" text-anchor="middle" font-weight="600">The inverse problem the project solves:</text>
+<text x="730.0" y="310.0" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">from measured band strengths back to population properties (charge, size),</text>
+<text x="730.0" y="325.0" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">as a short readable formula found by symbolic regression (PySR)</text>
+<text x="20" y="300.0" font-size="11" fill="#8a8984" text-anchor="start" font-weight="normal" font-style="italic">Each box is one stage in the</text>
+<text x="20" y="314.3" font-size="11" fill="#8a8984" text-anchor="start" font-weight="normal" font-style="italic">T0b slice (Section 5).</text></svg>

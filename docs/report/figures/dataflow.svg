@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 400" width="980" height="400" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" role="img"><title>Files passed between the containers in T0</title><defs><marker id="ah-1baf7a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1baf7a"/></marker><marker id="ah-2a78d6" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2a78d6"/></marker><marker id="ah-eb6834" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#eb6834"/></marker></defs><rect width="980" height="400" fill="#ffffff"/><text x="490" y="26.0" font-size="12.5" fill="#0b0b0b" text-anchor="middle" font-weight="600">host files (local NVMe and the repository)</text>
+<rect x="370" y="76" width="240" height="68" rx="8" fill="#ffffff" stroke="#0b0b0b" stroke-width="1.4"/>
+<text x="490.0" y="98.5" font-size="11.5" fill="#0b0b0b" text-anchor="middle" font-weight="600">MACE-OFF23_small.model</text>
+<text x="490.0" y="116.0" font-size="10" fill="#52514e" text-anchor="middle" font-weight="normal">PyTorch checkpoint, float64</text>
+<text x="490.0" y="129.0" font-size="10" fill="#52514e" text-anchor="middle" font-weight="normal">(sha256 165cce4c…)</text>
+<rect x="370" y="171" width="240" height="68" rx="8" fill="#ffffff" stroke="#0b0b0b" stroke-width="1.4"/>
+<text x="490.0" y="193.5" font-size="11.5" fill="#0b0b0b" text-anchor="middle" font-weight="600">mace-jax bundles</text>
+<text x="490.0" y="211.0" font-size="10" fill="#52514e" text-anchor="middle" font-weight="normal">float64 master + float32 copies;</text>
+<text x="490.0" y="224.0" font-size="10" fill="#52514e" text-anchor="middle" font-weight="normal">cueq / conv_fusion variants</text>
+<rect x="370" y="256" width="240" height="68" rx="8" fill="#ffffff" stroke="#0b0b0b" stroke-width="1.4"/>
+<text x="490.0" y="284.9" font-size="11.5" fill="#0b0b0b" text-anchor="middle" font-weight="600">t0/species_T0.csv, .xyz</text>
+<text x="490.0" y="302.5" font-size="10" fill="#52514e" text-anchor="middle" font-weight="normal">20 species, DFT geometries</text>
+<rect x="370" y="338" width="240" height="50" rx="8" fill="#ffffff" stroke="#0b0b0b" stroke-width="1.4"/>
+<text x="490.0" y="357.9" font-size="11.5" fill="#0b0b0b" text-anchor="middle" font-weight="600">reports/t0_timing_*.csv</text>
+<text x="490.0" y="375.5" font-size="10" fill="#52514e" text-anchor="middle" font-weight="normal">one row per timed run</text>
+<rect x="370" y="40" width="240" height="34" rx="8" fill="#ffffff" stroke="#0b0b0b" stroke-width="1.4"/>
+<text x="490.0" y="60.4" font-size="11.5" fill="#0b0b0b" text-anchor="middle" font-weight="600">PAHdb v4.00 XML (503 MB)</text>
+<rect x="20" y="60" width="260" height="300" rx="8" fill="#f7fafe" stroke="#2a78d6" stroke-width="1.4"/>
+<text x="150" y="82.0" font-size="13" fill="#2a78d6" text-anchor="middle" font-weight="700">A: JAX</text>
+<rect x="40" y="150" width="220" height="60" rx="8" fill="#e6f0fc" stroke="#2a78d6" stroke-width="1.4"/>
+<text x="150.0" y="175.0" font-size="11.5" fill="#0b0b0b" text-anchor="middle" font-weight="600">mace-jax-from-torch</text>
+<text x="150.0" y="192.5" font-size="10" fill="#52514e" text-anchor="middle" font-weight="normal">run once, under JAX_ENABLE_X64=1</text>
+<rect x="40" y="250" width="220" height="60" rx="8" fill="#e6f0fc" stroke="#2a78d6" stroke-width="1.4"/>
+<text x="150.0" y="274.9" font-size="11.5" fill="#0b0b0b" text-anchor="middle" font-weight="600">t0/md_jax.py</text>
+<text x="150.0" y="292.5" font-size="10" fill="#52514e" text-anchor="middle" font-weight="normal">timed JAX runs</text>
+<rect x="700" y="60" width="260" height="120" rx="8" fill="#fffaf7" stroke="#eb6834" stroke-width="1.4"/>
+<text x="830" y="82.0" font-size="13" fill="#eb6834" text-anchor="middle" font-weight="700">B+: PyTorch (timing)</text>
+<rect x="720" y="96" width="220" height="66" rx="8" fill="#fdebe3" stroke="#eb6834" stroke-width="1.4"/>
+<text x="830.0" y="117.5" font-size="11.5" fill="#0b0b0b" text-anchor="middle" font-weight="600">t0/md_torch.py</text>
+<text x="830.0" y="135.0" font-size="10" fill="#52514e" text-anchor="middle" font-weight="normal">sequential, MPS pool,</text>
+<text x="830.0" y="148.0" font-size="10" fill="#52514e" text-anchor="middle" font-weight="normal">TorchSim, concat</text>
+<rect x="700" y="210" width="260" height="110" rx="8" fill="#f6fcf9" stroke="#1baf7a" stroke-width="1.4"/>
+<text x="830" y="232.0" font-size="13" fill="#1baf7a" text-anchor="middle" font-weight="700">C: CPU tools</text>
+<rect x="720" y="246" width="220" height="60" rx="8" fill="#dff4ec" stroke="#1baf7a" stroke-width="1.4"/>
+<text x="830.0" y="270.9" font-size="11.5" fill="#0b0b0b" text-anchor="middle" font-weight="600">species selection</text>
+<text x="830.0" y="288.5" font-size="10" fill="#52514e" text-anchor="middle" font-weight="normal">AmesPAHdbPythonSuite</text>
+<path d="M370,100 Q316.0,130.0 262,160" fill="none" stroke="#2a78d6" stroke-width="1.6" marker-end="url(#ah-2a78d6)"/>
+<text x="316.0" y="126.0" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">reads</text>
+<path d="M262,195 Q315.0,200.0 368,205" fill="none" stroke="#2a78d6" stroke-width="1.6" marker-end="url(#ah-2a78d6)"/>
+<text x="315.0" y="212.0" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">writes</text>
+<path d="M370,215 Q316.0,241.5 262,268" fill="none" stroke="#2a78d6" stroke-width="1.6" marker-end="url(#ah-2a78d6)"/>
+<path d="M370,300 Q316.0,295.0 262,290" fill="none" stroke="#2a78d6" stroke-width="1.6" marker-end="url(#ah-2a78d6)"/>
+<path d="M262,300 Q315.0,325.0 368,350" fill="none" stroke="#2a78d6" stroke-width="1.6" marker-end="url(#ah-2a78d6)"/>
+<path d="M612,100 Q665.0,110.0 718,120" fill="none" stroke="#eb6834" stroke-width="1.6" marker-end="url(#ah-eb6834)"/>
+<text x="665.0" y="104.0" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">loads directly</text>
+<path d="M612,300 Q665.0,225.0 718,150" fill="none" stroke="#eb6834" stroke-width="1.6" marker-end="url(#ah-eb6834)"/>
+<path d="M718,155 Q665.0,250.0 612,345" fill="none" stroke="#eb6834" stroke-width="1.6" marker-end="url(#ah-eb6834)"/>
+<path d="M612,57 Q665.0,161.0 718,265" fill="none" stroke="#1baf7a" stroke-width="1.6" marker-end="url(#ah-1baf7a)"/>
+<path d="M718,290 Q665.0,295.0 612,300" fill="none" stroke="#1baf7a" stroke-width="1.6" marker-end="url(#ah-1baf7a)"/>
+<text x="665.0" y="311.0" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">writes</text></svg>

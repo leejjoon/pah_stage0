@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 330" width="980" height="330" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" role="img"><title>Why a compiled MD loop can be faster: who waits for whom</title><defs></defs><rect width="980" height="330" fill="#ffffff"/><text x="20" y="28.0" font-size="13" fill="#0b0b0b" text-anchor="start" font-weight="600">PyTorch + ASE (one molecule): every step goes CPU → GPU → CPU</text>
+<text x="115" y="65.0" font-size="11.5" fill="#52514e" text-anchor="end" font-weight="normal">CPU (Python)</text>
+<line x1="125" y1="77" x2="960" y2="77" stroke="#c9c8c2"/>
+<text x="115" y="105.0" font-size="11.5" fill="#52514e" text-anchor="end" font-weight="normal">GPU</text>
+<line x1="125" y1="117" x2="960" y2="117" stroke="#c9c8c2"/>
+<rect x="130" y="50" width="62" height="24" rx="3" fill="#fdebe3" stroke="#eb6834"/>
+<rect x="194" y="90" width="40" height="24" rx="3" fill="#eb6834"/>
+<line x1="192" y1="74" x2="194" y2="90" stroke="#8a8984"/>
+<rect x="248" y="50" width="62" height="24" rx="3" fill="#fdebe3" stroke="#eb6834"/>
+<rect x="312" y="90" width="40" height="24" rx="3" fill="#eb6834"/>
+<line x1="310" y1="74" x2="312" y2="90" stroke="#8a8984"/>
+<rect x="366" y="50" width="62" height="24" rx="3" fill="#fdebe3" stroke="#eb6834"/>
+<rect x="430" y="90" width="40" height="24" rx="3" fill="#eb6834"/>
+<line x1="428" y1="74" x2="430" y2="90" stroke="#8a8984"/>
+<rect x="484" y="50" width="62" height="24" rx="3" fill="#fdebe3" stroke="#eb6834"/>
+<rect x="548" y="90" width="40" height="24" rx="3" fill="#eb6834"/>
+<line x1="546" y1="74" x2="548" y2="90" stroke="#8a8984"/>
+<rect x="602" y="50" width="62" height="24" rx="3" fill="#fdebe3" stroke="#eb6834"/>
+<rect x="666" y="90" width="40" height="24" rx="3" fill="#eb6834"/>
+<line x1="664" y1="74" x2="666" y2="90" stroke="#8a8984"/>
+<rect x="720" y="50" width="62" height="24" rx="3" fill="#fdebe3" stroke="#eb6834"/>
+<rect x="784" y="90" width="40" height="24" rx="3" fill="#eb6834"/>
+<line x1="782" y1="74" x2="784" y2="90" stroke="#8a8984"/>
+<rect x="838" y="50" width="62" height="24" rx="3" fill="#fdebe3" stroke="#eb6834"/>
+<rect x="902" y="90" width="40" height="24" rx="3" fill="#eb6834"/>
+<line x1="900" y1="74" x2="902" y2="90" stroke="#8a8984"/>
+<text x="160" y="65.0" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">step</text>
+<text x="214" y="106.0" font-size="9.5" fill="#fff" text-anchor="middle" font-weight="normal">MACE</text>
+<text x="545" y="140.0" font-size="10.5" fill="#8a8984" text-anchor="middle" font-weight="normal" font-style="italic">orange boxes on the CPU lane: integrator, neighbour list and graph built in Python each step; the GPU idles in between</text>
+<text x="20" y="185.0" font-size="13" fill="#0b0b0b" text-anchor="start" font-weight="600">JAX (b molecules): 1,000 steps compiled into one GPU program (jax.lax.scan)</text>
+<text x="115" y="220.0" font-size="11.5" fill="#52514e" text-anchor="end" font-weight="normal">CPU (Python)</text>
+<line x1="125" y1="232" x2="960" y2="232" stroke="#c9c8c2"/>
+<text x="115" y="260.0" font-size="11.5" fill="#52514e" text-anchor="end" font-weight="normal">GPU</text>
+<line x1="125" y1="272" x2="960" y2="272" stroke="#c9c8c2"/>
+<rect x="130" y="205" width="40" height="24" rx="3" fill="#e6f0fc" stroke="#2a78d6"/>
+<text x="150" y="221.0" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">launch</text>
+<rect x="172" y="245" width="760" height="24" rx="3" fill="#2a78d6"/>
+<text x="552" y="261.0" font-size="10.5" fill="#fff" text-anchor="middle" font-weight="normal">integrator + neighbour edges + MACE for all b molecules, step after step, no return to Python</text>
+<text x="545" y="300.0" font-size="10.5" fill="#8a8984" text-anchor="middle" font-weight="normal" font-style="italic">the cost: the program is compiled once per array shape (timed separately), and all molecules must be padded to fixed sizes</text></svg>

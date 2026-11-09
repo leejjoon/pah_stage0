@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 320" width="980" height="320" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" role="img"><title>What a machine-learned force field computes</title><defs><marker id="ah-52514e" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#52514e"/></marker><marker id="ah-8a8984" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#8a8984"/></marker></defs><rect width="980" height="320" fill="#ffffff"/><circle cx="154.0" cy="150.0" r="62" fill="#e6f0fc" stroke="#2a78d6" stroke-dasharray="4 3"/>
+<line x1="154.0" y1="150.0" x2="137.0" y2="179.4" stroke="#3a3a38" stroke-width="2"/>
+<line x1="154.0" y1="150.0" x2="184.0" y2="150.0" stroke="#a9a8a3" stroke-width="1.5"/>
+<line x1="137.0" y1="179.4" x2="103.0" y2="179.4" stroke="#3a3a38" stroke-width="2"/>
+<line x1="137.0" y1="179.4" x2="152.0" y2="205.4" stroke="#a9a8a3" stroke-width="1.5"/>
+<line x1="103.0" y1="179.4" x2="86.0" y2="150.0" stroke="#3a3a38" stroke-width="2"/>
+<line x1="103.0" y1="179.4" x2="88.0" y2="205.4" stroke="#a9a8a3" stroke-width="1.5"/>
+<line x1="86.0" y1="150.0" x2="103.0" y2="120.6" stroke="#3a3a38" stroke-width="2"/>
+<line x1="86.0" y1="150.0" x2="56.0" y2="150.0" stroke="#a9a8a3" stroke-width="1.5"/>
+<line x1="103.0" y1="120.6" x2="137.0" y2="120.6" stroke="#3a3a38" stroke-width="2"/>
+<line x1="103.0" y1="120.6" x2="88.0" y2="94.6" stroke="#a9a8a3" stroke-width="1.5"/>
+<line x1="137.0" y1="120.6" x2="154.0" y2="150.0" stroke="#3a3a38" stroke-width="2"/>
+<line x1="137.0" y1="120.6" x2="152.0" y2="94.6" stroke="#a9a8a3" stroke-width="1.5"/>
+<circle cx="154.0" cy="150.0" r="7" fill="#3a3a38" stroke="#3a3a38" stroke-width="1.2"/>
+<circle cx="137.0" cy="179.4" r="7" fill="#3a3a38" stroke="#3a3a38" stroke-width="1.2"/>
+<circle cx="103.0" cy="179.4" r="7" fill="#3a3a38" stroke="#3a3a38" stroke-width="1.2"/>
+<circle cx="86.0" cy="150.0" r="7" fill="#3a3a38" stroke="#3a3a38" stroke-width="1.2"/>
+<circle cx="103.0" cy="120.6" r="7" fill="#3a3a38" stroke="#3a3a38" stroke-width="1.2"/>
+<circle cx="137.0" cy="120.6" r="7" fill="#3a3a38" stroke="#3a3a38" stroke-width="1.2"/>
+<circle cx="184.0" cy="150.0" r="5" fill="#ffffff" stroke="#3a3a38" stroke-width="1.2"/>
+<circle cx="152.0" cy="205.4" r="5" fill="#ffffff" stroke="#3a3a38" stroke-width="1.2"/>
+<circle cx="88.0" cy="205.4" r="5" fill="#ffffff" stroke="#3a3a38" stroke-width="1.2"/>
+<circle cx="56.0" cy="150.0" r="5" fill="#ffffff" stroke="#3a3a38" stroke-width="1.2"/>
+<circle cx="88.0" cy="94.6" r="5" fill="#ffffff" stroke="#3a3a38" stroke-width="1.2"/>
+<circle cx="152.0" cy="94.6" r="5" fill="#ffffff" stroke="#3a3a38" stroke-width="1.2"/>
+<text x="120" y="250.0" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">atoms within the cutoff</text>
+<text x="120" y="263.6" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">(dashed circle, ~5 Å) are neighbours</text>
+<text x="120" y="40.0" font-size="12" fill="#0b0b0b" text-anchor="middle" font-weight="600">positions xᵢ, elements Zᵢ</text>
+<path d="M205,150 Q230.0,150.0 255,150" fill="none" stroke="#52514e" stroke-width="1.6" marker-end="url(#ah-52514e)"/>
+<rect x="260" y="85" width="200" height="130" rx="8" fill="#e6f0fc" stroke="#2a78d6" stroke-width="1.4"/>
+<text x="360.0" y="123.2" font-size="12.5" fill="#0b0b0b" text-anchor="middle" font-weight="600">MACE network</text>
+<text x="360.0" y="142.0" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">graph of neighbours →</text>
+<text x="360.0" y="156.3" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">equivariant messages</text>
+<text x="360.0" y="170.6" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">(&quot;rotate the molecule,</text>
+<text x="360.0" y="184.9" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">the outputs rotate too&quot;)</text>
+<path d="M462,150 Q487.0,150.0 512,150" fill="none" stroke="#52514e" stroke-width="1.6" marker-end="url(#ah-52514e)"/>
+<rect x="515" y="85" width="170" height="130" rx="8" fill="#f1f0ed" stroke="#8a8984" stroke-width="1.4"/>
+<text x="600.0" y="130.3" font-size="12.5" fill="#0b0b0b" text-anchor="middle" font-weight="600">Energy E</text>
+<text x="600.0" y="149.1" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">sum of per-atom</text>
+<text x="600.0" y="163.4" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">energies:</text>
+<text x="600.0" y="177.7" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">E = Σᵢ εᵢ</text>
+<path d="M687,150 Q712.0,150.0 737,150" fill="none" stroke="#52514e" stroke-width="1.6" marker-end="url(#ah-52514e)"/>
+<text x="712" y="240.0" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">automatic</text>
+<text x="712" y="253.7" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">differentiation</text>
+<path d="M712,228 Q712.0,192.0 712,156" fill="none" stroke="#8a8984" stroke-width="1.6" stroke-dasharray="5 4"/>
+<rect x="740" y="85" width="220" height="130" rx="8" fill="#f1f0ed" stroke="#8a8984" stroke-width="1.4"/>
+<text x="850.0" y="130.3" font-size="12.5" fill="#0b0b0b" text-anchor="middle" font-weight="600">Forces</text>
+<text x="850.0" y="149.1" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">Fᵢ = −∂E/∂xᵢ</text>
+<text x="850.0" y="163.4" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">→ Newton&#x27;s equations</text>
+<text x="850.0" y="177.7" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">(molecular dynamics)</text>
+<text x="490" y="305.0" font-size="11" fill="#8a8984" text-anchor="middle" font-weight="normal" font-style="italic">Trained on DFT calculations; ~DFT accuracy at a tiny fraction of the cost.  T0 uses one published model, MACE-OFF23 small (organic, neutral molecules only).</text></svg>

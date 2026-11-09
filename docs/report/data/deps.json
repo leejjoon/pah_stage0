@@ -1,0 +1,7544 @@
+{
+"A_jax": {
+"absl-py": {
+"name": "absl-py",
+"version": "2.5.1",
+"summary": "Abseil Python Common Libraries, see https://github.com/abseil/abseil-py.",
+"requires": [],
+"required_by": [
+"chex",
+"jax-md",
+"ml-collections",
+"optax",
+"orbax-checkpoint"
+]
+},
+"aiofiles": {
+"name": "aiofiles",
+"version": "25.1.0",
+"summary": "File support for asyncio.",
+"requires": [],
+"required_by": [
+"orbax-checkpoint"
+]
+},
+"aiohappyeyeballs": {
+"name": "aiohappyeyeballs",
+"version": "2.7.1",
+"summary": "Happy Eyeballs for asyncio",
+"requires": [],
+"required_by": [
+"aiohttp"
+]
+},
+"aiohttp": {
+"name": "aiohttp",
+"version": "3.14.5",
+"summary": "Async http client/server framework (asyncio)",
+"requires": [
+"aiohappyeyeballs",
+"aiosignal",
+"attrs",
+"frozenlist",
+"multidict",
+"propcache",
+"typing-extensions",
+"yarl"
+],
+"required_by": [
+"gcsfs"
+]
+},
+"aiosignal": {
+"name": "aiosignal",
+"version": "1.4.0",
+"summary": "aiosignal: a list of registered asynchronous callbacks",
+"requires": [
+"frozenlist",
+"typing-extensions"
+],
+"required_by": [
+"aiohttp"
+]
+},
+"ase": {
+"name": "ase",
+"version": "3.29.0",
+"summary": "Atomic Simulation Environment",
+"requires": [
+"matplotlib",
+"numpy",
+"scipy",
+"typing-extensions"
+],
+"required_by": [
+"mace-torch",
+"mace-jax",
+"matscipy"
+],
+"requested": true,
+"role": "Atomic Simulation Environment: Atoms, units, file formats, Langevin integrator."
+},
+"attrs": {
+"name": "attrs",
+"version": "26.1.0",
+"summary": "Classes Without Boilerplate",
+"requires": [],
+"required_by": [
+"aiohttp",
+"e3nn-jax"
+]
+},
+"bibtexparser": {
+"name": "bibtexparser",
+"version": "1.4.4",
+"summary": "Bibtex parser for python 3",
+"requires": [
+"pyparsing"
+],
+"required_by": [
+"pymatgen-core"
+]
+},
+"certifi": {
+"name": "certifi",
+"version": "2026.10.23",
+"summary": "Python package for providing Mozilla's CA Bundle.",
+"requires": [],
+"required_by": [
+"requests"
+]
+},
+"cffi": {
+"name": "cffi",
+"version": "2.1.1",
+"summary": "Foreign Function Interface for Python calling C code.",
+"requires": [
+"pycparser"
+],
+"required_by": [
+"cryptography"
+]
+},
+"charset-normalizer": {
+"name": "charset-normalizer",
+"version": "3.5.2",
+"summary": "The Real First Universal Charset Detector. Open, modern and actively maintained alternative to Chardet.",
+"requires": [],
+"required_by": [
+"requests"
+]
+},
+"chex": {
+"name": "chex",
+"version": "0.1.92",
+"summary": "Chex: Testing made fun, in JAX!",
+"requires": [
+"absl-py",
+"jax",
+"jaxlib",
+"numpy",
+"toolz",
+"typing-extensions"
+],
+"required_by": [
+"mace-jax"
+],
+"role": "Test and shape-checking helpers for JAX."
+},
+"cloudpickle": {
+"name": "cloudpickle",
+"version": "3.1.2",
+"summary": "Pickler class to extend the standard pickle.Pickler functionality",
+"requires": [],
+"required_by": [
+"joblib"
+]
+},
+"configargparse": {
+"name": "ConfigArgParse",
+"version": "1.9.0",
+"summary": "A drop-in replacement for argparse that allows options to also be set via config files and/or environment variables.",
+"requires": [],
+"required_by": [
+"mace-torch",
+"mace-jax"
+]
+},
+"contourpy": {
+"name": "contourpy",
+"version": "1.4.0",
+"summary": "Python library for calculating contours of 2D quadrilateral grids",
+"requires": [
+"numpy"
+],
+"required_by": [
+"matplotlib"
+]
+},
+"cryptography": {
+"name": "cryptography",
+"version": "50.0.2",
+"summary": "cryptography is a package which provides cryptographic recipes and primitives to Python developers.",
+"requires": [
+"cffi"
+],
+"required_by": [
+"google-auth"
+]
+},
+"cuequivariance": {
+"name": "cuequivariance",
+"version": "0.10.0",
+"summary": "CUDA accelerated equivariant operations",
+"requires": [
+"networkx",
+"numpy",
+"opt-einsum",
+"scipy",
+"sympy"
+],
+"required_by": [
+"cuequivariance-jax",
+"mace-jax"
+],
+"role": "NVIDIA's description of equivariant polynomials (pure Python); shared by both stacks."
+},
+"cuequivariance-jax": {
+"name": "cuequivariance-jax",
+"version": "0.10.0",
+"summary": "CUDA accelerated equivariant operations",
+"requires": [
+"cuequivariance",
+"einops",
+"jax",
+"packaging"
+],
+"required_by": [
+"mace-jax"
+],
+"role": "cuEquivariance's JAX front end; with conv_fusion it calls the CUDA kernel for the convolution."
+},
+"cuequivariance-ops-cu12": {
+"name": "cuequivariance-ops-cu12",
+"version": "0.10.0",
+"summary": "cuequivariance-ops - GPU Accelerated Extensions for Equivariant Primitives",
+"requires": [
+"nvidia-cublas-cu12",
+"nvidia-ml-py",
+"platformdirs",
+"tqdm"
+],
+"required_by": [
+"cuequivariance-ops-jax-cu12"
+],
+"role": "The cuEquivariance CUDA library libcue_ops.so (CUDA 12)."
+},
+"cuequivariance-ops-jax-cu12": {
+"name": "cuequivariance-ops-jax-cu12",
+"version": "0.10.0",
+"summary": "cuequivariance-ops-jax - GPU Accelerated JAX Extensions for Equivariant Primitives",
+"requires": [
+"cuequivariance-ops-cu12"
+],
+"required_by": [],
+"role": "Compiled cuEquivariance kernels for JAX (CUDA 12)."
+},
+"cycler": {
+"name": "cycler",
+"version": "0.12.1",
+"summary": "Composable style cycles",
+"requires": [],
+"required_by": [
+"matplotlib"
+]
+},
+"decorator": {
+"name": "decorator",
+"version": "5.3.1",
+"summary": "Decorators for Humans",
+"requires": [],
+"required_by": [
+"gcsfs"
+]
+},
+"e3nn": {
+"name": "e3nn",
+"version": "0.4.4",
+"summary": "Equivariant convolutional neural networks for the group E(3) of 3 dimensional rotations, translations, and mirrors.",
+"requires": [
+"opt-einsum-fx",
+"scipy",
+"sympy",
+"torch"
+],
+"required_by": [
+"mace-torch",
+"mace-jax"
+],
+"role": "Equivariant layers in PyTorch; MACE (PyTorch) is built on it."
+},
+"e3nn-jax": {
+"name": "e3nn-jax",
+"version": "0.21.0",
+"summary": "Equivariant convolutional neural networks for the group E(3) of 3 dimensional rotations, translations, and mirrors.",
+"requires": [
+"attrs",
+"jax",
+"jaxlib",
+"numpy",
+"sympy"
+],
+"required_by": [
+"jax-md",
+"mace-jax"
+],
+"role": "Equivariant layers (irreducible representations of rotations) in JAX; MACE's building blocks."
+},
+"einops": {
+"name": "einops",
+"version": "0.8.2",
+"summary": "A new flavour of deep learning operations",
+"requires": [],
+"required_by": [
+"cuequivariance-jax",
+"jax-md"
+]
+},
+"etils": {
+"name": "etils",
+"version": "1.15.0",
+"summary": "Collection of common python utils",
+"requires": [],
+"required_by": [
+"orbax-checkpoint"
+]
+},
+"filelock": {
+"name": "filelock",
+"version": "4.2.4",
+"summary": "A platform independent file lock.",
+"requires": [],
+"required_by": [
+"torch"
+]
+},
+"flax": {
+"name": "flax",
+"version": "0.12.12",
+"summary": "Flax: A neural network library for JAX designed for flexibility",
+"requires": [
+"jax",
+"msgpack",
+"numpy",
+"optax",
+"orbax-checkpoint",
+"pyyaml",
+"rich",
+"tensorstore",
+"treescope",
+"typing-extensions"
+],
+"required_by": [
+"jax-md",
+"mace-jax"
+],
+"requested": true,
+"role": "Neural-network modules for JAX; mace-jax's model code."
+},
+"fonttools": {
+"name": "fonttools",
+"version": "4.68.0",
+"summary": "Tools to manipulate font files",
+"requires": [],
+"required_by": [
+"matplotlib"
+]
+},
+"frozendict": {
+"name": "frozendict",
+"version": "2.5.1",
+"summary": "A simple immutable dictionary",
+"requires": [],
+"required_by": [
+"jax-md"
+]
+},
+"frozenlist": {
+"name": "frozenlist",
+"version": "1.8.0",
+"summary": "A list-like structure which implements collections.abc.MutableSequence",
+"requires": [],
+"required_by": [
+"aiohttp",
+"aiosignal"
+]
+},
+"fsspec": {
+"name": "fsspec",
+"version": "2026.9.0",
+"summary": "File-system specification",
+"requires": [],
+"required_by": [
+"gcsfs",
+"torch"
+]
+},
+"gcsfs": {
+"name": "gcsfs",
+"version": "2026.10.1",
+"summary": "Convenient Filesystem interface over GCS",
+"requires": [
+"aiohttp",
+"decorator",
+"fsspec",
+"google-auth",
+"google-auth-oauthlib",
+"google-cloud-storage",
+"google-cloud-storage-control",
+"requests"
+],
+"required_by": []
+},
+"gin-config": {
+"name": "gin-config",
+"version": "0.5.0",
+"summary": "Gin-Config: A lightweight configuration library for Python",
+"requires": [],
+"required_by": [
+"mace-jax"
+]
+},
+"gitdb": {
+"name": "gitdb",
+"version": "4.0.12",
+"summary": "Git Object Database",
+"requires": [
+"smmap"
+],
+"required_by": [
+"gitpython"
+]
+},
+"gitpython": {
+"name": "GitPython",
+"version": "3.2.1",
+"summary": "GitPython is a Python library used to interact with Git repositories",
+"requires": [
+"gitdb"
+],
+"required_by": [
+"mace-torch"
+]
+},
+"google-api-core": {
+"name": "google-api-core",
+"version": "2.44.0",
+"summary": "Google API client core library",
+"requires": [
+"google-auth",
+"googleapis-common-protos",
+"opentelemetry-api",
+"proto-plus",
+"protobuf",
+"requests"
+],
+"required_by": [
+"google-cloud-core",
+"google-cloud-storage",
+"google-cloud-storage-control"
+]
+},
+"google-auth": {
+"name": "google-auth",
+"version": "2.62.1",
+"summary": "Google Authentication Library",
+"requires": [
+"cryptography",
+"pyasn1-modules"
+],
+"required_by": [
+"gcsfs",
+"google-api-core",
+"google-auth-oauthlib",
+"google-cloud-core",
+"google-cloud-storage",
+"google-cloud-storage-control"
+]
+},
+"google-auth-oauthlib": {
+"name": "google-auth-oauthlib",
+"version": "1.5.0",
+"summary": "Google Authentication Library",
+"requires": [
+"google-auth",
+"requests-oauthlib"
+],
+"required_by": [
+"gcsfs"
+]
+},
+"google-cloud-core": {
+"name": "google-cloud-core",
+"version": "2.8.0",
+"summary": "Google Cloud API client core library",
+"requires": [
+"google-api-core",
+"google-auth"
+],
+"required_by": [
+"google-cloud-storage"
+]
+},
+"google-cloud-storage": {
+"name": "google-cloud-storage",
+"version": "3.17.1",
+"summary": "Google Cloud Storage API client library",
+"requires": [
+"google-api-core",
+"google-auth",
+"google-cloud-core",
+"google-crc32c",
+"google-resumable-media",
+"requests"
+],
+"required_by": [
+"gcsfs"
+]
+},
+"google-cloud-storage-control": {
+"name": "google-cloud-storage-control",
+"version": "1.17.0",
+"summary": "Google Cloud Storage Control API client library",
+"requires": [
+"google-api-core",
+"google-auth",
+"grpc-google-iam-v1",
+"grpcio",
+"proto-plus",
+"protobuf"
+],
+"required_by": [
+"gcsfs"
+]
+},
+"google-crc32c": {
+"name": "google-crc32c",
+"version": "1.9.0",
+"summary": "A python wrapper of the C library 'Google CRC32C'",
+"requires": [],
+"required_by": [
+"google-cloud-storage",
+"google-resumable-media"
+]
+},
+"google-resumable-media": {
+"name": "google-resumable-media",
+"version": "2.11.0",
+"summary": "Utilities for Google Media Downloads and Resumable Uploads",
+"requires": [
+"google-crc32c"
+],
+"required_by": [
+"google-cloud-storage"
+]
+},
+"googleapis-common-protos": {
+"name": "googleapis-common-protos",
+"version": "1.76.0",
+"summary": "Common protobufs used in Google APIs",
+"requires": [
+"protobuf"
+],
+"required_by": [
+"google-api-core",
+"grpc-google-iam-v1",
+"grpcio-status"
+]
+},
+"grpc-google-iam-v1": {
+"name": "grpc-google-iam-v1",
+"version": "0.14.6",
+"summary": "IAM API client library",
+"requires": [
+"googleapis-common-protos",
+"grpcio",
+"protobuf"
+],
+"required_by": [
+"google-cloud-storage-control"
+]
+},
+"grpcio": {
+"name": "grpcio",
+"version": "1.85.1",
+"summary": "HTTP/2-based RPC framework",
+"requires": [
+"typing-extensions"
+],
+"required_by": [
+"google-cloud-storage-control",
+"grpc-google-iam-v1",
+"grpcio-status"
+]
+},
+"grpcio-status": {
+"name": "grpcio-status",
+"version": "1.85.1",
+"summary": "Status proto mapping for gRPC",
+"requires": [
+"googleapis-common-protos",
+"grpcio",
+"protobuf"
+],
+"required_by": []
+},
+"h5py": {
+"name": "h5py",
+"version": "3.16.0",
+"summary": "Read and write HDF5 files from Python",
+"requires": [
+"numpy"
+],
+"required_by": [
+"mace-torch",
+"mace-jax"
+],
+"requested": true,
+"role": "HDF5 files (slice.h5, trajectories)."
+},
+"humanize": {
+"name": "humanize",
+"version": "4.16.0",
+"summary": "Python humanize utilities",
+"requires": [],
+"required_by": [
+"orbax-checkpoint"
+]
+},
+"idna": {
+"name": "idna",
+"version": "3.20",
+"summary": "Internationalized Domain Names in Applications (IDNA)",
+"requires": [],
+"required_by": [
+"requests",
+"yarl"
+]
+},
+"jax": {
+"name": "jax",
+"version": "0.11.2",
+"summary": "Differentiate, compile, and transform Numpy code.",
+"requires": [
+"jaxlib",
+"ml-dtypes",
+"numpy",
+"opt-einsum",
+"scipy"
+],
+"required_by": [
+"chex",
+"cuequivariance-jax",
+"e3nn-jax",
+"flax",
+"jax-md",
+"jraph",
+"mace-jax",
+"optax",
+"orbax-checkpoint"
+],
+"role": "The numerical engine of container A: arrays, autodiff, and the XLA compiler that builds the GPU program."
+},
+"jax-cuda12-pjrt": {
+"name": "jax-cuda12-pjrt",
+"version": "0.11.2",
+"summary": "JAX XLA PJRT Plugin for NVIDIA GPUs",
+"requires": [],
+"required_by": [
+"jax-cuda12-plugin"
+],
+"role": "JAX's GPU runtime (CUDA 12)."
+},
+"jax-cuda12-plugin": {
+"name": "jax-cuda12-plugin",
+"version": "0.11.2",
+"summary": "JAX Plugin for NVIDIA GPUs",
+"requires": [
+"jax-cuda12-pjrt"
+],
+"required_by": [],
+"role": "JAX's GPU backend (CUDA 12)."
+},
+"jax-md": {
+"name": "jax-md",
+"version": "0.2.29",
+"summary": "Differentiable, Hardware Accelerated, Molecular Dynamics",
+"requires": [
+"absl-py",
+"e3nn-jax",
+"einops",
+"flax",
+"frozendict",
+"jax",
+"jaxlib",
+"jraph",
+"ml-collections",
+"numpy",
+"optax",
+"pymatgen"
+],
+"required_by": [],
+"requested": true,
+"role": "MD in JAX: the nvt_langevin integrator used by t0/md_jax.py."
+},
+"jaxlib": {
+"name": "jaxlib",
+"version": "0.11.2",
+"summary": "XLA library for JAX",
+"requires": [
+"ml-dtypes",
+"numpy",
+"scipy"
+],
+"required_by": [
+"chex",
+"e3nn-jax",
+"jax",
+"jax-md",
+"jraph",
+"optax"
+],
+"role": "JAX's compiled core (XLA runtime)."
+},
+"jinja2": {
+"name": "Jinja2",
+"version": "3.1.6",
+"summary": "A very fast and expressive template engine.",
+"requires": [
+"markupsafe"
+],
+"required_by": [
+"torch"
+]
+},
+"joblib": {
+"name": "joblib",
+"version": "1.6.0",
+"summary": "Lightweight pipelining with Python functions",
+"requires": [
+"cloudpickle"
+],
+"required_by": [
+"pymatgen-core"
+]
+},
+"jraph": {
+"name": "jraph",
+"version": "0.0.6.dev0",
+"summary": "Jraph: A library for Graph Neural Networks in Jax",
+"requires": [
+"jax",
+"jaxlib",
+"numpy"
+],
+"required_by": [
+"jax-md",
+"mace-jax"
+],
+"role": "Padded graph format with node/edge caps; mace-jax batches molecules this way."
+},
+"kiwisolver": {
+"name": "kiwisolver",
+"version": "1.5.1",
+"summary": "A fast implementation of the Cassowary constraint solver",
+"requires": [],
+"required_by": [
+"matplotlib"
+]
+},
+"lightning-utilities": {
+"name": "lightning-utilities",
+"version": "0.15.3",
+"summary": "Lightning toolbox for across the our ecosystem.",
+"requires": [
+"packaging",
+"typing-extensions"
+],
+"required_by": [
+"torchmetrics"
+]
+},
+"lmdb": {
+"name": "lmdb",
+"version": "3.0.0",
+"summary": "Universal Python binding for the LMDB 'Lightning' Database",
+"requires": [],
+"required_by": [
+"mace-torch"
+]
+},
+"lxml": {
+"name": "lxml",
+"version": "6.1.3",
+"summary": "Powerful and Pythonic XML processing library combining libxml2/libxslt with the ElementTree API.",
+"requires": [],
+"required_by": [
+"pymatgen-core"
+]
+},
+"mace-jax": {
+"name": "mace_jax",
+"version": "0.2.0",
+"summary": "",
+"requires": [
+"ase",
+"chex",
+"configargparse",
+"cuequivariance",
+"cuequivariance-jax",
+"e3nn",
+"e3nn-jax",
+"flax",
+"gin-config",
+"h5py",
+"jax",
+"jraph",
+"matscipy",
+"numpy",
+"optax",
+"pyyaml",
+"roundmantissa",
+"tqdm",
+"unique-names-generator"
+],
+"required_by": [],
+"requested": true,
+"role": "MACE in JAX: the model, the weight converter mace-jax-from-torch and the predictor. The JAX side of T0."
+},
+"mace-torch": {
+"name": "mace-torch",
+"version": "0.3.17",
+"summary": "",
+"requires": [
+"ase",
+"configargparse",
+"e3nn",
+"gitpython",
+"h5py",
+"lmdb",
+"matplotlib",
+"matscipy",
+"numpy",
+"opt-einsum",
+"orjson",
+"pandas",
+"prettytable",
+"python-hostlist",
+"pyyaml",
+"torch",
+"torch-ema",
+"torchmetrics",
+"tqdm"
+],
+"required_by": [],
+"requested": true,
+"role": "Reference MACE in PyTorch; here only so the converter can load the checkpoint."
+},
+"markdown-it-py": {
+"name": "markdown-it-py",
+"version": "4.2.0",
+"summary": "Python port of markdown-it. Markdown parsing, done right!",
+"requires": [
+"mdurl"
+],
+"required_by": [
+"rich"
+]
+},
+"markupsafe": {
+"name": "MarkupSafe",
+"version": "3.0.3",
+"summary": "Safely add untrusted strings to HTML/XML markup.",
+"requires": [],
+"required_by": [
+"jinja2"
+]
+},
+"matplotlib": {
+"name": "matplotlib",
+"version": "3.11.2",
+"summary": "Python plotting package",
+"requires": [
+"contourpy",
+"cycler",
+"fonttools",
+"kiwisolver",
+"numpy",
+"packaging",
+"pillow",
+"pyparsing",
+"python-dateutil"
+],
+"required_by": [
+"ase",
+"mace-torch",
+"pymatgen-core"
+],
+"requested": true
+},
+"matscipy": {
+"name": "matscipy",
+"version": "1.3.1",
+"summary": "Generic Python Materials Science tools",
+"requires": [
+"ase",
+"numpy",
+"packaging",
+"scipy"
+],
+"required_by": [
+"mace-torch",
+"mace-jax"
+],
+"role": "Fast neighbour lists for ASE (used by MACE)."
+},
+"mdurl": {
+"name": "mdurl",
+"version": "0.1.2",
+"summary": "Markdown URL utilities",
+"requires": [],
+"required_by": [
+"markdown-it-py"
+]
+},
+"ml-collections": {
+"name": "ml_collections",
+"version": "1.1.0",
+"summary": "ML Collections is a library of Python collections designed for ML usecases.",
+"requires": [
+"absl-py",
+"pyyaml"
+],
+"required_by": [
+"jax-md"
+]
+},
+"ml-dtypes": {
+"name": "ml_dtypes",
+"version": "0.6.0",
+"summary": "ml_dtypes is a stand-alone implementation of several NumPy dtype extensions used in machine learning.",
+"requires": [
+"numpy"
+],
+"required_by": [
+"jax",
+"jaxlib",
+"tensorstore"
+]
+},
+"monty": {
+"name": "monty",
+"version": "2026.10.21",
+"summary": "Monty is the missing complement to Python.",
+"requires": [
+"numpy",
+"ruamel-yaml"
+],
+"required_by": [
+"pymatgen-core"
+]
+},
+"mpmath": {
+"name": "mpmath",
+"version": "1.3.0",
+"summary": "Python library for arbitrary-precision floating-point arithmetic",
+"requires": [],
+"required_by": [
+"sympy"
+]
+},
+"msgpack": {
+"name": "msgpack",
+"version": "1.2.4",
+"summary": "MessagePack serializer",
+"requires": [],
+"required_by": [
+"flax",
+"orbax-checkpoint"
+]
+},
+"multidict": {
+"name": "multidict",
+"version": "7.2.1",
+"summary": "multidict implementation",
+"requires": [],
+"required_by": [
+"aiohttp",
+"yarl"
+]
+},
+"narwhals": {
+"name": "narwhals",
+"version": "2.28.0",
+"summary": "Extremely lightweight compatibility layer between dataframe libraries",
+"requires": [],
+"required_by": [
+"plotly"
+]
+},
+"networkx": {
+"name": "networkx",
+"version": "3.7",
+"summary": "Python package for creating and manipulating graphs and networks",
+"requires": [],
+"required_by": [
+"cuequivariance",
+"pymatgen-core",
+"torch"
+]
+},
+"numpy": {
+"name": "numpy",
+"version": "2.5.4",
+"summary": "Fundamental package for array computing in Python",
+"requires": [],
+"required_by": [
+"ase",
+"chex",
+"contourpy",
+"cuequivariance",
+"e3nn-jax",
+"flax",
+"h5py",
+"jax",
+"jax-md",
+"jaxlib",
+"jraph",
+"mace-torch",
+"mace-jax",
+"matplotlib",
+"matscipy",
+"ml-dtypes",
+"monty",
+"optax",
+"orbax-checkpoint",
+"pandas",
+"pymatgen-core",
+"scipy",
+"spglib",
+"tensorstore",
+"torchmetrics",
+"treescope"
+],
+"requested": true,
+"role": "Arrays."
+},
+"nvidia-cublas-cu12": {
+"name": "nvidia-cublas-cu12",
+"version": "12.9.3.13",
+"summary": "CUBLAS native runtime libraries",
+"requires": [
+"nvidia-cuda-nvrtc-cu12"
+],
+"required_by": [
+"cuequivariance-ops-cu12",
+"nvidia-cudnn-cu12",
+"nvidia-cusolver-cu12"
+]
+},
+"nvidia-cuda-cccl-cu12": {
+"name": "nvidia-cuda-cccl-cu12",
+"version": "12.9.27",
+"summary": "CUDA CCCL",
+"requires": [],
+"required_by": [
+"nvidia-nvshmem-cu12"
+]
+},
+"nvidia-cuda-cupti-cu12": {
+"name": "nvidia-cuda-cupti-cu12",
+"version": "12.9.79",
+"summary": "CUDA profiling tools runtime libs.",
+"requires": [],
+"required_by": []
+},
+"nvidia-cuda-nvcc-cu12": {
+"name": "nvidia-cuda-nvcc-cu12",
+"version": "12.9.86",
+"summary": "CUDA nvcc",
+"requires": [],
+"required_by": []
+},
+"nvidia-cuda-nvrtc-cu12": {
+"name": "nvidia-cuda-nvrtc-cu12",
+"version": "12.9.86",
+"summary": "NVRTC native runtime libraries",
+"requires": [],
+"required_by": [
+"nvidia-cublas-cu12"
+]
+},
+"nvidia-cuda-runtime-cu12": {
+"name": "nvidia-cuda-runtime-cu12",
+"version": "12.9.79",
+"summary": "CUDA Runtime native Libraries",
+"requires": [],
+"required_by": []
+},
+"nvidia-cudnn-cu12": {
+"name": "nvidia-cudnn-cu12",
+"version": "9.28.0.42",
+"summary": "cuDNN runtime libraries",
+"requires": [
+"nvidia-cublas-cu12"
+],
+"required_by": []
+},
+"nvidia-cufft-cu12": {
+"name": "nvidia-cufft-cu12",
+"version": "11.4.1.4",
+"summary": "CUFFT native runtime libraries",
+"requires": [
+"nvidia-nvjitlink-cu12"
+],
+"required_by": []
+},
+"nvidia-cusolver-cu12": {
+"name": "nvidia-cusolver-cu12",
+"version": "11.7.5.82",
+"summary": "CUDA solver native runtime libraries",
+"requires": [
+"nvidia-cublas-cu12",
+"nvidia-cusparse-cu12",
+"nvidia-nvjitlink-cu12"
+],
+"required_by": []
+},
+"nvidia-cusparse-cu12": {
+"name": "nvidia-cusparse-cu12",
+"version": "12.5.10.65",
+"summary": "CUSPARSE native runtime libraries",
+"requires": [
+"nvidia-nvjitlink-cu12"
+],
+"required_by": [
+"nvidia-cusolver-cu12"
+]
+},
+"nvidia-ml-py": {
+"name": "nvidia-ml-py",
+"version": "13.615.71",
+"summary": "Python Bindings for the NVIDIA Management Library",
+"requires": [],
+"required_by": [
+"cuequivariance-ops-cu12"
+]
+},
+"nvidia-nccl-cu12": {
+"name": "nvidia-nccl-cu12",
+"version": "2.32.3",
+"summary": "NVIDIA Collective Communication Library (NCCL) Runtime",
+"requires": [],
+"required_by": []
+},
+"nvidia-nvjitlink-cu12": {
+"name": "nvidia-nvjitlink-cu12",
+"version": "12.9.86",
+"summary": "Nvidia JIT LTO Library",
+"requires": [],
+"required_by": [
+"nvidia-cufft-cu12",
+"nvidia-cusolver-cu12",
+"nvidia-cusparse-cu12"
+]
+},
+"nvidia-nvshmem-cu12": {
+"name": "nvidia-nvshmem-cu12",
+"version": "3.8.0",
+"summary": "NVSHMEM creates a global address space that provides efficient and scalable communication for NVIDIA GPU clusters.",
+"requires": [
+"nvidia-cuda-cccl-cu12"
+],
+"required_by": []
+},
+"oauthlib": {
+"name": "oauthlib",
+"version": "4.0.1",
+"summary": "A generic, spec-compliant, thorough implementation of the OAuth request-signing logic",
+"requires": [],
+"required_by": [
+"requests-oauthlib"
+]
+},
+"opentelemetry-api": {
+"name": "opentelemetry-api",
+"version": "1.45.2",
+"summary": "OpenTelemetry Python API",
+"requires": [
+"typing-extensions"
+],
+"required_by": [
+"google-api-core"
+]
+},
+"opt-einsum": {
+"name": "opt_einsum",
+"version": "3.4.0",
+"summary": "Path optimization of einsum functions.",
+"requires": [],
+"required_by": [
+"cuequivariance",
+"jax",
+"mace-torch",
+"opt-einsum-fx"
+]
+},
+"opt-einsum-fx": {
+"name": "opt-einsum-fx",
+"version": "0.1.4",
+"summary": "Einsum optimization using opt_einsum and PyTorch FX",
+"requires": [
+"opt-einsum",
+"packaging",
+"torch"
+],
+"required_by": [
+"e3nn"
+]
+},
+"optax": {
+"name": "optax",
+"version": "0.2.8",
+"summary": "A gradient processing and optimization library in JAX.",
+"requires": [
+"absl-py",
+"jax",
+"jaxlib",
+"numpy"
+],
+"required_by": [
+"flax",
+"jax-md",
+"mace-jax"
+],
+"requested": true,
+"role": "Optimisers for JAX (training; pulled in)."
+},
+"orbax-checkpoint": {
+"name": "orbax-checkpoint",
+"version": "0.12.9",
+"summary": "Orbax Checkpoint",
+"requires": [
+"absl-py",
+"aiofiles",
+"etils",
+"humanize",
+"jax",
+"msgpack",
+"numpy",
+"prometheus-client",
+"protobuf",
+"psutil",
+"pyyaml",
+"simplejson",
+"tensorstore",
+"typing-extensions",
+"uvloop"
+],
+"required_by": [
+"flax"
+]
+},
+"orjson": {
+"name": "orjson",
+"version": "3.13.0",
+"summary": "Fast, correct Python JSON library supporting dataclasses, datetimes, and numpy",
+"requires": [],
+"required_by": [
+"mace-torch",
+"pymatgen-core"
+]
+},
+"packaging": {
+"name": "packaging",
+"version": "26.3",
+"summary": "Core utilities for Python packages",
+"requires": [],
+"required_by": [
+"cuequivariance-jax",
+"lightning-utilities",
+"matplotlib",
+"matscipy",
+"opt-einsum-fx",
+"plotly",
+"torchmetrics"
+]
+},
+"palettable": {
+"name": "palettable",
+"version": "3.3.3",
+"summary": "Color palettes for Python",
+"requires": [],
+"required_by": [
+"pymatgen-core"
+]
+},
+"pandas": {
+"name": "pandas",
+"version": "3.1.1",
+"summary": "Powerful data structures for data analysis, time series, and statistics",
+"requires": [
+"numpy",
+"python-dateutil"
+],
+"required_by": [
+"mace-torch",
+"pymatgen-core"
+],
+"role": "Tables (features.csv, species.csv)."
+},
+"pillow": {
+"name": "pillow",
+"version": "13.0.0",
+"summary": "Python Imaging Library (fork)",
+"requires": [],
+"required_by": [
+"matplotlib"
+]
+},
+"pip": {
+"name": "pip",
+"version": "26.3",
+"summary": "The PyPA recommended tool for installing Python packages.",
+"requires": [],
+"required_by": []
+},
+"platformdirs": {
+"name": "platformdirs",
+"version": "4.14.5",
+"summary": "A small Python package for determining appropriate platform-specific dirs, e.g. a `user data dir`.",
+"requires": [],
+"required_by": [
+"cuequivariance-ops-cu12"
+]
+},
+"plotly": {
+"name": "plotly",
+"version": "7.1.0",
+"summary": "An open-source interactive data visualization library for Python",
+"requires": [
+"narwhals",
+"packaging"
+],
+"required_by": [
+"pymatgen-core"
+]
+},
+"prettytable": {
+"name": "prettytable",
+"version": "3.18.0",
+"summary": "A simple Python library for easily displaying tabular data in a visually appealing ASCII table format",
+"requires": [
+"wcwidth"
+],
+"required_by": [
+"mace-torch"
+]
+},
+"prometheus-client": {
+"name": "prometheus_client",
+"version": "0.26.0",
+"summary": "Python client for the Prometheus monitoring system.",
+"requires": [],
+"required_by": [
+"orbax-checkpoint"
+]
+},
+"propcache": {
+"name": "propcache",
+"version": "0.5.4",
+"summary": "Accelerated property cache",
+"requires": [],
+"required_by": [
+"aiohttp",
+"yarl"
+]
+},
+"proto-plus": {
+"name": "proto-plus",
+"version": "1.29.0",
+"summary": "Beautiful, Pythonic protocol buffers",
+"requires": [
+"protobuf"
+],
+"required_by": [
+"google-api-core",
+"google-cloud-storage-control"
+]
+},
+"protobuf": {
+"name": "protobuf",
+"version": "7.36.2",
+"summary": "",
+"requires": [],
+"required_by": [
+"google-api-core",
+"google-cloud-storage-control",
+"googleapis-common-protos",
+"grpc-google-iam-v1",
+"grpcio-status",
+"orbax-checkpoint",
+"proto-plus"
+]
+},
+"psutil": {
+"name": "psutil",
+"version": "7.2.2",
+"summary": "Cross-platform lib for process and system monitoring.",
+"requires": [],
+"required_by": [
+"orbax-checkpoint"
+]
+},
+"pyasn1": {
+"name": "pyasn1",
+"version": "0.6.5",
+"summary": "Pure-Python implementation of ASN.1 types and DER/BER/CER codecs (X.208)",
+"requires": [],
+"required_by": [
+"pyasn1-modules"
+]
+},
+"pyasn1-modules": {
+"name": "pyasn1_modules",
+"version": "0.4.2",
+"summary": "A collection of ASN.1-based protocols modules",
+"requires": [
+"pyasn1"
+],
+"required_by": [
+"google-auth"
+]
+},
+"pycparser": {
+"name": "pycparser",
+"version": "3.12",
+"summary": "C parser in Python",
+"requires": [],
+"required_by": [
+"cffi"
+]
+},
+"pygments": {
+"name": "Pygments",
+"version": "2.21.0",
+"summary": "Pygments is a syntax highlighting package written in Python.",
+"requires": [],
+"required_by": [
+"rich"
+]
+},
+"pymatgen": {
+"name": "pymatgen",
+"version": "2026.10.24",
+"summary": "Python Materials Genomics is a robust materials analysis code that defines core object representations for structures and molecules with support for many electronic structure codes. It is currently the core analysis code powering the Materials Project (https://materialsproject.org).",
+"requires": [
+"pymatgen-core"
+],
+"required_by": [
+"jax-md"
+],
+"role": "Materials-science toolkit pulled in by jax-md; not used by T0."
+},
+"pymatgen-core": {
+"name": "pymatgen-core",
+"version": "2026.10.31",
+"summary": "Python Materials Genomics is a robust materials analysis code that defines core object representations for structures and molecules with support for many electronic structure codes. It is currently the core analysis code powering the Materials Project (https://materialsproject.org). This repository is for pymatgen-core, which implements the core data structures and algorithms.",
+"requires": [
+"bibtexparser",
+"joblib",
+"lxml",
+"matplotlib",
+"monty",
+"networkx",
+"numpy",
+"orjson",
+"palettable",
+"pandas",
+"plotly",
+"requests",
+"scipy",
+"spglib",
+"sympy",
+"tabulate",
+"tqdm",
+"uncertainties"
+],
+"required_by": [
+"pymatgen"
+]
+},
+"pyparsing": {
+"name": "pyparsing",
+"version": "3.3.3",
+"summary": "pyparsing - Classes and methods to define and execute parsing grammars",
+"requires": [],
+"required_by": [
+"bibtexparser",
+"matplotlib"
+]
+},
+"python-dateutil": {
+"name": "python-dateutil",
+"version": "4.0.0",
+"summary": "Extensions to the standard Python datetime module",
+"requires": [
+"tzdata"
+],
+"required_by": [
+"matplotlib",
+"pandas"
+]
+},
+"python-hostlist": {
+"name": "python_hostlist",
+"version": "2.3.0",
+"summary": "Python module for hostlist handling",
+"requires": [],
+"required_by": [
+"mace-torch"
+]
+},
+"pyyaml": {
+"name": "PyYAML",
+"version": "6.0.3",
+"summary": "YAML parser and emitter for Python",
+"requires": [],
+"required_by": [
+"flax",
+"mace-torch",
+"mace-jax",
+"ml-collections",
+"orbax-checkpoint"
+]
+},
+"requests": {
+"name": "requests",
+"version": "2.34.2",
+"summary": "Python HTTP for Humans.",
+"requires": [
+"certifi",
+"charset-normalizer",
+"idna",
+"urllib3"
+],
+"required_by": [
+"gcsfs",
+"google-api-core",
+"google-cloud-storage",
+"pymatgen-core",
+"requests-oauthlib"
+]
+},
+"requests-oauthlib": {
+"name": "requests-oauthlib",
+"version": "2.0.0",
+"summary": "OAuthlib authentication support for Requests.",
+"requires": [
+"oauthlib",
+"requests"
+],
+"required_by": [
+"google-auth-oauthlib"
+]
+},
+"rich": {
+"name": "rich",
+"version": "15.0.0",
+"summary": "Render rich text, tables, progress bars, syntax highlighting, markdown and more to the terminal",
+"requires": [
+"markdown-it-py",
+"pygments"
+],
+"required_by": [
+"flax"
+]
+},
+"roundmantissa": {
+"name": "roundmantissa",
+"version": "0.2.1",
+"summary": "Round mantissa of a float number",
+"requires": [],
+"required_by": [
+"mace-jax"
+]
+},
+"ruamel-yaml": {
+"name": "ruamel.yaml",
+"version": "0.19.1",
+"summary": "ruamel.yaml is a YAML parser/emitter that supports roundtrip preservation of comments, seq/map flow style, and map key order",
+"requires": [],
+"required_by": [
+"monty"
+]
+},
+"scipy": {
+"name": "scipy",
+"version": "1.18.1",
+"summary": "Fundamental algorithms for scientific computing in Python",
+"requires": [
+"numpy"
+],
+"required_by": [
+"ase",
+"cuequivariance",
+"e3nn",
+"jax",
+"jaxlib",
+"matscipy",
+"pymatgen-core"
+],
+"requested": true,
+"role": "Numerical routines (integration, optimisation, special functions)."
+},
+"setuptools": {
+"name": "setuptools",
+"version": "78.1.0",
+"summary": "Easily download, build, install, upgrade, and uninstall Python packages",
+"requires": [],
+"required_by": [
+"torch"
+]
+},
+"simplejson": {
+"name": "simplejson",
+"version": "4.2.0",
+"summary": "Simple, fast, extensible JSON encoder/decoder for Python",
+"requires": [],
+"required_by": [
+"orbax-checkpoint"
+]
+},
+"smmap": {
+"name": "smmap",
+"version": "5.0.3",
+"summary": "A pure Python implementation of a sliding window memory map manager",
+"requires": [],
+"required_by": [
+"gitdb"
+]
+},
+"spglib": {
+"name": "spglib",
+"version": "2.8.0",
+"summary": "This is the spglib module.",
+"requires": [
+"numpy",
+"typing-extensions"
+],
+"required_by": [
+"pymatgen-core"
+]
+},
+"sympy": {
+"name": "sympy",
+"version": "1.14.0",
+"summary": "Computer algebra system (CAS) in Python",
+"requires": [
+"mpmath"
+],
+"required_by": [
+"cuequivariance",
+"e3nn",
+"e3nn-jax",
+"pymatgen-core",
+"torch"
+]
+},
+"tabulate": {
+"name": "tabulate",
+"version": "0.10.0",
+"summary": "Pretty-print tabular data",
+"requires": [],
+"required_by": [
+"pymatgen-core"
+]
+},
+"tensorstore": {
+"name": "tensorstore",
+"version": "0.1.86",
+"summary": "Read and write large, multi-dimensional arrays",
+"requires": [
+"ml-dtypes",
+"numpy"
+],
+"required_by": [
+"flax",
+"orbax-checkpoint"
+]
+},
+"toolz": {
+"name": "toolz",
+"version": "1.2.0",
+"summary": "List processing tools and functional utilities",
+"requires": [],
+"required_by": [
+"chex"
+]
+},
+"torch": {
+"name": "torch",
+"version": "2.15.0+cpu",
+"summary": "Tensors and Dynamic neural networks in Python with strong GPU acceleration",
+"requires": [
+"filelock",
+"fsspec",
+"jinja2",
+"networkx",
+"setuptools",
+"sympy",
+"typing-extensions"
+],
+"required_by": [
+"e3nn",
+"mace-torch",
+"opt-einsum-fx",
+"torch-ema",
+"torchmetrics"
+],
+"requested": true,
+"role": "CPU-only PyTorch: needed to read the PyTorch checkpoint during conversion. Installed FIRST on purpose."
+},
+"torch-ema": {
+"name": "torch-ema",
+"version": "0.3",
+"summary": "PyTorch library for computing moving averages of model parameters.",
+"requires": [
+"torch"
+],
+"required_by": [
+"mace-torch"
+]
+},
+"torchmetrics": {
+"name": "torchmetrics",
+"version": "1.9.0",
+"summary": "PyTorch native Metrics",
+"requires": [
+"lightning-utilities",
+"numpy",
+"packaging",
+"torch"
+],
+"required_by": [
+"mace-torch"
+]
+},
+"tqdm": {
+"name": "tqdm",
+"version": "4.70.1",
+"summary": "Fast, Extensible Progress Meter",
+"requires": [],
+"required_by": [
+"cuequivariance-ops-cu12",
+"mace-torch",
+"mace-jax",
+"pymatgen-core"
+]
+},
+"treescope": {
+"name": "treescope",
+"version": "0.1.10",
+"summary": "Treescope: An interactive HTML pretty-printer for ML research in IPython notebooks.",
+"requires": [
+"numpy"
+],
+"required_by": [
+"flax"
+]
+},
+"typing-extensions": {
+"name": "typing_extensions",
+"version": "4.16.0",
+"summary": "Backported and Experimental Type Hints for Python 3.9+",
+"requires": [],
+"required_by": [
+"aiohttp",
+"aiosignal",
+"ase",
+"chex",
+"flax",
+"grpcio",
+"lightning-utilities",
+"opentelemetry-api",
+"orbax-checkpoint",
+"spglib",
+"torch"
+]
+},
+"tzdata": {
+"name": "tzdata",
+"version": "2026.6",
+"summary": "Provider of IANA time zone data",
+"requires": [],
+"required_by": [
+"python-dateutil"
+]
+},
+"uncertainties": {
+"name": "uncertainties",
+"version": "3.2.3",
+"summary": "calculations with values with uncertainties, error propagation",
+"requires": [],
+"required_by": [
+"pymatgen-core"
+]
+},
+"unique-names-generator": {
+"name": "unique-names-generator",
+"version": "1.0.2",
+"summary": "Generate unique and memorable name strings.",
+"requires": [],
+"required_by": [
+"mace-jax"
+]
+},
+"urllib3": {
+"name": "urllib3",
+"version": "2.8.0",
+"summary": "HTTP library with thread-safe connection pooling, file post, and more.",
+"requires": [],
+"required_by": [
+"requests"
+]
+},
+"uvloop": {
+"name": "uvloop",
+"version": "0.23.0",
+"summary": "Fast implementation of asyncio event loop on top of libuv",
+"requires": [],
+"required_by": [
+"orbax-checkpoint"
+]
+},
+"wcwidth": {
+"name": "wcwidth",
+"version": "0.9.4",
+"summary": "Measures the displayed width of unicode strings in a terminal",
+"requires": [],
+"required_by": [
+"prettytable"
+]
+},
+"yarl": {
+"name": "yarl",
+"version": "1.25.1",
+"summary": "Yet another URL library",
+"requires": [
+"idna",
+"multidict",
+"propcache"
+],
+"required_by": [
+"aiohttp"
+]
+},
+"zipp": {
+"name": "zipp",
+"version": "4.1.2",
+"summary": "Backport of pathlib-compatible object wrapper for zip files",
+"requires": [],
+"required_by": []
+}
+},
+"B_torchsim": {
+"absl-py": {
+"name": "absl-py",
+"version": "2.5.1",
+"summary": "Abseil Python Common Libraries, see https://github.com/abseil/abseil-py.",
+"requires": [],
+"required_by": [
+"array-record",
+"grain",
+"tensorboard"
+],
+"origin": "ngc"
+},
+"aiohappyeyeballs": {
+"name": "aiohappyeyeballs",
+"version": "2.7.1",
+"summary": "Happy Eyeballs for asyncio",
+"requires": [],
+"required_by": [
+"aiohttp"
+],
+"origin": "ngc"
+},
+"aiohttp": {
+"name": "aiohttp",
+"version": "3.14.4",
+"summary": "Async http client/server framework (asyncio)",
+"requires": [
+"aiohappyeyeballs",
+"aiosignal",
+"attrs",
+"frozenlist",
+"multidict",
+"propcache",
+"typing-extensions",
+"yarl"
+],
+"required_by": [],
+"origin": "ngc"
+},
+"aiosignal": {
+"name": "aiosignal",
+"version": "1.4.0",
+"summary": "aiosignal: a list of registered asynchronous callbacks",
+"requires": [
+"frozenlist",
+"typing-extensions"
+],
+"required_by": [
+"aiohttp"
+],
+"origin": "ngc"
+},
+"annotated-doc": {
+"name": "annotated-doc",
+"version": "0.0.5",
+"summary": "Document parameters, class attributes, return types, and variables inline, with Annotated.",
+"requires": [],
+"required_by": [
+"fastapi"
+],
+"origin": "ngc"
+},
+"annotated-types": {
+"name": "annotated-types",
+"version": "0.8.0",
+"summary": "Reusable constraint types to use with typing.Annotated",
+"requires": [],
+"required_by": [
+"pydantic"
+],
+"origin": "ngc"
+},
+"anyio": {
+"name": "anyio",
+"version": "4.15.1",
+"summary": "High-level concurrency and networking framework on top of asyncio or Trio",
+"requires": [
+"idna",
+"typing-extensions"
+],
+"required_by": [
+"httpx",
+"jupyter-server",
+"starlette",
+"watchfiles"
+],
+"origin": "ngc"
+},
+"apache-tvm-ffi": {
+"name": "apache-tvm-ffi",
+"version": "0.1.14.post1",
+"summary": "tvm ffi",
+"requires": [
+"typing-extensions"
+],
+"required_by": [
+"flash-attn-4",
+"nvidia-cudnn-frontend",
+"nvidia-cutlass-operators",
+"quack-kernels"
+],
+"origin": "ngc"
+},
+"apex": {
+"name": "apex",
+"version": "0.1",
+"summary": "PyTorch Extensions written by NVIDIA",
+"requires": [
+"packaging"
+],
+"required_by": [],
+"origin": "ngc"
+},
+"argon2-cffi": {
+"name": "argon2-cffi",
+"version": "25.1.0",
+"summary": "Argon2 for Python",
+"requires": [
+"argon2-cffi-bindings"
+],
+"required_by": [
+"jupyter-server"
+],
+"origin": "ngc"
+},
+"argon2-cffi-bindings": {
+"name": "argon2-cffi-bindings",
+"version": "26.1.0",
+"summary": "Low-level CFFI bindings for Argon2",
+"requires": [
+"cffi"
+],
+"required_by": [
+"argon2-cffi"
+],
+"origin": "ngc"
+},
+"array-record": {
+"name": "array_record",
+"version": "0.8.4",
+"summary": "A file format that achieves a new frontier of IO efficiency",
+"requires": [
+"absl-py",
+"etils"
+],
+"required_by": [
+"grain"
+],
+"origin": "ngc"
+},
+"arrow": {
+"name": "arrow",
+"version": "1.4.0",
+"summary": "Better dates & times for Python",
+"requires": [
+"python-dateutil",
+"tzdata"
+],
+"required_by": [
+"isoduration"
+],
+"origin": "ngc"
+},
+"ase": {
+"name": "ase",
+"version": "3.29.0",
+"summary": "Atomic Simulation Environment",
+"requires": [
+"matplotlib",
+"numpy",
+"scipy",
+"typing-extensions"
+],
+"required_by": [
+"mace-torch",
+"matscipy"
+],
+"requested": true,
+"origin": "added",
+"role": "Atomic Simulation Environment: Atoms, units, file formats, Langevin integrator."
+},
+"asttokens": {
+"name": "asttokens",
+"version": "3.0.2",
+"summary": "Annotate AST trees with source code positions",
+"requires": [],
+"required_by": [
+"stack-data"
+],
+"origin": "ngc"
+},
+"astunparse": {
+"name": "astunparse",
+"version": "1.6.3",
+"summary": "An AST unparser for Python",
+"requires": [
+"six",
+"wheel"
+],
+"required_by": [
+"nvidia-dali-cuda130"
+],
+"origin": "ngc"
+},
+"async-lru": {
+"name": "async-lru",
+"version": "2.3.0",
+"summary": "Simple LRU cache for asyncio",
+"requires": [],
+"required_by": [
+"jupyterlab"
+],
+"origin": "ngc"
+},
+"attn-gym": {
+"name": "attn_gym",
+"version": "0.0.8",
+"summary": "Helpful tools and examples for working with flex-attention",
+"requires": [
+"torch"
+],
+"required_by": [
+"torchtitan"
+],
+"origin": "ngc"
+},
+"attrs": {
+"name": "attrs",
+"version": "26.1.0",
+"summary": "Classes Without Boilerplate",
+"requires": [],
+"required_by": [
+"aiohttp",
+"jsonschema",
+"referencing"
+],
+"origin": "ngc"
+},
+"babel": {
+"name": "babel",
+"version": "2.18.0",
+"summary": "Internationalization utilities",
+"requires": [],
+"required_by": [
+"jupyterlab-server"
+],
+"origin": "ngc"
+},
+"beautifulsoup4": {
+"name": "beautifulsoup4",
+"version": "4.15.0",
+"summary": "Screen-scraping library",
+"requires": [
+"soupsieve",
+"typing-extensions"
+],
+"required_by": [
+"nbconvert"
+],
+"origin": "ngc"
+},
+"black": {
+"name": "black",
+"version": "26.10.0",
+"summary": "The uncompromising code formatter.",
+"requires": [
+"click",
+"mypy-extensions",
+"packaging",
+"pathspec",
+"platformdirs",
+"pytokens"
+],
+"required_by": [],
+"origin": "ngc"
+},
+"bleach": {
+"name": "bleach",
+"version": "6.4.0",
+"summary": "An easy safelist-based HTML-sanitizing tool.",
+"requires": [
+"webencodings"
+],
+"required_by": [
+"nbconvert"
+],
+"origin": "ngc"
+},
+"blosc2": {
+"name": "blosc2",
+"version": "4.14.1",
+"summary": "A fast & compressed ndarray library with a flexible compute engine.",
+"requires": [
+"httpx",
+"msgpack",
+"ndindex",
+"numexpr",
+"numpy",
+"pydantic",
+"rich",
+"threadpoolctl"
+],
+"required_by": [
+"tables"
+],
+"origin": "added"
+},
+"certifi": {
+"name": "certifi",
+"version": "2026.7.22",
+"summary": "Python package for providing Mozilla's CA Bundle.",
+"requires": [],
+"required_by": [
+"httpcore",
+"httpx",
+"requests"
+],
+"origin": "ngc"
+},
+"cffi": {
+"name": "cffi",
+"version": "2.1.1",
+"summary": "Foreign Function Interface for Python calling C code.",
+"requires": [
+"pycparser"
+],
+"required_by": [
+"argon2-cffi-bindings"
+],
+"origin": "ngc"
+},
+"charset-normalizer": {
+"name": "charset-normalizer",
+"version": "3.5.2",
+"summary": "The Real First Universal Charset Detector. Open, modern and actively maintained alternative to Chardet.",
+"requires": [],
+"required_by": [
+"requests"
+],
+"origin": "ngc"
+},
+"click": {
+"name": "click",
+"version": "8.5.0",
+"summary": "Composable command line interface toolkit",
+"requires": [],
+"required_by": [
+"black",
+"huggingface-hub",
+"uvicorn",
+"wandb"
+],
+"origin": "ngc"
+},
+"cloudpickle": {
+"name": "cloudpickle",
+"version": "3.1.2",
+"summary": "Pickler class to extend the standard pickle.Pickler functionality",
+"requires": [],
+"required_by": [
+"grain"
+],
+"origin": "ngc"
+},
+"cmake": {
+"name": "cmake",
+"version": "3.31.6",
+"summary": "CMake is an open-source, cross-platform family of tools designed to build, test and package software",
+"requires": [],
+"required_by": [],
+"origin": "ngc"
+},
+"comm": {
+"name": "comm",
+"version": "0.2.3",
+"summary": "Jupyter Python Comm implementation, for usage in ipykernel, xeus-python etc.",
+"requires": [],
+"required_by": [
+"ipykernel"
+],
+"origin": "ngc"
+},
+"configargparse": {
+"name": "ConfigArgParse",
+"version": "1.9.0",
+"summary": "A drop-in replacement for argparse that allows options to also be set via config files and/or environment variables.",
+"requires": [],
+"required_by": [
+"mace-torch"
+],
+"origin": "added"
+},
+"contourpy": {
+"name": "contourpy",
+"version": "1.4.0",
+"summary": "Python library for calculating contours of 2D quadrilateral grids",
+"requires": [
+"numpy"
+],
+"required_by": [
+"matplotlib"
+],
+"origin": "ngc"
+},
+"cuda-bindings": {
+"name": "cuda-bindings",
+"version": "13.4.3",
+"summary": "Python bindings for CUDA",
+"requires": [
+"cuda-pathfinder"
+],
+"required_by": [
+"cupti-python",
+"nvidia-cutlass-dsl-libs-base",
+"nvidia-cutlass-dsl-libs-core",
+"nvidia-cutlass-dsl-libs-cu12",
+"nvidia-cutlass-dsl-libs-cu13"
+],
+"origin": "ngc"
+},
+"cuda-pathfinder": {
+"name": "cuda-pathfinder",
+"version": "1.8.3",
+"summary": "Pathfinder for CUDA components",
+"requires": [],
+"required_by": [
+"cuda-bindings",
+"cupti-python"
+],
+"origin": "ngc"
+},
+"cuda-tile": {
+"name": "cuda-tile",
+"version": "1.6.0",
+"summary": "CUDA Tile Compiler",
+"requires": [
+"typing-extensions"
+],
+"required_by": [],
+"origin": "ngc"
+},
+"cuequivariance": {
+"name": "cuequivariance",
+"version": "0.10.0",
+"summary": "CUDA accelerated equivariant operations",
+"requires": [
+"networkx",
+"numpy",
+"opt-einsum",
+"scipy",
+"sympy"
+],
+"required_by": [
+"cuequivariance-torch"
+],
+"requested": true,
+"origin": "added",
+"role": "NVIDIA's description of equivariant polynomials (pure Python); shared by both stacks."
+},
+"cuequivariance-ops-cu13": {
+"name": "cuequivariance-ops-cu13",
+"version": "0.10.0",
+"summary": "cuequivariance-ops - GPU Accelerated Extensions for Equivariant Primitives",
+"requires": [
+"nvidia-cublas",
+"nvidia-ml-py",
+"platformdirs",
+"tqdm"
+],
+"required_by": [
+"cuequivariance-ops-torch-cu13"
+],
+"origin": "added",
+"role": "The cuEquivariance CUDA library libcue_ops.so (CUDA 13)."
+},
+"cuequivariance-ops-torch-cu13": {
+"name": "cuequivariance-ops-torch-cu13",
+"version": "0.10.0",
+"summary": "cuequivariance-ops-torch - GPU Accelerated Torch Extensions for Equivariant Primitives",
+"requires": [
+"cuequivariance-ops-cu13",
+"scipy"
+],
+"required_by": [],
+"requested": true,
+"origin": "added",
+"role": "Compiled cuEquivariance kernels for PyTorch (CUDA 13); does not link libtorch."
+},
+"cuequivariance-torch": {
+"name": "cuequivariance-torch",
+"version": "0.10.0",
+"summary": "CUDA accelerated equivariant operations",
+"requires": [
+"cuequivariance"
+],
+"required_by": [],
+"requested": true,
+"origin": "added",
+"role": "cuEquivariance modules for PyTorch; MACE uses them with enable_cueq=True (88 modules)."
+},
+"cupti-python": {
+"name": "cupti-python",
+"version": "13.4.0",
+"summary": "NVIDIA CUPTI Python Library",
+"requires": [
+"cuda-bindings",
+"cuda-pathfinder",
+"numpy",
+"nvidia-cuda-cupti",
+"pyelftools"
+],
+"required_by": [],
+"origin": "ngc"
+},
+"cycler": {
+"name": "cycler",
+"version": "0.12.1",
+"summary": "Composable style cycles",
+"requires": [],
+"required_by": [
+"matplotlib"
+],
+"origin": "ngc"
+},
+"cython": {
+"name": "Cython",
+"version": "3.3.0",
+"summary": "The Cython compiler for writing C extensions in the Python language.",
+"requires": [],
+"required_by": [
+"pycocotools"
+],
+"origin": "ngc"
+},
+"datasets": {
+"name": "datasets",
+"version": "4.7.0",
+"summary": "HuggingFace community-driven open-source library of datasets",
+"requires": [
+"dill",
+"filelock",
+"fsspec",
+"httpx",
+"huggingface-hub",
+"multiprocess",
+"numpy",
+"packaging",
+"pandas",
+"pyarrow",
+"pyyaml",
+"requests",
+"tqdm",
+"xxhash"
+],
+"required_by": [
+"torchtitan"
+],
+"origin": "ngc"
+},
+"debugpy": {
+"name": "debugpy",
+"version": "1.8.22",
+"summary": "An implementation of the Debug Adapter Protocol for Python",
+"requires": [],
+"required_by": [
+"ipykernel"
+],
+"origin": "ngc"
+},
+"defusedxml": {
+"name": "defusedxml",
+"version": "0.7.1",
+"summary": "XML bomb protection for Python stdlib modules",
+"requires": [],
+"required_by": [
+"nbconvert",
+"nvidia-resiliency-ext"
+],
+"origin": "ngc"
+},
+"deprecated": {
+"name": "Deprecated",
+"version": "3.0.0",
+"summary": "Python @deprecated decorator to deprecate old python classes, functions or methods.",
+"requires": [
+"wrapt"
+],
+"required_by": [
+"limits"
+],
+"origin": "ngc"
+},
+"dill": {
+"name": "dill",
+"version": "0.4.0",
+"summary": "serialize all of Python",
+"requires": [],
+"required_by": [
+"datasets",
+"multiprocess"
+],
+"origin": "ngc"
+},
+"dllist": {
+"name": "dllist",
+"version": "2.0.0",
+"summary": "List the shared libraries loaded by the current process.",
+"requires": [],
+"required_by": [
+"torch-tensorrt"
+],
+"origin": "ngc"
+},
+"docstring-parser": {
+"name": "docstring_parser",
+"version": "0.18.0",
+"summary": "Parse Python docstrings in reST, Google and Numpydoc format",
+"requires": [],
+"required_by": [
+"tyro"
+],
+"origin": "ngc"
+},
+"e3nn": {
+"name": "e3nn",
+"version": "0.4.4",
+"summary": "Equivariant convolutional neural networks for the group E(3) of 3 dimensional rotations, translations, and mirrors.",
+"requires": [
+"opt-einsum-fx",
+"scipy",
+"sympy",
+"torch"
+],
+"required_by": [
+"mace-torch"
+],
+"origin": "added",
+"role": "Equivariant layers in PyTorch; MACE (PyTorch) is built on it."
+},
+"einops": {
+"name": "einops",
+"version": "0.8.2",
+"summary": "A new flavour of deep learning operations",
+"requires": [],
+"required_by": [
+"flash-attn-4",
+"flash-attn",
+"quack-kernels",
+"torchtitan",
+"transformer-engine"
+],
+"origin": "ngc"
+},
+"etils": {
+"name": "etils",
+"version": "1.14.0",
+"summary": "Collection of common python utils",
+"requires": [],
+"required_by": [
+"array-record",
+"grain"
+],
+"origin": "ngc"
+},
+"executing": {
+"name": "executing",
+"version": "2.2.1",
+"summary": "Get the currently executing AST node of a frame, and other information",
+"requires": [],
+"required_by": [
+"stack-data"
+],
+"origin": "ngc"
+},
+"fastapi": {
+"name": "fastapi",
+"version": "0.143.0",
+"summary": "FastAPI framework, high performance, easy to learn, fast to code, ready for production",
+"requires": [
+"annotated-doc",
+"opentelemetry-api",
+"pydantic",
+"starlette",
+"typing-extensions",
+"typing-inspection"
+],
+"required_by": [
+"nvidia-resiliency-ext"
+],
+"origin": "ngc"
+},
+"fastjsonschema": {
+"name": "fastjsonschema",
+"version": "2.22.2",
+"summary": "Fastest Python implementation of JSON schema",
+"requires": [],
+"required_by": [
+"nbformat"
+],
+"origin": "ngc"
+},
+"filelock": {
+"name": "filelock",
+"version": "4.0.12",
+"summary": "A platform independent file lock.",
+"requires": [],
+"required_by": [
+"datasets",
+"huggingface-hub",
+"torch",
+"torch-tensorrt"
+],
+"origin": "ngc"
+},
+"flash-attn": {
+"name": "flash_attn",
+"version": "2.8.3.post1+git91ffc2ac7c.67131627",
+"summary": "Flash Attention: Fast and Memory-Efficient Exact Attention",
+"requires": [
+"einops",
+"torch"
+],
+"required_by": [],
+"origin": "ngc"
+},
+"flash-attn-4": {
+"name": "flash-attn-4",
+"version": "4.0.0b24",
+"summary": "Flash Attention CUTE (CUDA Template Engine) implementation",
+"requires": [
+"apache-tvm-ffi",
+"einops",
+"nvidia-cutlass-dsl",
+"quack-kernels",
+"torch",
+"torch-c-dlpack-ext",
+"typing-extensions"
+],
+"required_by": [],
+"origin": "ngc"
+},
+"fonttools": {
+"name": "fonttools",
+"version": "4.66.1",
+"summary": "Tools to manipulate font files",
+"requires": [],
+"required_by": [
+"matplotlib"
+],
+"origin": "ngc"
+},
+"fqdn": {
+"name": "fqdn",
+"version": "1.6.0",
+"summary": "Validates fully-qualified domain names against RFC 1123, so that they are acceptable to modern browsers",
+"requires": [],
+"required_by": [],
+"origin": "ngc"
+},
+"frozenlist": {
+"name": "frozenlist",
+"version": "1.8.0",
+"summary": "A list-like structure which implements collections.abc.MutableSequence",
+"requires": [],
+"required_by": [
+"aiohttp",
+"aiosignal"
+],
+"origin": "ngc"
+},
+"fsspec": {
+"name": "fsspec",
+"version": "2026.2.0",
+"summary": "File-system specification",
+"requires": [],
+"required_by": [
+"datasets",
+"huggingface-hub",
+"torch"
+],
+"origin": "ngc"
+},
+"gast": {
+"name": "gast",
+"version": "0.7.0",
+"summary": "Python AST that abstracts the underlying Python version",
+"requires": [],
+"required_by": [
+"nvidia-dali-cuda130"
+],
+"origin": "ngc"
+},
+"gitdb": {
+"name": "gitdb",
+"version": "4.0.12",
+"summary": "Git Object Database",
+"requires": [
+"smmap"
+],
+"required_by": [
+"gitpython"
+],
+"origin": "added"
+},
+"gitpython": {
+"name": "GitPython",
+"version": "3.2.1",
+"summary": "GitPython is a Python library used to interact with Git repositories",
+"requires": [
+"gitdb"
+],
+"required_by": [
+"mace-torch"
+],
+"origin": "added"
+},
+"googleapis-common-protos": {
+"name": "googleapis-common-protos",
+"version": "1.75.5",
+"summary": "Common protobufs used in Google APIs",
+"requires": [
+"protobuf"
+],
+"required_by": [
+"opentelemetry-exporter-otlp-proto-http"
+],
+"origin": "ngc"
+},
+"grain": {
+"name": "grain",
+"version": "0.2.18",
+"summary": "Grain: A library for loading and transforming data for ML training.",
+"requires": [
+"absl-py",
+"array-record",
+"cloudpickle",
+"etils",
+"numpy",
+"portpicker",
+"protobuf"
+],
+"required_by": [
+"torchtitan"
+],
+"origin": "ngc"
+},
+"grpcio": {
+"name": "grpcio",
+"version": "1.84.0",
+"summary": "HTTP/2-based RPC framework",
+"requires": [
+"typing-extensions"
+],
+"required_by": [
+"grpcio-tools",
+"nvidia-resiliency-ext",
+"tensorboard"
+],
+"origin": "ngc"
+},
+"grpcio-tools": {
+"name": "grpcio-tools",
+"version": "1.81.1",
+"summary": "Protobuf code generator for gRPC",
+"requires": [
+"grpcio",
+"protobuf",
+"setuptools"
+],
+"required_by": [
+"nvidia-resiliency-ext"
+],
+"origin": "ngc"
+},
+"h11": {
+"name": "h11",
+"version": "0.16.0",
+"summary": "A pure-Python, bring-your-own-I/O implementation of HTTP/1.1",
+"requires": [],
+"required_by": [
+"httpcore",
+"uvicorn"
+],
+"origin": "ngc"
+},
+"h2": {
+"name": "h2",
+"version": "4.4.1",
+"summary": "Pure-Python HTTP/2 protocol implementation",
+"requires": [
+"hpack",
+"hyperframe"
+],
+"required_by": [],
+"origin": "added"
+},
+"h5py": {
+"name": "h5py",
+"version": "3.16.0",
+"summary": "Read and write HDF5 files from Python",
+"requires": [
+"numpy"
+],
+"required_by": [
+"mace-torch",
+"torch-sim-atomistic"
+],
+"requested": true,
+"origin": "added",
+"role": "HDF5 files (slice.h5, trajectories)."
+},
+"hf-xet": {
+"name": "hf-xet",
+"version": "1.7.0",
+"summary": "Fast transfer of large files with the Hugging Face Hub.",
+"requires": [],
+"required_by": [
+"huggingface-hub"
+],
+"origin": "ngc"
+},
+"hpack": {
+"name": "hpack",
+"version": "4.2.0",
+"summary": "Pure-Python HPACK header encoding",
+"requires": [],
+"required_by": [
+"h2"
+],
+"origin": "added"
+},
+"httpcore": {
+"name": "httpcore",
+"version": "1.0.9",
+"summary": "A minimal low-level HTTP client.",
+"requires": [
+"certifi",
+"h11"
+],
+"required_by": [
+"httpx"
+],
+"origin": "ngc"
+},
+"httptools": {
+"name": "httptools",
+"version": "0.8.0",
+"summary": "A collection of framework independent HTTP protocol utils.",
+"requires": [],
+"required_by": [],
+"origin": "ngc"
+},
+"httpx": {
+"name": "httpx",
+"version": "0.28.1",
+"summary": "The next generation HTTP client.",
+"requires": [
+"anyio",
+"certifi",
+"httpcore",
+"idna"
+],
+"required_by": [
+"blosc2",
+"datasets",
+"huggingface-hub",
+"jupyterlab",
+"nvidia-resiliency-ext"
+],
+"origin": "ngc"
+},
+"huggingface-hub": {
+"name": "huggingface_hub",
+"version": "1.33.0",
+"summary": "Client library to download and publish models, datasets and other repos on the huggingface.co hub",
+"requires": [
+"click",
+"filelock",
+"fsspec",
+"hf-xet",
+"httpx",
+"packaging",
+"pyyaml",
+"tqdm",
+"typing-extensions"
+],
+"required_by": [
+"datasets",
+"tokenizers"
+],
+"origin": "ngc"
+},
+"hyperframe": {
+"name": "hyperframe",
+"version": "6.1.0",
+"summary": "Pure-Python HTTP/2 framing",
+"requires": [],
+"required_by": [
+"h2"
+],
+"origin": "added"
+},
+"idna": {
+"name": "idna",
+"version": "3.20",
+"summary": "Internationalized Domain Names in Applications (IDNA)",
+"requires": [],
+"required_by": [
+"anyio",
+"httpx",
+"requests",
+"yarl"
+],
+"origin": "ngc"
+},
+"importlib-metadata": {
+"name": "importlib_metadata",
+"version": "9.0.1",
+"summary": "Read metadata from Python packages",
+"requires": [
+"zipp"
+],
+"required_by": [
+"transformer-engine"
+],
+"origin": "ngc"
+},
+"ipykernel": {
+"name": "ipykernel",
+"version": "7.4.0",
+"summary": "IPython Kernel for Jupyter",
+"requires": [
+"comm",
+"debugpy",
+"ipython",
+"jupyter-client",
+"jupyter-core",
+"matplotlib-inline",
+"nest-asyncio2",
+"packaging",
+"pyzmq",
+"tornado",
+"traitlets"
+],
+"required_by": [
+"jupyterlab"
+],
+"origin": "ngc"
+},
+"ipython": {
+"name": "ipython",
+"version": "9.17.1",
+"summary": "IPython: Productive Interactive Computing",
+"requires": [
+"ipython-pygments-lexers",
+"jedi",
+"matplotlib-inline",
+"pexpect",
+"prompt-toolkit",
+"psutil",
+"pygments",
+"stack-data",
+"traitlets"
+],
+"required_by": [
+"ipykernel"
+],
+"origin": "ngc"
+},
+"ipython-pygments-lexers": {
+"name": "ipython_pygments_lexers",
+"version": "1.1.1",
+"summary": "Defines a variety of Pygments lexers for highlighting IPython code.",
+"requires": [
+"pygments"
+],
+"required_by": [
+"ipython"
+],
+"origin": "ngc"
+},
+"isoduration": {
+"name": "isoduration",
+"version": "20.11.0",
+"summary": "Operations with ISO 8601 durations",
+"requires": [
+"arrow"
+],
+"required_by": [],
+"origin": "ngc"
+},
+"isort": {
+"name": "isort",
+"version": "9.0.2",
+"summary": "A Python utility / library to sort Python imports.",
+"requires": [
+"mypy-extensions"
+],
+"required_by": [],
+"origin": "ngc"
+},
+"jedi": {
+"name": "jedi",
+"version": "0.20.0",
+"summary": "An autocompletion tool for Python that can be used for text editors.",
+"requires": [
+"parso"
+],
+"required_by": [
+"ipython"
+],
+"origin": "ngc"
+},
+"jinja2": {
+"name": "Jinja2",
+"version": "3.1.6",
+"summary": "A very fast and expressive template engine.",
+"requires": [
+"markupsafe"
+],
+"required_by": [
+"jupyter-server",
+"jupyterlab",
+"jupyterlab-server",
+"nbconvert",
+"torch"
+],
+"origin": "ngc"
+},
+"json5": {
+"name": "json5",
+"version": "0.16.0",
+"summary": "A Python implementation of the JSON5 data format.",
+"requires": [],
+"required_by": [
+"jupyterlab-server"
+],
+"origin": "ngc"
+},
+"jsonpointer": {
+"name": "jsonpointer",
+"version": "3.2.0",
+"summary": "Identify specific nodes in a JSON document (RFC 6901) ",
+"requires": [],
+"required_by": [],
+"origin": "ngc"
+},
+"jsonschema": {
+"name": "jsonschema",
+"version": "4.26.0",
+"summary": "An implementation of JSON Schema validation for Python",
+"requires": [
+"attrs",
+"jsonschema-specifications",
+"referencing",
+"rpds-py"
+],
+"required_by": [
+"jupyter-events",
+"jupyterlab-server",
+"nbformat"
+],
+"origin": "ngc"
+},
+"jsonschema-specifications": {
+"name": "jsonschema-specifications",
+"version": "2025.9.1",
+"summary": "The JSON Schema meta-schemas and vocabularies, exposed as a Registry",
+"requires": [
+"referencing"
+],
+"required_by": [
+"jsonschema"
+],
+"origin": "ngc"
+},
+"jupyter-builder": {
+"name": "jupyter_builder",
+"version": "1.2.2",
+"summary": "JupyterLab build tools",
+"requires": [
+"jupyter-core",
+"traitlets"
+],
+"required_by": [
+"jupyterlab",
+"notebook"
+],
+"origin": "ngc"
+},
+"jupyter-client": {
+"name": "jupyter_client",
+"version": "8.10.0",
+"summary": "Jupyter protocol implementation and client libraries",
+"requires": [
+"jupyter-core",
+"python-dateutil",
+"pyzmq",
+"tornado",
+"traitlets",
+"typing-extensions"
+],
+"required_by": [
+"ipykernel",
+"jupyter-server",
+"nbclient"
+],
+"origin": "ngc"
+},
+"jupyter-core": {
+"name": "jupyter_core",
+"version": "5.9.1",
+"summary": "Jupyter core package. A base package on which Jupyter projects rely.",
+"requires": [
+"platformdirs",
+"traitlets"
+],
+"required_by": [
+"ipykernel",
+"jupyter-builder",
+"jupyter-client",
+"jupyter-server",
+"jupyterlab",
+"nbclient",
+"nbconvert",
+"nbformat"
+],
+"origin": "ngc"
+},
+"jupyter-events": {
+"name": "jupyter-events",
+"version": "0.12.1",
+"summary": "Jupyter Event System library",
+"requires": [
+"jsonschema",
+"packaging",
+"python-json-logger",
+"pyyaml",
+"referencing",
+"rfc3339-validator",
+"rfc3986-validator",
+"traitlets"
+],
+"required_by": [
+"jupyter-server"
+],
+"origin": "ngc"
+},
+"jupyter-lsp": {
+"name": "jupyter-lsp",
+"version": "2.3.1",
+"summary": "Multi-Language Server WebSocket proxy for Jupyter Notebook/Lab server",
+"requires": [
+"jupyter-server"
+],
+"required_by": [
+"jupyterlab"
+],
+"origin": "ngc"
+},
+"jupyter-server": {
+"name": "jupyter_server",
+"version": "2.21.1",
+"summary": "The backend\u2014i.e. core services, APIs, and REST endpoints\u2014to Jupyter web applications.",
+"requires": [
+"anyio",
+"argon2-cffi",
+"jinja2",
+"jupyter-client",
+"jupyter-core",
+"jupyter-events",
+"jupyter-server-terminals",
+"nbconvert",
+"nbformat",
+"packaging",
+"prometheus-client",
+"pyzmq",
+"send2trash",
+"terminado",
+"tornado",
+"traitlets",
+"websocket-client"
+],
+"required_by": [
+"jupyter-lsp",
+"jupyterlab",
+"jupyterlab-code-formatter",
+"jupyterlab-server",
+"notebook",
+"notebook-shim"
+],
+"origin": "ngc"
+},
+"jupyter-server-terminals": {
+"name": "jupyter_server_terminals",
+"version": "0.5.4",
+"summary": "A Jupyter Server Extension Providing Terminals.",
+"requires": [
+"terminado"
+],
+"required_by": [
+"jupyter-server"
+],
+"origin": "ngc"
+},
+"jupyterlab": {
+"name": "jupyterlab",
+"version": "4.6.4",
+"summary": "JupyterLab computational environment",
+"requires": [
+"async-lru",
+"httpx",
+"ipykernel",
+"jinja2",
+"jupyter-builder",
+"jupyter-core",
+"jupyter-lsp",
+"jupyter-server",
+"jupyterlab-server",
+"notebook-shim",
+"packaging",
+"tornado",
+"traitlets"
+],
+"required_by": [
+"jupyterlab-tensorboard-pro",
+"notebook"
+],
+"origin": "ngc"
+},
+"jupyterlab-code-formatter": {
+"name": "jupyterlab_code_formatter",
+"version": "3.1.0",
+"summary": "A JupyterLab plugin to facilitate invocation of code formatters.",
+"requires": [
+"jupyter-server",
+"packaging"
+],
+"required_by": [],
+"origin": "ngc"
+},
+"jupyterlab-pygments": {
+"name": "jupyterlab_pygments",
+"version": "0.3.0",
+"summary": "Pygments theme using JupyterLab CSS variables",
+"requires": [],
+"required_by": [
+"nbconvert"
+],
+"origin": "ngc"
+},
+"jupyterlab-server": {
+"name": "jupyterlab_server",
+"version": "2.28.1",
+"summary": "A set of server components for JupyterLab and JupyterLab like applications.",
+"requires": [
+"babel",
+"jinja2",
+"json5",
+"jsonschema",
+"jupyter-server",
+"packaging",
+"requests"
+],
+"required_by": [
+"jupyterlab",
+"notebook"
+],
+"origin": "ngc"
+},
+"jupyterlab-tensorboard-pro": {
+"name": "jupyterlab_tensorboard_pro",
+"version": "4.0.0",
+"summary": "A JupyterLab extension for tensorboard.",
+"requires": [
+"jupyterlab",
+"tornado"
+],
+"required_by": [],
+"origin": "ngc"
+},
+"jupytext": {
+"name": "jupytext",
+"version": "1.19.6",
+"summary": "Jupyter notebooks as Markdown documents, Julia, Python or R scripts",
+"requires": [
+"markdown-it-py",
+"mdit-py-plugins",
+"nbformat",
+"packaging",
+"pyyaml"
+],
+"required_by": [],
+"origin": "ngc"
+},
+"kiwisolver": {
+"name": "kiwisolver",
+"version": "1.5.1",
+"summary": "A fast implementation of the Cassowary constraint solver",
+"requires": [],
+"required_by": [
+"matplotlib"
+],
+"origin": "ngc"
+},
+"lark": {
+"name": "lark",
+"version": "1.3.1",
+"summary": "a modern parsing library",
+"requires": [],
+"required_by": [
+"rfc3987-syntax"
+],
+"origin": "ngc"
+},
+"libcst": {
+"name": "libcst",
+"version": "1.9.0",
+"summary": "A concrete syntax tree with AST-like properties for Python 3.0 through 3.15 programs.",
+"requires": [
+"pyyaml"
+],
+"required_by": [
+"nvidia-dali-cuda130"
+],
+"origin": "ngc"
+},
+"lightning-utilities": {
+"name": "lightning-utilities",
+"version": "0.15.3",
+"summary": "Lightning toolbox for across the our ecosystem.",
+"requires": [
+"packaging",
+"typing-extensions"
+],
+"required_by": [
+"torchmetrics"
+],
+"origin": "added"
+},
+"limits": {
+"name": "limits",
+"version": "5.8.0",
+"summary": "Rate limiting utilities",
+"requires": [
+"deprecated",
+"packaging",
+"typing-extensions"
+],
+"required_by": [
+"slowapi"
+],
+"origin": "ngc"
+},
+"llvmlite": {
+"name": "llvmlite",
+"version": "0.46.0",
+"summary": "lightweight wrapper around basic LLVM functionality",
+"requires": [],
+"required_by": [
+"numba"
+],
+"origin": "ngc"
+},
+"lmdb": {
+"name": "lmdb",
+"version": "3.0.0",
+"summary": "Universal Python binding for the LMDB 'Lightning' Database",
+"requires": [],
+"required_by": [
+"mace-torch"
+],
+"origin": "added"
+},
+"mace-torch": {
+"name": "mace-torch",
+"version": "0.3.17",
+"summary": "",
+"requires": [
+"ase",
+"configargparse",
+"e3nn",
+"gitpython",
+"h5py",
+"lmdb",
+"matplotlib",
+"matscipy",
+"numpy",
+"opt-einsum",
+"orjson",
+"pandas",
+"prettytable",
+"python-hostlist",
+"pyyaml",
+"torch",
+"torch-ema",
+"torchmetrics",
+"tqdm"
+],
+"required_by": [],
+"requested": true,
+"origin": "added",
+"role": "Reference MACE in PyTorch: mace_off() loader, ASE calculator, TorchSim adapter."
+},
+"makefun": {
+"name": "makefun",
+"version": "1.16.0",
+"summary": "Small library to dynamically create python functions.",
+"requires": [],
+"required_by": [
+"nvidia-dali-cuda130"
+],
+"origin": "ngc"
+},
+"markdown": {
+"name": "Markdown",
+"version": "3.11",
+"summary": "Python implementation of John Gruber's Markdown.",
+"requires": [],
+"required_by": [
+"tensorboard"
+],
+"origin": "ngc"
+},
+"markdown-it-py": {
+"name": "markdown-it-py",
+"version": "4.2.0",
+"summary": "Python port of markdown-it. Markdown parsing, done right!",
+"requires": [
+"mdurl"
+],
+"required_by": [
+"jupytext",
+"mdit-py-plugins",
+"rich"
+],
+"origin": "ngc"
+},
+"markupsafe": {
+"name": "MarkupSafe",
+"version": "3.0.4",
+"summary": "Safely add untrusted strings to HTML/XML markup.",
+"requires": [],
+"required_by": [
+"jinja2",
+"nbconvert",
+"werkzeug"
+],
+"origin": "ngc"
+},
+"matplotlib": {
+"name": "matplotlib",
+"version": "3.11.2",
+"summary": "Python plotting package",
+"requires": [
+"contourpy",
+"cycler",
+"fonttools",
+"kiwisolver",
+"numpy",
+"packaging",
+"pillow",
+"pyparsing",
+"python-dateutil"
+],
+"required_by": [
+"ase",
+"mace-torch",
+"pycocotools"
+],
+"origin": "ngc"
+},
+"matplotlib-inline": {
+"name": "matplotlib-inline",
+"version": "0.2.2",
+"summary": "Inline Matplotlib backend for Jupyter",
+"requires": [
+"traitlets"
+],
+"required_by": [
+"ipykernel",
+"ipython"
+],
+"origin": "ngc"
+},
+"matscipy": {
+"name": "matscipy",
+"version": "1.3.1",
+"summary": "Generic Python Materials Science tools",
+"requires": [
+"ase",
+"numpy",
+"packaging",
+"scipy"
+],
+"required_by": [
+"mace-torch"
+],
+"origin": "added",
+"role": "Fast neighbour lists for ASE (used by MACE)."
+},
+"mdit-py-plugins": {
+"name": "mdit-py-plugins",
+"version": "0.6.1",
+"summary": "Collection of plugins for markdown-it-py",
+"requires": [
+"markdown-it-py"
+],
+"required_by": [
+"jupytext"
+],
+"origin": "ngc"
+},
+"mdurl": {
+"name": "mdurl",
+"version": "0.1.2",
+"summary": "Markdown URL utilities",
+"requires": [],
+"required_by": [
+"markdown-it-py"
+],
+"origin": "ngc"
+},
+"mistune": {
+"name": "mistune",
+"version": "3.3.4",
+"summary": "A sane and fast Markdown parser with useful plugins and renderers",
+"requires": [],
+"required_by": [
+"nbconvert"
+],
+"origin": "ngc"
+},
+"ml-dtypes": {
+"name": "ml_dtypes",
+"version": "0.6.0",
+"summary": "ml_dtypes is a stand-alone implementation of several NumPy dtype extensions used in machine learning.",
+"requires": [
+"numpy"
+],
+"required_by": [
+"onnx",
+"onnx-ir",
+"onnxscript"
+],
+"origin": "ngc"
+},
+"mpmath": {
+"name": "mpmath",
+"version": "1.3.0",
+"summary": "Python library for arbitrary-precision floating-point arithmetic",
+"requires": [],
+"required_by": [
+"sympy"
+],
+"origin": "ngc"
+},
+"msgpack": {
+"name": "msgpack",
+"version": "1.2.4",
+"summary": "MessagePack serializer",
+"requires": [],
+"required_by": [
+"blosc2"
+],
+"origin": "added"
+},
+"multidict": {
+"name": "multidict",
+"version": "6.9.1",
+"summary": "multidict implementation",
+"requires": [],
+"required_by": [
+"aiohttp",
+"yarl"
+],
+"origin": "ngc"
+},
+"multiprocess": {
+"name": "multiprocess",
+"version": "0.70.18",
+"summary": "better multiprocessing and multithreading in Python",
+"requires": [
+"dill"
+],
+"required_by": [
+"datasets"
+],
+"origin": "ngc"
+},
+"mypy-extensions": {
+"name": "mypy_extensions",
+"version": "1.1.0",
+"summary": "Type system extensions for programs checked with the mypy type checker.",
+"requires": [],
+"required_by": [
+"black",
+"isort"
+],
+"origin": "ngc"
+},
+"nbclient": {
+"name": "nbclient",
+"version": "0.11.0",
+"summary": "A client library for executing notebooks. Formerly nbconvert's ExecutePreprocessor.",
+"requires": [
+"jupyter-client",
+"jupyter-core",
+"nbformat",
+"traitlets"
+],
+"required_by": [
+"nbconvert"
+],
+"origin": "ngc"
+},
+"nbconvert": {
+"name": "nbconvert",
+"version": "7.17.1",
+"summary": "Convert Jupyter Notebooks (.ipynb files) to other formats.",
+"requires": [
+"beautifulsoup4",
+"bleach",
+"defusedxml",
+"jinja2",
+"jupyter-core",
+"jupyterlab-pygments",
+"markupsafe",
+"mistune",
+"nbclient",
+"nbformat",
+"packaging",
+"pandocfilters",
+"pygments",
+"traitlets"
+],
+"required_by": [
+"jupyter-server"
+],
+"origin": "ngc"
+},
+"nbformat": {
+"name": "nbformat",
+"version": "5.11.1",
+"summary": "The Jupyter Notebook format",
+"requires": [
+"fastjsonschema",
+"jsonschema",
+"jupyter-core",
+"traitlets"
+],
+"required_by": [
+"jupyter-server",
+"jupytext",
+"nbclient",
+"nbconvert"
+],
+"origin": "ngc"
+},
+"ndindex": {
+"name": "ndindex",
+"version": "1.10.1",
+"summary": "A Python library for manipulating indices of ndarrays.",
+"requires": [],
+"required_by": [
+"blosc2"
+],
+"origin": "added"
+},
+"nest-asyncio2": {
+"name": "nest-asyncio2",
+"version": "1.7.4",
+"summary": "Patch asyncio to allow nested event loops",
+"requires": [],
+"required_by": [
+"ipykernel"
+],
+"origin": "ngc"
+},
+"networkx": {
+"name": "networkx",
+"version": "3.7",
+"summary": "Python package for creating and manipulating graphs and networks",
+"requires": [],
+"required_by": [
+"cuequivariance",
+"nvidia-cutlass-operators",
+"torch"
+],
+"origin": "ngc"
+},
+"ninja": {
+"name": "ninja",
+"version": "1.13.2",
+"summary": "Ninja is a small build system with a focus on speed",
+"requires": [],
+"required_by": [
+"nvidia-modelopt"
+],
+"origin": "ngc"
+},
+"notebook": {
+"name": "notebook",
+"version": "7.6.3",
+"summary": "Jupyter Notebook - A web-based notebook environment for interactive computing",
+"requires": [
+"jupyter-builder",
+"jupyter-server",
+"jupyterlab",
+"jupyterlab-server",
+"notebook-shim",
+"tornado"
+],
+"required_by": [],
+"origin": "ngc"
+},
+"notebook-shim": {
+"name": "notebook_shim",
+"version": "0.2.4",
+"summary": "A shim layer for notebook traits and config",
+"requires": [
+"jupyter-server"
+],
+"required_by": [
+"jupyterlab",
+"notebook"
+],
+"origin": "ngc"
+},
+"numba": {
+"name": "numba",
+"version": "0.64.0",
+"summary": "compiling Python code using LLVM",
+"requires": [
+"llvmlite",
+"numpy"
+],
+"required_by": [],
+"origin": "ngc"
+},
+"numexpr": {
+"name": "numexpr",
+"version": "2.14.2",
+"summary": "Fast numerical expression evaluator for NumPy",
+"requires": [
+"numpy"
+],
+"required_by": [
+"blosc2",
+"tables"
+],
+"origin": "added"
+},
+"numpy": {
+"name": "numpy",
+"version": "2.1.0",
+"summary": "Fundamental package for array computing in Python",
+"requires": [],
+"required_by": [],
+"origin": "ngc",
+"role": "Arrays."
+},
+"lapack-lite": {
+"name": "lapack-lite",
+"version": "",
+"summary": "",
+"requires": [],
+"required_by": [],
+"origin": "ngc"
+},
+"dragon4": {
+"name": "dragon4",
+"version": "",
+"summary": "",
+"requires": [],
+"required_by": [],
+"origin": "ngc"
+},
+"libdivide": {
+"name": "libdivide",
+"version": "",
+"summary": "",
+"requires": [],
+"required_by": [],
+"origin": "ngc"
+},
+"meson": {
+"name": "Meson",
+"version": "",
+"summary": "",
+"requires": [],
+"required_by": [],
+"origin": "ngc"
+},
+"spin": {
+"name": "spin",
+"version": "",
+"summary": "",
+"requires": [],
+"required_by": [],
+"origin": "ngc"
+},
+"openblas": {
+"name": "OpenBLAS",
+"version": "",
+"summary": "",
+"requires": [],
+"required_by": [],
+"origin": "ngc"
+},
+"lapack": {
+"name": "LAPACK",
+"version": "",
+"summary": "",
+"requires": [],
+"required_by": [],
+"origin": "ngc"
+},
+"gcc runtime library": {
+"name": "GCC runtime library",
+"version": "",
+"summary": "",
+"requires": [],
+"required_by": [],
+"origin": "ngc"
+},
+"libquadmath": {
+"name": "libquadmath",
+"version": "",
+"summary": "",
+"requires": [],
+"required_by": [
+"ase",
+"blosc2",
+"contourpy",
+"cuequivariance",
+"cupti-python",
+"datasets",
+"grain",
+"h5py",
+"mace-torch",
+"matplotlib",
+"matscipy",
+"ml-dtypes",
+"numba",
+"numexpr",
+"nvalchemi-toolkit-ops",
+"nvidia-dali-cuda130",
+"nvidia-modelopt",
+"nvidia-resiliency-ext",
+"onnx",
+"onnx-ir",
+"onnxscript",
+"pandas",
+"scipy",
+"tables",
+"tensorboard",
+"torch-sim-atomistic",
+"torch-checkpointing",
+"torch-tensorrt",
+"torchmetrics",
+"torchvision",
+"triton-kernels",
+"warp-lang"
+],
+"origin": "ngc"
+},
+"nvalchemi-toolkit-ops": {
+"name": "nvalchemi-toolkit-ops",
+"version": "0.5.0",
+"summary": "High-performance NVIDIA Warp primitives for GPU-enabled computational chemistry and atomistic simulation workflows.",
+"requires": [
+"numpy",
+"warp-lang"
+],
+"required_by": [
+"torch-sim-atomistic"
+],
+"origin": "added",
+"role": "NVIDIA GPU neighbour lists used by TorchSim."
+},
+"nvdlfw-inspect": {
+"name": "nvdlfw_inspect",
+"version": "0.2.2",
+"summary": "Facilitates debugging convergence issues and testing new algorithms/recipes for training LLMs using Nvidia libraries.",
+"requires": [
+"pyyaml",
+"torch"
+],
+"required_by": [
+"transformer-engine"
+],
+"origin": "ngc"
+},
+"nvidia-cublas": {
+"name": "nvidia-cublas",
+"version": "13.10.0.20",
+"summary": "CUBLAS native runtime libraries",
+"requires": [
+"nvidia-cuda-nvrtc"
+],
+"required_by": [
+"cuequivariance-ops-cu13"
+],
+"origin": "added"
+},
+"nvidia-cuda-nvrtc": {
+"name": "nvidia-cuda-nvrtc",
+"version": "13.5.37",
+"summary": "NVRTC native runtime libraries",
+"requires": [],
+"required_by": [
+"nvidia-cublas"
+],
+"origin": "added"
+},
+"nvidia-cudnn-frontend": {
+"name": "nvidia-cudnn-frontend",
+"version": "1.30.0",
+"summary": "NVIDIA cuDNN Frontend \u2014 Python and C++ Graph API with SOTA attention (SDPA / Flash Attention), MoE grouped GEMM fusions, and FP8/MXFP8 kernels for Hopper, Blackwell, and Rubin GPUs.",
+"requires": [
+"apache-tvm-ffi",
+"nvidia-cutlass-dsl"
+],
+"required_by": [
+"transformer-engine"
+],
+"origin": "ngc"
+},
+"nvidia-cutlass-dsl": {
+"name": "nvidia-cutlass-dsl",
+"version": "4.8.0",
+"summary": "NVIDIA CUTLASS Python DSL",
+"requires": [
+"nvidia-cutlass-dsl-libs-base",
+"nvidia-cutlass-dsl-libs-cu12"
+],
+"required_by": [
+"flash-attn-4",
+"nvidia-cudnn-frontend",
+"nvidia-cutlass-operators",
+"quack-kernels"
+],
+"origin": "ngc"
+},
+"nvidia-cutlass-dsl-libs-base": {
+"name": "nvidia-cutlass-dsl-libs-base",
+"version": "4.8.0",
+"summary": "NVIDIA CUTLASS Python DSL",
+"requires": [
+"cuda-bindings",
+"nvidia-cutlass-dsl-libs-core",
+"protobuf",
+"typing-extensions"
+],
+"required_by": [
+"nvidia-cutlass-dsl",
+"nvidia-cutlass-dsl-libs-cu12",
+"nvidia-cutlass-dsl-libs-cu13"
+],
+"origin": "ngc"
+},
+"nvidia-cutlass-dsl-libs-core": {
+"name": "nvidia-cutlass-dsl-libs-core",
+"version": "4.8.0",
+"summary": "NVIDIA CUTLASS Python DSL",
+"requires": [
+"cuda-bindings",
+"protobuf",
+"typing-extensions"
+],
+"required_by": [
+"nvidia-cutlass-dsl-libs-base"
+],
+"origin": "ngc"
+},
+"nvidia-cutlass-dsl-libs-cu12": {
+"name": "nvidia-cutlass-dsl-libs-cu12",
+"version": "4.8.0",
+"summary": "NVIDIA CUTLASS Python DSL",
+"requires": [
+"cuda-bindings",
+"nvidia-cutlass-dsl-libs-base",
+"protobuf",
+"typing-extensions"
+],
+"required_by": [
+"nvidia-cutlass-dsl"
+],
+"origin": "ngc"
+},
+"nvidia-cutlass-dsl-libs-cu13": {
+"name": "nvidia-cutlass-dsl-libs-cu13",
+"version": "4.8.0",
+"summary": "NVIDIA CUTLASS Python DSL",
+"requires": [
+"cuda-bindings",
+"nvidia-cutlass-dsl-libs-base",
+"protobuf",
+"typing-extensions"
+],
+"required_by": [],
+"origin": "ngc"
+},
+"nvidia-cutlass-operators": {
+"name": "nvidia-cutlass-operators",
+"version": "0.3.0",
+"summary": "High-level discover/compile/execute API for CUTLASS Python kernels.",
+"requires": [
+"apache-tvm-ffi",
+"networkx",
+"nvidia-cutlass-dsl"
+],
+"required_by": [],
+"origin": "ngc"
+},
+"nvidia-dali-cuda130": {
+"name": "nvidia-dali-cuda130",
+"version": "2.3.0",
+"summary": "NVIDIA DALI  for CUDA 13.0. Git SHA: 68b40ed8bd2f77985c4cf114e50fcca065cb66d7",
+"requires": [
+"astunparse",
+"gast",
+"libcst",
+"makefun",
+"numpy",
+"nvidia-libnvcomp-cu13",
+"nvidia-nvimgcodec-cu13",
+"nvtx",
+"optree",
+"packaging",
+"six"
+],
+"required_by": [],
+"origin": "ngc"
+},
+"nvidia-libnvcomp-cu13": {
+"name": "nvidia-libnvcomp-cu13",
+"version": "5.3.0.16",
+"summary": "NVIDIA nvcomp for CUDA 13",
+"requires": [],
+"required_by": [
+"nvidia-dali-cuda130"
+],
+"origin": "ngc"
+},
+"nvidia-ml-py": {
+"name": "nvidia-ml-py",
+"version": "13.615.71",
+"summary": "Python Bindings for the NVIDIA Management Library",
+"requires": [],
+"required_by": [
+"cuequivariance-ops-cu13",
+"nvidia-modelopt",
+"nvidia-resiliency-ext"
+],
+"origin": "ngc"
+},
+"nvidia-modelopt": {
+"name": "nvidia-modelopt",
+"version": "0.47.0",
+"summary": "Nvidia Model Optimizer: A unified library of SOTA model optimization techniques like quantization, pruning, Neural Architecture Search (NAS), distillation, speculative decoding, etc. It compresses deep learning models for downstream deployment frameworks like TensorRT-LLM, TensorRT, vLLM, etc. to optimize inference speed.",
+"requires": [
+"ninja",
+"numpy",
+"nvidia-ml-py",
+"omegaconf",
+"packaging",
+"pulp",
+"pydantic",
+"pyyaml",
+"regex",
+"rich",
+"safetensors",
+"scipy",
+"setuptools",
+"torch",
+"tqdm"
+],
+"required_by": [],
+"origin": "ngc"
+},
+"nvidia-nvimgcodec-cu13": {
+"name": "nvidia-nvimgcodec-cu13",
+"version": "0.9.0.20",
+"summary": "NVIDIA nvimgcodec  for CUDA 13.",
+"requires": [],
+"required_by": [
+"nvidia-dali-cuda130"
+],
+"origin": "ngc"
+},
+"nvidia-nvjpeg": {
+"name": "nvidia-nvjpeg",
+"version": "13.2.3.58",
+"summary": "NVJPEG native runtime libraries",
+"requires": [],
+"required_by": [],
+"origin": "ngc"
+},
+"nvidia-nvjpeg2k-cu13": {
+"name": "nvidia-nvjpeg2k-cu13",
+"version": "0.11.0.51",
+"summary": "NVIDIA nvJPEG2000 native runtime libraries",
+"requires": [],
+"required_by": [],
+"origin": "ngc"
+},
+"nvidia-nvtiff-cu13": {
+"name": "nvidia-nvtiff-cu13",
+"version": "0.8.0.82",
+"summary": "NVIDIA nvTIFF native runtime libraries",
+"requires": [],
+"required_by": [],
+"origin": "ngc"
+},
+"nvidia-resiliency-ext": {
+"name": "nvidia-resiliency-ext",
+"version": "0.7.0",
+"summary": "NVIDIA Resiliency Package",
+"requires": [
+"defusedxml",
+"fastapi",
+"grpcio",
+"grpcio-tools",
+"httpx",
+"numpy",
+"nvidia-ml-py",
+"packaging",
+"protobuf",
+"psutil",
+"pydantic",
+"pydantic-settings",
+"pyyaml",
+"slowapi",
+"torch",
+"uvicorn"
+],
+"required_by": [],
+"origin": "ngc"
+},
+"nvtx": {
+"name": "nvtx",
+"version": "0.2.16",
+"summary": "Python NVTX - Python code annotation library",
+"requires": [],
+"required_by": [
+"nvidia-dali-cuda130"
+],
+"origin": "ngc"
+},
+"omegaconf": {
+"name": "omegaconf",
+"version": "2.4.0",
+"summary": "A flexible configuration library",
+"requires": [
+"pyyaml"
+],
+"required_by": [
+"nvidia-modelopt"
+],
+"origin": "ngc"
+},
+"onnx": {
+"name": "onnx",
+"version": "1.21.0",
+"summary": "Open Neural Network Exchange",
+"requires": [
+"ml-dtypes",
+"numpy",
+"protobuf",
+"typing-extensions"
+],
+"required_by": [
+"onnx-ir",
+"onnxscript",
+"transformer-engine"
+],
+"origin": "ngc"
+},
+"onnx-ir": {
+"name": "onnx-ir",
+"version": "1.0.0",
+"summary": "Efficient in-memory representation for ONNX",
+"requires": [
+"ml-dtypes",
+"numpy",
+"onnx",
+"sympy",
+"typing-extensions"
+],
+"required_by": [
+"onnxscript"
+],
+"origin": "ngc"
+},
+"onnxscript": {
+"name": "onnxscript",
+"version": "0.7.2",
+"summary": "Naturally author ONNX functions and models using a subset of Python",
+"requires": [
+"ml-dtypes",
+"numpy",
+"onnx",
+"onnx-ir",
+"packaging",
+"typing-extensions"
+],
+"required_by": [
+"transformer-engine"
+],
+"origin": "ngc"
+},
+"opentelemetry-api": {
+"name": "opentelemetry-api",
+"version": "1.45.1",
+"summary": "OpenTelemetry Python API",
+"requires": [
+"typing-extensions"
+],
+"required_by": [
+"fastapi",
+"opentelemetry-exporter-http-transport",
+"opentelemetry-exporter-otlp-proto-http",
+"opentelemetry-sdk",
+"opentelemetry-semantic-conventions",
+"wandb"
+],
+"origin": "ngc"
+},
+"opentelemetry-exporter-http-transport": {
+"name": "opentelemetry-exporter-http-transport",
+"version": "0.66b1",
+"summary": "OpenTelemetry Exporters HTTP transport",
+"requires": [
+"opentelemetry-api"
+],
+"required_by": [
+"opentelemetry-exporter-otlp-proto-http"
+],
+"origin": "ngc"
+},
+"opentelemetry-exporter-otlp-common": {
+"name": "opentelemetry-exporter-otlp-common",
+"version": "0.66b1",
+"summary": "OpenTelemetry OTLP HTTP export utilities",
+"requires": [
+"opentelemetry-sdk"
+],
+"required_by": [
+"opentelemetry-exporter-otlp-proto-http"
+],
+"origin": "ngc"
+},
+"opentelemetry-exporter-otlp-proto-common": {
+"name": "opentelemetry-exporter-otlp-proto-common",
+"version": "1.45.1",
+"summary": "OpenTelemetry Protobuf encoding",
+"requires": [
+"opentelemetry-proto"
+],
+"required_by": [
+"opentelemetry-exporter-otlp-proto-http"
+],
+"origin": "ngc"
+},
+"opentelemetry-exporter-otlp-proto-http": {
+"name": "opentelemetry-exporter-otlp-proto-http",
+"version": "1.45.1",
+"summary": "OpenTelemetry Collector Protobuf over HTTP Exporter",
+"requires": [
+"googleapis-common-protos",
+"opentelemetry-api",
+"opentelemetry-exporter-http-transport",
+"opentelemetry-exporter-otlp-common",
+"opentelemetry-exporter-otlp-proto-common",
+"opentelemetry-proto",
+"opentelemetry-sdk",
+"requests",
+"typing-extensions"
+],
+"required_by": [
+"wandb"
+],
+"origin": "ngc"
+},
+"opentelemetry-proto": {
+"name": "opentelemetry-proto",
+"version": "1.45.1",
+"summary": "OpenTelemetry Python Proto",
+"requires": [
+"protobuf"
+],
+"required_by": [
+"opentelemetry-exporter-otlp-proto-common",
+"opentelemetry-exporter-otlp-proto-http"
+],
+"origin": "ngc"
+},
+"opentelemetry-sdk": {
+"name": "opentelemetry-sdk",
+"version": "1.45.1",
+"summary": "OpenTelemetry Python SDK",
+"requires": [
+"opentelemetry-api",
+"opentelemetry-semantic-conventions",
+"typing-extensions"
+],
+"required_by": [
+"opentelemetry-exporter-otlp-common",
+"opentelemetry-exporter-otlp-proto-http",
+"wandb"
+],
+"origin": "ngc"
+},
+"opentelemetry-semantic-conventions": {
+"name": "opentelemetry-semantic-conventions",
+"version": "0.66b1",
+"summary": "OpenTelemetry Semantic Conventions",
+"requires": [
+"opentelemetry-api",
+"typing-extensions"
+],
+"required_by": [
+"opentelemetry-sdk"
+],
+"origin": "ngc"
+},
+"opt-einsum": {
+"name": "opt_einsum",
+"version": "3.4.0",
+"summary": "Path optimization of einsum functions.",
+"requires": [],
+"required_by": [
+"cuequivariance",
+"mace-torch",
+"opt-einsum-fx"
+],
+"origin": "added"
+},
+"opt-einsum-fx": {
+"name": "opt-einsum-fx",
+"version": "0.1.4",
+"summary": "Einsum optimization using opt_einsum and PyTorch FX",
+"requires": [
+"opt-einsum",
+"packaging",
+"torch"
+],
+"required_by": [
+"e3nn"
+],
+"origin": "added"
+},
+"optree": {
+"name": "optree",
+"version": "0.20.0",
+"summary": "Optimized PyTree Utilities.",
+"requires": [
+"typing-extensions"
+],
+"required_by": [
+"nvidia-dali-cuda130"
+],
+"origin": "ngc"
+},
+"orjson": {
+"name": "orjson",
+"version": "3.13.0",
+"summary": "Fast, correct Python JSON library supporting dataclasses, datetimes, and numpy",
+"requires": [],
+"required_by": [
+"mace-torch"
+],
+"origin": "added"
+},
+"packaging": {
+"name": "packaging",
+"version": "26.2",
+"summary": "Core utilities for Python packages",
+"requires": [],
+"required_by": [
+"apex",
+"black",
+"datasets",
+"huggingface-hub",
+"ipykernel",
+"jupyter-events",
+"jupyter-server",
+"jupyterlab",
+"jupyterlab-code-formatter",
+"jupyterlab-server",
+"jupytext",
+"lightning-utilities",
+"limits",
+"matplotlib",
+"matscipy",
+"nbconvert",
+"nvidia-dali-cuda130",
+"nvidia-modelopt",
+"nvidia-resiliency-ext",
+"onnxscript",
+"opt-einsum-fx",
+"tables",
+"tensorboard",
+"torch-tensorrt",
+"torchmetrics",
+"transformer-engine",
+"wandb",
+"wheel"
+],
+"origin": "ngc"
+},
+"pandas": {
+"name": "pandas",
+"version": "3.0.6",
+"summary": "Powerful data structures for data analysis, time series, and statistics",
+"requires": [
+"numpy",
+"python-dateutil"
+],
+"required_by": [
+"datasets",
+"mace-torch"
+],
+"origin": "ngc",
+"role": "Tables (features.csv, species.csv)."
+},
+"pandocfilters": {
+"name": "pandocfilters",
+"version": "1.5.1",
+"summary": "Utilities for writing pandoc filters in python",
+"requires": [],
+"required_by": [
+"nbconvert"
+],
+"origin": "ngc"
+},
+"parso": {
+"name": "parso",
+"version": "0.8.7",
+"summary": "A Python Parser",
+"requires": [],
+"required_by": [
+"jedi"
+],
+"origin": "ngc"
+},
+"pathspec": {
+"name": "pathspec",
+"version": "1.1.1",
+"summary": "Utility library for gitignore style pattern matching of file paths.",
+"requires": [],
+"required_by": [
+"black"
+],
+"origin": "ngc"
+},
+"pexpect": {
+"name": "pexpect",
+"version": "4.9.0",
+"summary": "Pexpect allows easy control of interactive console applications.",
+"requires": [
+"ptyprocess"
+],
+"required_by": [
+"ipython"
+],
+"origin": "ngc"
+},
+"pillow": {
+"name": "pillow",
+"version": "12.3.0",
+"summary": "Python Imaging Library (fork)",
+"requires": [],
+"required_by": [
+"matplotlib",
+"tensorboard",
+"torchtitan",
+"torchvision"
+],
+"origin": "ngc"
+},
+"pip": {
+"name": "pip",
+"version": "26.2.1",
+"summary": "The PyPA recommended tool for installing Python packages.",
+"requires": [],
+"required_by": [],
+"origin": "ngc"
+},
+"platformdirs": {
+"name": "platformdirs",
+"version": "4.12.4",
+"summary": "A small Python package for determining appropriate platform-specific dirs, e.g. a `user data dir`.",
+"requires": [],
+"required_by": [
+"black",
+"cuequivariance-ops-cu13",
+"jupyter-core",
+"wandb"
+],
+"origin": "ngc"
+},
+"polygraphy": {
+"name": "polygraphy",
+"version": "0.53.5",
+"summary": "Polygraphy: A Deep Learning Inference Prototyping and Debugging Toolkit",
+"requires": [],
+"required_by": [],
+"origin": "ngc"
+},
+"portpicker": {
+"name": "portpicker",
+"version": "1.6.0",
+"summary": "A library to choose unique available network ports.",
+"requires": [
+"psutil"
+],
+"required_by": [
+"grain"
+],
+"origin": "ngc"
+},
+"prettytable": {
+"name": "prettytable",
+"version": "3.18.0",
+"summary": "A simple Python library for easily displaying tabular data in a visually appealing ASCII table format",
+"requires": [
+"wcwidth"
+],
+"required_by": [
+"mace-torch"
+],
+"origin": "added"
+},
+"prometheus-client": {
+"name": "prometheus_client",
+"version": "0.26.0",
+"summary": "Python client for the Prometheus monitoring system.",
+"requires": [],
+"required_by": [
+"jupyter-server"
+],
+"origin": "ngc"
+},
+"prompt-toolkit": {
+"name": "prompt_toolkit",
+"version": "3.0.53",
+"summary": "Library for building powerful interactive command lines in Python",
+"requires": [
+"wcwidth"
+],
+"required_by": [
+"ipython"
+],
+"origin": "ngc"
+},
+"propcache": {
+"name": "propcache",
+"version": "0.5.4",
+"summary": "Accelerated property cache",
+"requires": [],
+"required_by": [
+"aiohttp",
+"yarl"
+],
+"origin": "ngc"
+},
+"protobuf": {
+"name": "protobuf",
+"version": "6.33.6",
+"summary": "",
+"requires": [],
+"required_by": [
+"googleapis-common-protos",
+"grain",
+"grpcio-tools",
+"nvidia-cutlass-dsl-libs-base",
+"nvidia-cutlass-dsl-libs-core",
+"nvidia-cutlass-dsl-libs-cu12",
+"nvidia-cutlass-dsl-libs-cu13",
+"nvidia-resiliency-ext",
+"onnx",
+"opentelemetry-proto",
+"tensorboard",
+"wandb"
+],
+"origin": "ngc"
+},
+"psutil": {
+"name": "psutil",
+"version": "7.2.2",
+"summary": "Cross-platform lib for process and system monitoring.",
+"requires": [],
+"required_by": [
+"ipython",
+"nvidia-resiliency-ext",
+"portpicker",
+"torch-tensorrt"
+],
+"origin": "ngc"
+},
+"ptyprocess": {
+"name": "ptyprocess",
+"version": "0.7.0",
+"summary": "Run a subprocess in a pseudo terminal",
+"requires": [],
+"required_by": [
+"pexpect",
+"terminado"
+],
+"origin": "ngc"
+},
+"pulp": {
+"name": "PuLP",
+"version": "3.3.2",
+"summary": "PuLP is an LP modeler written in python. PuLP can generate MPS or LP files and call GLPK, COIN CLP/CBC, CPLEX, and GUROBI to solve linear problems.",
+"requires": [],
+"required_by": [
+"nvidia-modelopt"
+],
+"origin": "ngc"
+},
+"pure-eval": {
+"name": "pure_eval",
+"version": "0.2.4",
+"summary": "Safely evaluate AST nodes without side effects",
+"requires": [],
+"required_by": [
+"stack-data"
+],
+"origin": "ngc"
+},
+"py-cpuinfo": {
+"name": "py-cpuinfo",
+"version": "9.0.0",
+"summary": "Get CPU info with pure Python",
+"requires": [],
+"required_by": [
+"tables"
+],
+"origin": "added"
+},
+"pyarrow": {
+"name": "pyarrow",
+"version": "26.0.0",
+"summary": "Python library for Apache Arrow",
+"requires": [],
+"required_by": [
+"datasets"
+],
+"origin": "ngc"
+},
+"pybind11": {
+"name": "pybind11",
+"version": "3.1.0",
+"summary": "Seamless operability between C++11 and Python",
+"requires": [],
+"required_by": [],
+"origin": "ngc"
+},
+"pycocotools": {
+"name": "pycocotools",
+"version": "2.0+nv0.8.1",
+"summary": "",
+"requires": [
+"cython",
+"matplotlib",
+"setuptools"
+],
+"required_by": [],
+"origin": "ngc"
+},
+"pycparser": {
+"name": "pycparser",
+"version": "3.11",
+"summary": "C parser in Python",
+"requires": [],
+"required_by": [
+"cffi"
+],
+"origin": "ngc"
+},
+"pydantic": {
+"name": "pydantic",
+"version": "2.14.0",
+"summary": "Data validation using Python type hints",
+"requires": [
+"annotated-types",
+"pydantic-core",
+"typing-extensions",
+"typing-inspection"
+],
+"required_by": [
+"blosc2",
+"fastapi",
+"nvidia-modelopt",
+"nvidia-resiliency-ext",
+"pydantic-settings",
+"transformer-engine",
+"wandb"
+],
+"origin": "ngc"
+},
+"pydantic-core": {
+"name": "pydantic_core",
+"version": "2.50.0",
+"summary": "Core functionality for Pydantic validation and serialization",
+"requires": [
+"typing-extensions"
+],
+"required_by": [
+"pydantic"
+],
+"origin": "ngc"
+},
+"pydantic-settings": {
+"name": "pydantic-settings",
+"version": "2.15.0",
+"summary": "Settings management using Pydantic",
+"requires": [
+"pydantic",
+"python-dotenv",
+"typing-inspection"
+],
+"required_by": [
+"nvidia-resiliency-ext"
+],
+"origin": "ngc"
+},
+"pyelftools": {
+"name": "pyelftools",
+"version": "0.33",
+"summary": "Library for analyzing ELF files and DWARF debugging information",
+"requires": [],
+"required_by": [
+"cupti-python"
+],
+"origin": "ngc"
+},
+"pygments": {
+"name": "Pygments",
+"version": "2.17.2",
+"summary": "Pygments is a syntax highlighting package written in Python.",
+"requires": [],
+"required_by": [
+"ipython",
+"ipython-pygments-lexers",
+"nbconvert",
+"rich"
+],
+"origin": "ngc"
+},
+"pyparsing": {
+"name": "pyparsing",
+"version": "3.3.3",
+"summary": "pyparsing - Classes and methods to define and execute parsing grammars",
+"requires": [],
+"required_by": [
+"matplotlib"
+],
+"origin": "ngc"
+},
+"python-dateutil": {
+"name": "python-dateutil",
+"version": "2.9.0.post0",
+"summary": "Extensions to the standard Python datetime module",
+"requires": [
+"six"
+],
+"required_by": [
+"arrow",
+"jupyter-client",
+"matplotlib",
+"pandas"
+],
+"origin": "ngc"
+},
+"python-dotenv": {
+"name": "python-dotenv",
+"version": "1.2.4",
+"summary": "Read key-value pairs from a .env file and set them as environment variables",
+"requires": [],
+"required_by": [
+"pydantic-settings"
+],
+"origin": "ngc"
+},
+"python-hostlist": {
+"name": "python_hostlist",
+"version": "2.3.0",
+"summary": "Python module for hostlist handling",
+"requires": [],
+"required_by": [
+"mace-torch"
+],
+"origin": "ngc"
+},
+"python-json-logger": {
+"name": "python-json-logger",
+"version": "4.2.0",
+"summary": "JSON Log Formatter for the Python Logging Package",
+"requires": [],
+"required_by": [
+"jupyter-events"
+],
+"origin": "ngc"
+},
+"pytokens": {
+"name": "pytokens",
+"version": "0.4.1",
+"summary": "A Fast, spec compliant Python 3.14+ tokenizer that runs on older Pythons.",
+"requires": [],
+"required_by": [
+"black"
+],
+"origin": "ngc"
+},
+"pyyaml": {
+"name": "PyYAML",
+"version": "6.0.1",
+"summary": "YAML parser and emitter for Python",
+"requires": [],
+"required_by": [
+"datasets",
+"huggingface-hub",
+"jupyter-events",
+"jupytext",
+"libcst",
+"mace-torch",
+"nvdlfw-inspect",
+"nvidia-modelopt",
+"nvidia-resiliency-ext",
+"omegaconf",
+"wandb"
+],
+"origin": "ngc"
+},
+"pyzmq": {
+"name": "pyzmq",
+"version": "27.2.0",
+"summary": "Python bindings for 0MQ",
+"requires": [],
+"required_by": [
+"ipykernel",
+"jupyter-client",
+"jupyter-server"
+],
+"origin": "ngc"
+},
+"quack-kernels": {
+"name": "quack-kernels",
+"version": "0.6.2",
+"summary": "",
+"requires": [
+"apache-tvm-ffi",
+"einops",
+"nvidia-cutlass-dsl",
+"torch",
+"torch-c-dlpack-ext"
+],
+"required_by": [
+"flash-attn-4"
+],
+"origin": "ngc"
+},
+"referencing": {
+"name": "referencing",
+"version": "0.37.0",
+"summary": "JSON Referencing + Python",
+"requires": [
+"attrs",
+"rpds-py",
+"typing-extensions"
+],
+"required_by": [
+"jsonschema",
+"jsonschema-specifications",
+"jupyter-events"
+],
+"origin": "ngc"
+},
+"regex": {
+"name": "regex",
+"version": "2026.9.29",
+"summary": "Alternative regular expression module, to replace re.",
+"requires": [],
+"required_by": [
+"nvidia-modelopt"
+],
+"origin": "ngc"
+},
+"requests": {
+"name": "requests",
+"version": "2.34.2",
+"summary": "Python HTTP for Humans.",
+"requires": [
+"certifi",
+"charset-normalizer",
+"idna",
+"urllib3"
+],
+"required_by": [
+"datasets",
+"jupyterlab-server",
+"opentelemetry-exporter-otlp-proto-http",
+"wandb"
+],
+"origin": "ngc"
+},
+"rfc3339-validator": {
+"name": "rfc3339-validator",
+"version": "0.1.4",
+"summary": "A pure python RFC3339 validator",
+"requires": [
+"six"
+],
+"required_by": [
+"jupyter-events"
+],
+"origin": "ngc"
+},
+"rfc3986-validator": {
+"name": "rfc3986-validator",
+"version": "0.1.1",
+"summary": "Pure python rfc3986 validator",
+"requires": [],
+"required_by": [
+"jupyter-events"
+],
+"origin": "ngc"
+},
+"rfc3987-syntax": {
+"name": "rfc3987-syntax",
+"version": "1.1.0",
+"summary": "Helper functions to syntactically validate strings according to RFC 3987.",
+"requires": [
+"lark"
+],
+"required_by": [],
+"origin": "ngc"
+},
+"rich": {
+"name": "rich",
+"version": "15.0.0",
+"summary": "Render rich text, tables, progress bars, syntax highlighting, markdown and more to the terminal",
+"requires": [
+"markdown-it-py",
+"pygments"
+],
+"required_by": [
+"blosc2",
+"nvidia-modelopt"
+],
+"origin": "ngc"
+},
+"rpds-py": {
+"name": "rpds-py",
+"version": "2026.9.1",
+"summary": "Python bindings to Rust's persistent data structures (rpds)",
+"requires": [],
+"required_by": [
+"jsonschema",
+"referencing"
+],
+"origin": "ngc"
+},
+"safetensors": {
+"name": "safetensors",
+"version": "0.8.0",
+"summary": "",
+"requires": [],
+"required_by": [
+"nvidia-modelopt",
+"torch-checkpointing",
+"torchtitan"
+],
+"origin": "ngc"
+},
+"scipy": {
+"name": "scipy",
+"version": "1.18.1",
+"summary": "Fundamental algorithms for scientific computing in Python",
+"requires": [
+"numpy"
+],
+"required_by": [
+"ase",
+"cuequivariance",
+"cuequivariance-ops-torch-cu13",
+"e3nn",
+"matscipy",
+"nvidia-modelopt"
+],
+"origin": "ngc",
+"role": "Numerical routines (integration, optimisation, special functions)."
+},
+"send2trash": {
+"name": "Send2Trash",
+"version": "2.1.0",
+"summary": "Send file to trash natively under Mac OS X, Windows and Linux",
+"requires": [],
+"required_by": [
+"jupyter-server"
+],
+"origin": "ngc"
+},
+"setuptools": {
+"name": "setuptools",
+"version": "81.0.0",
+"summary": "Easily download, build, install, upgrade, and uninstall Python packages",
+"requires": [],
+"required_by": [
+"grpcio-tools",
+"nvidia-modelopt",
+"pycocotools",
+"tensorboard",
+"torch"
+],
+"origin": "ngc"
+},
+"six": {
+"name": "six",
+"version": "1.16.0",
+"summary": "Python 2 and 3 compatibility utilities",
+"requires": [],
+"required_by": [
+"astunparse",
+"nvidia-dali-cuda130",
+"python-dateutil",
+"rfc3339-validator"
+],
+"origin": "ngc"
+},
+"slowapi": {
+"name": "slowapi",
+"version": "0.1.10",
+"summary": "A rate limiting extension for Starlette and Fastapi",
+"requires": [
+"limits"
+],
+"required_by": [
+"nvidia-resiliency-ext"
+],
+"origin": "ngc"
+},
+"smmap": {
+"name": "smmap",
+"version": "5.0.3",
+"summary": "A pure Python implementation of a sliding window memory map manager",
+"requires": [],
+"required_by": [
+"gitdb"
+],
+"origin": "added"
+},
+"soupsieve": {
+"name": "soupsieve",
+"version": "2.10",
+"summary": "A modern CSS selector implementation for Beautiful Soup.",
+"requires": [],
+"required_by": [
+"beautifulsoup4"
+],
+"origin": "ngc"
+},
+"spmd-types": {
+"name": "spmd_types",
+"version": "0.2.5",
+"summary": "A type system for distributed (SPMD) tensor computations in PyTorch",
+"requires": [],
+"required_by": [
+"torchtitan"
+],
+"origin": "ngc"
+},
+"stack-data": {
+"name": "stack-data",
+"version": "0.6.3",
+"summary": "Extract data from python stack frames and tracebacks for informative displays",
+"requires": [
+"asttokens",
+"executing",
+"pure-eval"
+],
+"required_by": [
+"ipython"
+],
+"origin": "ngc"
+},
+"starlette": {
+"name": "starlette",
+"version": "1.7.0",
+"summary": "The little ASGI library that shines.",
+"requires": [
+"anyio",
+"typing-extensions"
+],
+"required_by": [
+"fastapi"
+],
+"origin": "ngc"
+},
+"sympy": {
+"name": "sympy",
+"version": "1.14.0",
+"summary": "Computer algebra system (CAS) in Python",
+"requires": [
+"mpmath"
+],
+"required_by": [
+"cuequivariance",
+"e3nn",
+"onnx-ir",
+"torch"
+],
+"origin": "ngc"
+},
+"tables": {
+"name": "tables",
+"version": "3.11.1",
+"summary": "Hierarchical datasets for Python",
+"requires": [
+"blosc2",
+"numexpr",
+"numpy",
+"packaging",
+"py-cpuinfo"
+],
+"required_by": [
+"torch-sim-atomistic"
+],
+"origin": "added"
+},
+"tabulate": {
+"name": "tabulate",
+"version": "0.10.0",
+"summary": "Pretty-print tabular data",
+"requires": [],
+"required_by": [],
+"origin": "ngc"
+},
+"tensorboard": {
+"name": "tensorboard",
+"version": "2.20.0",
+"summary": "TensorBoard lets you watch Tensors Flow",
+"requires": [
+"absl-py",
+"grpcio",
+"markdown",
+"numpy",
+"packaging",
+"pillow",
+"protobuf",
+"setuptools",
+"tensorboard-data-server",
+"werkzeug"
+],
+"required_by": [
+"torchtitan"
+],
+"origin": "ngc"
+},
+"tensorboard-data-server": {
+"name": "tensorboard-data-server",
+"version": "0.7.2",
+"summary": "Fast data loading for TensorBoard",
+"requires": [],
+"required_by": [
+"tensorboard"
+],
+"origin": "ngc"
+},
+"tensorrt": {
+"name": "tensorrt",
+"version": "11.4.0.106",
+"summary": "A high performance deep learning inference library",
+"requires": [],
+"required_by": [],
+"origin": "ngc"
+},
+"terminado": {
+"name": "terminado",
+"version": "0.18.1",
+"summary": "Tornado websocket backend for the Xterm.js Javascript terminal emulator library.",
+"requires": [
+"ptyprocess",
+"tornado"
+],
+"required_by": [
+"jupyter-server",
+"jupyter-server-terminals"
+],
+"origin": "ngc"
+},
+"threadpoolctl": {
+"name": "threadpoolctl",
+"version": "3.8.0",
+"summary": "threadpoolctl",
+"requires": [],
+"required_by": [
+"blosc2"
+],
+"origin": "added"
+},
+"tinycss2": {
+"name": "tinycss2",
+"version": "1.5.1",
+"summary": "A tiny CSS parser",
+"requires": [
+"webencodings"
+],
+"required_by": [],
+"origin": "ngc"
+},
+"tokenizers": {
+"name": "tokenizers",
+"version": "0.23.3",
+"summary": "",
+"requires": [
+"huggingface-hub"
+],
+"required_by": [
+"torchtitan"
+],
+"origin": "ngc"
+},
+"torch": {
+"name": "torch",
+"version": "2.15.0a0+875d815502.nv26.10.72655024",
+"summary": "Tensors and Dynamic neural networks in Python with strong GPU acceleration",
+"requires": [
+"filelock",
+"fsspec",
+"jinja2",
+"networkx",
+"setuptools",
+"sympy",
+"typing-extensions"
+],
+"required_by": [
+"attn-gym",
+"e3nn",
+"flash-attn-4",
+"flash-attn",
+"mace-torch",
+"nvdlfw-inspect",
+"nvidia-modelopt",
+"nvidia-resiliency-ext",
+"opt-einsum-fx",
+"quack-kernels",
+"torch-ema",
+"torch-sim-atomistic",
+"torch-c-dlpack-ext",
+"torch-checkpointing",
+"torch-remat",
+"torchmetrics",
+"torchvision",
+"transformer-engine"
+],
+"origin": "ngc",
+"role": "NVIDIA's PyTorch build from the NGC image; the constraints file stops pip from replacing it."
+},
+"torch-c-dlpack-ext": {
+"name": "torch_c_dlpack_ext",
+"version": "0.1.5",
+"summary": "torch c dlpack ext",
+"requires": [
+"torch"
+],
+"required_by": [
+"flash-attn-4",
+"quack-kernels"
+],
+"origin": "ngc"
+},
+"torch-checkpointing": {
+"name": "torch_checkpointing",
+"version": "0.1.0",
+"summary": "A high-performance, distributed-training-ready checkpointing library for PyTorch models",
+"requires": [
+"numpy",
+"safetensors",
+"torch",
+"typing-extensions"
+],
+"required_by": [
+"torchtitan"
+],
+"origin": "ngc"
+},
+"torch-ema": {
+"name": "torch-ema",
+"version": "0.3",
+"summary": "PyTorch library for computing moving averages of model parameters.",
+"requires": [
+"torch"
+],
+"required_by": [
+"mace-torch"
+],
+"origin": "added"
+},
+"torch-remat": {
+"name": "torch_remat",
+"version": "0.2.0",
+"summary": "Explicit activation rematerialization helpers for PyTorch",
+"requires": [
+"torch"
+],
+"required_by": [
+"torchtitan"
+],
+"origin": "ngc"
+},
+"torch-sim-atomistic": {
+"name": "torch-sim-atomistic",
+"version": "0.6.2",
+"summary": "A pytorch toolkit for calculating material properties using MLIPs",
+"requires": [
+"h5py",
+"numpy",
+"nvalchemi-toolkit-ops",
+"tables",
+"torch",
+"tqdm"
+],
+"required_by": [],
+"requested": true,
+"origin": "added",
+"role": "TorchSim: batched MD of many systems in one PyTorch state; the batched PyTorch candidate."
+},
+"torch-tensorrt": {
+"name": "torch_tensorrt",
+"version": "2.15.0a0",
+"summary": "Torch-TensorRT is a package which allows users to automatically compile PyTorch and TorchScript modules to TensorRT while remaining in PyTorch",
+"requires": [
+"dllist",
+"filelock",
+"numpy",
+"packaging",
+"psutil",
+"typing-extensions"
+],
+"required_by": [],
+"origin": "ngc"
+},
+"torchao": {
+"name": "torchao",
+"version": "0.19.0+git6792133e",
+"summary": "Package for applying ao techniques to GPU models",
+"requires": [],
+"required_by": [],
+"origin": "ngc"
+},
+"torchmetrics": {
+"name": "torchmetrics",
+"version": "1.9.0",
+"summary": "PyTorch native Metrics",
+"requires": [
+"lightning-utilities",
+"numpy",
+"packaging",
+"torch"
+],
+"required_by": [
+"mace-torch"
+],
+"origin": "added"
+},
+"torchtitan": {
+"name": "torchtitan",
+"version": "0.2.2+git65ba8a69",
+"summary": "A PyTorch native platform for training generative AI models",
+"requires": [
+"attn-gym",
+"datasets",
+"einops",
+"grain",
+"pillow",
+"safetensors",
+"spmd-types",
+"tensorboard",
+"tokenizers",
+"torch-checkpointing",
+"torch-remat",
+"tyro",
+"wandb"
+],
+"required_by": [],
+"origin": "ngc"
+},
+"torchvision": {
+"name": "torchvision",
+"version": "0.30.0a0+ac8d215f.nv26.10.72655024",
+"summary": "image and video datasets and models for torch deep learning",
+"requires": [
+"numpy",
+"pillow",
+"torch"
+],
+"required_by": [],
+"origin": "ngc"
+},
+"tornado": {
+"name": "tornado",
+"version": "6.5.10",
+"summary": "Tornado is a Python web framework and asynchronous networking library, originally developed at FriendFeed.",
+"requires": [],
+"required_by": [
+"ipykernel",
+"jupyter-client",
+"jupyter-server",
+"jupyterlab",
+"jupyterlab-tensorboard-pro",
+"notebook",
+"terminado"
+],
+"origin": "ngc"
+},
+"tqdm": {
+"name": "tqdm",
+"version": "4.70.1",
+"summary": "Fast, Extensible Progress Meter",
+"requires": [],
+"required_by": [
+"cuequivariance-ops-cu13",
+"datasets",
+"huggingface-hub",
+"mace-torch",
+"nvidia-modelopt",
+"torch-sim-atomistic"
+],
+"origin": "ngc"
+},
+"traitlets": {
+"name": "traitlets",
+"version": "5.16.1",
+"summary": "Traitlets Python configuration system",
+"requires": [],
+"required_by": [
+"ipykernel",
+"ipython",
+"jupyter-events",
+"jupyter-builder",
+"jupyter-client",
+"jupyter-core",
+"jupyter-server",
+"jupyterlab",
+"matplotlib-inline",
+"nbclient",
+"nbconvert",
+"nbformat"
+],
+"origin": "ngc"
+},
+"transformer-engine": {
+"name": "transformer_engine",
+"version": "2.20.2+6ea2a74a",
+"summary": "Transformer acceleration library",
+"requires": [
+"einops",
+"importlib-metadata",
+"nvdlfw-inspect",
+"nvidia-cudnn-frontend",
+"onnx",
+"onnxscript",
+"packaging",
+"pydantic",
+"torch"
+],
+"required_by": [],
+"origin": "ngc"
+},
+"triton": {
+"name": "triton",
+"version": "3.8.0+gitc01b6774.nv26.10",
+"summary": "A language and compiler for custom Deep Learning operations",
+"requires": [],
+"required_by": [],
+"origin": "ngc",
+"role": "GPU kernel compiler used inside PyTorch (from NGC)."
+},
+"triton-kernels": {
+"name": "triton_kernels",
+"version": "1.0.0+gitc01b6774.nv26.10",
+"summary": "",
+"requires": [
+"numpy",
+"pytest"
+],
+"required_by": [],
+"origin": "ngc"
+},
+"typeguard": {
+"name": "typeguard",
+"version": "4.6.0",
+"summary": "Run-time type checker for Python",
+"requires": [
+"typing-extensions"
+],
+"required_by": [
+"tyro"
+],
+"origin": "ngc"
+},
+"typing-extensions": {
+"name": "typing_extensions",
+"version": "4.16.0",
+"summary": "Backported and Experimental Type Hints for Python 3.9+",
+"requires": [],
+"required_by": [
+"aiohttp",
+"aiosignal",
+"anyio",
+"apache-tvm-ffi",
+"ase",
+"beautifulsoup4",
+"cuda-tile",
+"fastapi",
+"flash-attn-4",
+"grpcio",
+"huggingface-hub",
+"jupyter-client",
+"lightning-utilities",
+"limits",
+"nvidia-cutlass-dsl-libs-base",
+"nvidia-cutlass-dsl-libs-core",
+"nvidia-cutlass-dsl-libs-cu12",
+"nvidia-cutlass-dsl-libs-cu13",
+"onnx",
+"onnx-ir",
+"onnxscript",
+"opentelemetry-api",
+"opentelemetry-exporter-otlp-proto-http",
+"opentelemetry-sdk",
+"opentelemetry-semantic-conventions",
+"optree",
+"pydantic",
+"pydantic-core",
+"referencing",
+"starlette",
+"torch",
+"torch-checkpointing",
+"torch-tensorrt",
+"typeguard",
+"typing-inspection",
+"tyro",
+"wandb"
+],
+"origin": "ngc"
+},
+"typing-inspection": {
+"name": "typing-inspection",
+"version": "0.4.4",
+"summary": "Runtime typing introspection tools",
+"requires": [
+"typing-extensions"
+],
+"required_by": [
+"fastapi",
+"pydantic",
+"pydantic-settings"
+],
+"origin": "ngc"
+},
+"tyro": {
+"name": "tyro",
+"version": "1.0.16",
+"summary": "CLI interfaces & config objects, from types",
+"requires": [
+"docstring-parser",
+"typeguard",
+"typing-extensions"
+],
+"required_by": [
+"torchtitan"
+],
+"origin": "ngc"
+},
+"tzdata": {
+"name": "tzdata",
+"version": "2026.5",
+"summary": "Provider of IANA time zone data",
+"requires": [],
+"required_by": [
+"arrow"
+],
+"origin": "ngc"
+},
+"uri-template": {
+"name": "uri-template",
+"version": "1.3.0",
+"summary": "RFC 6570 URI Template Processor",
+"requires": [],
+"required_by": [],
+"origin": "ngc"
+},
+"urllib3": {
+"name": "urllib3",
+"version": "2.8.0",
+"summary": "HTTP library with thread-safe connection pooling, file post, and more.",
+"requires": [],
+"required_by": [
+"requests"
+],
+"origin": "ngc"
+},
+"uvicorn": {
+"name": "uvicorn",
+"version": "0.54.0",
+"summary": "The lightning-fast ASGI server.",
+"requires": [
+"click",
+"h11"
+],
+"required_by": [
+"nvidia-resiliency-ext"
+],
+"origin": "ngc"
+},
+"uvloop": {
+"name": "uvloop",
+"version": "0.23.0",
+"summary": "Fast implementation of asyncio event loop on top of libuv",
+"requires": [],
+"required_by": [],
+"origin": "ngc"
+},
+"wandb": {
+"name": "wandb",
+"version": "0.30.0",
+"summary": "A CLI and library for interacting with the Weights & Biases API.",
+"requires": [
+"click",
+"opentelemetry-api",
+"opentelemetry-exporter-otlp-proto-http",
+"opentelemetry-sdk",
+"packaging",
+"platformdirs",
+"protobuf",
+"pydantic",
+"pyyaml",
+"requests",
+"typing-extensions",
+"xxhash"
+],
+"required_by": [
+"torchtitan"
+],
+"origin": "ngc"
+},
+"warp-lang": {
+"name": "warp-lang",
+"version": "1.19.0",
+"summary": "A Python framework for high-performance simulation and graphics programming",
+"requires": [
+"numpy"
+],
+"required_by": [
+"nvalchemi-toolkit-ops"
+],
+"origin": "added",
+"role": "NVIDIA Warp: a Python-embedded GPU kernel language, used by nvalchemi."
+},
+"watchfiles": {
+"name": "watchfiles",
+"version": "1.3.0",
+"summary": "Simple, modern and high performance file watching and code reload in python.",
+"requires": [
+"anyio"
+],
+"required_by": [],
+"origin": "ngc"
+},
+"wcwidth": {
+"name": "wcwidth",
+"version": "0.9.2",
+"summary": "Measures the displayed width of unicode strings in a terminal",
+"requires": [],
+"required_by": [
+"prettytable",
+"prompt-toolkit"
+],
+"origin": "ngc"
+},
+"webcolors": {
+"name": "webcolors",
+"version": "25.10.0",
+"summary": "A library for working with the color formats defined by HTML and CSS.",
+"requires": [],
+"required_by": [],
+"origin": "ngc"
+},
+"webencodings": {
+"name": "webencodings",
+"version": "0.6.1",
+"summary": "Character encoding aliases for legacy web content",
+"requires": [],
+"required_by": [
+"bleach",
+"tinycss2"
+],
+"origin": "ngc"
+},
+"websocket-client": {
+"name": "websocket-client",
+"version": "1.9.2",
+"summary": "WebSocket client for Python with low level API options",
+"requires": [],
+"required_by": [
+"jupyter-server"
+],
+"origin": "ngc"
+},
+"websockets": {
+"name": "websockets",
+"version": "17.2",
+"summary": "An implementation of the WebSocket Protocol (RFC 6455 & 7692)",
+"requires": [],
+"required_by": [],
+"origin": "ngc"
+},
+"werkzeug": {
+"name": "Werkzeug",
+"version": "3.1.9",
+"summary": "The comprehensive WSGI web application library.",
+"requires": [
+"markupsafe"
+],
+"required_by": [
+"tensorboard"
+],
+"origin": "ngc"
+},
+"wheel": {
+"name": "wheel",
+"version": "0.48.0",
+"summary": "Command line tool for manipulating wheel files",
+"requires": [
+"packaging"
+],
+"required_by": [
+"astunparse"
+],
+"origin": "ngc"
+},
+"wrapt": {
+"name": "wrapt",
+"version": "2.5.0",
+"summary": "Module for decorators, wrappers and monkey patching.",
+"requires": [],
+"required_by": [
+"deprecated"
+],
+"origin": "ngc"
+},
+"xxhash": {
+"name": "xxhash",
+"version": "4.0.1",
+"summary": "Python binding for xxHash",
+"requires": [],
+"required_by": [
+"datasets",
+"wandb"
+],
+"origin": "ngc"
+},
+"yarl": {
+"name": "yarl",
+"version": "1.25.1",
+"summary": "Yet another URL library",
+"requires": [
+"idna",
+"multidict",
+"propcache"
+],
+"required_by": [
+"aiohttp"
+],
+"origin": "ngc"
+},
+"zipp": {
+"name": "zipp",
+"version": "4.1.1",
+"summary": "Backport of pathlib-compatible object wrapper for zip files",
+"requires": [],
+"required_by": [
+"importlib-metadata"
+],
+"origin": "ngc"
+}
+},
+"C_cpu": {
+"amespahdbpythonsuite": {
+"name": "amespahdbpythonsuite",
+"version": "0.5.0.post96+ge8961b2",
+"summary": "A Python module to work with a downloaded PAHdb XML-file.",
+"requires": [
+"astropy",
+"fnnls",
+"importlib-resources",
+"lxml",
+"matplotlib",
+"numpy",
+"packaging",
+"scipy",
+"specutils",
+"tqdm",
+"vtk"
+],
+"required_by": [],
+"requested": true,
+"role": "PAHdb tools: database reader, geometry/edge codes, cascade emission model (stages 1-3)."
+},
+"anyio": {
+"name": "anyio",
+"version": "4.16.0",
+"summary": "High-level concurrency and networking framework on top of asyncio or Trio",
+"requires": [
+"idna",
+"typing-extensions"
+],
+"required_by": [
+"httpx",
+"jupyter-server"
+]
+},
+"argon2-cffi": {
+"name": "argon2-cffi",
+"version": "25.1.0",
+"summary": "Argon2 for Python",
+"requires": [
+"argon2-cffi-bindings"
+],
+"required_by": [
+"jupyter-server"
+]
+},
+"argon2-cffi-bindings": {
+"name": "argon2-cffi-bindings",
+"version": "26.1.0",
+"summary": "Low-level CFFI bindings for Argon2",
+"requires": [
+"cffi"
+],
+"required_by": [
+"argon2-cffi"
+]
+},
+"arrow": {
+"name": "arrow",
+"version": "1.4.0",
+"summary": "Better dates & times for Python",
+"requires": [
+"python-dateutil",
+"tzdata"
+],
+"required_by": [
+"isoduration"
+]
+},
+"asdf": {
+"name": "asdf",
+"version": "6.0.0",
+"summary": "Python implementation of the ASDF Standard",
+"requires": [
+"asdf-standard",
+"attrs",
+"jmespath",
+"numpy",
+"packaging",
+"pyyaml",
+"semantic-version",
+"typing-extensions"
+],
+"required_by": [
+"asdf-astropy",
+"asdf-coordinates-schemas",
+"gwcs",
+"specutils"
+]
+},
+"asdf-astropy": {
+"name": "asdf-astropy",
+"version": "0.11.0",
+"summary": "ASDF serialization support for astropy",
+"requires": [
+"asdf",
+"asdf-coordinates-schemas",
+"asdf-standard",
+"asdf-transform-schemas",
+"astropy",
+"numpy",
+"packaging"
+],
+"required_by": [
+"gwcs",
+"specutils"
+]
+},
+"asdf-coordinates-schemas": {
+"name": "asdf_coordinates_schemas",
+"version": "0.5.1",
+"summary": "ASDF schemas for coordinates",
+"requires": [
+"asdf",
+"asdf-standard"
+],
+"required_by": [
+"asdf-astropy",
+"asdf-wcs-schemas"
+]
+},
+"asdf-standard": {
+"name": "asdf_standard",
+"version": "1.5.0",
+"summary": "The ASDF Standard schemas",
+"requires": [],
+"required_by": [
+"asdf",
+"asdf-astropy",
+"asdf-coordinates-schemas",
+"asdf-transform-schemas",
+"asdf-wcs-schemas"
+]
+},
+"asdf-transform-schemas": {
+"name": "asdf_transform_schemas",
+"version": "0.6.0",
+"summary": "ASDF schemas for transforms",
+"requires": [
+"asdf-standard"
+],
+"required_by": [
+"asdf-astropy",
+"asdf-wcs-schemas"
+]
+},
+"asdf-wcs-schemas": {
+"name": "asdf_wcs_schemas",
+"version": "0.5.0",
+"summary": "ASDF WCS schemas",
+"requires": [
+"asdf-coordinates-schemas",
+"asdf-standard",
+"asdf-transform-schemas"
+],
+"required_by": [
+"gwcs"
+]
+},
+"astropy": {
+"name": "astropy",
+"version": "8.0.2",
+"summary": "Astronomy and astrophysics core library",
+"requires": [
+"astropy-iers-data",
+"numpy",
+"packaging",
+"pyerfa",
+"pyyaml"
+],
+"required_by": [
+"amespahdbpythonsuite",
+"asdf-astropy",
+"gwcs",
+"ndcube",
+"pahfit",
+"specutils"
+],
+"requested": true,
+"role": "Astronomy core: units, tables, FITS, modelling."
+},
+"astropy-iers-data": {
+"name": "astropy-iers-data",
+"version": "0.2026.11.2.0.34.55",
+"summary": "IERS Earth Rotation and Leap Second tables for the astropy core package",
+"requires": [],
+"required_by": [
+"astropy"
+]
+},
+"asttokens": {
+"name": "asttokens",
+"version": "3.0.2",
+"summary": "Annotate AST trees with source code positions",
+"requires": [],
+"required_by": [
+"stack-data"
+]
+},
+"async-lru": {
+"name": "async-lru",
+"version": "2.4.0",
+"summary": "Simple LRU cache for asyncio",
+"requires": [],
+"required_by": [
+"jupyterlab"
+]
+},
+"attrs": {
+"name": "attrs",
+"version": "26.1.0",
+"summary": "Classes Without Boilerplate",
+"requires": [],
+"required_by": [
+"asdf",
+"jsonschema",
+"referencing"
+]
+},
+"babel": {
+"name": "babel",
+"version": "2.18.0",
+"summary": "Internationalization utilities",
+"requires": [],
+"required_by": [
+"jupyterlab-server"
+]
+},
+"beautifulsoup4": {
+"name": "beautifulsoup4",
+"version": "4.15.0",
+"summary": "Screen-scraping library",
+"requires": [
+"soupsieve",
+"typing-extensions"
+],
+"required_by": [
+"nbconvert"
+]
+},
+"bleach": {
+"name": "bleach",
+"version": "6.4.0",
+"summary": "An easy safelist-based HTML-sanitizing tool.",
+"requires": [
+"webencodings"
+],
+"required_by": [
+"nbconvert"
+]
+},
+"certifi": {
+"name": "certifi",
+"version": "2026.10.23",
+"summary": "Python package for providing Mozilla's CA Bundle.",
+"requires": [],
+"required_by": [
+"httpcore",
+"httpx",
+"requests"
+]
+},
+"cffi": {
+"name": "cffi",
+"version": "2.1.1",
+"summary": "Foreign Function Interface for Python calling C code.",
+"requires": [
+"pycparser"
+],
+"required_by": [
+"argon2-cffi-bindings"
+]
+},
+"charset-normalizer": {
+"name": "charset-normalizer",
+"version": "3.5.2",
+"summary": "The Real First Universal Charset Detector. Open, modern and actively maintained alternative to Chardet.",
+"requires": [],
+"required_by": [
+"requests"
+]
+},
+"click": {
+"name": "click",
+"version": "8.5.1",
+"summary": "Composable command line interface toolkit",
+"requires": [],
+"required_by": [
+"pysr"
+]
+},
+"cloudpickle": {
+"name": "cloudpickle",
+"version": "3.1.2",
+"summary": "Pickler class to extend the standard pickle.Pickler functionality",
+"requires": [],
+"required_by": [
+"joblib"
+]
+},
+"comm": {
+"name": "comm",
+"version": "0.2.3",
+"summary": "Jupyter Python Comm implementation, for usage in ipykernel, xeus-python etc.",
+"requires": [],
+"required_by": [
+"ipykernel",
+"ipywidgets"
+]
+},
+"contourpy": {
+"name": "contourpy",
+"version": "1.4.0",
+"summary": "Python library for calculating contours of 2D quadrilateral grids",
+"requires": [
+"numpy"
+],
+"required_by": [
+"matplotlib"
+]
+},
+"cycler": {
+"name": "cycler",
+"version": "0.12.1",
+"summary": "Composable style cycles",
+"requires": [],
+"required_by": [
+"matplotlib"
+]
+},
+"debugpy": {
+"name": "debugpy",
+"version": "1.8.22",
+"summary": "An implementation of the Debug Adapter Protocol for Python",
+"requires": [],
+"required_by": [
+"ipykernel"
+]
+},
+"defusedxml": {
+"name": "defusedxml",
+"version": "0.7.1",
+"summary": "XML bomb protection for Python stdlib modules",
+"requires": [],
+"required_by": [
+"nbconvert"
+]
+},
+"executing": {
+"name": "executing",
+"version": "2.3.0",
+"summary": "Get the currently executing AST node of a frame, and other information",
+"requires": [],
+"required_by": [
+"stack-data"
+]
+},
+"fastjsonschema": {
+"name": "fastjsonschema",
+"version": "2.22.3",
+"summary": "Fastest Python implementation of JSON schema",
+"requires": [],
+"required_by": [
+"nbformat"
+]
+},
+"filelock": {
+"name": "filelock",
+"version": "4.2.9",
+"summary": "A platform independent file lock.",
+"requires": [],
+"required_by": [
+"juliapkg"
+]
+},
+"fnnls": {
+"name": "fnnls",
+"version": "1.0.0",
+"summary": "Fast Nonnegative Least Squares",
+"requires": [
+"numpy",
+"pytest"
+],
+"required_by": [
+"amespahdbpythonsuite"
+]
+},
+"fonttools": {
+"name": "fonttools",
+"version": "4.68.0",
+"summary": "Tools to manipulate font files",
+"requires": [],
+"required_by": [
+"matplotlib"
+]
+},
+"fqdn": {
+"name": "fqdn",
+"version": "1.6.0",
+"summary": "Validates fully-qualified domain names against RFC 1123, so that they are acceptable to modern browsers",
+"requires": [],
+"required_by": []
+},
+"gwcs": {
+"name": "gwcs",
+"version": "1.0.3",
+"summary": "Generalized World Coordinate System",
+"requires": [
+"asdf",
+"asdf-astropy",
+"asdf-wcs-schemas",
+"astropy",
+"numpy",
+"scipy"
+],
+"required_by": [
+"ndcube",
+"specutils"
+]
+},
+"h11": {
+"name": "h11",
+"version": "0.16.0",
+"summary": "A pure-Python, bring-your-own-I/O implementation of HTTP/1.1",
+"requires": [],
+"required_by": [
+"httpcore"
+]
+},
+"h5py": {
+"name": "h5py",
+"version": "3.16.0",
+"summary": "Read and write HDF5 files from Python",
+"requires": [
+"numpy"
+],
+"required_by": [],
+"requested": true,
+"role": "HDF5 files (slice.h5, trajectories)."
+},
+"httpcore": {
+"name": "httpcore",
+"version": "1.0.9",
+"summary": "A minimal low-level HTTP client.",
+"requires": [
+"certifi",
+"h11"
+],
+"required_by": [
+"httpx"
+]
+},
+"httpx": {
+"name": "httpx",
+"version": "0.28.1",
+"summary": "The next generation HTTP client.",
+"requires": [
+"anyio",
+"certifi",
+"httpcore",
+"idna"
+],
+"required_by": [
+"jupyterlab"
+]
+},
+"idna": {
+"name": "idna",
+"version": "3.20",
+"summary": "Internationalized Domain Names in Applications (IDNA)",
+"requires": [],
+"required_by": [
+"anyio",
+"httpx",
+"requests"
+]
+},
+"importlib-resources": {
+"name": "importlib_resources",
+"version": "7.1.0",
+"summary": "Read resources from Python packages",
+"requires": [],
+"required_by": [
+"amespahdbpythonsuite"
+]
+},
+"iniconfig": {
+"name": "iniconfig",
+"version": "2.3.1",
+"summary": "brain-dead simple config-ini parsing",
+"requires": [],
+"required_by": [
+"pytest"
+]
+},
+"ipykernel": {
+"name": "ipykernel",
+"version": "7.4.0",
+"summary": "IPython Kernel for Jupyter",
+"requires": [
+"comm",
+"debugpy",
+"ipython",
+"jupyter-client",
+"jupyter-core",
+"matplotlib-inline",
+"nest-asyncio2",
+"packaging",
+"pyzmq",
+"tornado",
+"traitlets"
+],
+"required_by": [
+"jupyter",
+"jupyter-console",
+"jupyterlab"
+]
+},
+"ipython": {
+"name": "ipython",
+"version": "9.18.1",
+"summary": "IPython: Productive Interactive Computing",
+"requires": [
+"ipython-pygments-lexers",
+"jedi",
+"matplotlib-inline",
+"pexpect",
+"prompt-toolkit",
+"psutil",
+"pygments",
+"stack-data",
+"traitlets"
+],
+"required_by": [
+"ipykernel",
+"ipywidgets",
+"jupyter-console"
+]
+},
+"ipython-pygments-lexers": {
+"name": "ipython_pygments_lexers",
+"version": "1.1.1",
+"summary": "Defines a variety of Pygments lexers for highlighting IPython code.",
+"requires": [
+"pygments"
+],
+"required_by": [
+"ipython"
+]
+},
+"ipywidgets": {
+"name": "ipywidgets",
+"version": "8.1.9",
+"summary": "Jupyter interactive widgets",
+"requires": [
+"comm",
+"ipython",
+"jupyterlab-widgets",
+"traitlets",
+"widgetsnbextension"
+],
+"required_by": [
+"jupyter"
+]
+},
+"isoduration": {
+"name": "isoduration",
+"version": "20.11.0",
+"summary": "Operations with ISO 8601 durations",
+"requires": [
+"arrow"
+],
+"required_by": []
+},
+"jedi": {
+"name": "jedi",
+"version": "0.20.1",
+"summary": "An autocompletion tool for Python that can be used for text editors.",
+"requires": [
+"parso"
+],
+"required_by": [
+"ipython"
+]
+},
+"jinja2": {
+"name": "Jinja2",
+"version": "3.1.6",
+"summary": "A very fast and expressive template engine.",
+"requires": [
+"markupsafe"
+],
+"required_by": [
+"jupyter-server",
+"jupyterlab",
+"jupyterlab-server",
+"nbconvert"
+]
+},
+"jmespath": {
+"name": "jmespath",
+"version": "1.1.0",
+"summary": "JSON Matching Expressions",
+"requires": [],
+"required_by": [
+"asdf"
+]
+},
+"joblib": {
+"name": "joblib",
+"version": "1.6.0",
+"summary": "Lightweight pipelining with Python functions",
+"requires": [
+"cloudpickle"
+],
+"required_by": [
+"scikit-learn"
+]
+},
+"json5": {
+"name": "json5",
+"version": "0.17.3",
+"summary": "A Python implementation of the JSON5 data format.",
+"requires": [],
+"required_by": [
+"jupyterlab-server"
+]
+},
+"jsonpointer": {
+"name": "jsonpointer",
+"version": "3.10",
+"summary": "Identify specific nodes in a JSON document (RFC 6901) ",
+"requires": [],
+"required_by": []
+},
+"jsonschema": {
+"name": "jsonschema",
+"version": "4.26.0",
+"summary": "An implementation of JSON Schema validation for Python",
+"requires": [
+"attrs",
+"jsonschema-specifications",
+"referencing",
+"rpds-py"
+],
+"required_by": [
+"jupyter-events",
+"jupyterlab-server",
+"nbformat"
+]
+},
+"jsonschema-specifications": {
+"name": "jsonschema-specifications",
+"version": "2025.9.1",
+"summary": "The JSON Schema meta-schemas and vocabularies, exposed as a Registry",
+"requires": [
+"referencing"
+],
+"required_by": [
+"jsonschema"
+]
+},
+"juliacall": {
+"name": "juliacall",
+"version": "0.9.36",
+"summary": "Julia and Python in seamless harmony",
+"requires": [
+"juliapkg"
+],
+"required_by": [
+"pysr"
+],
+"role": "Calls Julia from Python; PySR's bridge to SymbolicRegression.jl."
+},
+"juliapkg": {
+"name": "juliapkg",
+"version": "0.1.28",
+"summary": "Julia version manager and package manager",
+"requires": [
+"filelock",
+"semver",
+"tomli",
+"tomlkit"
+],
+"required_by": [
+"juliacall"
+],
+"role": "Installs Julia and Julia packages; its project dir must be writable at run time."
+},
+"jupyter": {
+"name": "jupyter",
+"version": "1.1.1",
+"summary": "Jupyter metapackage. Install all the Jupyter components in one go.",
+"requires": [
+"ipykernel",
+"ipywidgets",
+"jupyter-console",
+"jupyterlab",
+"nbconvert",
+"notebook"
+],
+"required_by": [],
+"requested": true
+},
+"jupyter-builder": {
+"name": "jupyter_builder",
+"version": "1.2.4",
+"summary": "JupyterLab build tools",
+"requires": [
+"jupyter-core",
+"traitlets"
+],
+"required_by": [
+"jupyterlab",
+"notebook"
+]
+},
+"jupyter-client": {
+"name": "jupyter_client",
+"version": "8.10.0",
+"summary": "Jupyter protocol implementation and client libraries",
+"requires": [
+"jupyter-core",
+"python-dateutil",
+"pyzmq",
+"tornado",
+"traitlets",
+"typing-extensions"
+],
+"required_by": [
+"ipykernel",
+"jupyter-console",
+"jupyter-server",
+"nbclient"
+]
+},
+"jupyter-console": {
+"name": "jupyter-console",
+"version": "6.6.3",
+"summary": "Jupyter terminal console",
+"requires": [
+"ipykernel",
+"ipython",
+"jupyter-client",
+"jupyter-core",
+"prompt-toolkit",
+"pygments",
+"pyzmq",
+"traitlets"
+],
+"required_by": [
+"jupyter"
+]
+},
+"jupyter-core": {
+"name": "jupyter_core",
+"version": "5.9.1",
+"summary": "Jupyter core package. A base package on which Jupyter projects rely.",
+"requires": [
+"platformdirs",
+"traitlets"
+],
+"required_by": [
+"ipykernel",
+"jupyter-console",
+"jupyter-builder",
+"jupyter-client",
+"jupyter-server",
+"jupyterlab",
+"nbclient",
+"nbconvert",
+"nbformat"
+]
+},
+"jupyter-events": {
+"name": "jupyter-events",
+"version": "0.12.1",
+"summary": "Jupyter Event System library",
+"requires": [
+"jsonschema",
+"packaging",
+"python-json-logger",
+"pyyaml",
+"referencing",
+"rfc3339-validator",
+"rfc3986-validator",
+"traitlets"
+],
+"required_by": [
+"jupyter-server"
+]
+},
+"jupyter-lsp": {
+"name": "jupyter-lsp",
+"version": "2.3.1",
+"summary": "Multi-Language Server WebSocket proxy for Jupyter Notebook/Lab server",
+"requires": [
+"jupyter-server"
+],
+"required_by": [
+"jupyterlab"
+]
+},
+"jupyter-server": {
+"name": "jupyter_server",
+"version": "2.21.1",
+"summary": "The backend\u2014i.e. core services, APIs, and REST endpoints\u2014to Jupyter web applications.",
+"requires": [
+"anyio",
+"argon2-cffi",
+"jinja2",
+"jupyter-client",
+"jupyter-core",
+"jupyter-events",
+"jupyter-server-terminals",
+"nbconvert",
+"nbformat",
+"packaging",
+"prometheus-client",
+"pyzmq",
+"send2trash",
+"terminado",
+"tornado",
+"traitlets",
+"websocket-client"
+],
+"required_by": [
+"jupyter-lsp",
+"jupyterlab",
+"jupyterlab-server",
+"notebook",
+"notebook-shim"
+]
+},
+"jupyter-server-terminals": {
+"name": "jupyter_server_terminals",
+"version": "0.5.4",
+"summary": "A Jupyter Server Extension Providing Terminals.",
+"requires": [
+"terminado"
+],
+"required_by": [
+"jupyter-server"
+]
+},
+"jupyterlab": {
+"name": "jupyterlab",
+"version": "4.6.6",
+"summary": "JupyterLab computational environment",
+"requires": [
+"async-lru",
+"httpx",
+"ipykernel",
+"jinja2",
+"jupyter-builder",
+"jupyter-core",
+"jupyter-lsp",
+"jupyter-server",
+"jupyterlab-server",
+"notebook-shim",
+"packaging",
+"tornado",
+"traitlets"
+],
+"required_by": [
+"jupyter",
+"notebook"
+]
+},
+"jupyterlab-pygments": {
+"name": "jupyterlab_pygments",
+"version": "0.3.0",
+"summary": "Pygments theme using JupyterLab CSS variables",
+"requires": [],
+"required_by": [
+"nbconvert"
+]
+},
+"jupyterlab-server": {
+"name": "jupyterlab_server",
+"version": "2.28.1",
+"summary": "A set of server components for JupyterLab and JupyterLab like applications.",
+"requires": [
+"babel",
+"jinja2",
+"json5",
+"jsonschema",
+"jupyter-server",
+"packaging",
+"requests"
+],
+"required_by": [
+"jupyterlab",
+"notebook"
+]
+},
+"jupyterlab-widgets": {
+"name": "jupyterlab_widgets",
+"version": "3.0.17",
+"summary": "Jupyter interactive widgets for JupyterLab",
+"requires": [],
+"required_by": [
+"ipywidgets"
+]
+},
+"kiwisolver": {
+"name": "kiwisolver",
+"version": "1.5.1",
+"summary": "A fast implementation of the Cassowary constraint solver",
+"requires": [],
+"required_by": [
+"matplotlib"
+]
+},
+"lark": {
+"name": "lark",
+"version": "1.3.1",
+"summary": "a modern parsing library",
+"requires": [],
+"required_by": [
+"rfc3987-syntax"
+]
+},
+"lxml": {
+"name": "lxml",
+"version": "6.1.3",
+"summary": "Powerful and Pythonic XML processing library combining libxml2/libxslt with the ElementTree API.",
+"requires": [],
+"required_by": [
+"amespahdbpythonsuite"
+]
+},
+"markupsafe": {
+"name": "MarkupSafe",
+"version": "3.0.4",
+"summary": "Safely add untrusted strings to HTML/XML markup.",
+"requires": [],
+"required_by": [
+"jinja2",
+"nbconvert"
+]
+},
+"matplotlib": {
+"name": "matplotlib",
+"version": "3.11.2",
+"summary": "Python plotting package",
+"requires": [
+"contourpy",
+"cycler",
+"fonttools",
+"kiwisolver",
+"numpy",
+"packaging",
+"pillow",
+"pyparsing",
+"python-dateutil"
+],
+"required_by": [
+"amespahdbpythonsuite",
+"pahfit",
+"vtk"
+],
+"requested": true
+},
+"matplotlib-inline": {
+"name": "matplotlib-inline",
+"version": "0.2.2",
+"summary": "Inline Matplotlib backend for Jupyter",
+"requires": [
+"traitlets"
+],
+"required_by": [
+"ipykernel",
+"ipython"
+]
+},
+"mistune": {
+"name": "mistune",
+"version": "3.4.0",
+"summary": "A sane and fast Markdown parser with useful plugins and renderers",
+"requires": [],
+"required_by": [
+"nbconvert"
+]
+},
+"mpmath": {
+"name": "mpmath",
+"version": "1.3.0",
+"summary": "Python library for arbitrary-precision floating-point arithmetic",
+"requires": [],
+"required_by": [
+"sympy"
+]
+},
+"narwhals": {
+"name": "narwhals",
+"version": "2.28.0",
+"summary": "Extremely lightweight compatibility layer between dataframe libraries",
+"requires": [],
+"required_by": [
+"scikit-learn"
+]
+},
+"nbclient": {
+"name": "nbclient",
+"version": "0.11.0",
+"summary": "A client library for executing notebooks. Formerly nbconvert's ExecutePreprocessor.",
+"requires": [
+"jupyter-client",
+"jupyter-core",
+"nbformat",
+"traitlets"
+],
+"required_by": [
+"nbconvert"
+]
+},
+"nbconvert": {
+"name": "nbconvert",
+"version": "7.17.2",
+"summary": "Convert Jupyter Notebooks (.ipynb files) to other formats.",
+"requires": [
+"beautifulsoup4",
+"bleach",
+"defusedxml",
+"jinja2",
+"jupyter-core",
+"jupyterlab-pygments",
+"markupsafe",
+"mistune",
+"nbclient",
+"nbformat",
+"packaging",
+"pandocfilters",
+"pygments",
+"traitlets"
+],
+"required_by": [
+"jupyter",
+"jupyter-server"
+]
+},
+"nbformat": {
+"name": "nbformat",
+"version": "5.11.1",
+"summary": "The Jupyter Notebook format",
+"requires": [
+"fastjsonschema",
+"jsonschema",
+"jupyter-core",
+"traitlets"
+],
+"required_by": [
+"jupyter-server",
+"nbclient",
+"nbconvert"
+]
+},
+"ndcube": {
+"name": "ndcube",
+"version": "2.4.3",
+"summary": "A package for multi-dimensional contiguous and non-contiguous coordinate aware arrays.",
+"requires": [
+"astropy",
+"gwcs",
+"numpy",
+"scipy"
+],
+"required_by": [
+"specutils"
+]
+},
+"nest-asyncio2": {
+"name": "nest-asyncio2",
+"version": "1.7.4",
+"summary": "Patch asyncio to allow nested event loops",
+"requires": [],
+"required_by": [
+"ipykernel"
+]
+},
+"notebook": {
+"name": "notebook",
+"version": "7.6.5",
+"summary": "Jupyter Notebook - A web-based notebook environment for interactive computing",
+"requires": [
+"jupyter-builder",
+"jupyter-server",
+"jupyterlab",
+"jupyterlab-server",
+"notebook-shim",
+"tornado"
+],
+"required_by": [
+"jupyter"
+]
+},
+"notebook-shim": {
+"name": "notebook_shim",
+"version": "0.2.4",
+"summary": "A shim layer for notebook traits and config",
+"requires": [
+"jupyter-server"
+],
+"required_by": [
+"jupyterlab",
+"notebook"
+]
+},
+"numpy": {
+"name": "numpy",
+"version": "2.5.4",
+"summary": "Fundamental package for array computing in Python",
+"requires": [],
+"required_by": [
+"amespahdbpythonsuite",
+"asdf",
+"asdf-astropy",
+"astropy",
+"contourpy",
+"fnnls",
+"gwcs",
+"h5py",
+"matplotlib",
+"ndcube",
+"pandas",
+"pyerfa",
+"pysr",
+"scikit-learn",
+"scipy",
+"specutils"
+],
+"role": "Arrays."
+},
+"packaging": {
+"name": "packaging",
+"version": "26.3",
+"summary": "Core utilities for Python packages",
+"requires": [],
+"required_by": [
+"amespahdbpythonsuite",
+"asdf",
+"asdf-astropy",
+"astropy",
+"ipykernel",
+"jupyter-events",
+"jupyter-server",
+"jupyterlab",
+"jupyterlab-server",
+"matplotlib",
+"nbconvert",
+"pytest"
+]
+},
+"pahfit": {
+"name": "pahfit",
+"version": "2.6.dev93+gca599f9a1",
+"summary": "fit the features in near- and mid-IR astronomical spectra",
+"requires": [
+"astropy",
+"matplotlib",
+"scipy",
+"specutils"
+],
+"required_by": [],
+"requested": true,
+"role": "Decomposes an IR spectrum into continuum, PAH bands and lines (slice stage 6). From git, not PyPI."
+},
+"pandas": {
+"name": "pandas",
+"version": "3.1.1",
+"summary": "Powerful data structures for data analysis, time series, and statistics",
+"requires": [
+"numpy",
+"python-dateutil"
+],
+"required_by": [
+"pysr"
+],
+"requested": true,
+"role": "Tables (features.csv, species.csv)."
+},
+"pandocfilters": {
+"name": "pandocfilters",
+"version": "1.5.1",
+"summary": "Utilities for writing pandoc filters in python",
+"requires": [],
+"required_by": [
+"nbconvert"
+]
+},
+"parso": {
+"name": "parso",
+"version": "0.8.7",
+"summary": "A Python Parser",
+"requires": [],
+"required_by": [
+"jedi"
+]
+},
+"pexpect": {
+"name": "pexpect",
+"version": "4.9.0",
+"summary": "Pexpect allows easy control of interactive console applications.",
+"requires": [
+"ptyprocess"
+],
+"required_by": [
+"ipython"
+]
+},
+"pillow": {
+"name": "pillow",
+"version": "13.0.0",
+"summary": "Python Imaging Library (fork)",
+"requires": [],
+"required_by": [
+"matplotlib"
+]
+},
+"pip": {
+"name": "pip",
+"version": "26.3",
+"summary": "The PyPA recommended tool for installing Python packages.",
+"requires": [],
+"required_by": []
+},
+"platformdirs": {
+"name": "platformdirs",
+"version": "4.14.5",
+"summary": "A small Python package for determining appropriate platform-specific dirs, e.g. a `user data dir`.",
+"requires": [],
+"required_by": [
+"jupyter-core"
+]
+},
+"pluggy": {
+"name": "pluggy",
+"version": "1.7.0",
+"summary": "plugin and hook calling mechanisms for python",
+"requires": [],
+"required_by": [
+"pytest"
+]
+},
+"prometheus-client": {
+"name": "prometheus_client",
+"version": "0.26.0",
+"summary": "Python client for the Prometheus monitoring system.",
+"requires": [],
+"required_by": [
+"jupyter-server"
+]
+},
+"prompt-toolkit": {
+"name": "prompt_toolkit",
+"version": "3.0.53",
+"summary": "Library for building powerful interactive command lines in Python",
+"requires": [
+"wcwidth"
+],
+"required_by": [
+"ipython",
+"jupyter-console"
+]
+},
+"psutil": {
+"name": "psutil",
+"version": "7.2.2",
+"summary": "Cross-platform lib for process and system monitoring.",
+"requires": [],
+"required_by": [
+"ipython"
+]
+},
+"ptyprocess": {
+"name": "ptyprocess",
+"version": "0.7.0",
+"summary": "Run a subprocess in a pseudo terminal",
+"requires": [],
+"required_by": [
+"pexpect",
+"terminado"
+]
+},
+"pure-eval": {
+"name": "pure_eval",
+"version": "0.2.4",
+"summary": "Safely evaluate AST nodes without side effects",
+"requires": [],
+"required_by": [
+"stack-data"
+]
+},
+"pycparser": {
+"name": "pycparser",
+"version": "3.12",
+"summary": "C parser in Python",
+"requires": [],
+"required_by": [
+"cffi"
+]
+},
+"pyerfa": {
+"name": "pyerfa",
+"version": "2.0.1.5",
+"summary": "Python bindings for ERFA",
+"requires": [
+"numpy"
+],
+"required_by": [
+"astropy"
+]
+},
+"pygments": {
+"name": "Pygments",
+"version": "2.21.0",
+"summary": "Pygments is a syntax highlighting package written in Python.",
+"requires": [],
+"required_by": [
+"ipython",
+"ipython-pygments-lexers",
+"jupyter-console",
+"nbconvert",
+"pytest"
+]
+},
+"pyparsing": {
+"name": "pyparsing",
+"version": "3.3.3",
+"summary": "pyparsing - Classes and methods to define and execute parsing grammars",
+"requires": [],
+"required_by": [
+"matplotlib"
+]
+},
+"pysr": {
+"name": "pysr",
+"version": "2.7.2",
+"summary": "Simple and efficient symbolic regression",
+"requires": [
+"click",
+"juliacall",
+"numpy",
+"pandas",
+"scikit-learn",
+"sympy",
+"typing-extensions"
+],
+"required_by": [],
+"requested": true,
+"role": "Symbolic regression: evolutionary search over formulas (slice stage 8)."
+},
+"pytest": {
+"name": "pytest",
+"version": "9.2.0",
+"summary": "pytest: simple powerful testing with Python",
+"requires": [
+"iniconfig",
+"packaging",
+"pluggy",
+"pygments"
+],
+"required_by": [
+"fnnls"
+]
+},
+"python-dateutil": {
+"name": "python-dateutil",
+"version": "4.0.0",
+"summary": "Extensions to the standard Python datetime module",
+"requires": [
+"tzdata"
+],
+"required_by": [
+"arrow",
+"jupyter-client",
+"matplotlib",
+"pandas"
+]
+},
+"python-json-logger": {
+"name": "python-json-logger",
+"version": "4.2.0",
+"summary": "JSON Log Formatter for the Python Logging Package",
+"requires": [],
+"required_by": [
+"jupyter-events"
+]
+},
+"pyyaml": {
+"name": "PyYAML",
+"version": "6.0.3",
+"summary": "YAML parser and emitter for Python",
+"requires": [],
+"required_by": [
+"asdf",
+"astropy",
+"jupyter-events"
+]
+},
+"pyzmq": {
+"name": "pyzmq",
+"version": "27.3.0",
+"summary": "Python bindings for 0MQ",
+"requires": [],
+"required_by": [
+"ipykernel",
+"jupyter-console",
+"jupyter-client",
+"jupyter-server"
+]
+},
+"referencing": {
+"name": "referencing",
+"version": "0.37.0",
+"summary": "JSON Referencing + Python",
+"requires": [
+"attrs",
+"rpds-py",
+"typing-extensions"
+],
+"required_by": [
+"jsonschema",
+"jsonschema-specifications",
+"jupyter-events"
+]
+},
+"requests": {
+"name": "requests",
+"version": "2.34.2",
+"summary": "Python HTTP for Humans.",
+"requires": [
+"certifi",
+"charset-normalizer",
+"idna",
+"urllib3"
+],
+"required_by": [
+"jupyterlab-server"
+]
+},
+"rfc3339-validator": {
+"name": "rfc3339-validator",
+"version": "0.1.4",
+"summary": "A pure python RFC3339 validator",
+"requires": [
+"six"
+],
+"required_by": [
+"jupyter-events"
+]
+},
+"rfc3986-validator": {
+"name": "rfc3986-validator",
+"version": "0.1.1",
+"summary": "Pure python rfc3986 validator",
+"requires": [],
+"required_by": [
+"jupyter-events"
+]
+},
+"rfc3987-syntax": {
+"name": "rfc3987-syntax",
+"version": "1.1.0",
+"summary": "Helper functions to syntactically validate strings according to RFC 3987.",
+"requires": [
+"lark"
+],
+"required_by": []
+},
+"rpds-py": {
+"name": "rpds-py",
+"version": "2026.9.1",
+"summary": "Python bindings to Rust's persistent data structures (rpds)",
+"requires": [],
+"required_by": [
+"jsonschema",
+"referencing"
+]
+},
+"scikit-learn": {
+"name": "scikit-learn",
+"version": "1.9.1",
+"summary": "A set of python modules for machine learning and data mining",
+"requires": [
+"joblib",
+"narwhals",
+"numpy",
+"scipy",
+"threadpoolctl"
+],
+"required_by": [
+"pysr"
+],
+"requested": true,
+"role": "Random-forest reference, isotonic one-ratio baseline (slice stage 7)."
+},
+"scipy": {
+"name": "scipy",
+"version": "1.18.1",
+"summary": "Fundamental algorithms for scientific computing in Python",
+"requires": [
+"numpy"
+],
+"required_by": [
+"amespahdbpythonsuite",
+"gwcs",
+"ndcube",
+"pahfit",
+"scikit-learn",
+"specutils"
+],
+"role": "Numerical routines (integration, optimisation, special functions)."
+},
+"semantic-version": {
+"name": "semantic-version",
+"version": "2.10.0",
+"summary": "A library implementing the 'SemVer' scheme.",
+"requires": [],
+"required_by": [
+"asdf"
+]
+},
+"semver": {
+"name": "semver",
+"version": "3.1.0",
+"summary": "Python helper for Semantic Versioning (https://semver.org)",
+"requires": [],
+"required_by": [
+"juliapkg"
+]
+},
+"send2trash": {
+"name": "Send2Trash",
+"version": "2.1.0",
+"summary": "Send file to trash natively under Mac OS X, Windows and Linux",
+"requires": [],
+"required_by": [
+"jupyter-server"
+]
+},
+"six": {
+"name": "six",
+"version": "1.17.0",
+"summary": "Python 2 and 3 compatibility utilities",
+"requires": [],
+"required_by": [
+"rfc3339-validator"
+]
+},
+"soupsieve": {
+"name": "soupsieve",
+"version": "4.0.1",
+"summary": "A modern CSS selector implementation for Beautiful Soup.",
+"requires": [],
+"required_by": [
+"beautifulsoup4"
+]
+},
+"specutils": {
+"name": "specutils",
+"version": "2.4.0",
+"summary": "Package for spectroscopic astronomical data",
+"requires": [
+"asdf",
+"asdf-astropy",
+"astropy",
+"gwcs",
+"ndcube",
+"numpy",
+"scipy"
+],
+"required_by": [
+"amespahdbpythonsuite",
+"pahfit"
+],
+"requested": true,
+"role": "Spectrum1D objects: PAHFIT's input format."
+},
+"stack-data": {
+"name": "stack-data",
+"version": "0.6.3",
+"summary": "Extract data from python stack frames and tracebacks for informative displays",
+"requires": [
+"asttokens",
+"executing",
+"pure-eval"
+],
+"required_by": [
+"ipython"
+]
+},
+"sympy": {
+"name": "sympy",
+"version": "1.14.0",
+"summary": "Computer algebra system (CAS) in Python",
+"requires": [
+"mpmath"
+],
+"required_by": [
+"pysr"
+]
+},
+"terminado": {
+"name": "terminado",
+"version": "0.18.1",
+"summary": "Tornado websocket backend for the Xterm.js Javascript terminal emulator library.",
+"requires": [
+"ptyprocess",
+"tornado"
+],
+"required_by": [
+"jupyter-server",
+"jupyter-server-terminals"
+]
+},
+"threadpoolctl": {
+"name": "threadpoolctl",
+"version": "3.8.0",
+"summary": "threadpoolctl",
+"requires": [],
+"required_by": [
+"scikit-learn"
+]
+},
+"tinycss2": {
+"name": "tinycss2",
+"version": "1.5.1",
+"summary": "A tiny CSS parser",
+"requires": [
+"webencodings"
+],
+"required_by": []
+},
+"tomli": {
+"name": "tomli",
+"version": "2.5.0",
+"summary": "A lil' TOML parser",
+"requires": [],
+"required_by": [
+"juliapkg"
+]
+},
+"tomlkit": {
+"name": "tomlkit",
+"version": "0.15.2",
+"summary": "Style preserving TOML library",
+"requires": [],
+"required_by": [
+"juliapkg"
+]
+},
+"tornado": {
+"name": "tornado",
+"version": "6.6",
+"summary": "Tornado is a Python web framework and asynchronous networking library, originally developed at FriendFeed.",
+"requires": [],
+"required_by": [
+"ipykernel",
+"jupyter-client",
+"jupyter-server",
+"jupyterlab",
+"notebook",
+"terminado"
+]
+},
+"tqdm": {
+"name": "tqdm",
+"version": "4.70.1",
+"summary": "Fast, Extensible Progress Meter",
+"requires": [],
+"required_by": [
+"amespahdbpythonsuite"
+]
+},
+"traitlets": {
+"name": "traitlets",
+"version": "5.16.1",
+"summary": "Traitlets Python configuration system",
+"requires": [],
+"required_by": [
+"ipykernel",
+"ipython",
+"ipywidgets",
+"jupyter-console",
+"jupyter-events",
+"jupyter-builder",
+"jupyter-client",
+"jupyter-core",
+"jupyter-server",
+"jupyterlab",
+"matplotlib-inline",
+"nbclient",
+"nbconvert",
+"nbformat"
+]
+},
+"typing-extensions": {
+"name": "typing_extensions",
+"version": "4.16.0",
+"summary": "Backported and Experimental Type Hints for Python 3.9+",
+"requires": [],
+"required_by": [
+"anyio",
+"asdf",
+"beautifulsoup4",
+"jupyter-client",
+"pysr",
+"referencing"
+]
+},
+"tzdata": {
+"name": "tzdata",
+"version": "2026.6",
+"summary": "Provider of IANA time zone data",
+"requires": [],
+"required_by": [
+"arrow",
+"python-dateutil"
+]
+},
+"uri-template": {
+"name": "uri-template",
+"version": "1.3.0",
+"summary": "RFC 6570 URI Template Processor",
+"requires": [],
+"required_by": []
+},
+"urllib3": {
+"name": "urllib3",
+"version": "2.8.0",
+"summary": "HTTP library with thread-safe connection pooling, file post, and more.",
+"requires": [],
+"required_by": [
+"requests"
+]
+},
+"vtk": {
+"name": "vtk",
+"version": "9.7.2",
+"summary": "VTK is an open-source toolkit for 3D computer graphics, image processing, and visualization",
+"requires": [
+"matplotlib"
+],
+"required_by": [
+"amespahdbpythonsuite"
+]
+},
+"wcwidth": {
+"name": "wcwidth",
+"version": "0.9.4",
+"summary": "Measures the displayed width of unicode strings in a terminal",
+"requires": [],
+"required_by": [
+"prompt-toolkit"
+]
+},
+"webcolors": {
+"name": "webcolors",
+"version": "25.10.0",
+"summary": "A library for working with the color formats defined by HTML and CSS.",
+"requires": [],
+"required_by": []
+},
+"webencodings": {
+"name": "webencodings",
+"version": "0.6.1",
+"summary": "Character encoding aliases for legacy web content",
+"requires": [],
+"required_by": [
+"bleach",
+"tinycss2"
+]
+},
+"websocket-client": {
+"name": "websocket-client",
+"version": "1.9.2",
+"summary": "WebSocket client for Python with low level API options",
+"requires": [],
+"required_by": [
+"jupyter-server"
+]
+},
+"widgetsnbextension": {
+"name": "widgetsnbextension",
+"version": "4.0.16",
+"summary": "Jupyter interactive widgets for Jupyter Notebook",
+"requires": [],
+"required_by": [
+"ipywidgets"
+]
+}
+}
+}

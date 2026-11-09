@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 468" width="980" height="468" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" role="img"><title>Container C: who needs whom</title><defs></defs><rect width="980" height="468" fill="#ffffff"/>
+<path d="M535.6,286 C535.6,316 760.0,296 760.0,326" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="juliacall>ours:julia"/>
+<path d="M440.0,102 C440.0,132 726.7,204 726.7,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="ours:slice>h5py"/>
+<path d="M440.0,102 C440.0,132 680.0,112 680.0,142" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="ours:slice>scikit-learn"/>
+<path d="M440.0,102 C440.0,132 520.0,112 520.0,142" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="ours:slice>pysr"/>
+<path d="M440.0,102 C440.0,132 360.0,112 360.0,142" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="ours:slice>pahfit"/>
+<path d="M440.0,102 C440.0,132 200.0,112 200.0,142" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="ours:slice>amespahdbpythonsuite"/>
+<path d="M57.8,286 C57.8,316 280.0,296 280.0,326" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="specutils>ndcube"/>
+<path d="M57.8,286 C57.8,316 120.0,296 120.0,326" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="specutils>gwcs"/>
+<path d="M57.8,286 C57.8,316 440.0,296 440.0,326" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="specutils>asdf"/>
+<path d="M200.0,194 C200.0,224 344.4,204 344.4,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="amespahdbpythonsuite>vtk"/>
+<path d="M200.0,194 C200.0,224 57.8,204 57.8,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="amespahdbpythonsuite>specutils"/>
+<path d="M200.0,194 C200.0,224 822.2,204 822.2,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="amespahdbpythonsuite>matplotlib"/>
+<path d="M200.0,194 C200.0,224 248.9,204 248.9,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="amespahdbpythonsuite>lxml"/>
+<path d="M200.0,194 C200.0,224 440.0,204 440.0,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="amespahdbpythonsuite>fnnls"/>
+<path d="M200.0,194 C200.0,224 153.3,204 153.3,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="amespahdbpythonsuite>astropy"/>
+<path d="M535.6,286 C535.6,316 600.0,296 600.0,326" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="juliacall>juliapkg"/>
+<path d="M360.0,194 C360.0,224 57.8,204 57.8,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="pahfit>specutils"/>
+<path d="M360.0,194 C360.0,224 822.2,204 822.2,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="pahfit>matplotlib"/>
+<path d="M360.0,194 C360.0,224 153.3,204 153.3,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="pahfit>astropy"/>
+<path d="M520.0,194 C520.0,224 631.1,204 631.1,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="pysr>pandas"/>
+<path d="M520.0,194 C520.0,224 535.6,204 535.6,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="pysr>juliacall"/>
+<text x="972" y="76.0" font-size="10" fill="#8a8984" text-anchor="end" font-weight="normal">our code</text>
+<rect x="365.0" y="50" width="150" height="52" rx="8" fill="#fff" stroke="#0b0b0b" stroke-width="1.1" stroke-dasharray="5 4" data-key="ours:slice"/>
+<text x="440.0" y="79.2" font-size="10.8" fill="#0b0b0b" text-anchor="middle" font-weight="600">slice/ stage scripts</text>
+<text x="972" y="168.0" font-size="10" fill="#8a8984" text-anchor="end" font-weight="normal">science</text>
+<rect x="125.0" y="142" width="150" height="52" rx="8" fill="#dff4ec" stroke="#1baf7a" stroke-width="2" data-key="amespahdbpythonsuite"/>
+<text x="200.0" y="163.1" font-size="10.8" fill="#0b0b0b" text-anchor="middle" font-weight="600">amespahdbpythonsuite</text>
+<text x="200.0" y="179.9" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">0.5.0.post96</text>
+<rect x="285.0" y="142" width="150" height="52" rx="8" fill="#dff4ec" stroke="#1baf7a" stroke-width="2" data-key="pahfit"/>
+<text x="360.0" y="163.1" font-size="10.8" fill="#0b0b0b" text-anchor="middle" font-weight="600">pahfit</text>
+<text x="360.0" y="179.9" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">2.6.dev93</text>
+<rect x="445.0" y="142" width="150" height="52" rx="8" fill="#dff4ec" stroke="#1baf7a" stroke-width="2" data-key="pysr"/>
+<text x="520.0" y="163.1" font-size="10.8" fill="#0b0b0b" text-anchor="middle" font-weight="600">pysr</text>
+<text x="520.0" y="179.9" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">2.7.2</text>
+<rect x="605.0" y="142" width="150" height="52" rx="8" fill="#dff4ec" stroke="#1baf7a" stroke-width="2" data-key="scikit-learn"/>
+<text x="680.0" y="163.1" font-size="10.8" fill="#0b0b0b" text-anchor="middle" font-weight="600">scikit-learn</text>
+<text x="680.0" y="179.9" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">1.9.1</text>
+<text x="972" y="260.0" font-size="10" fill="#8a8984" text-anchor="end" font-weight="normal">layers</text>
+<rect x="15.0" y="234" width="85.55555555555556" height="52" rx="8" fill="#dff4ec" stroke="#1baf7a" stroke-width="2" data-key="specutils"/>
+<text x="57.77777777777778" y="254.7" font-size="9.6" fill="#0b0b0b" text-anchor="middle" font-weight="600">specutils</text>
+<text x="57.77777777777778" y="271.1" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">2.4.0</text>
+<rect x="110.55555555555556" y="234" width="85.55555555555556" height="52" rx="8" fill="#dff4ec" stroke="#1baf7a" stroke-width="2" data-key="astropy"/>
+<text x="153.33333333333334" y="254.7" font-size="9.6" fill="#0b0b0b" text-anchor="middle" font-weight="600">astropy</text>
+<text x="153.33333333333334" y="271.1" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">8.0.2</text>
+<rect x="206.11111111111111" y="234" width="85.55555555555556" height="52" rx="8" fill="#fff" stroke="#8a8984" stroke-width="1.1" data-key="lxml"/>
+<text x="248.88888888888889" y="254.7" font-size="9.6" fill="#0b0b0b" text-anchor="middle" font-weight="600">lxml</text>
+<text x="248.88888888888889" y="271.1" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">6.1.3</text>
+<rect x="301.6666666666667" y="234" width="85.55555555555556" height="52" rx="8" fill="#fff" stroke="#8a8984" stroke-width="1.1" data-key="vtk"/>
+<text x="344.44444444444446" y="254.7" font-size="9.6" fill="#0b0b0b" text-anchor="middle" font-weight="600">vtk</text>
+<text x="344.44444444444446" y="271.1" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">9.7.2</text>
+<rect x="397.22222222222223" y="234" width="85.55555555555556" height="52" rx="8" fill="#fff" stroke="#8a8984" stroke-width="1.1" data-key="fnnls"/>
+<text x="440.0" y="254.7" font-size="9.6" fill="#0b0b0b" text-anchor="middle" font-weight="600">fnnls</text>
+<text x="440.0" y="271.1" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">1.0.0</text>
+<rect x="492.77777777777777" y="234" width="85.55555555555556" height="52" rx="8" fill="#fff" stroke="#8a8984" stroke-width="1.1" data-key="juliacall"/>
+<text x="535.5555555555555" y="254.7" font-size="9.6" fill="#0b0b0b" text-anchor="middle" font-weight="600">juliacall</text>
+<text x="535.5555555555555" y="271.1" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">0.9.36</text>
+<rect x="588.3333333333334" y="234" width="85.55555555555556" height="52" rx="8" fill="#dff4ec" stroke="#1baf7a" stroke-width="2" data-key="pandas"/>
+<text x="631.1111111111112" y="254.7" font-size="9.6" fill="#0b0b0b" text-anchor="middle" font-weight="600">pandas</text>
+<text x="631.1111111111112" y="271.1" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">3.1.1</text>
+<rect x="683.8888888888889" y="234" width="85.55555555555556" height="52" rx="8" fill="#dff4ec" stroke="#1baf7a" stroke-width="2" data-key="h5py"/>
+<text x="726.6666666666667" y="254.7" font-size="9.6" fill="#0b0b0b" text-anchor="middle" font-weight="600">h5py</text>
+<text x="726.6666666666667" y="271.1" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">3.16.0</text>
+<rect x="779.4444444444445" y="234" width="85.55555555555556" height="52" rx="8" fill="#dff4ec" stroke="#1baf7a" stroke-width="2" data-key="matplotlib"/>
+<text x="822.2222222222223" y="254.7" font-size="9.6" fill="#0b0b0b" text-anchor="middle" font-weight="600">matplotlib</text>
+<text x="822.2222222222223" y="271.1" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">3.11.2</text>
+<text x="972" y="352.0" font-size="10" fill="#8a8984" text-anchor="end" font-weight="normal">engines</text>
+<rect x="45.0" y="326" width="150" height="52" rx="8" fill="#fff" stroke="#8a8984" stroke-width="1.1" data-key="gwcs"/>
+<text x="120.0" y="347.1" font-size="10.8" fill="#0b0b0b" text-anchor="middle" font-weight="600">gwcs</text>
+<text x="120.0" y="363.9" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">1.0.3</text>
+<rect x="205.0" y="326" width="150" height="52" rx="8" fill="#fff" stroke="#8a8984" stroke-width="1.1" data-key="ndcube"/>
+<text x="280.0" y="347.1" font-size="10.8" fill="#0b0b0b" text-anchor="middle" font-weight="600">ndcube</text>
+<text x="280.0" y="363.9" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">2.4.3</text>
+<rect x="365.0" y="326" width="150" height="52" rx="8" fill="#fff" stroke="#8a8984" stroke-width="1.1" data-key="asdf"/>
+<text x="440.0" y="347.1" font-size="10.8" fill="#0b0b0b" text-anchor="middle" font-weight="600">asdf</text>
+<text x="440.0" y="363.9" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">6.0.0</text>
+<rect x="525.0" y="326" width="150" height="52" rx="8" fill="#fff" stroke="#8a8984" stroke-width="1.1" data-key="juliapkg"/>
+<text x="600.0" y="347.1" font-size="10.8" fill="#0b0b0b" text-anchor="middle" font-weight="600">juliapkg</text>
+<text x="600.0" y="363.9" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">0.1.28</text>
+<rect x="685.0" y="326" width="150" height="52" rx="8" fill="#fff" stroke="#0b0b0b" stroke-width="1.1" stroke-dasharray="5 4" data-key="ours:julia"/>
+<text x="760.0" y="348.2" font-size="10.8" fill="#0b0b0b" text-anchor="middle" font-weight="600">Julia 1.13.3 +</text>
+<text x="760.0" y="362.3" font-size="10.8" fill="#0b0b0b" text-anchor="middle" font-weight="600">SymbolicRegression.jl</text>
+<text x="20" y="442.0" font-size="10.5" fill="#8a8984" text-anchor="start" font-weight="normal" font-style="italic">Julia is not a Python package: juliapkg downloads it (and SymbolicRegression.jl) into /opt/julia_env at build time. numpy and scipy are left out.</text></svg>

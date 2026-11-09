@@ -1,0 +1,755 @@
+Name: absl-py
+Version: 2.5.1
+Summary: Abseil Python Common Libraries, see https://github.com/abseil/abseil-py.
+Requires: 
+Required-by: chex, jax-md, ml_collections, optax, orbax-checkpoint
+Name: aiofiles
+Version: 25.1.0
+Summary: File support for asyncio.
+Requires: 
+Required-by: orbax-checkpoint
+Name: aiohappyeyeballs
+Version: 2.7.1
+Summary: Happy Eyeballs for asyncio
+Requires: 
+Required-by: aiohttp
+Name: aiohttp
+Version: 3.14.5
+Summary: Async http client/server framework (asyncio)
+Requires: aiohappyeyeballs, aiosignal, attrs, frozenlist, multidict, propcache, typing_extensions, yarl
+Required-by: gcsfs
+Name: aiosignal
+Version: 1.4.0
+Summary: aiosignal: a list of registered asynchronous callbacks
+Requires: frozenlist, typing-extensions
+Required-by: aiohttp
+Name: ase
+Version: 3.29.0
+Summary: Atomic Simulation Environment
+Requires: matplotlib, numpy, scipy, typing_extensions
+Required-by: mace-torch, mace_jax, matscipy
+Name: attrs
+Version: 26.1.0
+Summary: Classes Without Boilerplate
+Requires: 
+Required-by: aiohttp, e3nn-jax
+Name: bibtexparser
+Version: 1.4.4
+Summary: Bibtex parser for python 3
+Requires: pyparsing
+Required-by: pymatgen-core
+Name: certifi
+Version: 2026.10.23
+Summary: Python package for providing Mozilla's CA Bundle.
+Requires: 
+Required-by: requests
+Name: cffi
+Version: 2.1.1
+Summary: Foreign Function Interface for Python calling C code.
+Requires: pycparser
+Required-by: cryptography
+Name: charset-normalizer
+Version: 3.5.2
+Summary: The Real First Universal Charset Detector. Open, modern and actively maintained alternative to Chardet.
+Requires: 
+Required-by: requests
+Name: chex
+Version: 0.1.92
+Summary: Chex: Testing made fun, in JAX!
+Requires: absl-py, jax, jaxlib, numpy, toolz, typing_extensions
+Required-by: mace_jax
+Name: cloudpickle
+Version: 3.1.2
+Summary: Pickler class to extend the standard pickle.Pickler functionality
+Requires: 
+Required-by: joblib
+Name: ConfigArgParse
+Version: 1.9.0
+Summary: A drop-in replacement for argparse that allows options to also be set via config files and/or environment variables.
+Requires: 
+Required-by: mace-torch, mace_jax
+Name: contourpy
+Version: 1.4.0
+Summary: Python library for calculating contours of 2D quadrilateral grids
+Requires: numpy
+Required-by: matplotlib
+Name: cryptography
+Version: 50.0.2
+Summary: cryptography is a package which provides cryptographic recipes and primitives to Python developers.
+Requires: cffi
+Required-by: google-auth
+Name: cuequivariance
+Version: 0.10.0
+Summary: CUDA accelerated equivariant operations
+Requires: networkx, numpy, opt-einsum, scipy, sympy
+Required-by: cuequivariance-jax, mace_jax
+Name: cuequivariance-jax
+Version: 0.10.0
+Summary: CUDA accelerated equivariant operations
+Requires: cuequivariance, einops, jax, packaging
+Required-by: mace_jax
+Name: cuequivariance-ops-cu12
+Version: 0.10.0
+Summary: cuequivariance-ops - GPU Accelerated Extensions for Equivariant Primitives
+Requires: nvidia-cublas-cu12, nvidia-ml-py, platformdirs, tqdm
+Required-by: cuequivariance-ops-jax-cu12
+Name: cuequivariance-ops-jax-cu12
+Version: 0.10.0
+Summary: cuequivariance-ops-jax - GPU Accelerated JAX Extensions for Equivariant Primitives
+Requires: cuequivariance-ops-cu12
+Required-by: 
+Name: cycler
+Version: 0.12.1
+Summary: Composable style cycles
+Requires: 
+Required-by: matplotlib
+Name: decorator
+Version: 5.3.1
+Summary: Decorators for Humans
+Requires: 
+Required-by: gcsfs
+Name: e3nn
+Version: 0.4.4
+Summary: Equivariant convolutional neural networks for the group E(3) of 3 dimensional rotations, translations, and mirrors.
+Requires: opt-einsum-fx, scipy, sympy, torch
+Required-by: mace-torch, mace_jax
+Name: e3nn-jax
+Version: 0.21.0
+Summary: Equivariant convolutional neural networks for the group E(3) of 3 dimensional rotations, translations, and mirrors.
+Requires: attrs, jax, jaxlib, numpy, sympy
+Required-by: jax-md, mace_jax
+Name: einops
+Version: 0.8.2
+Summary: A new flavour of deep learning operations
+Requires: 
+Required-by: cuequivariance-jax, jax-md
+Name: etils
+Version: 1.15.0
+Summary: Collection of common python utils
+Requires: 
+Required-by: orbax-checkpoint
+Name: filelock
+Version: 4.2.4
+Summary: A platform independent file lock.
+Requires: 
+Required-by: torch
+Name: flax
+Version: 0.12.12
+Summary: Flax: A neural network library for JAX designed for flexibility
+Requires: jax, msgpack, numpy, optax, orbax-checkpoint, PyYAML, rich, tensorstore, treescope, typing_extensions
+Required-by: jax-md, mace_jax
+Name: fonttools
+Version: 4.68.0
+Summary: Tools to manipulate font files
+Requires: 
+Required-by: matplotlib
+Name: frozendict
+Version: 2.5.1
+Summary: A simple immutable dictionary
+Requires: 
+Required-by: jax-md
+Name: frozenlist
+Version: 1.8.0
+Summary: A list-like structure which implements collections.abc.MutableSequence
+Requires: 
+Required-by: aiohttp, aiosignal
+Name: fsspec
+Version: 2026.9.0
+Summary: File-system specification
+Requires: 
+Required-by: gcsfs, torch
+Name: gcsfs
+Version: 2026.10.1
+Summary: Convenient Filesystem interface over GCS
+Requires: aiohttp, decorator, fsspec, google-auth, google-auth-oauthlib, google-cloud-storage, google-cloud-storage-control, requests
+Required-by: 
+Name: gin-config
+Version: 0.5.0
+Summary: Gin-Config: A lightweight configuration library for Python
+Requires: 
+Required-by: mace_jax
+Name: gitdb
+Version: 4.0.12
+Summary: Git Object Database
+Requires: smmap
+Required-by: GitPython
+Name: GitPython
+Version: 3.2.1
+Summary: GitPython is a Python library used to interact with Git repositories
+Requires: gitdb
+Required-by: mace-torch
+Name: google-api-core
+Version: 2.44.0
+Summary: Google API client core library
+Requires: google-auth, googleapis-common-protos, opentelemetry-api, proto-plus, protobuf, requests
+Required-by: google-cloud-core, google-cloud-storage, google-cloud-storage-control
+Name: google-auth
+Version: 2.62.1
+Summary: Google Authentication Library
+Requires: cryptography, pyasn1-modules
+Required-by: gcsfs, google-api-core, google-auth-oauthlib, google-cloud-core, google-cloud-storage, google-cloud-storage-control
+Name: google-auth-oauthlib
+Version: 1.5.0
+Summary: Google Authentication Library
+Requires: google-auth, requests-oauthlib
+Required-by: gcsfs
+Name: google-cloud-core
+Version: 2.8.0
+Summary: Google Cloud API client core library
+Requires: google-api-core, google-auth
+Required-by: google-cloud-storage
+Name: google-cloud-storage
+Version: 3.17.1
+Summary: Google Cloud Storage API client library
+Requires: google-api-core, google-auth, google-cloud-core, google-crc32c, google-resumable-media, requests
+Required-by: gcsfs
+Name: google-cloud-storage-control
+Version: 1.17.0
+Summary: Google Cloud Storage Control API client library
+Requires: google-api-core, google-auth, grpc-google-iam-v1, grpcio, proto-plus, protobuf
+Required-by: gcsfs
+Name: google-crc32c
+Version: 1.9.0
+Summary: A python wrapper of the C library 'Google CRC32C'
+Requires: 
+Required-by: google-cloud-storage, google-resumable-media
+Name: google-resumable-media
+Version: 2.11.0
+Summary: Utilities for Google Media Downloads and Resumable Uploads
+Requires: google-crc32c
+Required-by: google-cloud-storage
+Name: googleapis-common-protos
+Version: 1.76.0
+Summary: Common protobufs used in Google APIs
+Requires: protobuf
+Required-by: google-api-core, grpc-google-iam-v1, grpcio-status
+Name: grpc-google-iam-v1
+Version: 0.14.6
+Summary: IAM API client library
+Requires: googleapis-common-protos, grpcio, protobuf
+Required-by: google-cloud-storage-control
+Name: grpcio
+Version: 1.85.1
+Summary: HTTP/2-based RPC framework
+Requires: typing-extensions
+Required-by: google-cloud-storage-control, grpc-google-iam-v1, grpcio-status
+Name: grpcio-status
+Version: 1.85.1
+Summary: Status proto mapping for gRPC
+Requires: googleapis-common-protos, grpcio, protobuf
+Required-by: 
+Name: h5py
+Version: 3.16.0
+Summary: Read and write HDF5 files from Python
+Requires: numpy
+Required-by: mace-torch, mace_jax
+Name: humanize
+Version: 4.16.0
+Summary: Python humanize utilities
+Requires: 
+Required-by: orbax-checkpoint
+Name: idna
+Version: 3.20
+Summary: Internationalized Domain Names in Applications (IDNA)
+Requires: 
+Required-by: requests, yarl
+Name: jax
+Version: 0.11.2
+Summary: Differentiate, compile, and transform Numpy code.
+Requires: jaxlib, ml_dtypes, numpy, opt_einsum, scipy
+Required-by: chex, cuequivariance-jax, e3nn-jax, flax, jax-md, jraph, mace_jax, optax, orbax-checkpoint
+Name: jax-cuda12-pjrt
+Version: 0.11.2
+Summary: JAX XLA PJRT Plugin for NVIDIA GPUs
+Requires: 
+Required-by: jax-cuda12-plugin
+Name: jax-cuda12-plugin
+Version: 0.11.2
+Summary: JAX Plugin for NVIDIA GPUs
+Requires: jax-cuda12-pjrt
+Required-by: 
+Name: jax-md
+Version: 0.2.29
+Summary: Differentiable, Hardware Accelerated, Molecular Dynamics
+Requires: absl-py, e3nn-jax, einops, flax, frozendict, jax, jaxlib, jraph, ml-collections, numpy, optax, pymatgen
+Required-by: 
+Name: jaxlib
+Version: 0.11.2
+Summary: XLA library for JAX
+Requires: ml_dtypes, numpy, scipy
+Required-by: chex, e3nn-jax, jax, jax-md, jraph, optax
+Name: Jinja2
+Version: 3.1.6
+Summary: A very fast and expressive template engine.
+Requires: MarkupSafe
+Required-by: torch
+Name: joblib
+Version: 1.6.0
+Summary: Lightweight pipelining with Python functions
+Requires: cloudpickle
+Required-by: pymatgen-core
+Name: jraph
+Version: 0.0.6.dev0
+Summary: Jraph: A library for Graph Neural Networks in Jax
+Requires: jax, jaxlib, numpy
+Required-by: jax-md, mace_jax
+Name: kiwisolver
+Version: 1.5.1
+Summary: A fast implementation of the Cassowary constraint solver
+Requires: 
+Required-by: matplotlib
+Name: lightning-utilities
+Version: 0.15.3
+Summary: Lightning toolbox for across the our ecosystem.
+Requires: packaging, typing_extensions
+Required-by: torchmetrics
+Name: lmdb
+Version: 3.0.0
+Summary: Universal Python binding for the LMDB 'Lightning' Database
+Requires: 
+Required-by: mace-torch
+Name: lxml
+Version: 6.1.3
+Summary: Powerful and Pythonic XML processing library combining libxml2/libxslt with the ElementTree API.
+Requires: 
+Required-by: pymatgen-core
+Name: mace_jax
+Version: 0.2.0
+Summary: 
+Requires: ase, chex, configargparse, cuequivariance, cuequivariance-jax, e3nn, e3nn_jax, flax, gin-config, h5py, jax, jraph, matscipy, numpy, optax, pyyaml, roundmantissa, tqdm, unique_names_generator
+Required-by: 
+Name: mace-torch
+Version: 0.3.17
+Summary: 
+Requires: ase, configargparse, e3nn, GitPython, h5py, lmdb, matplotlib, matscipy, numpy, opt_einsum, orjson, pandas, prettytable, python-hostlist, pyYAML, torch, torch-ema, torchmetrics, tqdm
+Required-by: 
+Name: markdown-it-py
+Version: 4.2.0
+Summary: Python port of markdown-it. Markdown parsing, done right!
+Requires: mdurl
+Required-by: rich
+Name: MarkupSafe
+Version: 3.0.3
+Summary: Safely add untrusted strings to HTML/XML markup.
+Requires: 
+Required-by: Jinja2
+Name: matplotlib
+Version: 3.11.2
+Summary: Python plotting package
+Requires: contourpy, cycler, fonttools, kiwisolver, numpy, packaging, pillow, pyparsing, python-dateutil
+Required-by: ase, mace-torch, pymatgen-core
+Name: matscipy
+Version: 1.3.1
+Summary: Generic Python Materials Science tools
+Requires: ase, numpy, packaging, scipy
+Required-by: mace-torch, mace_jax
+Name: mdurl
+Version: 0.1.2
+Summary: Markdown URL utilities
+Requires: 
+Required-by: markdown-it-py
+Name: ml_collections
+Version: 1.1.0
+Summary: ML Collections is a library of Python collections designed for ML usecases.
+Requires: absl-py, PyYAML
+Required-by: jax-md
+Name: ml_dtypes
+Version: 0.6.0
+Summary: ml_dtypes is a stand-alone implementation of several NumPy dtype extensions used in machine learning.
+Requires: numpy
+Required-by: jax, jaxlib, tensorstore
+Name: monty
+Version: 2026.10.21
+Summary: Monty is the missing complement to Python.
+Requires: numpy, ruamel.yaml
+Required-by: pymatgen-core
+Name: mpmath
+Version: 1.3.0
+Summary: Python library for arbitrary-precision floating-point arithmetic
+Requires: 
+Required-by: sympy
+Name: msgpack
+Version: 1.2.4
+Summary: MessagePack serializer
+Requires: 
+Required-by: flax, orbax-checkpoint
+Name: multidict
+Version: 7.2.1
+Summary: multidict implementation
+Requires: 
+Required-by: aiohttp, yarl
+Name: narwhals
+Version: 2.28.0
+Summary: Extremely lightweight compatibility layer between dataframe libraries
+Requires: 
+Required-by: plotly
+Name: networkx
+Version: 3.7
+Summary: Python package for creating and manipulating graphs and networks
+Requires: 
+Required-by: cuequivariance, pymatgen-core, torch
+Name: numpy
+Version: 2.5.4
+Summary: Fundamental package for array computing in Python
+Requires: 
+Required-by: ase, chex, contourpy, cuequivariance, e3nn-jax, flax, h5py, jax, jax-md, jaxlib, jraph, mace-torch, mace_jax, matplotlib, matscipy, ml_dtypes, monty, optax, orbax-checkpoint, pandas, pymatgen-core, scipy, spglib, tensorstore, torchmetrics, treescope
+Name: nvidia-cublas-cu12
+Version: 12.9.3.13
+Summary: CUBLAS native runtime libraries
+Requires: nvidia-cuda-nvrtc-cu12
+Required-by: cuequivariance-ops-cu12, nvidia-cudnn-cu12, nvidia-cusolver-cu12
+Name: nvidia-cuda-cccl-cu12
+Version: 12.9.27
+Summary: CUDA CCCL
+Requires: 
+Required-by: nvidia-nvshmem-cu12
+Name: nvidia-cuda-cupti-cu12
+Version: 12.9.79
+Summary: CUDA profiling tools runtime libs.
+Requires: 
+Required-by: 
+Name: nvidia-cuda-nvcc-cu12
+Version: 12.9.86
+Summary: CUDA nvcc
+Requires: 
+Required-by: 
+Name: nvidia-cuda-nvrtc-cu12
+Version: 12.9.86
+Summary: NVRTC native runtime libraries
+Requires: 
+Required-by: nvidia-cublas-cu12
+Name: nvidia-cuda-runtime-cu12
+Version: 12.9.79
+Summary: CUDA Runtime native Libraries
+Requires: 
+Required-by: 
+Name: nvidia-cudnn-cu12
+Version: 9.28.0.42
+Summary: cuDNN runtime libraries
+Requires: nvidia-cublas-cu12
+Required-by: 
+Name: nvidia-cufft-cu12
+Version: 11.4.1.4
+Summary: CUFFT native runtime libraries
+Requires: nvidia-nvjitlink-cu12
+Required-by: 
+Name: nvidia-cusolver-cu12
+Version: 11.7.5.82
+Summary: CUDA solver native runtime libraries
+Requires: nvidia-cublas-cu12, nvidia-cusparse-cu12, nvidia-nvjitlink-cu12
+Required-by: 
+Name: nvidia-cusparse-cu12
+Version: 12.5.10.65
+Summary: CUSPARSE native runtime libraries
+Requires: nvidia-nvjitlink-cu12
+Required-by: nvidia-cusolver-cu12
+Name: nvidia-ml-py
+Version: 13.615.71
+Summary: Python Bindings for the NVIDIA Management Library
+Requires: 
+Required-by: cuequivariance-ops-cu12
+Name: nvidia-nccl-cu12
+Version: 2.32.3
+Summary: NVIDIA Collective Communication Library (NCCL) Runtime
+Requires: 
+Required-by: 
+Name: nvidia-nvjitlink-cu12
+Version: 12.9.86
+Summary: Nvidia JIT LTO Library
+Requires: 
+Required-by: nvidia-cufft-cu12, nvidia-cusolver-cu12, nvidia-cusparse-cu12
+Name: nvidia-nvshmem-cu12
+Version: 3.8.0
+Summary: NVSHMEM creates a global address space that provides efficient and scalable communication for NVIDIA GPU clusters.
+Requires: nvidia-cuda-cccl-cu12
+Required-by: 
+Name: oauthlib
+Version: 4.0.1
+Summary: A generic, spec-compliant, thorough implementation of the OAuth request-signing logic
+Requires: 
+Required-by: requests-oauthlib
+Name: opentelemetry-api
+Version: 1.45.2
+Summary: OpenTelemetry Python API
+Requires: typing-extensions
+Required-by: google-api-core
+Name: opt_einsum
+Version: 3.4.0
+Summary: Path optimization of einsum functions.
+Requires: 
+Required-by: cuequivariance, jax, mace-torch, opt-einsum-fx
+Name: opt-einsum-fx
+Version: 0.1.4
+Summary: Einsum optimization using opt_einsum and PyTorch FX
+Requires: opt-einsum, packaging, torch
+Required-by: e3nn
+Name: optax
+Version: 0.2.8
+Summary: A gradient processing and optimization library in JAX.
+Requires: absl-py, jax, jaxlib, numpy
+Required-by: flax, jax-md, mace_jax
+Name: orbax-checkpoint
+Version: 0.12.9
+Summary: Orbax Checkpoint
+Requires: absl-py, aiofiles, etils, humanize, jax, msgpack, numpy, prometheus-client, protobuf, psutil, pyyaml, simplejson, tensorstore, typing_extensions, uvloop
+Required-by: flax
+Name: orjson
+Version: 3.13.0
+Summary: Fast, correct Python JSON library supporting dataclasses, datetimes, and numpy
+Requires: 
+Required-by: mace-torch, pymatgen-core
+Name: packaging
+Version: 26.3
+Summary: Core utilities for Python packages
+Requires: 
+Required-by: cuequivariance-jax, lightning-utilities, matplotlib, matscipy, opt-einsum-fx, plotly, torchmetrics
+Name: palettable
+Version: 3.3.3
+Summary: Color palettes for Python
+Requires: 
+Required-by: pymatgen-core
+Name: pandas
+Version: 3.1.1
+Summary: Powerful data structures for data analysis, time series, and statistics
+Requires: numpy, python-dateutil
+Required-by: mace-torch, pymatgen-core
+Name: pillow
+Version: 13.0.0
+Summary: Python Imaging Library (fork)
+Requires: 
+Required-by: matplotlib
+Name: pip
+Version: 26.3
+Summary: The PyPA recommended tool for installing Python packages.
+Requires: 
+Required-by: 
+Name: platformdirs
+Version: 4.14.5
+Summary: A small Python package for determining appropriate platform-specific dirs, e.g. a `user data dir`.
+Requires: 
+Required-by: cuequivariance-ops-cu12
+Name: plotly
+Version: 7.1.0
+Summary: An open-source interactive data visualization library for Python
+Requires: narwhals, packaging
+Required-by: pymatgen-core
+Name: prettytable
+Version: 3.18.0
+Summary: A simple Python library for easily displaying tabular data in a visually appealing ASCII table format
+Requires: wcwidth
+Required-by: mace-torch
+Name: prometheus_client
+Version: 0.26.0
+Summary: Python client for the Prometheus monitoring system.
+Requires: 
+Required-by: orbax-checkpoint
+Name: propcache
+Version: 0.5.4
+Summary: Accelerated property cache
+Requires: 
+Required-by: aiohttp, yarl
+Name: proto-plus
+Version: 1.29.0
+Summary: Beautiful, Pythonic protocol buffers
+Requires: protobuf
+Required-by: google-api-core, google-cloud-storage-control
+Name: protobuf
+Version: 7.36.2
+Summary: 
+Requires: 
+Required-by: google-api-core, google-cloud-storage-control, googleapis-common-protos, grpc-google-iam-v1, grpcio-status, orbax-checkpoint, proto-plus
+Name: psutil
+Version: 7.2.2
+Summary: Cross-platform lib for process and system monitoring.
+Requires: 
+Required-by: orbax-checkpoint
+Name: pyasn1
+Version: 0.6.5
+Summary: Pure-Python implementation of ASN.1 types and DER/BER/CER codecs (X.208)
+Requires: 
+Required-by: pyasn1_modules
+Name: pyasn1_modules
+Version: 0.4.2
+Summary: A collection of ASN.1-based protocols modules
+Requires: pyasn1
+Required-by: google-auth
+Name: pycparser
+Version: 3.12
+Summary: C parser in Python
+Requires: 
+Required-by: cffi
+Name: Pygments
+Version: 2.21.0
+Summary: Pygments is a syntax highlighting package written in Python.
+Requires: 
+Required-by: rich
+Name: pymatgen
+Version: 2026.10.24
+Summary: Python Materials Genomics is a robust materials analysis code that defines core object representations for structures and molecules with support for many electronic structure codes. It is currently the core analysis code powering the Materials Project (https://materialsproject.org).
+Requires: pymatgen-core
+Required-by: jax-md
+Name: pymatgen-core
+Version: 2026.10.31
+Summary: Python Materials Genomics is a robust materials analysis code that defines core object representations for structures and molecules with support for many electronic structure codes. It is currently the core analysis code powering the Materials Project (https://materialsproject.org). This repository is for pymatgen-core, which implements the core data structures and algorithms.
+Requires: bibtexparser, joblib, lxml, matplotlib, monty, networkx, numpy, orjson, palettable, pandas, plotly, requests, scipy, spglib, sympy, tabulate, tqdm, uncertainties
+Required-by: pymatgen
+Name: pyparsing
+Version: 3.3.3
+Summary: pyparsing - Classes and methods to define and execute parsing grammars
+Requires: 
+Required-by: bibtexparser, matplotlib
+Name: python-dateutil
+Version: 4.0.0
+Summary: Extensions to the standard Python datetime module
+Requires: tzdata
+Required-by: matplotlib, pandas
+Name: python_hostlist
+Version: 2.3.0
+Summary: Python module for hostlist handling
+Requires: 
+Required-by: mace-torch
+Name: PyYAML
+Version: 6.0.3
+Summary: YAML parser and emitter for Python
+Requires: 
+Required-by: flax, mace-torch, mace_jax, ml_collections, orbax-checkpoint
+Name: requests
+Version: 2.34.2
+Summary: Python HTTP for Humans.
+Requires: certifi, charset_normalizer, idna, urllib3
+Required-by: gcsfs, google-api-core, google-cloud-storage, pymatgen-core, requests-oauthlib
+Name: requests-oauthlib
+Version: 2.0.0
+Summary: OAuthlib authentication support for Requests.
+Requires: oauthlib, requests
+Required-by: google-auth-oauthlib
+Name: rich
+Version: 15.0.0
+Summary: Render rich text, tables, progress bars, syntax highlighting, markdown and more to the terminal
+Requires: markdown-it-py, pygments
+Required-by: flax
+Name: roundmantissa
+Version: 0.2.1
+Summary: Round mantissa of a float number
+Requires: 
+Required-by: mace_jax
+Name: ruamel.yaml
+Version: 0.19.1
+Summary: ruamel.yaml is a YAML parser/emitter that supports roundtrip preservation of comments, seq/map flow style, and map key order
+Requires: 
+Required-by: monty
+Name: scipy
+Version: 1.18.1
+Summary: Fundamental algorithms for scientific computing in Python
+Requires: numpy
+Required-by: ase, cuequivariance, e3nn, jax, jaxlib, matscipy, pymatgen-core
+Name: setuptools
+Version: 78.1.0
+Summary: Easily download, build, install, upgrade, and uninstall Python packages
+Requires: 
+Required-by: torch
+Name: simplejson
+Version: 4.2.0
+Summary: Simple, fast, extensible JSON encoder/decoder for Python
+Requires: 
+Required-by: orbax-checkpoint
+Name: smmap
+Version: 5.0.3
+Summary: A pure Python implementation of a sliding window memory map manager
+Requires: 
+Required-by: gitdb
+Name: spglib
+Version: 2.8.0
+Summary: This is the spglib module.
+Requires: numpy, typing-extensions
+Required-by: pymatgen-core
+Name: sympy
+Version: 1.14.0
+Summary: Computer algebra system (CAS) in Python
+Requires: mpmath
+Required-by: cuequivariance, e3nn, e3nn-jax, pymatgen-core, torch
+Name: tabulate
+Version: 0.10.0
+Summary: Pretty-print tabular data
+Requires: 
+Required-by: pymatgen-core
+Name: tensorstore
+Version: 0.1.86
+Summary: Read and write large, multi-dimensional arrays
+Requires: ml_dtypes, numpy
+Required-by: flax, orbax-checkpoint
+Name: toolz
+Version: 1.2.0
+Summary: List processing tools and functional utilities
+Requires: 
+Required-by: chex
+Name: torch
+Version: 2.15.0+cpu
+Summary: Tensors and Dynamic neural networks in Python with strong GPU acceleration
+Requires: filelock, fsspec, jinja2, networkx, setuptools, sympy, typing-extensions
+Required-by: e3nn, mace-torch, opt-einsum-fx, torch-ema, torchmetrics
+Name: torch-ema
+Version: 0.3
+Summary: PyTorch library for computing moving averages of model parameters.
+Requires: torch
+Required-by: mace-torch
+Name: torchmetrics
+Version: 1.9.0
+Summary: PyTorch native Metrics
+Requires: lightning-utilities, numpy, packaging, torch
+Required-by: mace-torch
+Name: tqdm
+Version: 4.70.1
+Summary: Fast, Extensible Progress Meter
+Requires: 
+Required-by: cuequivariance-ops-cu12, mace-torch, mace_jax, pymatgen-core
+Name: treescope
+Version: 0.1.10
+Summary: Treescope: An interactive HTML pretty-printer for ML research in IPython notebooks.
+Requires: numpy
+Required-by: flax
+Name: typing_extensions
+Version: 4.16.0
+Summary: Backported and Experimental Type Hints for Python 3.9+
+Requires: 
+Required-by: aiohttp, aiosignal, ase, chex, flax, grpcio, lightning-utilities, opentelemetry-api, orbax-checkpoint, spglib, torch
+Name: tzdata
+Version: 2026.6
+Summary: Provider of IANA time zone data
+Requires: 
+Required-by: python-dateutil
+Name: uncertainties
+Version: 3.2.3
+Summary: calculations with values with uncertainties, error propagation
+Requires: 
+Required-by: pymatgen-core
+Name: unique-names-generator
+Version: 1.0.2
+Summary: Generate unique and memorable name strings.
+Requires: 
+Required-by: mace_jax
+Name: urllib3
+Version: 2.8.0
+Summary: HTTP library with thread-safe connection pooling, file post, and more.
+Requires: 
+Required-by: requests
+Name: uvloop
+Version: 0.23.0
+Summary: Fast implementation of asyncio event loop on top of libuv
+Requires: 
+Required-by: orbax-checkpoint
+Name: wcwidth
+Version: 0.9.4
+Summary: Measures the displayed width of unicode strings in a terminal
+Requires: 
+Required-by: prettytable
+Name: yarl
+Version: 1.25.1
+Summary: Yet another URL library
+Requires: idna, multidict, propcache
+Required-by: aiohttp
+Name: zipp
+Version: 4.1.2
+Summary: Backport of pathlib-compatible object wrapper for zip files
+Requires: 
+Required-by: 

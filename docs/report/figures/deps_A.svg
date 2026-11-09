@@ -1,0 +1,136 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 560" width="980" height="560" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" role="img"><title>Container A: who needs whom</title><defs></defs><rect width="980" height="560" fill="#ffffff"/>
+<path d="M520.0,102 C520.0,132 600.0,112 600.0,142" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="ours:convert>mace-torch"/>
+<path d="M520.0,102 C520.0,132 440.0,112 440.0,142" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="ours:convert>mace-jax"/>
+<path d="M360.0,102 C360.0,132 280.0,112 280.0,142" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="ours:md_jax>jax-md"/>
+<path d="M360.0,102 C360.0,132 440.0,112 440.0,142" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="ours:md_jax>mace-jax"/>
+<path d="M600.0,194 C600.0,224 760.0,296 760.0,326" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="mace-torch>torch"/>
+<path d="M600.0,194 C600.0,224 741.0,204 741.0,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="mace-torch>matscipy"/>
+<path d="M600.0,194 C600.0,224 655.0,204 655.0,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="mace-torch>e3nn"/>
+<path d="M600.0,194 C600.0,224 827.0,204 827.0,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="mace-torch>ase"/>
+<path d="M440.0,378 C440.0,408 71.4,388 71.4,418" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="jax-cuda12-plugin>jax-cuda12-pjrt"/>
+<path d="M280.0,194 C280.0,224 483.0,204 483.0,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="jax-md>optax"/>
+<path d="M280.0,194 C280.0,224 139.0,204 139.0,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="jax-md>jraph"/>
+<path d="M280.0,194 C280.0,224 280.0,296 280.0,326" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="jax-md>jaxlib"/>
+<path d="M280.0,194 C280.0,224 120.0,296 120.0,326" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="jax-md>jax"/>
+<path d="M280.0,194 C280.0,224 397.0,204 397.0,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="jax-md>flax"/>
+<path d="M280.0,194 C280.0,224 53.0,204 53.0,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="jax-md>e3nn-jax"/>
+<path d="M569.0,286 C569.0,316 280.0,296 280.0,326" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="chex>jaxlib"/>
+<path d="M569.0,286 C569.0,316 120.0,296 120.0,326" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="chex>jax"/>
+<path d="M440.0,194 C440.0,224 483.0,204 483.0,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="mace-jax>optax"/>
+<path d="M440.0,194 C440.0,224 741.0,204 741.0,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="mace-jax>matscipy"/>
+<path d="M440.0,194 C440.0,224 139.0,204 139.0,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="mace-jax>jraph"/>
+<path d="M440.0,194 C440.0,224 120.0,296 120.0,326" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="mace-jax>jax"/>
+<path d="M440.0,194 C440.0,224 397.0,204 397.0,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="mace-jax>flax"/>
+<path d="M440.0,194 C440.0,224 53.0,204 53.0,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="mace-jax>e3nn-jax"/>
+<path d="M440.0,194 C440.0,224 655.0,204 655.0,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="mace-jax>e3nn"/>
+<path d="M440.0,194 C440.0,224 225.0,204 225.0,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="mace-jax>cuequivariance-jax"/>
+<path d="M440.0,194 C440.0,224 311.0,204 311.0,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="mace-jax>cuequivariance"/>
+<path d="M440.0,194 C440.0,224 569.0,204 569.0,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="mace-jax>chex"/>
+<path d="M440.0,194 C440.0,224 827.0,204 827.0,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="mace-jax>ase"/>
+<path d="M600.0,378 C600.0,408 194.3,388 194.3,418" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="cuequivariance-ops-jax-cu12>cuequivariance-ops-cu12"/>
+<path d="M655.0,286 C655.0,316 760.0,296 760.0,326" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="e3nn>torch"/>
+<path d="M483.0,286 C483.0,316 280.0,296 280.0,326" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="optax>jaxlib"/>
+<path d="M483.0,286 C483.0,316 120.0,296 120.0,326" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="optax>jax"/>
+<path d="M139.0,286 C139.0,316 280.0,296 280.0,326" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="jraph>jaxlib"/>
+<path d="M139.0,286 C139.0,316 120.0,296 120.0,326" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="jraph>jax"/>
+<path d="M397.0,286 C397.0,316 120.0,296 120.0,326" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="flax>jax"/>
+<path d="M53.0,286 C53.0,316 280.0,296 280.0,326" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="e3nn-jax>jaxlib"/>
+<path d="M53.0,286 C53.0,316 120.0,296 120.0,326" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="e3nn-jax>jax"/>
+<path d="M225.0,286 C225.0,316 120.0,296 120.0,326" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="cuequivariance-jax>jax"/>
+<text x="972" y="76.0" font-size="10" fill="#8a8984" text-anchor="end" font-weight="normal">our code</text>
+<rect x="285.0" y="50" width="150" height="52" rx="8" fill="#fff" stroke="#0b0b0b" stroke-width="1.1" stroke-dasharray="5 4" data-key="ours:md_jax"/>
+<text x="360.0" y="79.2" font-size="10.8" fill="#0b0b0b" text-anchor="middle" font-weight="600">t0/md_jax.py</text>
+<rect x="445.0" y="50" width="150" height="52" rx="8" fill="#fff" stroke="#0b0b0b" stroke-width="1.1" stroke-dasharray="5 4" data-key="ours:convert"/>
+<text x="520.0" y="72.2" font-size="10.8" fill="#0b0b0b" text-anchor="middle" font-weight="600">mace-jax-</text>
+<text x="520.0" y="86.3" font-size="10.8" fill="#0b0b0b" text-anchor="middle" font-weight="600">from-torch</text>
+<text x="972" y="168.0" font-size="10" fill="#8a8984" text-anchor="end" font-weight="normal">MD + model</text>
+<rect x="205.0" y="142" width="150" height="52" rx="8" fill="#e6f0fc" stroke="#2a78d6" stroke-width="2" data-key="jax-md"/>
+<text x="280.0" y="163.1" font-size="10.8" fill="#0b0b0b" text-anchor="middle" font-weight="600">jax-md</text>
+<text x="280.0" y="179.9" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">0.2.29</text>
+<rect x="365.0" y="142" width="150" height="52" rx="8" fill="#e6f0fc" stroke="#2a78d6" stroke-width="2" data-key="mace-jax"/>
+<text x="440.0" y="163.1" font-size="10.8" fill="#0b0b0b" text-anchor="middle" font-weight="600">mace-jax</text>
+<text x="440.0" y="179.9" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">0.2.0</text>
+<rect x="525.0" y="142" width="150" height="52" rx="8" fill="#e6f0fc" stroke="#2a78d6" stroke-width="2" data-key="mace-torch"/>
+<text x="600.0" y="163.1" font-size="10.8" fill="#0b0b0b" text-anchor="middle" font-weight="600">mace-torch</text>
+<text x="600.0" y="179.9" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">0.3.17</text>
+<text x="972" y="260.0" font-size="10" fill="#8a8984" text-anchor="end" font-weight="normal">layers</text>
+<rect x="15.0" y="234" width="76.0" height="52" rx="8" fill="#fff" stroke="#8a8984" stroke-width="1.1" data-key="e3nn-jax"/>
+<text x="53.0" y="254.7" font-size="9.6" fill="#0b0b0b" text-anchor="middle" font-weight="600">e3nn-jax</text>
+<text x="53.0" y="271.1" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">0.21.0</text>
+<rect x="101.0" y="234" width="76.0" height="52" rx="8" fill="#fff" stroke="#8a8984" stroke-width="1.1" data-key="jraph"/>
+<text x="139.0" y="254.7" font-size="9.6" fill="#0b0b0b" text-anchor="middle" font-weight="600">jraph</text>
+<text x="139.0" y="271.1" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">0.0.6.dev0</text>
+<rect x="187.0" y="234" width="76.0" height="52" rx="8" fill="#fff" stroke="#8a8984" stroke-width="1.1" data-key="cuequivariance-jax"/>
+<text x="225.0" y="248.5" font-size="9.6" fill="#0b0b0b" text-anchor="middle" font-weight="600">cuequivariance-</text>
+<text x="225.0" y="260.9" font-size="9.6" fill="#0b0b0b" text-anchor="middle" font-weight="600">jax</text>
+<text x="225.0" y="277.3" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">0.10.0</text>
+<rect x="273.0" y="234" width="76.0" height="52" rx="8" fill="#fff" stroke="#8a8984" stroke-width="1.1" data-key="cuequivariance"/>
+<text x="311.0" y="254.7" font-size="9.6" fill="#0b0b0b" text-anchor="middle" font-weight="600">cuequivariance</text>
+<text x="311.0" y="271.1" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">0.10.0</text>
+<rect x="359.0" y="234" width="76.0" height="52" rx="8" fill="#e6f0fc" stroke="#2a78d6" stroke-width="2" data-key="flax"/>
+<text x="397.0" y="254.7" font-size="9.6" fill="#0b0b0b" text-anchor="middle" font-weight="600">flax</text>
+<text x="397.0" y="271.1" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">0.12.12</text>
+<rect x="445.0" y="234" width="76.0" height="52" rx="8" fill="#e6f0fc" stroke="#2a78d6" stroke-width="2" data-key="optax"/>
+<text x="483.0" y="254.7" font-size="9.6" fill="#0b0b0b" text-anchor="middle" font-weight="600">optax</text>
+<text x="483.0" y="271.1" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">0.2.8</text>
+<rect x="531.0" y="234" width="76.0" height="52" rx="8" fill="#fff" stroke="#8a8984" stroke-width="1.1" data-key="chex"/>
+<text x="569.0" y="254.7" font-size="9.6" fill="#0b0b0b" text-anchor="middle" font-weight="600">chex</text>
+<text x="569.0" y="271.1" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">0.1.92</text>
+<rect x="617.0" y="234" width="76.0" height="52" rx="8" fill="#fff" stroke="#8a8984" stroke-width="1.1" data-key="e3nn"/>
+<text x="655.0" y="254.7" font-size="9.6" fill="#0b0b0b" text-anchor="middle" font-weight="600">e3nn</text>
+<text x="655.0" y="271.1" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">0.4.4</text>
+<rect x="703.0" y="234" width="76.0" height="52" rx="8" fill="#fff" stroke="#8a8984" stroke-width="1.1" data-key="matscipy"/>
+<text x="741.0" y="254.7" font-size="9.6" fill="#0b0b0b" text-anchor="middle" font-weight="600">matscipy</text>
+<text x="741.0" y="271.1" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">1.3.1</text>
+<rect x="789.0" y="234" width="76.0" height="52" rx="8" fill="#e6f0fc" stroke="#2a78d6" stroke-width="2" data-key="ase"/>
+<text x="827.0" y="254.7" font-size="9.6" fill="#0b0b0b" text-anchor="middle" font-weight="600">ase</text>
+<text x="827.0" y="271.1" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">3.29.0</text>
+<text x="972" y="352.0" font-size="10" fill="#8a8984" text-anchor="end" font-weight="normal">engines</text>
+<rect x="45.0" y="326" width="150" height="52" rx="8" fill="#fff" stroke="#8a8984" stroke-width="1.1" data-key="jax"/>
+<text x="120.0" y="347.1" font-size="10.8" fill="#0b0b0b" text-anchor="middle" font-weight="600">jax</text>
+<text x="120.0" y="363.9" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">0.11.2</text>
+<rect x="205.0" y="326" width="150" height="52" rx="8" fill="#fff" stroke="#8a8984" stroke-width="1.1" data-key="jaxlib"/>
+<text x="280.0" y="347.1" font-size="10.8" fill="#0b0b0b" text-anchor="middle" font-weight="600">jaxlib</text>
+<text x="280.0" y="363.9" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">0.11.2</text>
+<rect x="365.0" y="326" width="150" height="52" rx="8" fill="#fff" stroke="#8a8984" stroke-width="1.1" data-key="jax-cuda12-plugin"/>
+<text x="440.0" y="340.0" font-size="10.8" fill="#0b0b0b" text-anchor="middle" font-weight="600">jax-cuda12-</text>
+<text x="440.0" y="354.1" font-size="10.8" fill="#0b0b0b" text-anchor="middle" font-weight="600">plugin</text>
+<text x="440.0" y="370.9" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">0.11.2</text>
+<rect x="525.0" y="326" width="150" height="52" rx="8" fill="#fff" stroke="#8a8984" stroke-width="1.1" data-key="cuequivariance-ops-jax-cu12"/>
+<text x="600.0" y="340.0" font-size="10.8" fill="#0b0b0b" text-anchor="middle" font-weight="600">cuequivariance-</text>
+<text x="600.0" y="354.1" font-size="10.8" fill="#0b0b0b" text-anchor="middle" font-weight="600">ops-jax-cu12</text>
+<text x="600.0" y="370.9" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">0.10.0</text>
+<rect x="685.0" y="326" width="150" height="52" rx="8" fill="#e6f0fc" stroke="#2a78d6" stroke-width="2" data-key="torch"/>
+<text x="760.0" y="347.1" font-size="10.8" fill="#0b0b0b" text-anchor="middle" font-weight="600">torch</text>
+<text x="760.0" y="363.9" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">2.15.0</text>
+<text x="972" y="444.0" font-size="10" fill="#8a8984" text-anchor="end" font-weight="normal">GPU libs</text>
+<rect x="15.0" y="418" width="112.85714285714286" height="52" rx="8" fill="#fff" stroke="#8a8984" stroke-width="1.1" data-key="jax-cuda12-pjrt"/>
+<text x="71.42857142857143" y="432.0" font-size="10.8" fill="#0b0b0b" text-anchor="middle" font-weight="600">jax-cuda12-</text>
+<text x="71.42857142857143" y="446.1" font-size="10.8" fill="#0b0b0b" text-anchor="middle" font-weight="600">pjrt</text>
+<text x="71.42857142857143" y="462.9" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">0.11.2</text>
+<rect x="137.85714285714286" y="418" width="112.85714285714286" height="52" rx="8" fill="#fff" stroke="#8a8984" stroke-width="1.1" data-key="cuequivariance-ops-cu12"/>
+<text x="194.28571428571428" y="432.0" font-size="10.8" fill="#0b0b0b" text-anchor="middle" font-weight="600">cuequivariance-</text>
+<text x="194.28571428571428" y="446.1" font-size="10.8" fill="#0b0b0b" text-anchor="middle" font-weight="600">ops-cu12</text>
+<text x="194.28571428571428" y="462.9" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">0.10.0</text>
+<rect x="260.7142857142857" y="418" width="112.85714285714286" height="52" rx="8" fill="#fff" stroke="#8a8984" stroke-width="1.1" data-key="nvidia-cublas-cu12"/>
+<text x="317.14285714285717" y="432.0" font-size="10.8" fill="#0b0b0b" text-anchor="middle" font-weight="600">nvidia-</text>
+<text x="317.14285714285717" y="446.1" font-size="10.8" fill="#0b0b0b" text-anchor="middle" font-weight="600">cublas-cu12</text>
+<text x="317.14285714285717" y="462.9" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">12.9.3.13</text>
+<rect x="383.57142857142856" y="418" width="112.85714285714286" height="52" rx="8" fill="#fff" stroke="#8a8984" stroke-width="1.1" data-key="nvidia-cudnn-cu12"/>
+<text x="440.0" y="432.0" font-size="10.8" fill="#0b0b0b" text-anchor="middle" font-weight="600">nvidia-</text>
+<text x="440.0" y="446.1" font-size="10.8" fill="#0b0b0b" text-anchor="middle" font-weight="600">cudnn-cu12</text>
+<text x="440.0" y="462.9" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">9.28.0.42</text>
+<rect x="506.42857142857144" y="418" width="112.85714285714286" height="52" rx="8" fill="#fff" stroke="#8a8984" stroke-width="1.1" data-key="nvidia-cusparse-cu12"/>
+<text x="562.8571428571429" y="432.0" font-size="10.8" fill="#0b0b0b" text-anchor="middle" font-weight="600">nvidia-</text>
+<text x="562.8571428571429" y="446.1" font-size="10.8" fill="#0b0b0b" text-anchor="middle" font-weight="600">cusparse-cu12</text>
+<text x="562.8571428571429" y="462.9" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">12.5.10.65</text>
+<rect x="629.2857142857143" y="418" width="112.85714285714286" height="52" rx="8" fill="#fff" stroke="#8a8984" stroke-width="1.1" data-key="nvidia-cuda-nvrtc-cu12"/>
+<text x="685.7142857142858" y="432.0" font-size="10.8" fill="#0b0b0b" text-anchor="middle" font-weight="600">nvidia-cuda-</text>
+<text x="685.7142857142858" y="446.1" font-size="10.8" fill="#0b0b0b" text-anchor="middle" font-weight="600">nvrtc-cu12</text>
+<text x="685.7142857142858" y="462.9" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">12.9.86</text>
+<rect x="752.1428571428571" y="418" width="112.85714285714286" height="52" rx="8" fill="#fff" stroke="#8a8984" stroke-width="1.1" data-key="nvidia-nccl-cu12"/>
+<text x="808.5714285714286" y="432.0" font-size="10.8" fill="#0b0b0b" text-anchor="middle" font-weight="600">nvidia-</text>
+<text x="808.5714285714286" y="446.1" font-size="10.8" fill="#0b0b0b" text-anchor="middle" font-weight="600">nccl-cu12</text>
+<text x="808.5714285714286" y="462.9" font-size="9.5" fill="#52514e" text-anchor="middle" font-weight="normal">2.32.3</text>
+<text x="20" y="534.0" font-size="10.5" fill="#8a8984" text-anchor="start" font-weight="normal" font-style="italic">Thick outline: named in the recipe. Grey: pulled in as a dependency. Lines: &#x27;requires&#x27; from the installed packages&#x27; metadata (pip show).</text>
+<text x="20" y="549.0" font-size="10.5" fill="#8a8984" text-anchor="start" font-weight="normal" font-style="italic">numpy and scipy are left out: almost everything needs them.</text></svg>

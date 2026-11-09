@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 330" width="980" height="330" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" role="img"><title>Where T0 and T0b sit in the project</title><defs><marker id="ah-52514e" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#52514e"/></marker><marker id="ah-8a8984" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#8a8984"/></marker></defs><rect width="980" height="330" fill="#ffffff"/><text x="20" y="28.0" font-size="12.5" fill="#0b0b0b" text-anchor="start" font-weight="600">now: first two months (this plan)</text>
+<text x="640" y="28.0" font-size="12.5" fill="#8a8984" text-anchor="start" font-weight="600">later (parent proposal)</text>
+<line x1="615" y1="15" x2="615" y2="320" stroke="#c9c8c2" stroke-dasharray="4 4"/>
+<rect x="20" y="50" width="250" height="110" rx="8" fill="#e6f0fc" stroke="#2a78d6" stroke-width="1.4"/>
+<text x="145.0" y="85.3" font-size="12.5" fill="#0b0b0b" text-anchor="middle" font-weight="600">T0: stack benchmark</text>
+<text x="145.0" y="104.1" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">Is JAX (jax-md + mace-jax) &gt; 5× faster</text>
+<text x="145.0" y="118.4" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">than PyTorch (ASE + MACE) per</text>
+<text x="145.0" y="132.7" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">molecule at batch 100?  GPU</text>
+<rect x="330" y="50" width="240" height="110" rx="8" fill="#f1f0ed" stroke="#8a8984" stroke-width="1.4"/>
+<text x="450.0" y="85.3" font-size="12.5" fill="#0b0b0b" text-anchor="middle" font-weight="600">T0 memo</text>
+<text x="450.0" y="104.1" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">picks the MD software stack</text>
+<text x="450.0" y="118.4" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">(JAX / mixed / PyTorch)</text>
+<text x="450.0" y="132.7" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">with caveats</text>
+<rect x="20" y="190" width="250" height="120" rx="8" fill="#dff4ec" stroke="#1baf7a" stroke-width="1.4"/>
+<text x="145.0" y="223.2" font-size="12.5" fill="#0b0b0b" text-anchor="middle" font-weight="600">T0b: vertical slice</text>
+<text x="145.0" y="242.0" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">every pipeline stage once, on a tiny</text>
+<text x="145.0" y="256.3" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">input: 50 spectra → 2,000 mock</text>
+<text x="145.0" y="270.6" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">populations → PAHFIT → PySR</text>
+<text x="145.0" y="284.9" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">→ Orion Bar.  CPU</text>
+<rect x="330" y="190" width="240" height="120" rx="8" fill="#f1f0ed" stroke="#8a8984" stroke-width="1.4"/>
+<text x="450.0" y="223.2" font-size="12.5" fill="#0b0b0b" text-anchor="middle" font-weight="600">Slice report</text>
+<text x="450.0" y="242.0" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">plumbing works end to end;</text>
+<text x="450.0" y="256.3" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">closure test: the search</text>
+<text x="450.0" y="270.6" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">rediscovers a known tracer;</text>
+<text x="450.0" y="284.9" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">go / no-go for scale-up</text>
+<path d="M272,105 Q300.0,105.0 328,105" fill="none" stroke="#52514e" stroke-width="1.6" marker-end="url(#ah-52514e)"/>
+<path d="M272,250 Q300.0,250.0 328,250" fill="none" stroke="#52514e" stroke-width="1.6" marker-end="url(#ah-52514e)"/>
+<rect x="640" y="50" width="320" height="110" rx="8" fill="#e6f0fc" stroke="#2a78d6" stroke-width="1.4" stroke-dasharray="5 4"/>
+<text x="800.0" y="85.3" font-size="12.5" fill="#0b0b0b" text-anchor="middle" font-weight="600">ML molecular dynamics at scale</text>
+<text x="800.0" y="104.1" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">hot, anharmonic IR spectra from MD</text>
+<text x="800.0" y="118.4" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">(MACE forces + a dipole model) for</text>
+<text x="800.0" y="132.7" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">many PAHs, on the chosen stack</text>
+<rect x="640" y="190" width="320" height="120" rx="8" fill="#dff4ec" stroke="#1baf7a" stroke-width="1.4" stroke-dasharray="5 4"/>
+<text x="800.0" y="230.3" font-size="12.5" fill="#0b0b0b" text-anchor="middle" font-weight="600">Medium-scale run, then the full study</text>
+<text x="800.0" y="249.1" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">e.g. 500 species, 10,000 populations</text>
+<text x="800.0" y="263.4" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">(plan §8); formulas for charge, size …</text>
+<text x="800.0" y="277.7" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">applied to JWST spectra</text>
+<path d="M572,105 Q605.0,105.0 638,105" fill="none" stroke="#52514e" stroke-width="1.6" marker-end="url(#ah-52514e)"/>
+<path d="M572,250 Q605.0,250.0 638,250" fill="none" stroke="#52514e" stroke-width="1.6" marker-end="url(#ah-52514e)"/>
+<path d="M800,162 Q800.0,175.0 800,188" fill="none" stroke="#8a8984" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#ah-8a8984)"/>
+<text x="890.0" y="179.0" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">better spectra feed the library</text></svg>

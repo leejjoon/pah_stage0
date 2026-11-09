@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 420" width="980" height="420" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" role="img"><title>Four ways to simulate b molecules on one GPU</title><defs><marker id="ah-eb6834" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#eb6834"/></marker></defs><rect width="980" height="420" fill="#ffffff"/><rect x="15" y="20" width="225" height="64" rx="8" fill="#fdebe3" stroke="#eb6834" stroke-width="1.4"/>
+<text x="127.5" y="39.6" font-size="13" fill="#0b0b0b" text-anchor="middle" font-weight="600">Sequential</text>
+<text x="127.5" y="58.6" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">ASE, one process,</text>
+<text x="127.5" y="72.9" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">molecules one after another</text>
+<rect x="15" y="96" width="225" height="300" rx="8" fill="#fbfbfa" stroke="#c9c8c2"/>
+<rect x="260" y="20" width="225" height="64" rx="8" fill="#fdebe3" stroke="#eb6834" stroke-width="1.4"/>
+<text x="372.5" y="39.6" font-size="13" fill="#0b0b0b" text-anchor="middle" font-weight="600">MPS pool</text>
+<text x="372.5" y="58.6" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">P processes share the GPU</text>
+<text x="372.5" y="72.9" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">through the CUDA MPS daemon</text>
+<rect x="260" y="96" width="225" height="300" rx="8" fill="#fbfbfa" stroke="#c9c8c2"/>
+<rect x="505" y="20" width="225" height="64" rx="8" fill="#fdebe3" stroke="#eb6834" stroke-width="1.4"/>
+<text x="617.5" y="39.6" font-size="13" fill="#0b0b0b" text-anchor="middle" font-weight="600">Batched PyTorch</text>
+<text x="617.5" y="58.6" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">one MACE call for all b:</text>
+<text x="617.5" y="72.9" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">TorchSim, or one big Atoms</text>
+<rect x="505" y="96" width="225" height="300" rx="8" fill="#fbfbfa" stroke="#c9c8c2"/>
+<rect x="750" y="20" width="225" height="64" rx="8" fill="#e6f0fc" stroke="#2a78d6" stroke-width="1.4"/>
+<text x="862.5" y="39.6" font-size="13" fill="#0b0b0b" text-anchor="middle" font-weight="600">JAX padded graph</text>
+<text x="862.5" y="58.6" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">all b in one fixed-size graph,</text>
+<text x="862.5" y="72.9" font-size="11" fill="#52514e" text-anchor="middle" font-weight="normal">one compiled loop</text>
+<rect x="750" y="96" width="225" height="300" rx="8" fill="#fbfbfa" stroke="#c9c8c2"/>
+<rect x="35" y="110" width="185" height="34" rx="8" fill="#fdebe3" stroke="#eb6834" stroke-width="1.4"/>
+<text x="127.5" y="130.3" font-size="11" fill="#0b0b0b" text-anchor="middle" font-weight="600">1 Python process</text>
+<polygon points="69.5,180.5 60.0,186.0 50.5,180.5 50.5,169.5 60.0,164.0 69.5,169.5" fill="#fff" stroke="#52514e" stroke-width="1.5"/>
+<polygon points="103.5,180.5 94.0,186.0 84.5,180.5 84.5,169.5 94.0,164.0 103.5,169.5" fill="#fff" stroke="#52514e" stroke-width="1.5"/>
+<polygon points="137.5,180.5 128.0,186.0 118.5,180.5 118.5,169.5 128.0,164.0 137.5,169.5" fill="#fff" stroke="#52514e" stroke-width="1.5"/>
+<polygon points="171.5,180.5 162.0,186.0 152.5,180.5 152.5,169.5 162.0,164.0 171.5,169.5" fill="#fff" stroke="#52514e" stroke-width="1.5"/>
+<polygon points="205.5,180.5 196.0,186.0 186.5,180.5 186.5,169.5 196.0,164.0 205.5,169.5" fill="#fff" stroke="#52514e" stroke-width="1.5"/>
+<text x="127.5" y="205.0" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">mol 1 → mol 2 → … → mol b</text>
+<rect x="35" y="320" width="185" height="50" rx="8" fill="#f1f0ed" stroke="#8a8984" stroke-width="1.4"/>
+<text x="127.5" y="333.3" font-size="11" fill="#0b0b0b" text-anchor="middle" font-weight="600">GPU</text>
+<text x="127.5" y="350.7" font-size="10" fill="#52514e" text-anchor="middle" font-weight="normal">busy only during each</text>
+<text x="127.5" y="363.7" font-size="10" fill="#52514e" text-anchor="middle" font-weight="normal">small MACE call</text>
+<path d="M127.5,215 Q127.5,266.5 127.5,318" fill="none" stroke="#eb6834" stroke-width="1.6" marker-end="url(#ah-eb6834)"/>
+<text x="127.5" y="260.0" font-size="11" fill="#0b0b0b" text-anchor="middle" font-weight="600">time ∝ b</text>
+<rect x="280" y="110" width="185" height="30" rx="8" fill="#f1f0ed" stroke="#8a8984" stroke-width="1.4"/>
+<text x="372.5" y="128.3" font-size="11" fill="#0b0b0b" text-anchor="middle" font-weight="600">job queue: 1 … b</text>
+<rect x="276" y="160" width="44" height="40" rx="8" fill="#fdebe3" stroke="#eb6834" stroke-width="1.4"/>
+<text x="298.0" y="183.2" font-size="10.5" fill="#0b0b0b" text-anchor="middle" font-weight="600">w1</text>
+<polygon points="305.8,226.5 298.0,231.0 290.2,226.5 290.2,217.5 298.0,213.0 305.8,217.5" fill="#fff" stroke="#52514e" stroke-width="1.5"/>
+<path d="M298,234 Q335.2,249.5 372.5,265" fill="none" stroke="#eb6834" stroke-width="1.2" marker-end="url(#ah-eb6834)"/>
+<rect x="326" y="160" width="44" height="40" rx="8" fill="#fdebe3" stroke="#eb6834" stroke-width="1.4"/>
+<text x="348.0" y="183.2" font-size="10.5" fill="#0b0b0b" text-anchor="middle" font-weight="600">w2</text>
+<polygon points="355.8,226.5 348.0,231.0 340.2,226.5 340.2,217.5 348.0,213.0 355.8,217.5" fill="#fff" stroke="#52514e" stroke-width="1.5"/>
+<path d="M348,234 Q360.2,249.5 372.5,265" fill="none" stroke="#eb6834" stroke-width="1.2" marker-end="url(#ah-eb6834)"/>
+<rect x="376" y="160" width="44" height="40" rx="8" fill="#fdebe3" stroke="#eb6834" stroke-width="1.4"/>
+<text x="398.0" y="183.2" font-size="10.5" fill="#0b0b0b" text-anchor="middle" font-weight="600">w3</text>
+<polygon points="405.8,226.5 398.0,231.0 390.2,226.5 390.2,217.5 398.0,213.0 405.8,217.5" fill="#fff" stroke="#52514e" stroke-width="1.5"/>
+<path d="M398,234 Q385.2,249.5 372.5,265" fill="none" stroke="#eb6834" stroke-width="1.2" marker-end="url(#ah-eb6834)"/>
+<rect x="426" y="160" width="44" height="40" rx="8" fill="#fdebe3" stroke="#eb6834" stroke-width="1.4"/>
+<text x="448.0" y="183.2" font-size="10.5" fill="#0b0b0b" text-anchor="middle" font-weight="600">w4</text>
+<polygon points="455.8,226.5 448.0,231.0 440.2,226.5 440.2,217.5 448.0,213.0 455.8,217.5" fill="#fff" stroke="#52514e" stroke-width="1.5"/>
+<path d="M448,234 Q410.2,249.5 372.5,265" fill="none" stroke="#eb6834" stroke-width="1.2" marker-end="url(#ah-eb6834)"/>
+<rect x="280" y="268" width="185" height="34" rx="8" fill="#fdebe3" stroke="#eb6834" stroke-width="1.4"/>
+<text x="372.5" y="288.3" font-size="11" fill="#0b0b0b" text-anchor="middle" font-weight="600">MPS daemon</text>
+<path d="M372.5,302 Q372.5,310.0 372.5,318" fill="none" stroke="#eb6834" stroke-width="1.6" marker-end="url(#ah-eb6834)"/>
+<rect x="280" y="320" width="185" height="50" rx="8" fill="#f1f0ed" stroke="#8a8984" stroke-width="1.4"/>
+<text x="372.5" y="333.3" font-size="11" fill="#0b0b0b" text-anchor="middle" font-weight="600">GPU</text>
+<text x="372.5" y="350.7" font-size="10" fill="#52514e" text-anchor="middle" font-weight="normal">kernels from P processes</text>
+<text x="372.5" y="363.7" font-size="10" fill="#52514e" text-anchor="middle" font-weight="normal">run side by side</text>
+<rect x="525" y="110" width="185" height="34" rx="8" fill="#fdebe3" stroke="#eb6834" stroke-width="1.4"/>
+<text x="617.5" y="130.3" font-size="11" fill="#0b0b0b" text-anchor="middle" font-weight="600">1 Python process</text>
+<polygon points="578.7,180.0 570.0,185.0 561.3,180.0 561.3,170.0 570.0,165.0 578.7,170.0" fill="#fff" stroke="#52514e" stroke-width="1.5"/>
+<polygon points="578.7,212.0 570.0,217.0 561.3,212.0 561.3,202.0 570.0,197.0 578.7,202.0" fill="#fff" stroke="#52514e" stroke-width="1.5"/>
+<polygon points="578.7,244.0 570.0,249.0 561.3,244.0 561.3,234.0 570.0,229.0 578.7,234.0" fill="#fff" stroke="#52514e" stroke-width="1.5"/>
+<polygon points="626.7,180.0 618.0,185.0 609.3,180.0 609.3,170.0 618.0,165.0 626.7,170.0" fill="#fff" stroke="#52514e" stroke-width="1.5"/>
+<polygon points="626.7,212.0 618.0,217.0 609.3,212.0 609.3,202.0 618.0,197.0 626.7,202.0" fill="#fff" stroke="#52514e" stroke-width="1.5"/>
+<polygon points="626.7,244.0 618.0,249.0 609.3,244.0 609.3,234.0 618.0,229.0 626.7,234.0" fill="#fff" stroke="#52514e" stroke-width="1.5"/>
+<polygon points="674.7,180.0 666.0,185.0 657.3,180.0 657.3,170.0 666.0,165.0 674.7,170.0" fill="#fff" stroke="#52514e" stroke-width="1.5"/>
+<polygon points="674.7,212.0 666.0,217.0 657.3,212.0 657.3,202.0 666.0,197.0 674.7,202.0" fill="#fff" stroke="#52514e" stroke-width="1.5"/>
+<polygon points="674.7,244.0 666.0,249.0 657.3,244.0 657.3,234.0 666.0,229.0 674.7,234.0" fill="#fff" stroke="#52514e" stroke-width="1.5"/>
+<text x="617.5" y="285.0" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">TorchSim: a batch of systems</text>
+<text x="617.5" y="298.6" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">concat: one Atoms, ≥ 30 Å apart</text>
+<rect x="525" y="320" width="185" height="50" rx="8" fill="#f1f0ed" stroke="#8a8984" stroke-width="1.4"/>
+<text x="617.5" y="333.3" font-size="11" fill="#0b0b0b" text-anchor="middle" font-weight="600">GPU</text>
+<text x="617.5" y="350.7" font-size="10" fill="#52514e" text-anchor="middle" font-weight="normal">one MACE call per step</text>
+<text x="617.5" y="363.7" font-size="10" fill="#52514e" text-anchor="middle" font-weight="normal">for all b molecules</text>
+<rect x="770" y="110" width="185" height="34" rx="8" fill="#e6f0fc" stroke="#2a78d6" stroke-width="1.4"/>
+<text x="862.5" y="130.3" font-size="11" fill="#0b0b0b" text-anchor="middle" font-weight="600">1 compiled program</text>
+<polygon points="823.7,180.0 815.0,185.0 806.3,180.0 806.3,170.0 815.0,165.0 823.7,170.0" fill="#fff" stroke="#2a78d6" stroke-width="1.5"/>
+<polygon points="823.7,212.0 815.0,217.0 806.3,212.0 806.3,202.0 815.0,197.0 823.7,202.0" fill="#fff" stroke="#2a78d6" stroke-width="1.5"/>
+<polygon points="823.7,244.0 815.0,249.0 806.3,244.0 806.3,234.0 815.0,229.0 823.7,234.0" fill="#fff" stroke="#2a78d6" stroke-width="1.5"/>
+<polygon points="871.7,180.0 863.0,185.0 854.3,180.0 854.3,170.0 863.0,165.0 871.7,170.0" fill="#fff" stroke="#2a78d6" stroke-width="1.5"/>
+<polygon points="871.7,212.0 863.0,217.0 854.3,212.0 854.3,202.0 863.0,197.0 871.7,202.0" fill="#fff" stroke="#2a78d6" stroke-width="1.5"/>
+<polygon points="871.7,244.0 863.0,249.0 854.3,244.0 854.3,234.0 863.0,229.0 871.7,234.0" fill="#fff" stroke="#2a78d6" stroke-width="1.5"/>
+<polygon points="919.7,180.0 911.0,185.0 902.3,180.0 902.3,170.0 911.0,165.0 919.7,170.0" fill="#fff" stroke="#2a78d6" stroke-width="1.5"/>
+<polygon points="919.7,212.0 911.0,217.0 902.3,212.0 902.3,202.0 911.0,197.0 919.7,202.0" fill="#fff" stroke="#2a78d6" stroke-width="1.5"/>
+<polygon points="919.7,244.0 911.0,249.0 902.3,244.0 902.3,234.0 911.0,229.0 919.7,234.0" fill="#fff" stroke="#2a78d6" stroke-width="1.5"/>
+<rect x="790" y="155" width="145" height="104" rx="6" fill="none" stroke="#2a78d6" stroke-dasharray="4 3"/>
+<text x="862.5" y="285.0" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">fixed caps on atoms and edges;</text>
+<text x="862.5" y="298.6" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal">unused slots are padding</text>
+<rect x="770" y="320" width="185" height="50" rx="8" fill="#f1f0ed" stroke="#8a8984" stroke-width="1.4"/>
+<text x="862.5" y="333.3" font-size="11" fill="#0b0b0b" text-anchor="middle" font-weight="600">GPU</text>
+<text x="862.5" y="350.7" font-size="10" fill="#52514e" text-anchor="middle" font-weight="normal">the whole loop runs here</text>
+<text x="862.5" y="363.7" font-size="10" fill="#52514e" text-anchor="middle" font-weight="normal">(1,000 steps per launch)</text></svg>

@@ -1,0 +1,735 @@
+Name: amespahdbpythonsuite
+Version: 0.5.0.post96+ge8961b2
+Summary: A Python module to work with a downloaded PAHdb XML-file.
+Requires: astropy, fnnls, importlib_resources, lxml, matplotlib, numpy, packaging, scipy, specutils, tqdm, vtk
+Required-by: 
+Name: anyio
+Version: 4.16.0
+Summary: High-level concurrency and networking framework on top of asyncio or Trio
+Requires: idna, typing_extensions
+Required-by: httpx, jupyter_server
+Name: argon2-cffi
+Version: 25.1.0
+Summary: Argon2 for Python
+Requires: argon2-cffi-bindings
+Required-by: jupyter_server
+Name: argon2-cffi-bindings
+Version: 26.1.0
+Summary: Low-level CFFI bindings for Argon2
+Requires: cffi
+Required-by: argon2-cffi
+Name: arrow
+Version: 1.4.0
+Summary: Better dates & times for Python
+Requires: python-dateutil, tzdata
+Required-by: isoduration
+Name: asdf
+Version: 6.0.0
+Summary: Python implementation of the ASDF Standard
+Requires: asdf-standard, attrs, jmespath, numpy, packaging, pyyaml, semantic_version, typing-extensions
+Required-by: asdf-astropy, asdf_coordinates_schemas, gwcs, specutils
+Name: asdf-astropy
+Version: 0.11.0
+Summary: ASDF serialization support for astropy
+Requires: asdf, asdf-coordinates-schemas, asdf-standard, asdf-transform-schemas, astropy, numpy, packaging
+Required-by: gwcs, specutils
+Name: asdf_coordinates_schemas
+Version: 0.5.1
+Summary: ASDF schemas for coordinates
+Requires: asdf, asdf-standard
+Required-by: asdf-astropy, asdf_wcs_schemas
+Name: asdf_standard
+Version: 1.5.0
+Summary: The ASDF Standard schemas
+Requires: 
+Required-by: asdf, asdf-astropy, asdf_coordinates_schemas, asdf_transform_schemas, asdf_wcs_schemas
+Name: asdf_transform_schemas
+Version: 0.6.0
+Summary: ASDF schemas for transforms
+Requires: asdf-standard
+Required-by: asdf-astropy, asdf_wcs_schemas
+Name: asdf_wcs_schemas
+Version: 0.5.0
+Summary: ASDF WCS schemas
+Requires: asdf-coordinates-schemas, asdf-standard, asdf-transform-schemas
+Required-by: gwcs
+Name: astropy
+Version: 8.0.2
+Summary: Astronomy and astrophysics core library
+Requires: astropy-iers-data, numpy, packaging, pyerfa, PyYAML
+Required-by: amespahdbpythonsuite, asdf-astropy, gwcs, ndcube, pahfit, specutils
+Name: astropy-iers-data
+Version: 0.2026.11.2.0.34.55
+Summary: IERS Earth Rotation and Leap Second tables for the astropy core package
+Requires: 
+Required-by: astropy
+Name: asttokens
+Version: 3.0.2
+Summary: Annotate AST trees with source code positions
+Requires: 
+Required-by: stack-data
+Name: async-lru
+Version: 2.4.0
+Summary: Simple LRU cache for asyncio
+Requires: 
+Required-by: jupyterlab
+Name: attrs
+Version: 26.1.0
+Summary: Classes Without Boilerplate
+Requires: 
+Required-by: asdf, jsonschema, referencing
+Name: babel
+Version: 2.18.0
+Summary: Internationalization utilities
+Requires: 
+Required-by: jupyterlab_server
+Name: beautifulsoup4
+Version: 4.15.0
+Summary: Screen-scraping library
+Requires: soupsieve, typing-extensions
+Required-by: nbconvert
+Name: bleach
+Version: 6.4.0
+Summary: An easy safelist-based HTML-sanitizing tool.
+Requires: webencodings
+Required-by: nbconvert
+Name: certifi
+Version: 2026.10.23
+Summary: Python package for providing Mozilla's CA Bundle.
+Requires: 
+Required-by: httpcore, httpx, requests
+Name: cffi
+Version: 2.1.1
+Summary: Foreign Function Interface for Python calling C code.
+Requires: pycparser
+Required-by: argon2-cffi-bindings
+Name: charset-normalizer
+Version: 3.5.2
+Summary: The Real First Universal Charset Detector. Open, modern and actively maintained alternative to Chardet.
+Requires: 
+Required-by: requests
+Name: click
+Version: 8.5.1
+Summary: Composable command line interface toolkit
+Requires: 
+Required-by: pysr
+Name: cloudpickle
+Version: 3.1.2
+Summary: Pickler class to extend the standard pickle.Pickler functionality
+Requires: 
+Required-by: joblib
+Name: comm
+Version: 0.2.3
+Summary: Jupyter Python Comm implementation, for usage in ipykernel, xeus-python etc.
+Requires: 
+Required-by: ipykernel, ipywidgets
+Name: contourpy
+Version: 1.4.0
+Summary: Python library for calculating contours of 2D quadrilateral grids
+Requires: numpy
+Required-by: matplotlib
+Name: cycler
+Version: 0.12.1
+Summary: Composable style cycles
+Requires: 
+Required-by: matplotlib
+Name: debugpy
+Version: 1.8.22
+Summary: An implementation of the Debug Adapter Protocol for Python
+Requires: 
+Required-by: ipykernel
+Name: defusedxml
+Version: 0.7.1
+Summary: XML bomb protection for Python stdlib modules
+Requires: 
+Required-by: nbconvert
+Name: executing
+Version: 2.3.0
+Summary: Get the currently executing AST node of a frame, and other information
+Requires: 
+Required-by: stack-data
+Name: fastjsonschema
+Version: 2.22.3
+Summary: Fastest Python implementation of JSON schema
+Requires: 
+Required-by: nbformat
+Name: filelock
+Version: 4.2.9
+Summary: A platform independent file lock.
+Requires: 
+Required-by: juliapkg
+Name: fnnls
+Version: 1.0.0
+Summary: Fast Nonnegative Least Squares
+Requires: numpy, pytest
+Required-by: amespahdbpythonsuite
+Name: fonttools
+Version: 4.68.0
+Summary: Tools to manipulate font files
+Requires: 
+Required-by: matplotlib
+Name: fqdn
+Version: 1.6.0
+Summary: Validates fully-qualified domain names against RFC 1123, so that they are acceptable to modern browsers
+Requires: 
+Required-by: 
+Name: gwcs
+Version: 1.0.3
+Summary: Generalized World Coordinate System
+Requires: asdf, asdf-astropy, asdf_wcs_schemas, astropy, numpy, scipy
+Required-by: ndcube, specutils
+Name: h11
+Version: 0.16.0
+Summary: A pure-Python, bring-your-own-I/O implementation of HTTP/1.1
+Requires: 
+Required-by: httpcore
+Name: h5py
+Version: 3.16.0
+Summary: Read and write HDF5 files from Python
+Requires: numpy
+Required-by: 
+Name: httpcore
+Version: 1.0.9
+Summary: A minimal low-level HTTP client.
+Requires: certifi, h11
+Required-by: httpx
+Name: httpx
+Version: 0.28.1
+Summary: The next generation HTTP client.
+Requires: anyio, certifi, httpcore, idna
+Required-by: jupyterlab
+Name: idna
+Version: 3.20
+Summary: Internationalized Domain Names in Applications (IDNA)
+Requires: 
+Required-by: anyio, httpx, requests
+Name: importlib_resources
+Version: 7.1.0
+Summary: Read resources from Python packages
+Requires: 
+Required-by: amespahdbpythonsuite
+Name: iniconfig
+Version: 2.3.1
+Summary: brain-dead simple config-ini parsing
+Requires: 
+Required-by: pytest
+Name: ipykernel
+Version: 7.4.0
+Summary: IPython Kernel for Jupyter
+Requires: comm, debugpy, ipython, jupyter-client, jupyter-core, matplotlib-inline, nest-asyncio2, packaging, pyzmq, tornado, traitlets
+Required-by: jupyter, jupyter-console, jupyterlab
+Name: ipython
+Version: 9.18.1
+Summary: IPython: Productive Interactive Computing
+Requires: ipython-pygments-lexers, jedi, matplotlib-inline, pexpect, prompt_toolkit, psutil, pygments, stack_data, traitlets
+Required-by: ipykernel, ipywidgets, jupyter-console
+Name: ipython_pygments_lexers
+Version: 1.1.1
+Summary: Defines a variety of Pygments lexers for highlighting IPython code.
+Requires: pygments
+Required-by: ipython
+Name: ipywidgets
+Version: 8.1.9
+Summary: Jupyter interactive widgets
+Requires: comm, ipython, jupyterlab_widgets, traitlets, widgetsnbextension
+Required-by: jupyter
+Name: isoduration
+Version: 20.11.0
+Summary: Operations with ISO 8601 durations
+Requires: arrow
+Required-by: 
+Name: jedi
+Version: 0.20.1
+Summary: An autocompletion tool for Python that can be used for text editors.
+Requires: parso
+Required-by: ipython
+Name: Jinja2
+Version: 3.1.6
+Summary: A very fast and expressive template engine.
+Requires: MarkupSafe
+Required-by: jupyter_server, jupyterlab, jupyterlab_server, nbconvert
+Name: jmespath
+Version: 1.1.0
+Summary: JSON Matching Expressions
+Requires: 
+Required-by: asdf
+Name: joblib
+Version: 1.6.0
+Summary: Lightweight pipelining with Python functions
+Requires: cloudpickle
+Required-by: scikit-learn
+Name: json5
+Version: 0.17.3
+Summary: A Python implementation of the JSON5 data format.
+Requires: 
+Required-by: jupyterlab_server
+Name: jsonpointer
+Version: 3.10
+Summary: Identify specific nodes in a JSON document (RFC 6901) 
+Requires: 
+Required-by: 
+Name: jsonschema
+Version: 4.26.0
+Summary: An implementation of JSON Schema validation for Python
+Requires: attrs, jsonschema-specifications, referencing, rpds-py
+Required-by: jupyter-events, jupyterlab_server, nbformat
+Name: jsonschema-specifications
+Version: 2025.9.1
+Summary: The JSON Schema meta-schemas and vocabularies, exposed as a Registry
+Requires: referencing
+Required-by: jsonschema
+Name: juliacall
+Version: 0.9.36
+Summary: Julia and Python in seamless harmony
+Requires: juliapkg
+Required-by: pysr
+Name: juliapkg
+Version: 0.1.28
+Summary: Julia version manager and package manager
+Requires: filelock, semver, tomli, tomlkit
+Required-by: juliacall
+Name: jupyter
+Version: 1.1.1
+Summary: Jupyter metapackage. Install all the Jupyter components in one go.
+Requires: ipykernel, ipywidgets, jupyter-console, jupyterlab, nbconvert, notebook
+Required-by: 
+Name: jupyter_builder
+Version: 1.2.4
+Summary: JupyterLab build tools
+Requires: jupyter-core, traitlets
+Required-by: jupyterlab, notebook
+Name: jupyter_client
+Version: 8.10.0
+Summary: Jupyter protocol implementation and client libraries
+Requires: jupyter-core, python-dateutil, pyzmq, tornado, traitlets, typing-extensions
+Required-by: ipykernel, jupyter-console, jupyter_server, nbclient
+Name: jupyter-console
+Version: 6.6.3
+Summary: Jupyter terminal console
+Requires: ipykernel, ipython, jupyter-client, jupyter-core, prompt-toolkit, pygments, pyzmq, traitlets
+Required-by: jupyter
+Name: jupyter_core
+Version: 5.9.1
+Summary: Jupyter core package. A base package on which Jupyter projects rely.
+Requires: platformdirs, traitlets
+Required-by: ipykernel, jupyter-console, jupyter_builder, jupyter_client, jupyter_server, jupyterlab, nbclient, nbconvert, nbformat
+Name: jupyter-events
+Version: 0.12.1
+Summary: Jupyter Event System library
+Requires: jsonschema, packaging, python-json-logger, pyyaml, referencing, rfc3339-validator, rfc3986-validator, traitlets
+Required-by: jupyter_server
+Name: jupyter-lsp
+Version: 2.3.1
+Summary: Multi-Language Server WebSocket proxy for Jupyter Notebook/Lab server
+Requires: jupyter_server
+Required-by: jupyterlab
+Name: jupyter_server
+Version: 2.21.1
+Summary: The backend—i.e. core services, APIs, and REST endpoints—to Jupyter web applications.
+Requires: anyio, argon2-cffi, jinja2, jupyter-client, jupyter-core, jupyter-events, jupyter-server-terminals, nbconvert, nbformat, packaging, prometheus-client, pyzmq, send2trash, terminado, tornado, traitlets, websocket-client
+Required-by: jupyter-lsp, jupyterlab, jupyterlab_server, notebook, notebook_shim
+Name: jupyter_server_terminals
+Version: 0.5.4
+Summary: A Jupyter Server Extension Providing Terminals.
+Requires: terminado
+Required-by: jupyter_server
+Name: jupyterlab
+Version: 4.6.6
+Summary: JupyterLab computational environment
+Requires: async-lru, httpx, ipykernel, jinja2, jupyter-builder, jupyter-core, jupyter-lsp, jupyter-server, jupyterlab-server, notebook-shim, packaging, tornado, traitlets
+Required-by: jupyter, notebook
+Name: jupyterlab_pygments
+Version: 0.3.0
+Summary: Pygments theme using JupyterLab CSS variables
+Requires: 
+Required-by: nbconvert
+Name: jupyterlab_server
+Version: 2.28.1
+Summary: A set of server components for JupyterLab and JupyterLab like applications.
+Requires: babel, jinja2, json5, jsonschema, jupyter-server, packaging, requests
+Required-by: jupyterlab, notebook
+Name: jupyterlab_widgets
+Version: 3.0.17
+Summary: Jupyter interactive widgets for JupyterLab
+Requires: 
+Required-by: ipywidgets
+Name: kiwisolver
+Version: 1.5.1
+Summary: A fast implementation of the Cassowary constraint solver
+Requires: 
+Required-by: matplotlib
+Name: lark
+Version: 1.3.1
+Summary: a modern parsing library
+Requires: 
+Required-by: rfc3987-syntax
+Name: lxml
+Version: 6.1.3
+Summary: Powerful and Pythonic XML processing library combining libxml2/libxslt with the ElementTree API.
+Requires: 
+Required-by: amespahdbpythonsuite
+Name: MarkupSafe
+Version: 3.0.4
+Summary: Safely add untrusted strings to HTML/XML markup.
+Requires: 
+Required-by: Jinja2, nbconvert
+Name: matplotlib
+Version: 3.11.2
+Summary: Python plotting package
+Requires: contourpy, cycler, fonttools, kiwisolver, numpy, packaging, pillow, pyparsing, python-dateutil
+Required-by: amespahdbpythonsuite, pahfit, vtk
+Name: matplotlib-inline
+Version: 0.2.2
+Summary: Inline Matplotlib backend for Jupyter
+Requires: traitlets
+Required-by: ipykernel, ipython
+Name: mistune
+Version: 3.4.0
+Summary: A sane and fast Markdown parser with useful plugins and renderers
+Requires: 
+Required-by: nbconvert
+Name: mpmath
+Version: 1.3.0
+Summary: Python library for arbitrary-precision floating-point arithmetic
+Requires: 
+Required-by: sympy
+Name: narwhals
+Version: 2.28.0
+Summary: Extremely lightweight compatibility layer between dataframe libraries
+Requires: 
+Required-by: scikit-learn
+Name: nbclient
+Version: 0.11.0
+Summary: A client library for executing notebooks. Formerly nbconvert's ExecutePreprocessor.
+Requires: jupyter-client, jupyter-core, nbformat, traitlets
+Required-by: nbconvert
+Name: nbconvert
+Version: 7.17.2
+Summary: Convert Jupyter Notebooks (.ipynb files) to other formats.
+Requires: beautifulsoup4, bleach, defusedxml, jinja2, jupyter-core, jupyterlab-pygments, markupsafe, mistune, nbclient, nbformat, packaging, pandocfilters, pygments, traitlets
+Required-by: jupyter, jupyter_server
+Name: nbformat
+Version: 5.11.1
+Summary: The Jupyter Notebook format
+Requires: fastjsonschema, jsonschema, jupyter-core, traitlets
+Required-by: jupyter_server, nbclient, nbconvert
+Name: ndcube
+Version: 2.4.3
+Summary: A package for multi-dimensional contiguous and non-contiguous coordinate aware arrays.
+Requires: astropy, gwcs, numpy, scipy
+Required-by: specutils
+Name: nest-asyncio2
+Version: 1.7.4
+Summary: Patch asyncio to allow nested event loops
+Requires: 
+Required-by: ipykernel
+Name: notebook
+Version: 7.6.5
+Summary: Jupyter Notebook - A web-based notebook environment for interactive computing
+Requires: jupyter-builder, jupyter-server, jupyterlab, jupyterlab-server, notebook-shim, tornado
+Required-by: jupyter
+Name: notebook_shim
+Version: 0.2.4
+Summary: A shim layer for notebook traits and config
+Requires: jupyter-server
+Required-by: jupyterlab, notebook
+Name: numpy
+Version: 2.5.4
+Summary: Fundamental package for array computing in Python
+Requires: 
+Required-by: amespahdbpythonsuite, asdf, asdf-astropy, astropy, contourpy, fnnls, gwcs, h5py, matplotlib, ndcube, pandas, pyerfa, pysr, scikit-learn, scipy, specutils
+Name: packaging
+Version: 26.3
+Summary: Core utilities for Python packages
+Requires: 
+Required-by: amespahdbpythonsuite, asdf, asdf-astropy, astropy, ipykernel, jupyter-events, jupyter_server, jupyterlab, jupyterlab_server, matplotlib, nbconvert, pytest
+Name: pahfit
+Version: 2.6.dev93+gca599f9a1
+Summary: fit the features in near- and mid-IR astronomical spectra
+Requires: astropy, matplotlib, scipy, specutils
+Required-by: 
+Name: pandas
+Version: 3.1.1
+Summary: Powerful data structures for data analysis, time series, and statistics
+Requires: numpy, python-dateutil
+Required-by: pysr
+Name: pandocfilters
+Version: 1.5.1
+Summary: Utilities for writing pandoc filters in python
+Requires: 
+Required-by: nbconvert
+Name: parso
+Version: 0.8.7
+Summary: A Python Parser
+Requires: 
+Required-by: jedi
+Name: pexpect
+Version: 4.9.0
+Summary: Pexpect allows easy control of interactive console applications.
+Requires: ptyprocess
+Required-by: ipython
+Name: pillow
+Version: 13.0.0
+Summary: Python Imaging Library (fork)
+Requires: 
+Required-by: matplotlib
+Name: pip
+Version: 26.3
+Summary: The PyPA recommended tool for installing Python packages.
+Requires: 
+Required-by: 
+Name: platformdirs
+Version: 4.14.5
+Summary: A small Python package for determining appropriate platform-specific dirs, e.g. a `user data dir`.
+Requires: 
+Required-by: jupyter_core
+Name: pluggy
+Version: 1.7.0
+Summary: plugin and hook calling mechanisms for python
+Requires: 
+Required-by: pytest
+Name: prometheus_client
+Version: 0.26.0
+Summary: Python client for the Prometheus monitoring system.
+Requires: 
+Required-by: jupyter_server
+Name: prompt_toolkit
+Version: 3.0.53
+Summary: Library for building powerful interactive command lines in Python
+Requires: wcwidth
+Required-by: ipython, jupyter-console
+Name: psutil
+Version: 7.2.2
+Summary: Cross-platform lib for process and system monitoring.
+Requires: 
+Required-by: ipython
+Name: ptyprocess
+Version: 0.7.0
+Summary: Run a subprocess in a pseudo terminal
+Requires: 
+Required-by: pexpect, terminado
+Name: pure_eval
+Version: 0.2.4
+Summary: Safely evaluate AST nodes without side effects
+Requires: 
+Required-by: stack-data
+Name: pycparser
+Version: 3.12
+Summary: C parser in Python
+Requires: 
+Required-by: cffi
+Name: pyerfa
+Version: 2.0.1.5
+Summary: Python bindings for ERFA
+Requires: numpy
+Required-by: astropy
+Name: Pygments
+Version: 2.21.0
+Summary: Pygments is a syntax highlighting package written in Python.
+Requires: 
+Required-by: ipython, ipython_pygments_lexers, jupyter-console, nbconvert, pytest
+Name: pyparsing
+Version: 3.3.3
+Summary: pyparsing - Classes and methods to define and execute parsing grammars
+Requires: 
+Required-by: matplotlib
+Name: pysr
+Version: 2.7.2
+Summary: Simple and efficient symbolic regression
+Requires: click, juliacall, numpy, pandas, scikit-learn, sympy, typing-extensions
+Required-by: 
+Name: pytest
+Version: 9.2.0
+Summary: pytest: simple powerful testing with Python
+Requires: iniconfig, packaging, pluggy, pygments
+Required-by: fnnls
+Name: python-dateutil
+Version: 4.0.0
+Summary: Extensions to the standard Python datetime module
+Requires: tzdata
+Required-by: arrow, jupyter_client, matplotlib, pandas
+Name: python-json-logger
+Version: 4.2.0
+Summary: JSON Log Formatter for the Python Logging Package
+Requires: 
+Required-by: jupyter-events
+Name: PyYAML
+Version: 6.0.3
+Summary: YAML parser and emitter for Python
+Requires: 
+Required-by: asdf, astropy, jupyter-events
+Name: pyzmq
+Version: 27.3.0
+Summary: Python bindings for 0MQ
+Requires: 
+Required-by: ipykernel, jupyter-console, jupyter_client, jupyter_server
+Name: referencing
+Version: 0.37.0
+Summary: JSON Referencing + Python
+Requires: attrs, rpds-py, typing-extensions
+Required-by: jsonschema, jsonschema-specifications, jupyter-events
+Name: requests
+Version: 2.34.2
+Summary: Python HTTP for Humans.
+Requires: certifi, charset_normalizer, idna, urllib3
+Required-by: jupyterlab_server
+Name: rfc3339-validator
+Version: 0.1.4
+Summary: A pure python RFC3339 validator
+Requires: six
+Required-by: jupyter-events
+Name: rfc3986-validator
+Version: 0.1.1
+Summary: Pure python rfc3986 validator
+Requires: 
+Required-by: jupyter-events
+Name: rfc3987-syntax
+Version: 1.1.0
+Summary: Helper functions to syntactically validate strings according to RFC 3987.
+Requires: lark
+Required-by: 
+Name: rpds-py
+Version: 2026.9.1
+Summary: Python bindings to Rust's persistent data structures (rpds)
+Requires: 
+Required-by: jsonschema, referencing
+Name: scikit-learn
+Version: 1.9.1
+Summary: A set of python modules for machine learning and data mining
+Requires: joblib, narwhals, numpy, scipy, threadpoolctl
+Required-by: pysr
+Name: scipy
+Version: 1.18.1
+Summary: Fundamental algorithms for scientific computing in Python
+Requires: numpy
+Required-by: amespahdbpythonsuite, gwcs, ndcube, pahfit, scikit-learn, specutils
+Name: semantic-version
+Version: 2.10.0
+Summary: A library implementing the 'SemVer' scheme.
+Requires: 
+Required-by: asdf
+Name: semver
+Version: 3.1.0
+Summary: Python helper for Semantic Versioning (https://semver.org)
+Requires: 
+Required-by: juliapkg
+Name: Send2Trash
+Version: 2.1.0
+Summary: Send file to trash natively under Mac OS X, Windows and Linux
+Requires: 
+Required-by: jupyter_server
+Name: six
+Version: 1.17.0
+Summary: Python 2 and 3 compatibility utilities
+Requires: 
+Required-by: rfc3339-validator
+Name: soupsieve
+Version: 4.0.1
+Summary: A modern CSS selector implementation for Beautiful Soup.
+Requires: 
+Required-by: beautifulsoup4
+Name: specutils
+Version: 2.4.0
+Summary: Package for spectroscopic astronomical data
+Requires: asdf, asdf-astropy, astropy, gwcs, ndcube, numpy, scipy
+Required-by: amespahdbpythonsuite, pahfit
+Name: stack-data
+Version: 0.6.3
+Summary: Extract data from python stack frames and tracebacks for informative displays
+Requires: asttokens, executing, pure-eval
+Required-by: ipython
+Name: sympy
+Version: 1.14.0
+Summary: Computer algebra system (CAS) in Python
+Requires: mpmath
+Required-by: pysr
+Name: terminado
+Version: 0.18.1
+Summary: Tornado websocket backend for the Xterm.js Javascript terminal emulator library.
+Requires: ptyprocess, tornado
+Required-by: jupyter_server, jupyter_server_terminals
+Name: threadpoolctl
+Version: 3.8.0
+Summary: threadpoolctl
+Requires: 
+Required-by: scikit-learn
+Name: tinycss2
+Version: 1.5.1
+Summary: A tiny CSS parser
+Requires: webencodings
+Required-by: 
+Name: tomli
+Version: 2.5.0
+Summary: A lil' TOML parser
+Requires: 
+Required-by: juliapkg
+Name: tomlkit
+Version: 0.15.2
+Summary: Style preserving TOML library
+Requires: 
+Required-by: juliapkg
+Name: tornado
+Version: 6.6
+Summary: Tornado is a Python web framework and asynchronous networking library, originally developed at FriendFeed.
+Requires: 
+Required-by: ipykernel, jupyter_client, jupyter_server, jupyterlab, notebook, terminado
+Name: tqdm
+Version: 4.70.1
+Summary: Fast, Extensible Progress Meter
+Requires: 
+Required-by: amespahdbpythonsuite
+Name: traitlets
+Version: 5.16.1
+Summary: Traitlets Python configuration system
+Requires: 
+Required-by: ipykernel, ipython, ipywidgets, jupyter-console, jupyter-events, jupyter_builder, jupyter_client, jupyter_core, jupyter_server, jupyterlab, matplotlib-inline, nbclient, nbconvert, nbformat
+Name: typing_extensions
+Version: 4.16.0
+Summary: Backported and Experimental Type Hints for Python 3.9+
+Requires: 
+Required-by: anyio, asdf, beautifulsoup4, jupyter_client, pysr, referencing
+Name: tzdata
+Version: 2026.6
+Summary: Provider of IANA time zone data
+Requires: 
+Required-by: arrow, python-dateutil
+Name: uri-template
+Version: 1.3.0
+Summary: RFC 6570 URI Template Processor
+Requires: 
+Required-by: 
+Name: urllib3
+Version: 2.8.0
+Summary: HTTP library with thread-safe connection pooling, file post, and more.
+Requires: 
+Required-by: requests
+Name: vtk
+Version: 9.7.2
+Summary: VTK is an open-source toolkit for 3D computer graphics, image processing, and visualization
+Requires: matplotlib
+Required-by: amespahdbpythonsuite
+Name: wcwidth
+Version: 0.9.4
+Summary: Measures the displayed width of unicode strings in a terminal
+Requires: 
+Required-by: prompt_toolkit
+Name: webcolors
+Version: 25.10.0
+Summary: A library for working with the color formats defined by HTML and CSS.
+Requires: 
+Required-by: 
+Name: webencodings
+Version: 0.6.1
+Summary: Character encoding aliases for legacy web content
+Requires: 
+Required-by: bleach, tinycss2
+Name: websocket-client
+Version: 1.9.2
+Summary: WebSocket client for Python with low level API options
+Requires: 
+Required-by: jupyter_server
+Name: widgetsnbextension
+Version: 4.0.16
+Summary: Jupyter interactive widgets for Jupyter Notebook
+Requires: 
+Required-by: ipywidgets

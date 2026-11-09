@@ -1,0 +1,1449 @@
+Name: absl-py
+Version: 2.5.1
+Summary: Abseil Python Common Libraries, see https://github.com/abseil/abseil-py.
+Requires: 
+Required-by: array_record, grain, tensorboard
+Name: aiohappyeyeballs
+Version: 2.7.1
+Summary: Happy Eyeballs for asyncio
+Requires: 
+Required-by: aiohttp
+Name: aiohttp
+Version: 3.14.4
+Summary: Async http client/server framework (asyncio)
+Requires: aiohappyeyeballs, aiosignal, attrs, frozenlist, multidict, propcache, typing_extensions, yarl
+Required-by: 
+Name: aiosignal
+Version: 1.4.0
+Summary: aiosignal: a list of registered asynchronous callbacks
+Requires: frozenlist, typing-extensions
+Required-by: aiohttp
+Name: annotated-doc
+Version: 0.0.5
+Summary: Document parameters, class attributes, return types, and variables inline, with Annotated.
+Requires: 
+Required-by: fastapi
+Name: annotated-types
+Version: 0.8.0
+Summary: Reusable constraint types to use with typing.Annotated
+Requires: 
+Required-by: pydantic
+Name: anyio
+Version: 4.15.1
+Summary: High-level concurrency and networking framework on top of asyncio or Trio
+Requires: idna, typing_extensions
+Required-by: httpx, jupyter_server, starlette, watchfiles
+Name: apache-tvm-ffi
+Version: 0.1.14.post1
+Summary: tvm ffi
+Requires: typing-extensions
+Required-by: flash-attn-4, nvidia-cudnn-frontend, nvidia-cutlass-operators, quack-kernels
+Name: apex
+Version: 0.1
+Summary: PyTorch Extensions written by NVIDIA
+Requires: packaging
+Required-by: 
+Name: argon2-cffi
+Version: 25.1.0
+Summary: Argon2 for Python
+Requires: argon2-cffi-bindings
+Required-by: jupyter_server
+Name: argon2-cffi-bindings
+Version: 26.1.0
+Summary: Low-level CFFI bindings for Argon2
+Requires: cffi
+Required-by: argon2-cffi
+Name: array_record
+Version: 0.8.4
+Summary: A file format that achieves a new frontier of IO efficiency
+Requires: absl-py, etils
+Required-by: grain
+Name: arrow
+Version: 1.4.0
+Summary: Better dates & times for Python
+Requires: python-dateutil, tzdata
+Required-by: isoduration
+Name: ase
+Version: 3.29.0
+Summary: Atomic Simulation Environment
+Requires: matplotlib, numpy, scipy, typing_extensions
+Required-by: mace-torch, matscipy
+Name: asttokens
+Version: 3.0.2
+Summary: Annotate AST trees with source code positions
+Requires: 
+Required-by: stack-data
+Name: astunparse
+Version: 1.6.3
+Summary: An AST unparser for Python
+Requires: six, wheel
+Required-by: nvidia-dali-cuda130
+Name: async-lru
+Version: 2.3.0
+Summary: Simple LRU cache for asyncio
+Requires: 
+Required-by: jupyterlab
+Name: attn_gym
+Version: 0.0.8
+Summary: Helpful tools and examples for working with flex-attention
+Requires: torch
+Required-by: torchtitan
+Name: attrs
+Version: 26.1.0
+Summary: Classes Without Boilerplate
+Requires: 
+Required-by: aiohttp, jsonschema, referencing
+Name: babel
+Version: 2.18.0
+Summary: Internationalization utilities
+Requires: 
+Required-by: jupyterlab_server
+Name: beautifulsoup4
+Version: 4.15.0
+Summary: Screen-scraping library
+Requires: soupsieve, typing-extensions
+Required-by: nbconvert
+Name: black
+Version: 26.10.0
+Summary: The uncompromising code formatter.
+Requires: click, mypy-extensions, packaging, pathspec, platformdirs, pytokens
+Required-by: 
+Name: bleach
+Version: 6.4.0
+Summary: An easy safelist-based HTML-sanitizing tool.
+Requires: webencodings
+Required-by: nbconvert
+Name: blosc2
+Version: 4.14.1
+Summary: A fast & compressed ndarray library with a flexible compute engine.
+Requires: httpx, msgpack, ndindex, numexpr, numpy, pydantic, rich, threadpoolctl
+Required-by: tables
+Name: certifi
+Version: 2026.7.22
+Summary: Python package for providing Mozilla's CA Bundle.
+Requires: 
+Required-by: httpcore, httpx, requests
+Name: cffi
+Version: 2.1.1
+Summary: Foreign Function Interface for Python calling C code.
+Requires: pycparser
+Required-by: argon2-cffi-bindings
+Name: charset-normalizer
+Version: 3.5.2
+Summary: The Real First Universal Charset Detector. Open, modern and actively maintained alternative to Chardet.
+Requires: 
+Required-by: requests
+Name: click
+Version: 8.5.0
+Summary: Composable command line interface toolkit
+Requires: 
+Required-by: black, huggingface_hub, uvicorn, wandb
+Name: cloudpickle
+Version: 3.1.2
+Summary: Pickler class to extend the standard pickle.Pickler functionality
+Requires: 
+Required-by: grain
+Name: cmake
+Version: 3.31.6
+Summary: CMake is an open-source, cross-platform family of tools designed to build, test and package software
+Requires: 
+Required-by: 
+Name: comm
+Version: 0.2.3
+Summary: Jupyter Python Comm implementation, for usage in ipykernel, xeus-python etc.
+Requires: 
+Required-by: ipykernel
+Name: ConfigArgParse
+Version: 1.9.0
+Summary: A drop-in replacement for argparse that allows options to also be set via config files and/or environment variables.
+Requires: 
+Required-by: mace-torch
+Name: contourpy
+Version: 1.4.0
+Summary: Python library for calculating contours of 2D quadrilateral grids
+Requires: numpy
+Required-by: matplotlib
+Name: cuda-bindings
+Version: 13.4.3
+Summary: Python bindings for CUDA
+Requires: cuda-pathfinder
+Required-by: cupti-python, nvidia-cutlass-dsl-libs-base, nvidia-cutlass-dsl-libs-core, nvidia-cutlass-dsl-libs-cu12, nvidia-cutlass-dsl-libs-cu13
+Name: cuda-pathfinder
+Version: 1.8.3
+Summary: Pathfinder for CUDA components
+Requires: 
+Required-by: cuda-bindings, cupti-python
+Name: cuda-tile
+Version: 1.6.0
+Summary: CUDA Tile Compiler
+Requires: typing-extensions
+Required-by: 
+Name: cuequivariance
+Version: 0.10.0
+Summary: CUDA accelerated equivariant operations
+Requires: networkx, numpy, opt-einsum, scipy, sympy
+Required-by: cuequivariance-torch
+Name: cuequivariance-ops-cu13
+Version: 0.10.0
+Summary: cuequivariance-ops - GPU Accelerated Extensions for Equivariant Primitives
+Requires: nvidia-cublas, nvidia-ml-py, platformdirs, tqdm
+Required-by: cuequivariance-ops-torch-cu13
+Name: cuequivariance-ops-torch-cu13
+Version: 0.10.0
+Summary: cuequivariance-ops-torch - GPU Accelerated Torch Extensions for Equivariant Primitives
+Requires: cuequivariance-ops-cu13, scipy
+Required-by: 
+Name: cuequivariance-torch
+Version: 0.10.0
+Summary: CUDA accelerated equivariant operations
+Requires: cuequivariance
+Required-by: 
+Name: cupti-python
+Version: 13.4.0
+Summary: NVIDIA CUPTI Python Library
+Requires: cuda-bindings, cuda-pathfinder, numpy, nvidia-cuda-cupti, pyelftools
+Required-by: 
+Name: cycler
+Version: 0.12.1
+Summary: Composable style cycles
+Requires: 
+Required-by: matplotlib
+Name: Cython
+Version: 3.3.0
+Summary: The Cython compiler for writing C extensions in the Python language.
+Requires: 
+Required-by: pycocotools
+Name: datasets
+Version: 4.7.0
+Summary: HuggingFace community-driven open-source library of datasets
+Requires: dill, filelock, fsspec, httpx, huggingface-hub, multiprocess, numpy, packaging, pandas, pyarrow, pyyaml, requests, tqdm, xxhash
+Required-by: torchtitan
+Name: debugpy
+Version: 1.8.22
+Summary: An implementation of the Debug Adapter Protocol for Python
+Requires: 
+Required-by: ipykernel
+Name: defusedxml
+Version: 0.7.1
+Summary: XML bomb protection for Python stdlib modules
+Requires: 
+Required-by: nbconvert, nvidia-resiliency-ext
+Name: Deprecated
+Version: 3.0.0
+Summary: Python @deprecated decorator to deprecate old python classes, functions or methods.
+Requires: wrapt
+Required-by: limits
+Name: dill
+Version: 0.4.0
+Summary: serialize all of Python
+Requires: 
+Required-by: datasets, multiprocess
+Name: dllist
+Version: 2.0.0
+Summary: List the shared libraries loaded by the current process.
+Requires: 
+Required-by: torch_tensorrt
+Name: docstring_parser
+Version: 0.18.0
+Summary: Parse Python docstrings in reST, Google and Numpydoc format
+Requires: 
+Required-by: tyro
+Name: e3nn
+Version: 0.4.4
+Summary: Equivariant convolutional neural networks for the group E(3) of 3 dimensional rotations, translations, and mirrors.
+Requires: opt-einsum-fx, scipy, sympy, torch
+Required-by: mace-torch
+Name: einops
+Version: 0.8.2
+Summary: A new flavour of deep learning operations
+Requires: 
+Required-by: flash-attn-4, flash_attn, quack-kernels, torchtitan, transformer_engine
+Name: etils
+Version: 1.14.0
+Summary: Collection of common python utils
+Requires: 
+Required-by: array_record, grain
+Name: executing
+Version: 2.2.1
+Summary: Get the currently executing AST node of a frame, and other information
+Requires: 
+Required-by: stack-data
+Name: fastapi
+Version: 0.143.0
+Summary: FastAPI framework, high performance, easy to learn, fast to code, ready for production
+Requires: annotated-doc, opentelemetry-api, pydantic, starlette, typing-extensions, typing-inspection
+Required-by: nvidia-resiliency-ext
+Name: fastjsonschema
+Version: 2.22.2
+Summary: Fastest Python implementation of JSON schema
+Requires: 
+Required-by: nbformat
+Name: filelock
+Version: 4.0.12
+Summary: A platform independent file lock.
+Requires: 
+Required-by: datasets, huggingface_hub, torch, torch_tensorrt
+Name: flash_attn
+Version: 2.8.3.post1+git91ffc2ac7c.67131627
+Summary: Flash Attention: Fast and Memory-Efficient Exact Attention
+Requires: einops, torch
+Required-by: 
+Name: flash-attn-4
+Version: 4.0.0b24
+Summary: Flash Attention CUTE (CUDA Template Engine) implementation
+Requires: apache-tvm-ffi, einops, nvidia-cutlass-dsl, quack-kernels, torch, torch-c-dlpack-ext, typing_extensions
+Required-by: 
+Name: fonttools
+Version: 4.66.1
+Summary: Tools to manipulate font files
+Requires: 
+Required-by: matplotlib
+Name: fqdn
+Version: 1.6.0
+Summary: Validates fully-qualified domain names against RFC 1123, so that they are acceptable to modern browsers
+Requires: 
+Required-by: 
+Name: frozenlist
+Version: 1.8.0
+Summary: A list-like structure which implements collections.abc.MutableSequence
+Requires: 
+Required-by: aiohttp, aiosignal
+Name: fsspec
+Version: 2026.2.0
+Summary: File-system specification
+Requires: 
+Required-by: datasets, huggingface_hub, torch
+Name: gast
+Version: 0.7.0
+Summary: Python AST that abstracts the underlying Python version
+Requires: 
+Required-by: nvidia-dali-cuda130
+Name: gitdb
+Version: 4.0.12
+Summary: Git Object Database
+Requires: smmap
+Required-by: GitPython
+Name: GitPython
+Version: 3.2.1
+Summary: GitPython is a Python library used to interact with Git repositories
+Requires: gitdb
+Required-by: mace-torch
+Name: googleapis-common-protos
+Version: 1.75.5
+Summary: Common protobufs used in Google APIs
+Requires: protobuf
+Required-by: opentelemetry-exporter-otlp-proto-http
+Name: grain
+Version: 0.2.18
+Summary: Grain: A library for loading and transforming data for ML training.
+Requires: absl-py, array-record, cloudpickle, etils, numpy, portpicker, protobuf
+Required-by: torchtitan
+Name: grpcio
+Version: 1.84.0
+Summary: HTTP/2-based RPC framework
+Requires: typing-extensions
+Required-by: grpcio-tools, nvidia-resiliency-ext, tensorboard
+Name: grpcio-tools
+Version: 1.81.1
+Summary: Protobuf code generator for gRPC
+Requires: grpcio, protobuf, setuptools
+Required-by: nvidia-resiliency-ext
+Name: h11
+Version: 0.16.0
+Summary: A pure-Python, bring-your-own-I/O implementation of HTTP/1.1
+Requires: 
+Required-by: httpcore, uvicorn
+Name: h2
+Version: 4.4.1
+Summary: Pure-Python HTTP/2 protocol implementation
+Requires: hpack, hyperframe
+Required-by: 
+Name: h5py
+Version: 3.16.0
+Summary: Read and write HDF5 files from Python
+Requires: numpy
+Required-by: mace-torch, torch-sim-atomistic
+Name: hf-xet
+Version: 1.7.0
+Summary: Fast transfer of large files with the Hugging Face Hub.
+Requires: 
+Required-by: huggingface_hub
+Name: hpack
+Version: 4.2.0
+Summary: Pure-Python HPACK header encoding
+Requires: 
+Required-by: h2
+Name: httpcore
+Version: 1.0.9
+Summary: A minimal low-level HTTP client.
+Requires: certifi, h11
+Required-by: httpx
+Name: httptools
+Version: 0.8.0
+Summary: A collection of framework independent HTTP protocol utils.
+Requires: 
+Required-by: 
+Name: httpx
+Version: 0.28.1
+Summary: The next generation HTTP client.
+Requires: anyio, certifi, httpcore, idna
+Required-by: blosc2, datasets, huggingface_hub, jupyterlab, nvidia-resiliency-ext
+Name: huggingface_hub
+Version: 1.33.0
+Summary: Client library to download and publish models, datasets and other repos on the huggingface.co hub
+Requires: click, filelock, fsspec, hf-xet, httpx, packaging, pyyaml, tqdm, typing-extensions
+Required-by: datasets, tokenizers
+Name: hyperframe
+Version: 6.1.0
+Summary: Pure-Python HTTP/2 framing
+Requires: 
+Required-by: h2
+Name: idna
+Version: 3.20
+Summary: Internationalized Domain Names in Applications (IDNA)
+Requires: 
+Required-by: anyio, httpx, requests, yarl
+Name: importlib_metadata
+Version: 9.0.1
+Summary: Read metadata from Python packages
+Requires: zipp
+Required-by: transformer_engine
+Name: ipykernel
+Version: 7.4.0
+Summary: IPython Kernel for Jupyter
+Requires: comm, debugpy, ipython, jupyter-client, jupyter-core, matplotlib-inline, nest-asyncio2, packaging, pyzmq, tornado, traitlets
+Required-by: jupyterlab
+Name: ipython
+Version: 9.17.1
+Summary: IPython: Productive Interactive Computing
+Requires: ipython-pygments-lexers, jedi, matplotlib-inline, pexpect, prompt_toolkit, psutil, pygments, stack_data, traitlets
+Required-by: ipykernel
+Name: ipython_pygments_lexers
+Version: 1.1.1
+Summary: Defines a variety of Pygments lexers for highlighting IPython code.
+Requires: pygments
+Required-by: ipython
+Name: isoduration
+Version: 20.11.0
+Summary: Operations with ISO 8601 durations
+Requires: arrow
+Required-by: 
+Name: isort
+Version: 9.0.2
+Summary: A Python utility / library to sort Python imports.
+Requires: mypy-extensions
+Required-by: 
+Name: jedi
+Version: 0.20.0
+Summary: An autocompletion tool for Python that can be used for text editors.
+Requires: parso
+Required-by: ipython
+Name: Jinja2
+Version: 3.1.6
+Summary: A very fast and expressive template engine.
+Requires: MarkupSafe
+Required-by: jupyter_server, jupyterlab, jupyterlab_server, nbconvert, torch
+Name: json5
+Version: 0.16.0
+Summary: A Python implementation of the JSON5 data format.
+Requires: 
+Required-by: jupyterlab_server
+Name: jsonpointer
+Version: 3.2.0
+Summary: Identify specific nodes in a JSON document (RFC 6901) 
+Requires: 
+Required-by: 
+Name: jsonschema
+Version: 4.26.0
+Summary: An implementation of JSON Schema validation for Python
+Requires: attrs, jsonschema-specifications, referencing, rpds-py
+Required-by: jupyter-events, jupyterlab_server, nbformat
+Name: jsonschema-specifications
+Version: 2025.9.1
+Summary: The JSON Schema meta-schemas and vocabularies, exposed as a Registry
+Requires: referencing
+Required-by: jsonschema
+Name: jupyter_builder
+Version: 1.2.2
+Summary: JupyterLab build tools
+Requires: jupyter-core, traitlets
+Required-by: jupyterlab, notebook
+Name: jupyter_client
+Version: 8.10.0
+Summary: Jupyter protocol implementation and client libraries
+Requires: jupyter-core, python-dateutil, pyzmq, tornado, traitlets, typing-extensions
+Required-by: ipykernel, jupyter_server, nbclient
+Name: jupyter_core
+Version: 5.9.1
+Summary: Jupyter core package. A base package on which Jupyter projects rely.
+Requires: platformdirs, traitlets
+Required-by: ipykernel, jupyter_builder, jupyter_client, jupyter_server, jupyterlab, nbclient, nbconvert, nbformat
+Name: jupyter-events
+Version: 0.12.1
+Summary: Jupyter Event System library
+Requires: jsonschema, packaging, python-json-logger, pyyaml, referencing, rfc3339-validator, rfc3986-validator, traitlets
+Required-by: jupyter_server
+Name: jupyter-lsp
+Version: 2.3.1
+Summary: Multi-Language Server WebSocket proxy for Jupyter Notebook/Lab server
+Requires: jupyter_server
+Required-by: jupyterlab
+Name: jupyter_server
+Version: 2.21.1
+Summary: The backend—i.e. core services, APIs, and REST endpoints—to Jupyter web applications.
+Requires: anyio, argon2-cffi, jinja2, jupyter-client, jupyter-core, jupyter-events, jupyter-server-terminals, nbconvert, nbformat, packaging, prometheus-client, pyzmq, send2trash, terminado, tornado, traitlets, websocket-client
+Required-by: jupyter-lsp, jupyterlab, jupyterlab_code_formatter, jupyterlab_server, notebook, notebook_shim
+Name: jupyter_server_terminals
+Version: 0.5.4
+Summary: A Jupyter Server Extension Providing Terminals.
+Requires: terminado
+Required-by: jupyter_server
+Name: jupyterlab
+Version: 4.6.4
+Summary: JupyterLab computational environment
+Requires: async-lru, httpx, ipykernel, jinja2, jupyter-builder, jupyter-core, jupyter-lsp, jupyter-server, jupyterlab-server, notebook-shim, packaging, tornado, traitlets
+Required-by: jupyterlab_tensorboard_pro, notebook
+Name: jupyterlab_code_formatter
+Version: 3.1.0
+Summary: A JupyterLab plugin to facilitate invocation of code formatters.
+Requires: jupyter-server, packaging
+Required-by: 
+Name: jupyterlab_pygments
+Version: 0.3.0
+Summary: Pygments theme using JupyterLab CSS variables
+Requires: 
+Required-by: nbconvert
+Name: jupyterlab_server
+Version: 2.28.1
+Summary: A set of server components for JupyterLab and JupyterLab like applications.
+Requires: babel, jinja2, json5, jsonschema, jupyter-server, packaging, requests
+Required-by: jupyterlab, notebook
+Name: jupyterlab_tensorboard_pro
+Version: 4.0.0
+Summary: A JupyterLab extension for tensorboard.
+Requires: jupyterlab, tornado
+Required-by: 
+Name: jupytext
+Version: 1.19.6
+Summary: Jupyter notebooks as Markdown documents, Julia, Python or R scripts
+Requires: markdown-it-py, mdit-py-plugins, nbformat, packaging, pyyaml
+Required-by: 
+Name: kiwisolver
+Version: 1.5.1
+Summary: A fast implementation of the Cassowary constraint solver
+Requires: 
+Required-by: matplotlib
+Name: lark
+Version: 1.3.1
+Summary: a modern parsing library
+Requires: 
+Required-by: rfc3987-syntax
+Name: libcst
+Version: 1.9.0
+Summary: A concrete syntax tree with AST-like properties for Python 3.0 through 3.15 programs.
+Requires: pyyaml
+Required-by: nvidia-dali-cuda130
+Name: lightning-utilities
+Version: 0.15.3
+Summary: Lightning toolbox for across the our ecosystem.
+Requires: packaging, typing_extensions
+Required-by: torchmetrics
+Name: limits
+Version: 5.8.0
+Summary: Rate limiting utilities
+Requires: deprecated, packaging, typing-extensions
+Required-by: slowapi
+Name: llvmlite
+Version: 0.46.0
+Summary: lightweight wrapper around basic LLVM functionality
+Requires: 
+Required-by: numba
+Name: lmdb
+Version: 3.0.0
+Summary: Universal Python binding for the LMDB 'Lightning' Database
+Requires: 
+Required-by: mace-torch
+Name: mace-torch
+Version: 0.3.17
+Summary: 
+Requires: ase, configargparse, e3nn, GitPython, h5py, lmdb, matplotlib, matscipy, numpy, opt_einsum, orjson, pandas, prettytable, python-hostlist, pyYAML, torch, torch-ema, torchmetrics, tqdm
+Required-by: 
+Name: makefun
+Version: 1.16.0
+Summary: Small library to dynamically create python functions.
+Requires: 
+Required-by: nvidia-dali-cuda130
+Name: Markdown
+Version: 3.11
+Summary: Python implementation of John Gruber's Markdown.
+Requires: 
+Required-by: tensorboard
+Name: markdown-it-py
+Version: 4.2.0
+Summary: Python port of markdown-it. Markdown parsing, done right!
+Requires: mdurl
+Required-by: jupytext, mdit-py-plugins, rich
+Name: MarkupSafe
+Version: 3.0.4
+Summary: Safely add untrusted strings to HTML/XML markup.
+Requires: 
+Required-by: Jinja2, nbconvert, Werkzeug
+Name: matplotlib
+Version: 3.11.2
+Summary: Python plotting package
+Requires: contourpy, cycler, fonttools, kiwisolver, numpy, packaging, pillow, pyparsing, python-dateutil
+Required-by: ase, mace-torch, pycocotools
+Name: matplotlib-inline
+Version: 0.2.2
+Summary: Inline Matplotlib backend for Jupyter
+Requires: traitlets
+Required-by: ipykernel, ipython
+Name: matscipy
+Version: 1.3.1
+Summary: Generic Python Materials Science tools
+Requires: ase, numpy, packaging, scipy
+Required-by: mace-torch
+Name: mdit-py-plugins
+Version: 0.6.1
+Summary: Collection of plugins for markdown-it-py
+Requires: markdown-it-py
+Required-by: jupytext
+Name: mdurl
+Version: 0.1.2
+Summary: Markdown URL utilities
+Requires: 
+Required-by: markdown-it-py
+Name: mistune
+Version: 3.3.4
+Summary: A sane and fast Markdown parser with useful plugins and renderers
+Requires: 
+Required-by: nbconvert
+Name: ml_dtypes
+Version: 0.6.0
+Summary: ml_dtypes is a stand-alone implementation of several NumPy dtype extensions used in machine learning.
+Requires: numpy
+Required-by: onnx, onnx-ir, onnxscript
+Name: mpmath
+Version: 1.3.0
+Summary: Python library for arbitrary-precision floating-point arithmetic
+Requires: 
+Required-by: sympy
+Name: msgpack
+Version: 1.2.4
+Summary: MessagePack serializer
+Requires: 
+Required-by: blosc2
+Name: multidict
+Version: 6.9.1
+Summary: multidict implementation
+Requires: 
+Required-by: aiohttp, yarl
+Name: multiprocess
+Version: 0.70.18
+Summary: better multiprocessing and multithreading in Python
+Requires: dill
+Required-by: datasets
+Name: mypy_extensions
+Version: 1.1.0
+Summary: Type system extensions for programs checked with the mypy type checker.
+Requires: 
+Required-by: black, isort
+Name: nbclient
+Version: 0.11.0
+Summary: A client library for executing notebooks. Formerly nbconvert's ExecutePreprocessor.
+Requires: jupyter-client, jupyter-core, nbformat, traitlets
+Required-by: nbconvert
+Name: nbconvert
+Version: 7.17.1
+Summary: Convert Jupyter Notebooks (.ipynb files) to other formats.
+Requires: beautifulsoup4, bleach, defusedxml, jinja2, jupyter-core, jupyterlab-pygments, markupsafe, mistune, nbclient, nbformat, packaging, pandocfilters, pygments, traitlets
+Required-by: jupyter_server
+Name: nbformat
+Version: 5.11.1
+Summary: The Jupyter Notebook format
+Requires: fastjsonschema, jsonschema, jupyter-core, traitlets
+Required-by: jupyter_server, jupytext, nbclient, nbconvert
+Name: ndindex
+Version: 1.10.1
+Summary: A Python library for manipulating indices of ndarrays.
+Requires: 
+Required-by: blosc2
+Name: nest-asyncio2
+Version: 1.7.4
+Summary: Patch asyncio to allow nested event loops
+Requires: 
+Required-by: ipykernel
+Name: networkx
+Version: 3.7
+Summary: Python package for creating and manipulating graphs and networks
+Requires: 
+Required-by: cuequivariance, nvidia-cutlass-operators, torch
+Name: ninja
+Version: 1.13.2
+Summary: Ninja is a small build system with a focus on speed
+Requires: 
+Required-by: nvidia-modelopt
+Name: notebook
+Version: 7.6.3
+Summary: Jupyter Notebook - A web-based notebook environment for interactive computing
+Requires: jupyter-builder, jupyter-server, jupyterlab, jupyterlab-server, notebook-shim, tornado
+Required-by: 
+Name: notebook_shim
+Version: 0.2.4
+Summary: A shim layer for notebook traits and config
+Requires: jupyter-server
+Required-by: jupyterlab, notebook
+Name: numba
+Version: 0.64.0
+Summary: compiling Python code using LLVM
+Requires: llvmlite, numpy
+Required-by: 
+Name: numexpr
+Version: 2.14.2
+Summary: Fast numerical expression evaluator for NumPy
+Requires: numpy
+Required-by: blosc2, tables
+Name: numpy
+Version: 2.1.0
+Summary: Fundamental package for array computing in Python
+Name: lapack-lite
+Name: dragon4
+Name: libdivide
+Name: Meson
+Name: spin
+Name: lapack-lite
+Name: dragon4
+Name: libdivide
+Name: Meson
+Name: spin
+Name: OpenBLAS
+Name: LAPACK
+Name: GCC runtime library
+Name: libquadmath
+Requires: 
+Required-by: ase, blosc2, contourpy, cuequivariance, cupti-python, datasets, grain, h5py, mace-torch, matplotlib, matscipy, ml_dtypes, numba, numexpr, nvalchemi-toolkit-ops, nvidia-dali-cuda130, nvidia-modelopt, nvidia-resiliency-ext, onnx, onnx-ir, onnxscript, pandas, scipy, tables, tensorboard, torch-sim-atomistic, torch_checkpointing, torch_tensorrt, torchmetrics, torchvision, triton_kernels, warp-lang
+Name: nvalchemi-toolkit-ops
+Version: 0.5.0
+Summary: High-performance NVIDIA Warp primitives for GPU-enabled computational chemistry and atomistic simulation workflows.
+Requires: numpy, warp-lang
+Required-by: torch-sim-atomistic
+Name: nvdlfw_inspect
+Version: 0.2.2
+Summary: Facilitates debugging convergence issues and testing new algorithms/recipes for training LLMs using Nvidia libraries.
+Requires: pyyaml, torch
+Required-by: transformer_engine
+Name: nvidia-cublas
+Version: 13.10.0.20
+Summary: CUBLAS native runtime libraries
+Requires: nvidia-cuda-nvrtc
+Required-by: cuequivariance-ops-cu13
+Name: nvidia-cuda-nvrtc
+Version: 13.5.37
+Summary: NVRTC native runtime libraries
+Requires: 
+Required-by: nvidia-cublas
+Name: nvidia-cudnn-frontend
+Version: 1.30.0
+Summary: NVIDIA cuDNN Frontend — Python and C++ Graph API with SOTA attention (SDPA / Flash Attention), MoE grouped GEMM fusions, and FP8/MXFP8 kernels for Hopper, Blackwell, and Rubin GPUs.
+Requires: apache-tvm-ffi, nvidia-cutlass-dsl
+Required-by: transformer_engine
+Name: nvidia-cutlass-dsl
+Version: 4.8.0
+Summary: NVIDIA CUTLASS Python DSL
+Requires: nvidia-cutlass-dsl-libs-base, nvidia-cutlass-dsl-libs-cu12
+Required-by: flash-attn-4, nvidia-cudnn-frontend, nvidia-cutlass-operators, quack-kernels
+Name: nvidia-cutlass-dsl-libs-base
+Version: 4.8.0
+Summary: NVIDIA CUTLASS Python DSL
+Requires: cuda-bindings, nvidia-cutlass-dsl-libs-core, protobuf, typing-extensions
+Required-by: nvidia-cutlass-dsl, nvidia-cutlass-dsl-libs-cu12, nvidia-cutlass-dsl-libs-cu13
+Name: nvidia-cutlass-dsl-libs-core
+Version: 4.8.0
+Summary: NVIDIA CUTLASS Python DSL
+Requires: cuda-bindings, protobuf, typing-extensions
+Required-by: nvidia-cutlass-dsl-libs-base
+Name: nvidia-cutlass-dsl-libs-cu12
+Version: 4.8.0
+Summary: NVIDIA CUTLASS Python DSL
+Requires: cuda-bindings, nvidia-cutlass-dsl-libs-base, protobuf, typing-extensions
+Required-by: nvidia-cutlass-dsl
+Name: nvidia-cutlass-dsl-libs-cu13
+Version: 4.8.0
+Summary: NVIDIA CUTLASS Python DSL
+Requires: cuda-bindings, nvidia-cutlass-dsl-libs-base, protobuf, typing-extensions
+Required-by: 
+Name: nvidia-cutlass-operators
+Version: 0.3.0
+Summary: High-level discover/compile/execute API for CUTLASS Python kernels.
+Requires: apache-tvm-ffi, networkx, nvidia-cutlass-dsl
+Required-by: 
+Name: nvidia-dali-cuda130
+Version: 2.3.0
+Summary: NVIDIA DALI  for CUDA 13.0. Git SHA: 68b40ed8bd2f77985c4cf114e50fcca065cb66d7
+Requires: astunparse, gast, libcst, makefun, numpy, nvidia-libnvcomp-cu13, nvidia-nvimgcodec-cu13, nvtx, optree, packaging, six
+Required-by: 
+Name: nvidia-libnvcomp-cu13
+Version: 5.3.0.16
+Summary: NVIDIA nvcomp for CUDA 13
+Requires: 
+Required-by: nvidia-dali-cuda130
+Name: nvidia-ml-py
+Version: 13.615.71
+Summary: Python Bindings for the NVIDIA Management Library
+Requires: 
+Required-by: cuequivariance-ops-cu13, nvidia-modelopt, nvidia-resiliency-ext
+Name: nvidia-modelopt
+Version: 0.47.0
+Summary: Nvidia Model Optimizer: A unified library of SOTA model optimization techniques like quantization, pruning, Neural Architecture Search (NAS), distillation, speculative decoding, etc. It compresses deep learning models for downstream deployment frameworks like TensorRT-LLM, TensorRT, vLLM, etc. to optimize inference speed.
+Requires: ninja, numpy, nvidia-ml-py, omegaconf, packaging, pulp, pydantic, PyYAML, regex, rich, safetensors, scipy, setuptools, torch, tqdm
+Required-by: 
+Name: nvidia-nvimgcodec-cu13
+Version: 0.9.0.20
+Summary: NVIDIA nvimgcodec  for CUDA 13.
+Requires: 
+Required-by: nvidia-dali-cuda130
+Name: nvidia-nvjpeg
+Version: 13.2.3.58
+Summary: NVJPEG native runtime libraries
+Requires: 
+Required-by: 
+Name: nvidia-nvjpeg2k-cu13
+Version: 0.11.0.51
+Summary: NVIDIA nvJPEG2000 native runtime libraries
+Requires: 
+Required-by: 
+Name: nvidia-nvtiff-cu13
+Version: 0.8.0.82
+Summary: NVIDIA nvTIFF native runtime libraries
+Requires: 
+Required-by: 
+Name: nvidia-resiliency-ext
+Version: 0.7.0
+Summary: NVIDIA Resiliency Package
+Requires: defusedxml, fastapi, grpcio, grpcio-tools, httpx, numpy, nvidia-ml-py, packaging, protobuf, psutil, pydantic, pydantic-settings, pyyaml, slowapi, torch, uvicorn
+Required-by: 
+Name: nvtx
+Version: 0.2.16
+Summary: Python NVTX - Python code annotation library
+Requires: 
+Required-by: nvidia-dali-cuda130
+Name: omegaconf
+Version: 2.4.0
+Summary: A flexible configuration library
+Requires: PyYAML
+Required-by: nvidia-modelopt
+Name: onnx
+Version: 1.21.0
+Summary: Open Neural Network Exchange
+Requires: ml_dtypes, numpy, protobuf, typing_extensions
+Required-by: onnx-ir, onnxscript, transformer_engine
+Name: onnx-ir
+Version: 1.0.0
+Summary: Efficient in-memory representation for ONNX
+Requires: ml_dtypes, numpy, onnx, sympy, typing_extensions
+Required-by: onnxscript
+Name: onnxscript
+Version: 0.7.2
+Summary: Naturally author ONNX functions and models using a subset of Python
+Requires: ml_dtypes, numpy, onnx, onnx_ir, packaging, typing_extensions
+Required-by: transformer_engine
+Name: opentelemetry-api
+Version: 1.45.1
+Summary: OpenTelemetry Python API
+Requires: typing-extensions
+Required-by: fastapi, opentelemetry-exporter-http-transport, opentelemetry-exporter-otlp-proto-http, opentelemetry-sdk, opentelemetry-semantic-conventions, wandb
+Name: opentelemetry-exporter-http-transport
+Version: 0.66b1
+Summary: OpenTelemetry Exporters HTTP transport
+Requires: opentelemetry-api
+Required-by: opentelemetry-exporter-otlp-proto-http
+Name: opentelemetry-exporter-otlp-common
+Version: 0.66b1
+Summary: OpenTelemetry OTLP HTTP export utilities
+Requires: opentelemetry-sdk
+Required-by: opentelemetry-exporter-otlp-proto-http
+Name: opentelemetry-exporter-otlp-proto-common
+Version: 1.45.1
+Summary: OpenTelemetry Protobuf encoding
+Requires: opentelemetry-proto
+Required-by: opentelemetry-exporter-otlp-proto-http
+Name: opentelemetry-exporter-otlp-proto-http
+Version: 1.45.1
+Summary: OpenTelemetry Collector Protobuf over HTTP Exporter
+Requires: googleapis-common-protos, opentelemetry-api, opentelemetry-exporter-http-transport, opentelemetry-exporter-otlp-common, opentelemetry-exporter-otlp-proto-common, opentelemetry-proto, opentelemetry-sdk, requests, typing-extensions
+Required-by: wandb
+Name: opentelemetry-proto
+Version: 1.45.1
+Summary: OpenTelemetry Python Proto
+Requires: protobuf
+Required-by: opentelemetry-exporter-otlp-proto-common, opentelemetry-exporter-otlp-proto-http
+Name: opentelemetry-sdk
+Version: 1.45.1
+Summary: OpenTelemetry Python SDK
+Requires: opentelemetry-api, opentelemetry-semantic-conventions, typing-extensions
+Required-by: opentelemetry-exporter-otlp-common, opentelemetry-exporter-otlp-proto-http, wandb
+Name: opentelemetry-semantic-conventions
+Version: 0.66b1
+Summary: OpenTelemetry Semantic Conventions
+Requires: opentelemetry-api, typing-extensions
+Required-by: opentelemetry-sdk
+Name: opt_einsum
+Version: 3.4.0
+Summary: Path optimization of einsum functions.
+Requires: 
+Required-by: cuequivariance, mace-torch, opt-einsum-fx
+Name: opt-einsum-fx
+Version: 0.1.4
+Summary: Einsum optimization using opt_einsum and PyTorch FX
+Requires: opt-einsum, packaging, torch
+Required-by: e3nn
+Name: optree
+Version: 0.20.0
+Summary: Optimized PyTree Utilities.
+Requires: typing-extensions
+Required-by: nvidia-dali-cuda130
+Name: orjson
+Version: 3.13.0
+Summary: Fast, correct Python JSON library supporting dataclasses, datetimes, and numpy
+Requires: 
+Required-by: mace-torch
+Name: packaging
+Version: 26.2
+Summary: Core utilities for Python packages
+Requires: 
+Required-by: apex, black, datasets, huggingface_hub, ipykernel, jupyter-events, jupyter_server, jupyterlab, jupyterlab_code_formatter, jupyterlab_server, jupytext, lightning-utilities, limits, matplotlib, matscipy, nbconvert, nvidia-dali-cuda130, nvidia-modelopt, nvidia-resiliency-ext, onnxscript, opt-einsum-fx, tables, tensorboard, torch_tensorrt, torchmetrics, transformer_engine, wandb, wheel
+Name: pandas
+Version: 3.0.6
+Summary: Powerful data structures for data analysis, time series, and statistics
+Requires: numpy, python-dateutil
+Required-by: datasets, mace-torch
+Name: pandocfilters
+Version: 1.5.1
+Summary: Utilities for writing pandoc filters in python
+Requires: 
+Required-by: nbconvert
+Name: parso
+Version: 0.8.7
+Summary: A Python Parser
+Requires: 
+Required-by: jedi
+Name: pathspec
+Version: 1.1.1
+Summary: Utility library for gitignore style pattern matching of file paths.
+Requires: 
+Required-by: black
+Name: pexpect
+Version: 4.9.0
+Summary: Pexpect allows easy control of interactive console applications.
+Requires: ptyprocess
+Required-by: ipython
+Name: pillow
+Version: 12.3.0
+Summary: Python Imaging Library (fork)
+Requires: 
+Required-by: matplotlib, tensorboard, torchtitan, torchvision
+Name: pip
+Version: 26.2.1
+Summary: The PyPA recommended tool for installing Python packages.
+Requires: 
+Required-by: 
+Name: platformdirs
+Version: 4.12.4
+Summary: A small Python package for determining appropriate platform-specific dirs, e.g. a `user data dir`.
+Requires: 
+Required-by: black, cuequivariance-ops-cu13, jupyter_core, wandb
+Name: polygraphy
+Version: 0.53.5
+Summary: Polygraphy: A Deep Learning Inference Prototyping and Debugging Toolkit
+Requires: 
+Required-by: 
+Name: portpicker
+Version: 1.6.0
+Summary: A library to choose unique available network ports.
+Requires: psutil
+Required-by: grain
+Name: prettytable
+Version: 3.18.0
+Summary: A simple Python library for easily displaying tabular data in a visually appealing ASCII table format
+Requires: wcwidth
+Required-by: mace-torch
+Name: prometheus_client
+Version: 0.26.0
+Summary: Python client for the Prometheus monitoring system.
+Requires: 
+Required-by: jupyter_server
+Name: prompt_toolkit
+Version: 3.0.53
+Summary: Library for building powerful interactive command lines in Python
+Requires: wcwidth
+Required-by: ipython
+Name: propcache
+Version: 0.5.4
+Summary: Accelerated property cache
+Requires: 
+Required-by: aiohttp, yarl
+Name: protobuf
+Version: 6.33.6
+Summary: 
+Requires: 
+Required-by: googleapis-common-protos, grain, grpcio-tools, nvidia-cutlass-dsl-libs-base, nvidia-cutlass-dsl-libs-core, nvidia-cutlass-dsl-libs-cu12, nvidia-cutlass-dsl-libs-cu13, nvidia-resiliency-ext, onnx, opentelemetry-proto, tensorboard, wandb
+Name: psutil
+Version: 7.2.2
+Summary: Cross-platform lib for process and system monitoring.
+Requires: 
+Required-by: ipython, nvidia-resiliency-ext, portpicker, torch_tensorrt
+Name: ptyprocess
+Version: 0.7.0
+Summary: Run a subprocess in a pseudo terminal
+Requires: 
+Required-by: pexpect, terminado
+Name: PuLP
+Version: 3.3.2
+Summary: PuLP is an LP modeler written in python. PuLP can generate MPS or LP files and call GLPK, COIN CLP/CBC, CPLEX, and GUROBI to solve linear problems.
+Requires: 
+Required-by: nvidia-modelopt
+Name: pure_eval
+Version: 0.2.4
+Summary: Safely evaluate AST nodes without side effects
+Requires: 
+Required-by: stack-data
+Name: py-cpuinfo
+Version: 9.0.0
+Summary: Get CPU info with pure Python
+Requires: 
+Required-by: tables
+Name: pyarrow
+Version: 26.0.0
+Summary: Python library for Apache Arrow
+Requires: 
+Required-by: datasets
+Name: pybind11
+Version: 3.1.0
+Summary: Seamless operability between C++11 and Python
+Requires: 
+Required-by: 
+Name: pycocotools
+Version: 2.0+nv0.8.1
+Summary: 
+Requires: cython, matplotlib, setuptools
+Required-by: 
+Name: pycparser
+Version: 3.11
+Summary: C parser in Python
+Requires: 
+Required-by: cffi
+Name: pydantic
+Version: 2.14.0
+Summary: Data validation using Python type hints
+Requires: annotated-types, pydantic-core, typing-extensions, typing-inspection
+Required-by: blosc2, fastapi, nvidia-modelopt, nvidia-resiliency-ext, pydantic-settings, transformer_engine, wandb
+Name: pydantic_core
+Version: 2.50.0
+Summary: Core functionality for Pydantic validation and serialization
+Requires: typing-extensions
+Required-by: pydantic
+Name: pydantic-settings
+Version: 2.15.0
+Summary: Settings management using Pydantic
+Requires: pydantic, python-dotenv, typing-inspection
+Required-by: nvidia-resiliency-ext
+Name: pyelftools
+Version: 0.33
+Summary: Library for analyzing ELF files and DWARF debugging information
+Requires: 
+Required-by: cupti-python
+Name: Pygments
+Version: 2.17.2
+Summary: Pygments is a syntax highlighting package written in Python.
+Requires: 
+Required-by: ipython, ipython_pygments_lexers, nbconvert, rich
+Name: pyparsing
+Version: 3.3.3
+Summary: pyparsing - Classes and methods to define and execute parsing grammars
+Requires: 
+Required-by: matplotlib
+Name: python-dateutil
+Version: 2.9.0.post0
+Summary: Extensions to the standard Python datetime module
+Requires: six
+Required-by: arrow, jupyter_client, matplotlib, pandas
+Name: python-dotenv
+Version: 1.2.4
+Summary: Read key-value pairs from a .env file and set them as environment variables
+Requires: 
+Required-by: pydantic-settings
+Name: python_hostlist
+Version: 2.3.0
+Summary: Python module for hostlist handling
+Requires: 
+Required-by: mace-torch
+Name: python-json-logger
+Version: 4.2.0
+Summary: JSON Log Formatter for the Python Logging Package
+Requires: 
+Required-by: jupyter-events
+Name: pytokens
+Version: 0.4.1
+Summary: A Fast, spec compliant Python 3.14+ tokenizer that runs on older Pythons.
+Requires: 
+Required-by: black
+Name: PyYAML
+Version: 6.0.1
+Summary: YAML parser and emitter for Python
+Requires: 
+Required-by: datasets, huggingface_hub, jupyter-events, jupytext, libcst, mace-torch, nvdlfw_inspect, nvidia-modelopt, nvidia-resiliency-ext, omegaconf, wandb
+Name: pyzmq
+Version: 27.2.0
+Summary: Python bindings for 0MQ
+Requires: 
+Required-by: ipykernel, jupyter_client, jupyter_server
+Name: quack-kernels
+Version: 0.6.2
+Summary: 
+Requires: apache-tvm-ffi, einops, nvidia-cutlass-dsl, torch, torch-c-dlpack-ext
+Required-by: flash-attn-4
+Name: referencing
+Version: 0.37.0
+Summary: JSON Referencing + Python
+Requires: attrs, rpds-py, typing-extensions
+Required-by: jsonschema, jsonschema-specifications, jupyter-events
+Name: regex
+Version: 2026.9.29
+Summary: Alternative regular expression module, to replace re.
+Requires: 
+Required-by: nvidia-modelopt
+Name: requests
+Version: 2.34.2
+Summary: Python HTTP for Humans.
+Requires: certifi, charset_normalizer, idna, urllib3
+Required-by: datasets, jupyterlab_server, opentelemetry-exporter-otlp-proto-http, wandb
+Name: rfc3339-validator
+Version: 0.1.4
+Summary: A pure python RFC3339 validator
+Requires: six
+Required-by: jupyter-events
+Name: rfc3986-validator
+Version: 0.1.1
+Summary: Pure python rfc3986 validator
+Requires: 
+Required-by: jupyter-events
+Name: rfc3987-syntax
+Version: 1.1.0
+Summary: Helper functions to syntactically validate strings according to RFC 3987.
+Requires: lark
+Required-by: 
+Name: rich
+Version: 15.0.0
+Summary: Render rich text, tables, progress bars, syntax highlighting, markdown and more to the terminal
+Requires: markdown-it-py, pygments
+Required-by: blosc2, nvidia-modelopt
+Name: rpds-py
+Version: 2026.9.1
+Summary: Python bindings to Rust's persistent data structures (rpds)
+Requires: 
+Required-by: jsonschema, referencing
+Name: safetensors
+Version: 0.8.0
+Summary: 
+Requires: 
+Required-by: nvidia-modelopt, torch_checkpointing, torchtitan
+Name: scipy
+Version: 1.18.1
+Summary: Fundamental algorithms for scientific computing in Python
+Requires: numpy
+Required-by: ase, cuequivariance, cuequivariance-ops-torch-cu13, e3nn, matscipy, nvidia-modelopt
+Name: Send2Trash
+Version: 2.1.0
+Summary: Send file to trash natively under Mac OS X, Windows and Linux
+Requires: 
+Required-by: jupyter_server
+Name: setuptools
+Version: 81.0.0
+Summary: Easily download, build, install, upgrade, and uninstall Python packages
+Requires: 
+Required-by: grpcio-tools, nvidia-modelopt, pycocotools, tensorboard, torch
+Name: six
+Version: 1.16.0
+Summary: Python 2 and 3 compatibility utilities
+Requires: 
+Required-by: astunparse, nvidia-dali-cuda130, python-dateutil, rfc3339-validator
+Name: slowapi
+Version: 0.1.10
+Summary: A rate limiting extension for Starlette and Fastapi
+Requires: limits
+Required-by: nvidia-resiliency-ext
+Name: smmap
+Version: 5.0.3
+Summary: A pure Python implementation of a sliding window memory map manager
+Requires: 
+Required-by: gitdb
+Name: soupsieve
+Version: 2.10
+Summary: A modern CSS selector implementation for Beautiful Soup.
+Requires: 
+Required-by: beautifulsoup4
+Name: spmd_types
+Version: 0.2.5
+Summary: A type system for distributed (SPMD) tensor computations in PyTorch
+Requires: 
+Required-by: torchtitan
+Name: stack-data
+Version: 0.6.3
+Summary: Extract data from python stack frames and tracebacks for informative displays
+Requires: asttokens, executing, pure-eval
+Required-by: ipython
+Name: starlette
+Version: 1.7.0
+Summary: The little ASGI library that shines.
+Requires: anyio, typing-extensions
+Required-by: fastapi
+Name: sympy
+Version: 1.14.0
+Summary: Computer algebra system (CAS) in Python
+Requires: mpmath
+Required-by: cuequivariance, e3nn, onnx-ir, torch
+Name: tables
+Version: 3.11.1
+Summary: Hierarchical datasets for Python
+Requires: blosc2, numexpr, numpy, packaging, py-cpuinfo
+Required-by: torch-sim-atomistic
+Name: tabulate
+Version: 0.10.0
+Summary: Pretty-print tabular data
+Requires: 
+Required-by: 
+Name: tensorboard
+Version: 2.20.0
+Summary: TensorBoard lets you watch Tensors Flow
+Requires: absl-py, grpcio, markdown, numpy, packaging, pillow, protobuf, setuptools, tensorboard-data-server, werkzeug
+Required-by: torchtitan
+Name: tensorboard-data-server
+Version: 0.7.2
+Summary: Fast data loading for TensorBoard
+Requires: 
+Required-by: tensorboard
+Name: tensorrt
+Version: 11.4.0.106
+Summary: A high performance deep learning inference library
+Requires: 
+Required-by: 
+Name: terminado
+Version: 0.18.1
+Summary: Tornado websocket backend for the Xterm.js Javascript terminal emulator library.
+Requires: ptyprocess, tornado
+Required-by: jupyter_server, jupyter_server_terminals
+Name: threadpoolctl
+Version: 3.8.0
+Summary: threadpoolctl
+Requires: 
+Required-by: blosc2
+Name: tinycss2
+Version: 1.5.1
+Summary: A tiny CSS parser
+Requires: webencodings
+Required-by: 
+Name: tokenizers
+Version: 0.23.3
+Summary: 
+Requires: huggingface-hub
+Required-by: torchtitan
+Name: torch
+Version: 2.15.0a0+875d815502.nv26.10.72655024
+Summary: Tensors and Dynamic neural networks in Python with strong GPU acceleration
+Requires: filelock, fsspec, jinja2, networkx, setuptools, sympy, typing-extensions
+Required-by: attn_gym, e3nn, flash-attn-4, flash_attn, mace-torch, nvdlfw_inspect, nvidia-modelopt, nvidia-resiliency-ext, opt-einsum-fx, quack-kernels, torch-ema, torch-sim-atomistic, torch_c_dlpack_ext, torch_checkpointing, torch_remat, torchmetrics, torchvision, transformer_engine
+Name: torch_c_dlpack_ext
+Version: 0.1.5
+Summary: torch c dlpack ext
+Requires: torch
+Required-by: flash-attn-4, quack-kernels
+Name: torch_checkpointing
+Version: 0.1.0
+Summary: A high-performance, distributed-training-ready checkpointing library for PyTorch models
+Requires: numpy, safetensors, torch, typing_extensions
+Required-by: torchtitan
+Name: torch-ema
+Version: 0.3
+Summary: PyTorch library for computing moving averages of model parameters.
+Requires: torch
+Required-by: mace-torch
+Name: torch_remat
+Version: 0.2.0
+Summary: Explicit activation rematerialization helpers for PyTorch
+Requires: torch
+Required-by: torchtitan
+Name: torch-sim-atomistic
+Version: 0.6.2
+Summary: A pytorch toolkit for calculating material properties using MLIPs
+Requires: h5py, numpy, nvalchemi-toolkit-ops, tables, torch, tqdm
+Required-by: 
+Name: torch_tensorrt
+Version: 2.15.0a0
+Summary: Torch-TensorRT is a package which allows users to automatically compile PyTorch and TorchScript modules to TensorRT while remaining in PyTorch
+Requires: dllist, filelock, numpy, packaging, psutil, typing-extensions
+Required-by: 
+Name: torchao
+Version: 0.19.0+git6792133e
+Summary: Package for applying ao techniques to GPU models
+Requires: 
+Required-by: 
+Name: torchmetrics
+Version: 1.9.0
+Summary: PyTorch native Metrics
+Requires: lightning-utilities, numpy, packaging, torch
+Required-by: mace-torch
+Name: torchtitan
+Version: 0.2.2+git65ba8a69
+Summary: A PyTorch native platform for training generative AI models
+Requires: attn-gym, datasets, einops, grain, pillow, safetensors, spmd_types, tensorboard, tokenizers, torch_checkpointing, torch_remat, tyro, wandb
+Required-by: 
+Name: torchvision
+Version: 0.30.0a0+ac8d215f.nv26.10.72655024
+Summary: image and video datasets and models for torch deep learning
+Requires: numpy, pillow, torch
+Required-by: 
+Name: tornado
+Version: 6.5.10
+Summary: Tornado is a Python web framework and asynchronous networking library, originally developed at FriendFeed.
+Requires: 
+Required-by: ipykernel, jupyter_client, jupyter_server, jupyterlab, jupyterlab_tensorboard_pro, notebook, terminado
+Name: tqdm
+Version: 4.70.1
+Summary: Fast, Extensible Progress Meter
+Requires: 
+Required-by: cuequivariance-ops-cu13, datasets, huggingface_hub, mace-torch, nvidia-modelopt, torch-sim-atomistic
+Name: traitlets
+Version: 5.16.1
+Summary: Traitlets Python configuration system
+Requires: 
+Required-by: ipykernel, ipython, jupyter-events, jupyter_builder, jupyter_client, jupyter_core, jupyter_server, jupyterlab, matplotlib-inline, nbclient, nbconvert, nbformat
+Name: transformer_engine
+Version: 2.20.2+6ea2a74a
+Summary: Transformer acceleration library
+Requires: einops, importlib-metadata, nvdlfw-inspect, nvidia-cudnn-frontend, onnx, onnxscript, packaging, pydantic, torch
+Required-by: 
+Name: triton
+Version: 3.8.0+gitc01b6774.nv26.10
+Summary: A language and compiler for custom Deep Learning operations
+Requires: 
+Required-by: 
+Name: triton_kernels
+Version: 1.0.0+gitc01b6774.nv26.10
+Summary: 
+Requires: numpy, pytest
+Required-by: 
+Name: typeguard
+Version: 4.6.0
+Summary: Run-time type checker for Python
+Requires: typing_extensions
+Required-by: tyro
+Name: typing_extensions
+Version: 4.16.0
+Summary: Backported and Experimental Type Hints for Python 3.9+
+Requires: 
+Required-by: aiohttp, aiosignal, anyio, apache-tvm-ffi, ase, beautifulsoup4, cuda-tile, fastapi, flash-attn-4, grpcio, huggingface_hub, jupyter_client, lightning-utilities, limits, nvidia-cutlass-dsl-libs-base, nvidia-cutlass-dsl-libs-core, nvidia-cutlass-dsl-libs-cu12, nvidia-cutlass-dsl-libs-cu13, onnx, onnx-ir, onnxscript, opentelemetry-api, opentelemetry-exporter-otlp-proto-http, opentelemetry-sdk, opentelemetry-semantic-conventions, optree, pydantic, pydantic_core, referencing, starlette, torch, torch_checkpointing, torch_tensorrt, typeguard, typing-inspection, tyro, wandb
+Name: typing-inspection
+Version: 0.4.4
+Summary: Runtime typing introspection tools
+Requires: typing-extensions
+Required-by: fastapi, pydantic, pydantic-settings
+Name: tyro
+Version: 1.0.16
+Summary: CLI interfaces & config objects, from types
+Requires: docstring-parser, typeguard, typing-extensions
+Required-by: torchtitan
+Name: tzdata
+Version: 2026.5
+Summary: Provider of IANA time zone data
+Requires: 
+Required-by: arrow
+Name: uri-template
+Version: 1.3.0
+Summary: RFC 6570 URI Template Processor
+Requires: 
+Required-by: 
+Name: urllib3
+Version: 2.8.0
+Summary: HTTP library with thread-safe connection pooling, file post, and more.
+Requires: 
+Required-by: requests
+Name: uvicorn
+Version: 0.54.0
+Summary: The lightning-fast ASGI server.
+Requires: click, h11
+Required-by: nvidia-resiliency-ext
+Name: uvloop
+Version: 0.23.0
+Summary: Fast implementation of asyncio event loop on top of libuv
+Requires: 
+Required-by: 
+Name: wandb
+Version: 0.30.0
+Summary: A CLI and library for interacting with the Weights & Biases API.
+Requires: click, opentelemetry-api, opentelemetry-exporter-otlp-proto-http, opentelemetry-sdk, packaging, platformdirs, protobuf, pydantic, pyyaml, requests, typing-extensions, xxhash
+Required-by: torchtitan
+Name: warp-lang
+Version: 1.19.0
+Summary: A Python framework for high-performance simulation and graphics programming
+Requires: numpy
+Required-by: nvalchemi-toolkit-ops
+Name: watchfiles
+Version: 1.3.0
+Summary: Simple, modern and high performance file watching and code reload in python.
+Requires: anyio
+Required-by: 
+Name: wcwidth
+Version: 0.9.2
+Summary: Measures the displayed width of unicode strings in a terminal
+Requires: 
+Required-by: prettytable, prompt_toolkit
+Name: webcolors
+Version: 25.10.0
+Summary: A library for working with the color formats defined by HTML and CSS.
+Requires: 
+Required-by: 
+Name: webencodings
+Version: 0.6.1
+Summary: Character encoding aliases for legacy web content
+Requires: 
+Required-by: bleach, tinycss2
+Name: websocket-client
+Version: 1.9.2
+Summary: WebSocket client for Python with low level API options
+Requires: 
+Required-by: jupyter_server
+Name: websockets
+Version: 17.2
+Summary: An implementation of the WebSocket Protocol (RFC 6455 & 7692)
+Requires: 
+Required-by: 
+Name: Werkzeug
+Version: 3.1.9
+Summary: The comprehensive WSGI web application library.
+Requires: markupsafe
+Required-by: tensorboard
+Name: wheel
+Version: 0.48.0
+Summary: Command line tool for manipulating wheel files
+Requires: packaging
+Required-by: astunparse
+Name: wrapt
+Version: 2.5.0
+Summary: Module for decorators, wrappers and monkey patching.
+Requires: 
+Required-by: Deprecated
+Name: xxhash
+Version: 4.0.1
+Summary: Python binding for xxHash
+Requires: 
+Required-by: datasets, wandb
+Name: yarl
+Version: 1.25.1
+Summary: Yet another URL library
+Requires: idna, multidict, propcache
+Required-by: aiohttp
+Name: zipp
+Version: 4.1.1
+Summary: Backport of pathlib-compatible object wrapper for zip files
+Requires: 
+Required-by: importlib_metadata
