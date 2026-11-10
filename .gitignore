@@ -15,3 +15,5 @@ corpora/references/data/assets/
 # KISTI documentation mirror (regenerate with docs/external/fetch_ksc_docs.sh); only the script is tracked
 docs/external/*
 !docs/external/fetch_ksc_docs.sh
+a_smoke_*.log
+mai_port_*.log
