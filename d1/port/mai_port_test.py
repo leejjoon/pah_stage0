@@ -8,86 +8,36 @@
 #      max |F| at the DFT geometry (time-limited; reports how many were done).
 # Usage: python mai_port_test.py <Supplementary_Data_Code dir> <dir of 1,704 xyz> [sweep seconds] [shard] [n_shards]
 # With shards (one process per GPU), shard k sweeps every n_shards-th geometry; only shard 0 runs checks 1-3.
-import sys, time, pickle, importlib, datetime, glob, os
+import sys, time, glob, os
 import numpy as np
 
 root, xyzdir = sys.argv[1], sys.argv[2]
 sweep_s = float(sys.argv[3]) if len(sys.argv) > 3 else 600
 shard, n_shards = (int(sys.argv[4]), int(sys.argv[5])) if len(sys.argv) > 5 else (0, 1)
-sys.path[:0] = [f"{root}/lib/bessel-nn-potentials-velo/src", f"{root}/lib/epnn-main/src"]
-
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from mai_port import Port, MAX_NEIGHBORS
+m = Port(root)
 import jax, jax.numpy as jnp
-if not hasattr(jax, "tree_map"):                       # removed in JAX 0.6; the Mai code calls it
-    jax.tree_map = jax.tree.map
-_clip = jnp.clip                                       # a_min/a_max were removed (now min/max); spherical_bessel uses a_max
-jnp.clip = lambda x, min=None, max=None, a_min=None, a_max=None, **kw: _clip(
-    x, min if a_min is None else a_min, max if a_max is None else a_max, **kw)
-sys.modules.setdefault("jax.config", jax.config)       # the jax.config module is gone; bessel_descriptors imports it
-_update = jax.config.update                            # ase_integration_gai forces the CPU platform on import
-jax.config.update = lambda k, v: None if k == "jax_platform_name" else _update(k, v)
-from neuralil.ase_integration_gai import NeuralILASECalculator
-jax.config.update = _update
-from neuralil.bessel_descriptors import PowerSpectrumGenerator, get_max_number_of_neighbors
-from neuralil.model_older import ResNetCore as ResNetCoreOld, NeuralILwithMorse
-from neuralil.model import ResNetCore
-from neuralil.plain_ensembles.model import PlainEnsemblewithMorse
-from epnn.model import EPNN, MLP
-from epnn.preprocessing import create_batched_graph_list
-from epnn.utils import get_nodes_from_graph
+from neuralil.bessel_descriptors import get_max_number_of_neighbors
 from ase.io import read
 from ase import units
 from ase.md.verlet import VelocityVerlet
 from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
 
-class Safe(pickle.Unpickler):
-    ALLOWED = {("datetime", "datetime"), ("numpy", "ndarray"), ("numpy", "dtype"),
-               ("neuralil.model", "NeuralILModelInfo"), ("epnn.model", "EPNNModelInfo")}
-    def find_class(self, mod, name):
-        if mod in ("numpy.core.multiarray", "numpy._core.multiarray") and name in ("_reconstruct", "scalar"):
-            return getattr(importlib.import_module("numpy._core.multiarray"), name)
-        if (mod, name) == ("jax._src.array", "_reconstruct_array"):
-            return getattr(importlib.import_module(mod), name)
-        if (mod, name) in self.ALLOWED:
-            return getattr(importlib.import_module(mod), name)
-        raise pickle.UnpicklingError(f"blocked global {mod}.{name}")
-
-def load(p):
-    with open(p, "rb") as f:
-        return Safe(f).load()
-
 print("jax", jax.__version__, jax.devices())
-ff = load(f"{root}/model/model_enery.pkl"); dp = load(f"{root}/model/model_dipole.pkl")
-for name, m in (("NNFF", ff), ("EPNN", dp)):
-    leaves = jax.tree.leaves(m.params)
+ff = m.ff
+for name, mi in (("NNFF", m.ff), ("EPNN", m.dp)):
+    leaves = jax.tree.leaves(mi.params)
     print(f"[1] {name}: {sum(np.size(x) for x in leaves)} parameters, dtypes {sorted({str(np.asarray(x).dtype) for x in leaves})}")
-    print("    ", {k: v for k, v in vars(m).items() if k != "params" and not hasattr(v, "shape")})
+    print("    ", {k: v for k, v in vars(mi).items() if k != "params" and not hasattr(v, "shape")})
 
-MAX_NEIGHBORS, N_ENS = 25, 5
-desc = PowerSpectrumGenerator(ff.n_max, ff.r_cut, len(ff.sorted_elements), MAX_NEIGHBORS)
-individual = NeuralILwithMorse(len(ff.sorted_elements), ff.embed_d, ff.r_cut, desc.process_data,
-                               desc.process_some_data, ResNetCoreOld(ff.core_widths))
-ensemble = PlainEnsemblewithMorse(individual, N_ENS)
-
-# EPNN dipole, as in the authors' 2_calc_dipole.py (positions centred on the centre of mass, cell zero).
-d_elems = sorted(["C", "H", "O", "N"]); d_map = {s: i for i, s in enumerate(d_elems)}
-d_desc = jax.jit(PowerSpectrumGenerator(6, dp.r_cut, len(d_elems), MAX_NEIGHBORS).process_data)
-epnn = EPNN(len(d_elems), dp.embed_dim, MLP(dp.update_model_widths),
-            tuple(ResNetCore(dp.message_generator_widths) for _ in range(dp.n_passes)),
-            tuple(ResNetCore(dp.pass_generator_widths) for _ in range(dp.e_passes)))
-MASS = {"C": 12.011, "H": 1.008, "N": 14.007, "O": 15.999}
 def dipole(atoms):
-    w = np.array([MASS[s] for s in atoms.get_chemical_symbols()])
-    p = atoms.positions - (w[:, None] * atoms.positions).sum(0) / w.sum()
-    t = jnp.array([d_map[s] for s in atoms.get_chemical_symbols()]); c = jnp.zeros((3, 3), jnp.float32)
-    pj = jnp.asarray(p, jnp.float32); d = d_desc(pj, t, c)
-    g = create_batched_graph_list(pj[None], c[None], d.reshape(1, d.shape[0], -1), t[None],
-                                  jnp.zeros((1, len(p), 1)), dp.r_cut, dp.r_switch, dp.node_state_dim, 1)
-    q = np.asarray(jnp.squeeze(get_nodes_from_graph(epnn.apply(dp.params, g[0]))[0]))
-    return (q[:, None] * p).sum(0), q.sum()
+    mu, q = m.dipole(atoms)
+    return mu, q.sum()
 
 def eval_on(device, atoms):
     with jax.default_device(device):
-        calc = NeuralILASECalculator(ensemble, ff, MAX_NEIGHBORS, n_devices=1)
+        calc = m.calculator(n_devices=1)
         a = atoms.copy(); a.calc = calc
         e = a.get_potential_energy(); f = a.get_forces(); mu, qt = dipole(a)
     return e, f, mu, qt
@@ -106,7 +56,7 @@ if shard == 0:
 
 if shard == 0:
   with jax.default_device(gpu):
-    a = naph.copy(); a.calc = NeuralILASECalculator(ensemble, ff, MAX_NEIGHBORS, n_devices=1)
+    a = naph.copy(); a.calc = m.calculator(n_devices=1)
     MaxwellBoltzmannDistribution(a, temperature_K=300, rng=np.random.default_rng(0))
     md = VelocityVerlet(a, 0.5 * units.fs); etot = []
     md.attach(lambda: etot.append(a.get_potential_energy() + a.get_kinetic_energy()), interval=20)
@@ -117,7 +67,7 @@ if shard == 0:
 
 files = sorted(glob.glob(f"{xyzdir}/*.xyz"))[shard::n_shards]; bad, maxf, rows, n_done, t_start = [], [], [], 0, time.perf_counter()
 with jax.default_device(gpu):
-    calc = NeuralILASECalculator(ensemble, ff, MAX_NEIGHBORS, n_devices=1)
+    calc = m.calculator(n_devices=1)
     for fn in files:
         if time.perf_counter() - t_start > sweep_s: break
         a = read(fn); name = os.path.basename(fn)[:-4]

@@ -205,12 +205,59 @@ Still to do on the project node, in order:
 1. ~~Get `mai_port_test.py` passing.~~ Done (above).
 2. Validate against Mai's own code. Compute energies, forces and dipoles for a few species in their pinned
    environment on CPU (JAX 0.4.19, from their `environment.yaml`) and compare them with the port. Then run one
-   species end to end and compare its spectrum with their published 300 K spectrum.
+   species end to end and compare its spectrum with their published 300 K spectrum. **Done, 2026-11-11; the
+   intensity gap in 2b is accepted as a caveat (see below).**
 3. Write `d1/mlmd_run.py`. Batch molecules in jax-md (group by atom count), with their protocol, unit conversions
    checked (ASE friction and time units). Compute the EPNN dipole on the GPU during NVE instead of writing
-   trajectories, and checkpoint so jobs can resume.
+   trajectories, and checkpoint so jobs can resume. Run several replicas (seeds) per species and average their
+   spectra: one trajectory leaves small-PAH band ratios uncertain by tens of percent (step 2b), and replicas
+   batch almost for free. Pad the EPNN graphs to a fixed edge count, as `mai_spectrum.py` does.
 4. Calibrate timing at batch 100. Then, back on Hangang: `git pull` in `/appsdata/$USER/pah_stage0`, and submit one
    short calibration job (a new job, so ask first) before production.
+
+**Step 2 so far (2026-11-10, project node).** `d1/port/mai_port.py` now holds the port (shims, models, dipole);
+`mai_port_test.py` uses it.
+- *2a, static (passed).* Reference environment: `/var/tmp/$USER-pah/venv/mai_ref`, Python 3.10 by uv, with
+  their pins (jax/jaxlib 0.4.19, flax 0.7.4, numpy 1.26.1, scipy 1.11.3, ase 3.23.0, jraph 0.0.6.dev0; aarch64
+  wheels exist and run on the 64 KiB-page kernel). `mai_ref_eval.py` runs their code there unpatched (their
+  `read_coord` executed from `2_calc_dipole.py`). `mai_compare.py prep|port|compare` checks 8 species (naphthalene,
+  two N-containing, indene, C24H24_357, C96H22_699, C66H18_713, the 252-atom C216H36_615), each at the DFT geometry
+  and rattled by 0.05 Å. Port on GPU and on CPU vs reference: max|dF| 1.9e-5 eV/Å, max|dq| 4.7e-6 e,
+  |dμ| ≤ 3.5e-5 e·Å; energies within one float32 ulp. The reference gives the same large forces (6.68 eV/Å for
+  C96H22_699), so those come from the model, not the port.
+- *2b, end to end (band positions agree; CH-stretch and in-plane intensities do not).* `mai_spectrum.py`: jitted
+  single-molecule loop, R replicas vmapped; NVT is BAOAB with γ = 0.02 per ASE time unit (1.96 ps⁻¹) and the
+  centre-of-mass velocity removed, not ASE's Langevin algorithm; NVE is velocity Verlet, checked against ASE (200
+  steps: |dr| 2e-6 Å). Dipoles are batched (500 frames, graphs re-padded to a multiple of 4,096 edges, since the
+  EPNN builder pads each batch to its own edge count and every batch recompiled) and checked against the per-frame
+  path at the start, middle and end of NVE (2e-5 e·Å). Their `3_calc_IR.py` runs unmodified on the dipoles;
+  `mai_spectrum_compare.py` compares band windows with the published spectrum and ranks it among the replicas.
+  Naphthalene, 300 K, 32 replicas (200 ps NVT + 200 ps NVE each; MD 41 min, dipoles 44 min on one GH200):
+  - NVE ⟨T⟩ 289 ± 41 K over replicas (212–386 K; one canonical snapshot of 18 atoms starts each NVE run), and
+    300 × 51/54 = 283 K is expected with 3N − 3 degrees of freedom and their 1.5 N k_B convention; E_tot drift ≤
+    3e-3 eV over 200 ps.
+  - Band positions: the replica-mean centroids of the strong bands (476, 774 cm⁻¹ and the CH stretch) are within
+    1.7 cm⁻¹ of the published ones, so time units, timestep and the 0.9578 scaling are right.
+  - Intensities: the published shares sit inside the replica range in 8 of 10 windows, but at rank 0/32 for the CH
+    stretch (published 0.142, replicas 0.157–0.376, median 0.230) and for 1480–1560 cm⁻¹, and 2–3/32 for 985–1290
+    cm⁻¹. With the 740–820 window left out of the denominator, the 476 cm⁻¹ share is mid-range (19/32), but every
+    in-plane window from 985 to 1640 cm⁻¹ and the CH stretch rank 0–4/32, at 0.5–0.8 of the replica median: a
+    step, not a slope, so not a frequency-dependent processing error. The published trajectory carried less
+    in-plane and CH energy than a typical draw from the released protocol. Not temperature either: across replicas
+    the CH share falls slightly with NVE ⟨T⟩ (r = −0.36).
+  - Mai et al. 2025 §2.4 says the NVT run used a **Nosé–Hoover** thermostat; the released
+    `1_MD_calc_position.py` uses ASE Langevin (friction 0.02). Which one made the published spectra is unknown, and
+    a deterministic thermostat on 18 atoms may leave modes unequally populated. ASE 3.23.0 (their pin) has no
+    Nosé–Hoover chain module; only `npt.py` with `pfactor=None`, which needs a cell. The §2.4 wording also mirrors
+    §2.1 (the training-data MD), so it may be a description error. Not tested; parameters would be guesses.
+  - For step 3: with an identical protocol, one trajectory per species leaves small-PAH band ratios uncertain by
+    tens of percent (774 share 0.22–0.59, CH stretch 0.16–0.38 over 32 seeds). Mai et al. ran one per species.
+    MD cost barely rises with replicas (5.3 s per ps at R = 3, 6.2 s at R = 32, for all replicas together).
+  - Decision, 2026-11-11: accept the gap as a caveat and move on. The port reproduces the released code; the
+    published spectra are not a gate. Production averages several replicas per species (step 3). Not asked of
+    the authors; not tested across species.
+- The published `outputs/IR_txt/C10H8_330_qm0.txt` is not the 300 K spectrum (its bands differ); use
+  `outputs/IR_txt_phdb_1704/IR_txt_300K_qm0.zip`.
 
 On Hangang the inputs are already in place: `/appsdata/t641a02/d1/mai2025/` (zip, `src/` with code, models and
 inputs) and `/appsdata/t641a02/d1/XYZ_pahdb_1704/`.
