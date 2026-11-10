@@ -17,6 +17,7 @@ set -euo pipefail
 SIF=$(realpath "${1:?usage: sbatch slurm_mai_port_test.sbatch A_jax.sif D1_DIR}")
 D1=$(realpath "${2:?usage: sbatch slurm_mai_port_test.sbatch A_jax.sif D1_DIR}")
 module load apptainer/1.4.5
+export APPTAINERENV_JAX_PLATFORMS=cuda,cpu   # the image allows only cuda; check 2 needs cpu too (--env would split the comma)
 echo "host $(hostname)  $(nvidia-smi --query-gpu=name,driver_version --format=csv,noheader | head -1)"
 ngpu=$(nvidia-smi -L | wc -l); pids=()
 for g in $(seq 0 $((ngpu - 1))); do

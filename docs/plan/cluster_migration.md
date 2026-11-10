@@ -150,6 +150,22 @@ only for removed APIs (`jax.tree_map`, the `jax.config` module, the forced CPU p
 
 On Hangang, `d1/port/slurm_mai_port_test.sbatch` runs it with one shard per GPU. Its first run, job 1251891,
 failed at import (`No module named 'jax.config'`); the `sys.modules` fix is in, and its run is still pending.
+
+**Passed on the project node, 2026-11-10** (GPU 0, one shard, 900 s sweep), after two more fixes: a `jnp.clip`
+shim (`a_min`/`a_max` were removed; `spherical_bessel/functions.py` uses `a_max`), and `JAX_PLATFORMS=cuda,cpu`
+(the image sets `cuda` only, and check 2 needs the CPU backend; pass it as `APPTAINERENV_JAX_PLATFORMS`, because
+`--env` splits on commas). Results:
+1. NNFF 190,085 parameters, EPNN 410,948, both float32.
+2. Naphthalene GPU vs CPU: |dE| 0, max|dF| 1.2e-7 eV/Å, max|dμ| 3.7e-8. The dipole is zero by symmetry, so this
+   does not exercise EPNN much; step 2 below must use polar species.
+3. 1 ps NVE: E_tot drift +1.3e-3 eV, std 6.8e-4 eV; 44 ms per step through ASE (one molecule), so production
+   must be batched jax-md.
+4. All 1,704 geometries in 1,316 s (`... /xyz 2400`): no problems (all elements known, at most 25 neighbours, finite
+   energies and forces). Per-atom max|F| at the PAHdb DFT geometry: median 0.28, 95th percentile 1.08, max 6.68
+   eV/Å. The largest are planar giants (C96H22_699 6.7, C66H18_713/714 6.7 and 6.5, C54H18_836 5.0) and non-planar
+   species with sp³ CH₂ or curvature (C24H24_357 5.1 with 12 CH₂, C60H24_812, C24H16_381, C9H8_495, C101H30_804).
+   Not yet known whether these reflect a level-of-theory mismatch with the training data or model error; step 2
+   should include some of them when comparing with Mai's own code and published spectra.
 Everything else the port uses still exists in JAX 0.11 (`pmap`, `ops.segment_sum`, `lax.map`, `lax.cond`,
 `_reconstruct_array`, Flax `FrozenDict`).
 
@@ -162,13 +178,14 @@ md5sum Supplementary.zip                    # 99277e0844c6405c6d41a732fc674d49
 unzip -q Supplementary.zip 'Supplementary_Data_Code/*' -x '*/outputs/*' -d src
 unzip -q src/Supplementary_Data_Code/inputs/XYZ_pahdb_1704/XYZ_pahdb_1704.zip -d .
 cd ~/work/pah_stage0                        # this repository
-apptainer exec --nv --env CUDA_VISIBLE_DEVICES=0,XLA_PYTHON_CLIENT_PREALLOCATE=false \
+APPTAINERENV_JAX_PLATFORMS=cuda,cpu numactl --cpunodebind=0 --membind=0 \
+  apptainer exec --nv --env CUDA_VISIBLE_DEVICES=0,XLA_PYTHON_CLIENT_PREALLOCATE=false \
   --bind $D/src/Supplementary_Data_Code:/mai:ro --bind $D/XYZ_pahdb_1704:/xyz:ro --bind $PWD/d1/port:/w:ro \
   /var/tmp/$USER-pah/sif/A_jax.sif python -I /w/mai_port_test.py /mai /xyz 900
 ```
 
 Still to do on the project node, in order:
-1. Get `mai_port_test.py` passing.
+1. ~~Get `mai_port_test.py` passing.~~ Done (above).
 2. Validate against Mai's own code. Compute energies, forces and dipoles for a few species in their pinned
    environment on CPU (JAX 0.4.19, from their `environment.yaml`) and compare them with the port. Then run one
    species end to end and compare its spectrum with their published 300 K spectrum.

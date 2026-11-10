@@ -19,6 +19,9 @@ sys.path[:0] = [f"{root}/lib/bessel-nn-potentials-velo/src", f"{root}/lib/epnn-m
 import jax, jax.numpy as jnp
 if not hasattr(jax, "tree_map"):                       # removed in JAX 0.6; the Mai code calls it
     jax.tree_map = jax.tree.map
+_clip = jnp.clip                                       # a_min/a_max were removed (now min/max); spherical_bessel uses a_max
+jnp.clip = lambda x, min=None, max=None, a_min=None, a_max=None, **kw: _clip(
+    x, min if a_min is None else a_min, max if a_max is None else a_max, **kw)
 sys.modules.setdefault("jax.config", jax.config)       # the jax.config module is gone; bessel_descriptors imports it
 _update = jax.config.update                            # ase_integration_gai forces the CPU platform on import
 jax.config.update = lambda k, v: None if k == "jax_platform_name" else _update(k, v)
@@ -112,7 +115,7 @@ if shard == 0:
     print(f"[3] NVE 1 ps naphthalene, 300 K start: E_tot drift {etot[-1] - etot[0]:+.2e} eV, "
           f"std {etot.std():.2e} eV; {dt / 2000 * 1e3:.2f} ms per step (ASE, one molecule)")
 
-files = sorted(glob.glob(f"{xyzdir}/*.xyz"))[shard::n_shards]; bad, maxf, n_done, t_start = [], [], 0, time.perf_counter()
+files = sorted(glob.glob(f"{xyzdir}/*.xyz"))[shard::n_shards]; bad, maxf, rows, n_done, t_start = [], [], [], 0, time.perf_counter()
 with jax.default_device(gpu):
     calc = NeuralILASECalculator(ensemble, ff, MAX_NEIGHBORS, n_devices=1)
     for fn in files:
@@ -122,15 +125,19 @@ with jax.default_device(gpu):
             bad.append((name, "element")); n_done += 1; continue
         nn = int(get_max_number_of_neighbors(jnp.asarray(a.positions), jnp.asarray([calc.symbol_map[s] for s in a.symbols]),
                                              ff.r_cut, jnp.asarray(a.cell[...])))
+        if nn > MAX_NEIGHBORS: bad.append((name, f"neighbours {nn} > {MAX_NEIGHBORS}"))
         a.calc = calc
         try:
             e, f = a.get_potential_energy(), a.get_forces()
             if not (np.isfinite(e) and np.isfinite(f).all()): bad.append((name, "nonfinite"))
-            maxf.append(np.abs(f).max())
+            fn_ = np.linalg.norm(f, axis=1); i = int(fn_.argmax())
+            maxf.append(fn_[i]); rows.append((fn_[i], name, a.get_chemical_formula(), len(a), a[i].symbol, i))
         except Exception as ex:
             bad.append((name, f"{type(ex).__name__}: {str(ex)[:80]} (neighbours {nn})"))
         n_done += 1
 maxf = np.array(maxf)
 print(f"[4] shard {shard}/{n_shards} sweep: {n_done}/{len(files)} geometries in {time.perf_counter() - t_start:.0f} s; {len(bad)} problems; "
-      f"max|F| at DFT geometry: median {np.median(maxf):.3f}, 95% {np.percentile(maxf, 95):.3f}, max {maxf.max():.3f} eV/A")
+      f"max|F| (per-atom norm) at DFT geometry: median {np.median(maxf):.3f}, 95% {np.percentile(maxf, 95):.3f}, max {maxf.max():.3f} eV/A")
 for b in bad[:20]: print("    ", b)
+print(f"[4] largest max|F| (eV/A, per-atom norm): species, formula, atoms, element and index of that atom")
+for r in sorted(rows, reverse=True)[:15]: print(f"     {r[0]:7.3f}  {r[1]}  {r[2]}  {r[3]}  {r[4]}{r[5]}")
