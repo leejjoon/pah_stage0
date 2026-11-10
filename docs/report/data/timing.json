@@ -1,6 +1,6 @@
 {
 "bad": {
-"torch-sequential-cueq_yes-b1-r0 (2026-11-09T07:56)": "other processes on GPU 0 at start/end: 0/2"
+"torch-sequential-cueq_yes-b1-r0 (2026-11-09T07:56)": "other processes on GPU 0 at start/end: 0/2; cell rerun"
 },
 "calib": [
 {
@@ -273,233 +273,249 @@
 "series": "ASE MPS pool P=16, cueq off",
 "batch": 100,
 "median": 3.20149,
-"min": 3.20149,
-"max": 3.20149,
-"n": 1
+"min": 3.18596,
+"max": 3.22007,
+"n": 3
 },
 {
 "series": "ASE MPS pool P=16, cueq on",
 "batch": 100,
-"median": 3.41859,
-"min": 3.41859,
+"median": 3.41422,
+"min": 3.39703,
 "max": 3.41859,
-"n": 1
+"n": 3
 },
 {
 "series": "ASE MPS pool P=32, cueq off",
 "batch": 100,
-"median": 2.65671,
-"min": 2.65671,
+"median": 2.65603,
+"min": 2.64829,
 "max": 2.65671,
-"n": 1
+"n": 3
+},
+{
+"series": "ASE MPS pool P=32, cueq on",
+"batch": 100,
+"median": 2.22089,
+"min": 2.21042,
+"max": 2.22167,
+"n": 3
 },
 {
 "series": "ASE MPS pool P=4, cueq off",
 "batch": 10,
 "median": 10.57288,
-"min": 10.57288,
-"max": 10.57288,
-"n": 1
+"min": 10.48036,
+"max": 10.8448,
+"n": 3
 },
 {
 "series": "ASE MPS pool P=4, cueq on",
 "batch": 10,
-"median": 14.21875,
+"median": 14.3216,
 "min": 14.21875,
-"max": 14.21875,
-"n": 1
+"max": 14.32613,
+"n": 3
 },
 {
 "series": "ASE concatenated, cueq off",
 "batch": 1,
 "median": 32.50004,
-"min": 32.50004,
-"max": 32.50004,
-"n": 1
+"min": 32.09111,
+"max": 32.69399,
+"n": 3
 },
 {
 "series": "ASE concatenated, cueq off",
 "batch": 10,
-"median": 3.48564,
-"min": 3.48564,
+"median": 3.4733,
+"min": 3.40438,
 "max": 3.48564,
-"n": 1
+"n": 3
 },
 {
 "series": "ASE concatenated, cueq off",
 "batch": 100,
 "median": 1.37206,
-"min": 1.37206,
-"max": 1.37206,
-"n": 1
+"min": 1.37154,
+"max": 1.3798,
+"n": 3
 },
 {
 "series": "ASE concatenated, cueq on",
 "batch": 1,
-"median": 42.94354,
+"median": 43.08285,
 "min": 42.94354,
-"max": 42.94354,
-"n": 1
+"max": 44.32582,
+"n": 3
 },
 {
 "series": "ASE concatenated, cueq on",
 "batch": 10,
-"median": 4.51379,
+"median": 4.553,
 "min": 4.51379,
-"max": 4.51379,
-"n": 1
+"max": 4.58161,
+"n": 3
 },
 {
 "series": "ASE concatenated, cueq on",
 "batch": 100,
 "median": 0.73276,
-"min": 0.73276,
-"max": 0.73276,
-"n": 1
+"min": 0.73216,
+"max": 0.73476,
+"n": 3
 },
 {
 "series": "ASE sequential, cueq off",
 "batch": 1,
-"median": 33.31607,
-"min": 33.31607,
+"median": 33.28594,
+"min": 31.8019,
 "max": 33.31607,
-"n": 1
+"n": 3
 },
 {
 "series": "ASE sequential, cueq off",
 "batch": 10,
-"median": 32.17371,
+"median": 32.20104,
 "min": 32.17371,
-"max": 32.17371,
-"n": 1
+"max": 32.32687,
+"n": 3
+},
+{
+"series": "ASE sequential, cueq on",
+"batch": 1,
+"median": 43.24829,
+"min": 42.89271,
+"max": 43.76673,
+"n": 3
 },
 {
 "series": "ASE sequential, cueq on",
 "batch": 10,
-"median": 43.43334,
+"median": 43.65081,
 "min": 43.43334,
-"max": 43.43334,
-"n": 1
+"max": 44.104,
+"n": 3
 },
 {
 "series": "JAX cueq backend only",
 "batch": 1,
-"median": 0.82962,
+"median": 0.83412,
 "min": 0.82962,
-"max": 0.82962,
-"n": 1
+"max": 0.83474,
+"n": 3
 },
 {
 "series": "JAX cueq backend only",
 "batch": 10,
-"median": 0.24502,
+"median": 0.24513,
 "min": 0.24502,
-"max": 0.24502,
-"n": 1
+"max": 0.24567,
+"n": 3
 },
 {
 "series": "JAX cueq backend only",
 "batch": 100,
-"median": 0.23284,
-"min": 0.23284,
+"median": 0.23278,
+"min": 0.23259,
 "max": 0.23284,
-"n": 1
+"n": 3
 },
 {
 "series": "JAX cueq conv_fusion",
 "batch": 1,
 "median": 0.71127,
-"min": 0.71127,
-"max": 0.71127,
-"n": 1
+"min": 0.70785,
+"max": 0.71382,
+"n": 3
 },
 {
 "series": "JAX cueq conv_fusion",
 "batch": 10,
-"median": 0.20033,
-"min": 0.20033,
+"median": 0.20023,
+"min": 0.20003,
 "max": 0.20033,
-"n": 1
+"n": 3
 },
 {
 "series": "JAX cueq conv_fusion",
 "batch": 100,
-"median": 0.17038,
+"median": 0.17043,
 "min": 0.17038,
-"max": 0.17038,
-"n": 1
+"max": 0.17072,
+"n": 3
 },
 {
 "series": "JAX cueq off",
 "batch": 1,
-"median": 0.82145,
+"median": 0.82833,
 "min": 0.82145,
-"max": 0.82145,
-"n": 1
+"max": 0.84205,
+"n": 3
 },
 {
 "series": "JAX cueq off",
 "batch": 10,
 "median": 0.24558,
-"min": 0.24558,
-"max": 0.24558,
-"n": 1
+"min": 0.24546,
+"max": 0.24574,
+"n": 3
 },
 {
 "series": "JAX cueq off",
 "batch": 100,
-"median": 0.23234,
+"median": 0.23259,
 "min": 0.23234,
-"max": 0.23234,
-"n": 1
+"max": 0.23261,
+"n": 3
 },
 {
 "series": "TorchSim batched, cueq off",
 "batch": 1,
-"median": 37.90994,
+"median": 38.77953,
 "min": 37.90994,
-"max": 37.90994,
-"n": 1
+"max": 39.20178,
+"n": 3
 },
 {
 "series": "TorchSim batched, cueq off",
 "batch": 10,
-"median": 3.89315,
-"min": 3.89315,
+"median": 3.82593,
+"min": 3.81701,
 "max": 3.89315,
-"n": 1
+"n": 3
 },
 {
 "series": "TorchSim batched, cueq off",
 "batch": 100,
-"median": 1.15114,
-"min": 1.15114,
+"median": 1.1498,
+"min": 1.14953,
 "max": 1.15114,
-"n": 1
+"n": 3
 },
 {
 "series": "TorchSim batched, cueq on",
 "batch": 1,
 "median": 48.81605,
-"min": 48.81605,
-"max": 48.81605,
-"n": 1
+"min": 48.59333,
+"max": 48.91676,
+"n": 3
 },
 {
 "series": "TorchSim batched, cueq on",
 "batch": 10,
-"median": 5.03343,
-"min": 5.03343,
+"median": 5.01783,
+"min": 4.96246,
 "max": 5.03343,
-"n": 1
+"n": 3
 },
 {
 "series": "TorchSim batched, cueq on",
 "batch": 100,
 "median": 0.51319,
-"min": 0.51319,
-"max": 0.51319,
-"n": 1
+"min": 0.50524,
+"max": 0.51685,
+"n": 3
 }
 ]
 }

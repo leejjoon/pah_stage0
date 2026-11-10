@@ -34,6 +34,6 @@ through `uv` (pandoc 3.9 ships inside `pypandoc_binary`), so no system packages 
 - **`web/`** holds the HTML-only layer: `report.css` (light and dark tokens) and `widgets.js` (vanilla JS, no
   external libraries).
 
-When the T0 timing grid finishes, rerun `build.sh`. The timing widget picks up `reports/t0_timing_full.csv`
-automatically. The static timing figure and the prose in §4.4 still describe the calibration pass, and both
-need a manual update.
+The timing figure and the widget read `reports/t0_timing_{calib,full}.csv`. The static figure uses the full
+grid once it has every configuration. The numbers quoted in the prose of §4.4 come from
+`reports/t0_timing_summary.md` (written by `t0/summarize.py`) and are updated by hand.

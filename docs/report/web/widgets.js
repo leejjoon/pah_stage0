@@ -201,8 +201,9 @@
   function timing(box) {
     const T = D.timing;
     const sets = [["calib", "Calibration pass (1 repeat, 400 steps)"]];
-    if (T.full && T.full.length) sets.push(["full", "Full grid so far (10 ps runs)"]);
-    let set = "calib", fam = { JAX: true, TorchSim: true, "concatenated Atoms": true, "MPS pool": true, sequential: true }, cq = { on: true, off: true }, tableView = false;
+    const done = T.full && T.full.length >= 31;
+    if (T.full && T.full.length) sets.push(["full", done ? "Full grid (3 repeats, 10 ps runs)" : "Full grid so far (10 ps runs)"]);
+    let set = done ? "full" : "calib", fam = { JAX: true, TorchSim: true, "concatenated Atoms": true, "MPS pool": true, sequential: true }, cq = { on: true, off: true }, tableView = false;
     const ctr = h("div", { class: "controls" }, box);
     seg(ctr, sets, set, (v) => { set = v; draw(); });
     const ctr2 = h("div", { class: "controls" }, box);
@@ -267,9 +268,9 @@
         });
         hit.addEventListener("mouseleave", hideTip);
       }
-      note.textContent = (set === "calib" ? "Calibration only: one repeat of 100 + 400 steps per cell. " : "Medians over the repeats finished so far; bars span min to max. ") +
+      note.textContent = (set === "calib" ? "Calibration only: one repeat of 100 + 400 steps per cell. " : (done ? "Medians of 3 repeats; bars span min to max. " : "Medians over the repeats finished so far; bars span min to max. ")) +
         (D.timing.bad ? "Excluded: " + Object.entries(D.timing.bad).map(([k, v]) => `${k} (${v})`).join("; ") + ". " : "") +
-        "Not the benchmark result until all three repeats have finished.";
+        (set === "full" && done ? "" : "Not the benchmark result until all three repeats have finished.");
     }
     draw();
   }

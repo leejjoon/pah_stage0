@@ -5,6 +5,9 @@
 <path d="M440.0,102 C440.0,132 520.0,112 520.0,142" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="ours:slice>pysr"/>
 <path d="M440.0,102 C440.0,132 360.0,112 360.0,142" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="ours:slice>pahfit"/>
 <path d="M440.0,102 C440.0,132 200.0,112 200.0,142" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="ours:slice>amespahdbpythonsuite"/>
+<path d="M360.0,194 C360.0,224 57.8,204 57.8,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="pahfit>specutils"/>
+<path d="M360.0,194 C360.0,224 822.2,204 822.2,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="pahfit>matplotlib"/>
+<path d="M360.0,194 C360.0,224 153.3,204 153.3,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="pahfit>astropy"/>
 <path d="M57.8,286 C57.8,316 280.0,296 280.0,326" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="specutils>ndcube"/>
 <path d="M57.8,286 C57.8,316 120.0,296 120.0,326" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="specutils>gwcs"/>
 <path d="M57.8,286 C57.8,316 440.0,296 440.0,326" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="specutils>asdf"/>
@@ -15,9 +18,6 @@
 <path d="M200.0,194 C200.0,224 440.0,204 440.0,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="amespahdbpythonsuite>fnnls"/>
 <path d="M200.0,194 C200.0,224 153.3,204 153.3,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="amespahdbpythonsuite>astropy"/>
 <path d="M535.6,286 C535.6,316 600.0,296 600.0,326" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="juliacall>juliapkg"/>
-<path d="M360.0,194 C360.0,224 57.8,204 57.8,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="pahfit>specutils"/>
-<path d="M360.0,194 C360.0,224 822.2,204 822.2,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="pahfit>matplotlib"/>
-<path d="M360.0,194 C360.0,224 153.3,204 153.3,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="pahfit>astropy"/>
 <path d="M520.0,194 C520.0,224 631.1,204 631.1,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="pysr>pandas"/>
 <path d="M520.0,194 C520.0,224 535.6,204 535.6,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="pysr>juliacall"/>
 <text x="972" y="76.0" font-size="10" fill="#8a8984" text-anchor="end" font-weight="normal">our code</text>

@@ -1,7 +1,7 @@
 ---
 title: "Reading PAH populations from their infrared bands"
 subtitle: "The project goal, the T0/T0b architecture and the software containers, for a newcomer"
-date: "2026-11-09 (draft; the T0 timing grid is still running)"
+date: "2026-11-10 (draft; T0 timing grid complete, T0 memo not yet written)"
 lang: en
 ---
 
@@ -283,7 +283,7 @@ more than the 5× threshold. In short (details in *plan §4.2–4.4*):
   confirmation (2026-11-09).*
 - **Same hardware slice** (Section [5](#hw)), nothing else on the GPU, three repeats.
 
-## 4.4 The decision rule and a first look at the numbers
+## 4.4 The decision rule and the numbers
 
 Cost is measured in **seconds of wall-clock time per molecule-picosecond** of simulation, at batch 1, 10 and 100.
 At batch 100 and matched precision, JAX is compared against the *fastest* validated PyTorch mode: more than 5×
@@ -291,17 +291,47 @@ faster → JAX for the project; 2–5× → JAX for the MD loop, PyTorch kept as
 (*plan §4.5*).
 
 ::: {.figure #fig-timing data-widget="timing"}
-![**Figure 10.** ▸ *interactive.* The short calibration pass of the timing grid (one repeat, 100 + 400 steps,
-2026-11-09). Solid lines: cuEquivariance on; dotted: off. The grey band at batch 100 spans 2× to 5× the best
-JAX time: a PyTorch point inside it falls in the "2–5×" outcome. **These are not the benchmark results**; the
-full grid (3 repeats × 10 ps) is running and is shown, as far as it has got, in the HTML version.](figures/timing_calib.svg)
+![**Figure 10.** ▸ *interactive.* The full timing grid (2026-11-09 to 11-10): 3 repeats of every setting, 2,000
+equilibration + 20,000 production steps (10 ps) each. Points are medians; the error bars span the three repeats
+and are mostly smaller than the dots. Solid lines: cuEquivariance on; dotted: off. The grey band at batch 100 spans
+2× to 5× the best JAX time: a PyTorch point inside it falls in the "2–5×" outcome. Sequential ASE was run at batch 1
+and 10 only; its cost per molecule does not depend on the batch, so the batch-100 value is extrapolated (dotted
+grey). The HTML version can switch between the full grid and the calibration pass and show every series.](figures/timing.svg)
 :::
 
-Read the calibration figure as a preview only. At batch 100 the best JAX time (0.17 s per molecule-ps, with
-`conv_fusion`) is about 2.9× faster than the best PyTorch mode (TorchSim with cuEquivariance, 0.50), inside the
-2–5× band. Two plan-mandated caveats apply to any outcome: the GH200's fast CPU–GPU link flatters the PyTorch
-baseline compared with a conventional cluster node, and the result depends on which cuEquivariance setting
-each stack ran.
+**The numbers at batch 100** (median of three repeats, seconds per molecule-ps; *`reports/t0_timing_summary.md`*):
+
+| | JAX, cueq off | JAX, `conv_fusion` | fastest PyTorch: TorchSim, cueq on |
+| --- | --- | --- | --- |
+| seconds per molecule-ps | 0.233 | **0.170** | 0.513 |
+| JAX speed-up over the fastest PyTorch mode | 2.2× | **3.0×** | |
+| GPU busy | 89% | 85% | 36% |
+
+Both JAX numbers fall in the **2–5× band**. The committee is still deciding which of the two JAX settings counts
+as "cuEquivariance on" (Section 4.3), but the band is the same for both, so the decision does not hinge on it.
+The repeats agree to within 2.5% at batch 100, so the band does not hinge on noise either. The formal
+recommendation is the job of the T0 memo; under the plan's rule (*plan §4.5*) this band means *JAX for the MD
+loop, with the PyTorch model kept as the reference implementation*.
+
+Four things to read off Figure 10:
+
+1. **JAX is already fast at batch 1** (0.83 s/mol-ps, against 33 for ASE). The whole 1,000-step chunk runs on the
+   GPU (Figure 8), so there is no per-step Python overhead to remove. Batching then buys JAX only about 4×.
+2. **PyTorch gains about 75× from batching** (TorchSim with cuEquivariance: 38.8 s/mol-ps at batch 1 → 0.51 at
+   batch 100), and it still does not catch up. TorchSim and the concatenated-`Atoms` fallback are close, with
+   TorchSim faster at batch 100.
+3. **cuEquivariance helps PyTorch only at large batch.** At batch 1 and 10 it makes every PyTorch mode slower
+   (ASE sequential: 33 → 43 s/mol-ps). At batch 100 it more than halves TorchSim's cost (1.15 → 0.51). With it
+   on, the GPU is idle 64% of the time at batch 100: the PyTorch side is limited by the CPU and Python, not by
+   the GPU.
+4. **The MPS pool** (many independent ASE processes sharing the GPU) beats sequential ASE by 12–20× at batch
+   100, but it is 2–4× slower than true batching. It is still a fair baseline, because it is what a group
+   without a batched code would actually do.
+
+The plan's two caveats apply. First, the GH200's fast CPU–GPU link flatters the PyTorch baseline compared with
+a conventional cluster node, and point 3 shows that PyTorch is the CPU-bound side. Second, the result depends
+on which cuEquivariance setting each stack ran. Every row of the CSV records the `cuex` methods JAX actually
+traced, and whether PyTorch had cuEquivariance enabled.
 
 # 5. The machine {#hw}
 
@@ -539,7 +569,7 @@ it inside the image at build time. In the HTML version an explorer below the map
 | Smoke tests, equivalence gate (§4.2) | passed (2026-11-08) |
 | T0 MD drivers, MPS pool | written and smoke-tested (`t0/`) |
 | T0b species selection | done (`slice/species.csv`) |
-| T0 timing grid | running: 93 cells, 3 repeats, about 36 hours; calibration pass complete |
+| T0 timing grid | complete (2026-11-10): 93 cells, 3 repeats; JAX 2.2–3.0× faster than the fastest PyTorch mode at batch 100 (Section 4.4); one cell rerun because another user's process was on the GPU |
 | Committee confirmations | pending: the JAX "cuEquivariance on" definition, the MPS-daemon sentence |
 | T0b stages 2–9 | not started |
 

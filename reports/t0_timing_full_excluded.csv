@@ -1,0 +1,2 @@
+cell,stack,mode,batched_impl,cueq,cueq_version,conv_fusion,dtype,matmul_precision,batch,mps_workers,repeat,species_set,ensemble,steps,wall_s,s_per_mol_ps,ns_per_day_per_traj,gpu_util,gpu_mem_gb,gpu_mem_gb_smi,cpu_util,compile_s,edge_cap,cuex,wall_total_s,node_foreign_procs,phase,started,host,driver,sif_sha256,log
+torch-sequential-cueq_yes-b1-r0,torch,sequential,,yes,0.10.0,,float32,highest,1,,0,T0_20,nvt,20000,1607.571,160.75709,0.53746,84.6,0.044,16.447,1.4,,,,1669.6,0/2,full,2026-11-09T07:56:24,gh200,595.45.04,3ab99a073538ae06,full-torch-sequential-cueq_yes-b1-r0.log

@@ -170,26 +170,36 @@ def table(rs):
     return {k: {"median": statistics.median(v), "min": min(v), "max": max(v), "n": len(v)} for k, v in agg.items()}
 
 timing = {}
+for r in rows("full_excluded"):      # rows moved out of the full CSV after their cell was rerun
+    BAD[f'{r["cell"]} ({r["started"][:16]})'] = f'other processes on GPU 0 at start/end: {r["node_foreign_procs"]}; cell rerun'
 for ph in ("calib", "full"):
     t = table(rows(ph))
     if t: timing[ph] = [{"series": s, "batch": b, **v} for (s, b), v in sorted(t.items())]
 json.dump({"bad": BAD, **timing}, open(os.path.join(DATA, "timing.json"), "w"), indent=0)
 
-# Static plot from the calibration pass (complete; one repeat). The widget can switch to the full grid.
+# Static plot from the full grid (median of 3 repeats, bars = min-max); falls back to the calibration pass.
 show = [("JAX cueq conv_fusion", BLUE, "-"), ("JAX cueq off", BLUE, ":"),
         ("TorchSim batched, cueq on", ORANGE, "-"), ("TorchSim batched, cueq off", ORANGE, ":"),
         ("ASE concatenated, cueq on", AQUA, "-"), ("ASE concatenated, cueq off", AQUA, ":"),
-        ("ASE MPS pool P=4, cueq off", VIOLET, ":"), ("ASE MPS pool P=32, cueq off", VIOLET, ":"),
+        ("ASE MPS pool (P=4 at 10, P=32 at 100), cueq off", VIOLET, ":"),
         ("ASE sequential, cueq off", MUTED, ":"), ("ASE sequential, cueq on", MUTED, "-")]
 LABEL_DY = {"ASE sequential, cueq on": 4, "ASE sequential, cueq off": -4, "TorchSim batched, cueq off": -5,
             "ASE concatenated, cueq off": 5}
-cal = {}
-for d in timing.get("calib", []): cal.setdefault(d["series"], {})[d["batch"]] = d["median"]
+PH = "full" if len(timing.get("full", [])) >= 31 else "calib"
+cal, rng = {}, {}
+for d in timing.get(PH, []):
+    cal.setdefault(d["series"], {})[d["batch"]] = d["median"]; rng.setdefault(d["series"], {})[d["batch"]] = (d["min"], d["max"])
+MPS = "ASE MPS pool (P=4 at 10, P=32 at 100), cueq off"     # the pool sizes the grid ran: one line through both
+for P_, bb in (("4", 10), ("32", 100)):
+    k = f"ASE MPS pool P={P_}, cueq off"
+    if bb in cal.get(k, {}): cal.setdefault(MPS, {})[bb] = cal[k][bb]; rng.setdefault(MPS, {})[bb] = rng[k][bb]
 fig, ax = plt.subplots(figsize=(7.6, 4.4))
 for s, col, ls in show:
     if s not in cal: continue
     b = sorted(cal[s]); y = [cal[s][x] for x in b]
     ax.plot(b, y, ls, color=col, marker="o", ms=4, lw=1.6)
+    ax.errorbar(b, y, yerr=[[y[i] - rng[s][x][0] for i, x in enumerate(b)], [rng[s][x][1] - y[i] for i, x in enumerate(b)]],
+                fmt="none", ecolor=col, elinewidth=1, capsize=2)
     if b[-1] == 100: ax.annotate(s, (b[-1], y[-1]), xytext=(6, LABEL_DY.get(s, 0)), textcoords="offset points", va="center", fontsize=7.5, color=INK2)
     else: ax.annotate(s, (b[0], y[0]), xytext=(-6, LABEL_DY.get(s, 0)), textcoords="offset points", va="center", ha="right", fontsize=7.5, color=INK2)
 seq = cal.get("ASE sequential, cueq off", {})
@@ -202,8 +212,9 @@ if best_jax:
     ax.text(70, best_jax * 3.2, "2×–5×\nJAX time", ha="right", va="center", fontsize=7.5, color=MUTED)
 ax.set_xscale("log"); ax.set_yscale("log"); ax.set_xticks([1, 10, 100]); ax.set_xticklabels(["1", "10", "100"])
 ax.set_xlim(0.12, 900); ax.set_xlabel("batch: molecules simulated together"); ax.set_ylabel("seconds per molecule-picosecond (lower is faster)")
-ax.set_title("T0 calibration pass (one repeat, 400 production steps): cost per molecule-ps", loc="left", fontsize=9, color=INK)
-save(fig, "timing_calib.svg")
+ax.set_title("T0 timing grid (median of 3 repeats, 20,000 production steps): cost per molecule-ps" if PH == "full" else
+             "T0 calibration pass (one repeat, 400 production steps): cost per molecule-ps", loc="left", fontsize=9, color=INK)
+save(fig, "timing.svg")
 
 # ---------------------------------------------------------------- widget data
 spec = {"pairs": P["pairs"], "info": P["info"], "sticks": P["sticks"],
