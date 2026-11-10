@@ -12,6 +12,20 @@ KISTI's documentation can be mirrored as Markdown under `docs/external/` by runn
 
 Each directory has `llms-full.txt` (the whole guide in one file) and `pages/` (one Markdown file per page).
 
+**On Hangang itself, do not run the fetch script.** The cluster keeps the same Hangang guide in
+`/etc/user-guide`, which also includes `local.md`, KISTI's site corrections. Where they differ from the guide
+pages, `local.md` wins, and the fetch script does not mirror it. The script adds only the MyKSC guide and the
+myhub page. Points from `local.md` (checked 2026-11-10) that affect this work:
+- Large downloads (images, models) go on the data-transfer nodes `dm01`–`dm04`. Login-node processes are
+  killed after 120 CPU-minutes (`ulimit -t 7200`) and limited to 32 GB of virtual memory.
+- Every array task counts as one job, and arrays with more than 5 tasks are rejected at submission.
+- A single-node GPU job gets all the CPUs and memory of its GPUs' NUMA nodes: use only `--ntasks-per-node`, not
+  `--ntasks`, `--cpus-per-task` or `--mem`. Any `srun` line needs `--cpus-per-task 72` (4 tasks per node)
+  or `288` (1 task); without it each task is pinned to a single core.
+- Caches belong on `/scratch` or `/appsdata`, not `~/.cache`. Fetch models ahead of time (Mai's Zenodo model
+  to `/appsdata`) instead of downloading them in every job.
+- Interactive allocations (`salloc`, `srun --pty`) are limited to 8 h.
+
 ## Hangang facts
 
 From the guide (`hangang-user-guide/pages/system/*.md`) and from our own checks on 2026-11-10.
@@ -54,7 +68,11 @@ mkdir -p /appsdata/$USER/sif
 export APPTAINER_CACHEDIR=/appsdata/$USER/apptainer-cache     # not /tmp (RAM) and not the 64 GB home
 apptainer pull /appsdata/$USER/sif/A_jax.sif oras://myhub.ksc.re.kr/pah/a_jax:gh200-2026-11-07
 sha256sum /appsdata/$USER/sif/A_jax.sif                         # must be 7304b1becb903c16...
+apptainer cache clean --force                                   # the cache keeps a second 7.5 GB copy
 ```
+
+Done 2026-11-10 on `glogin03`: the image is 7.5 GB, the pull took about a minute and the hash matched. Run the
+pull on a GPU login node: the data-transfer nodes `dm01`–`dm04` have neither `module` nor Apptainer.
 
 Pushing needs credentials: `HARBOR_USER` and `HARBOR_SECRET` in `.env` (not in git; the CLI secret from the
 myhub user profile), used as
@@ -78,6 +96,24 @@ Pass criteria, from the log `a_smoke_<jobid>.log`:
 - the x64 conversion check (`x64_verify.py`) passes;
 - predict and the jax-md Langevin run finish;
 - force-call medians are close to the project node's (feasibility check §J; `reports/t0_timing_summary.md`).
+
+The timing probe's input, `eq_frames.xyz`, came from container B on the project node. The job now rebuilds it in
+container A from `t0/species_T0.xyz` (`containers/tests/eq_frames_t0.py`: same recipe and seed, 120 frames, 6,532
+atoms in the first 100). The first attempt, job 1251632, failed for lack of that file.
+
+**Result, 2026-11-10: passed.** Job 1251720 COMPLETED in 7 min 36 s on `node0872`. On all four GPUs JAX
+listed `CudaDevice`, the x64 conversion and bundles, predict (cueq off and on) and 1,000 jax-md steps ran,
+so the 570.124 driver (CUDA 12.8) runs the image's CUDA 12.9 wheels. Force-call medians, MACE-OFF small, float32,
+30 calls, against the project node:
+
+| Batch | Hangang, default | Hangang, `backend: cueq` | Project node, default / cueq |
+| --- | --- | --- | --- |
+| 1 molecule (coronene, 36 atoms) | 1.37 ms | 1.40 ms | 1.23 / 1.26 ms |
+| 10 molecules (352 atoms) | 1.96 ms | 1.93 ms | not measured |
+| 100 molecules (6,532 atoms, 112,580 edges) | 9.95 ms | 9.99 ms | 9.20 / 9.19 ms |
+
+Hangang is 8–11% slower per call (96 GB HBM3 instead of 144 GB HBM3e). Scale the project node's 0.170 s per
+molecule-ps up by about 10% until the production calibration replaces it. The `conv_fusion` bundle was not timed.
 
 ## Step 3 onwards (not yet written)
 

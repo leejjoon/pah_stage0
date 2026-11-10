@@ -32,8 +32,13 @@ for g in $(seq 0 $((ngpu - 1))); do
   apptainer exec --nv --env CUDA_VISIBLE_DEVICES=$g --bind "$WORK/g$g":/t "$SIF" bash /t/a_jax.sh
 done
 # Same probe as the GH200 feasibility check: force-call median for MACE-OFF small, float32, cueq off/on.
+# Its input, eq_frames.xyz, is rebuilt from the T0 species (on the project node it came from container B).
+cp "${SLURM_SUBMIT_DIR}/t0/species_T0.xyz" "$WORK/g0"/
+apptainer exec --nv --bind "$WORK/g0":/t "$SIF" python /t/eq_frames_t0.py
 for v in "" _cueq; do for n in 1 10 100; do
+  log="$WORK/g0/time_f32${v}_n$n.log"
   apptainer exec --nv --env CUDA_VISIBLE_DEVICES=0 --bind "$WORK/g0":/t "$SIF" \
-    python /t/jax_time.py /t/off_small_f32$v.npz float32 $n 30 2>&1 | grep "call median" | sed "s/^/[$v n=$n] /"
+    python /t/jax_time.py /t/off_small_f32$v.npz float32 $n 30 > "$log" 2>&1 || { echo "[$v n=$n] FAILED:"; tail -5 "$log"; exit 1; }
+  grep "call median" "$log" | sed "s/^/[$v n=$n] /"
 done; done
 echo "outputs in $WORK"
