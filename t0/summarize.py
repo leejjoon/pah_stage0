@@ -83,9 +83,12 @@ md += ["", "Worst and best case from the repeat ranges (slowest JAX against fast
 for s in summary:
     if s["extrapolated"]:
         md.append(f"| {s['batch']} | {s['config']} | (extrapolated from batch 10) | {s['median_s_per_mol_ps']:.4f} | | | | | | |"); continue
-    md.append(f"| {s['batch']} | {s['config']} | {s['n']} | {s['median_s_per_mol_ps']:.4f} | {s['min']:.4f}-{s['max']:.4f} | "
+    lab = s['config'] + (" (includes equilibration)" if "MPS pool" in s['config'] else "")
+    md.append(f"| {s['batch']} | {lab} | {s['n']} | {s['median_s_per_mol_ps']:.4f} | {s['min']:.4f}-{s['max']:.4f} | "
               f"{s['spread_pct']:.1f}% | {fmt(s['ns_per_day_per_traj'])} | {fmt(s['gpu_util'])} | {fmt(s['gpu_mem_gb'])} | {fmt(s['compile_s'])} |")
-md += ["", "GPU memory for the MPS pool is not captured per process (shown as 0). Sequential ASE was not run at "
+md += ["", "MPS-pool timings include the 2,000 equilibration steps (about 9% of each run; md_torch.py), unlike every other "
+       "mode; the committee (2026-11-10) asked for them to be labelled, not rerun. gpu_util is averaged over the whole "
+       "process, model load and equilibration included. GPU memory for the MPS pool is not captured per process (shown as 0). Sequential ASE was not run at "
        "batch 100 (plan 4.3); its row is the batch-10 per-molecule cost."]
 open(os.path.join(OUT, "t0_timing_summary.md"), "w").write("\n".join(md) + "\n")
 print("\n".join(md[:16]))

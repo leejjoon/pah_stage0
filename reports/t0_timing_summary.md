@@ -38,8 +38,8 @@ Which JAX row the decision uses depends on the committee's definition of JAX "cu
 | 10 | TorchSim batched, cueq off | 3 | 3.8259 | 3.8170-3.8931 | 2.0% | 2.26 | 27.3 | 0.388 |  |
 | 10 | ASE concatenated, cueq on | 3 | 4.5530 | 4.5138-4.5816 | 1.5% | 1.9 | 9.8 | 0.138 |  |
 | 10 | TorchSim batched, cueq on | 3 | 5.0178 | 4.9625-5.0334 | 1.4% | 1.72 | 10.3 | 0.143 |  |
-| 10 | ASE MPS pool P=4, cueq off | 3 | 10.5729 | 10.4804-10.8448 | 3.4% | 0.817 | 47.5 | 0 |  |
-| 10 | ASE MPS pool P=4, cueq on | 3 | 14.3216 | 14.2188-14.3261 | 0.7% | 0.603 | 29 | 0 |  |
+| 10 | ASE MPS pool P=4, cueq off (includes equilibration) | 3 | 10.5729 | 10.4804-10.8448 | 3.4% | 0.817 | 47.5 | 0 |  |
+| 10 | ASE MPS pool P=4, cueq on (includes equilibration) | 3 | 14.3216 | 14.2188-14.3261 | 0.7% | 0.603 | 29 | 0 |  |
 | 10 | ASE sequential, cueq off | 3 | 32.2010 | 32.1737-32.3269 | 0.5% | 0.268 | 15.4 | 0.083 |  |
 | 10 | ASE sequential, cueq on | 3 | 43.6508 | 43.4333-44.1040 | 1.5% | 0.198 | 8.6 | 0.05 |  |
 | 100 | JAX cueq conv_fusion | 3 | 0.1704 | 0.1704-0.1707 | 0.2% | 5.07 | 85.2 | 2.16 | 3.23 |
@@ -49,11 +49,11 @@ Which JAX row the decision uses depends on the committee's definition of JAX "cu
 | 100 | ASE concatenated, cueq on | 3 | 0.7328 | 0.7322-0.7348 | 0.4% | 1.18 | 24.3 | 1.88 |  |
 | 100 | TorchSim batched, cueq off | 3 | 1.1498 | 1.1495-1.1511 | 0.1% | 0.751 | 87.3 | 5.84 |  |
 | 100 | ASE concatenated, cueq off | 3 | 1.3721 | 1.3715-1.3798 | 0.6% | 0.63 | 72.9 | 5.84 |  |
-| 100 | ASE MPS pool P=32, cueq on | 3 | 2.2209 | 2.2104-2.2217 | 0.5% | 0.389 | 83.7 | 0 |  |
-| 100 | ASE MPS pool P=32, cueq off | 3 | 2.6560 | 2.6483-2.6567 | 0.3% | 0.325 | 94.5 | 0 |  |
-| 100 | ASE MPS pool P=16, cueq off | 3 | 3.2015 | 3.1860-3.2201 | 1.1% | 0.27 | 87.4 | 0 |  |
-| 100 | ASE MPS pool P=16, cueq on | 3 | 3.4142 | 3.3970-3.4186 | 0.6% | 0.253 | 79.2 | 0 |  |
+| 100 | ASE MPS pool P=32, cueq on (includes equilibration) | 3 | 2.2209 | 2.2104-2.2217 | 0.5% | 0.389 | 83.7 | 0 |  |
+| 100 | ASE MPS pool P=32, cueq off (includes equilibration) | 3 | 2.6560 | 2.6483-2.6567 | 0.3% | 0.325 | 94.5 | 0 |  |
+| 100 | ASE MPS pool P=16, cueq off (includes equilibration) | 3 | 3.2015 | 3.1860-3.2201 | 1.1% | 0.27 | 87.4 | 0 |  |
+| 100 | ASE MPS pool P=16, cueq on (includes equilibration) | 3 | 3.4142 | 3.3970-3.4186 | 0.6% | 0.253 | 79.2 | 0 |  |
 | 100 | ASE sequential, cueq off | (extrapolated from batch 10) | 32.2010 | | | | | | |
 | 100 | ASE sequential, cueq on | (extrapolated from batch 10) | 43.6508 | | | | | | |
 
-GPU memory for the MPS pool is not captured per process (shown as 0). Sequential ASE was not run at batch 100 (plan 4.3); its row is the batch-10 per-molecule cost.
+MPS-pool timings include the 2,000 equilibration steps (about 9% of each run; md_torch.py), unlike every other mode; the committee (2026-11-10) asked for them to be labelled, not rerun. gpu_util is averaged over the whole process, model load and equilibration included. GPU memory for the MPS pool is not captured per process (shown as 0). Sequential ASE was not run at batch 100 (plan 4.3); its row is the batch-10 per-molecule cost.

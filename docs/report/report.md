@@ -1,7 +1,7 @@
 ---
 title: "Reading PAH populations from their infrared bands"
 subtitle: "The project goal, the T0/T0b architecture and the software containers, for a newcomer"
-date: "2026-11-10 (draft; T0 timing grid complete, T0 memo not yet written)"
+date: "2026-11-10 (draft; T0 timing grid complete, decision adopted provisionally)"
 lang: en
 ---
 
@@ -279,8 +279,10 @@ more than the 5× threshold. In short (details in *plan §4.2–4.4*):
   velocities, one centre-of-mass policy, equal work (energy, forces and a dipole proxy; no stress).
 - **cuEquivariance** (NVIDIA's fused GPU kernels for MACE's equivariant operations) **on and off in both
   stacks.** For JAX, "on" is taken to mean `conv_fusion: true`, the only setting in mace-jax 0.2.0 that
-  reaches a cuEquivariance kernel, and then only for the convolution. *This definition is pending committee
-  confirmation (2026-11-09).*
+  reaches a cuEquivariance kernel, and then only for the convolution (confirmed by the committee,
+  2026-11-10). For PyTorch, "on" means MACE's `enable_cueq`, which makes the convolution and the symmetric
+  contraction eligible for kernels; the linear and fully-connected layers stay plain. So the two "on"
+  settings do not accelerate the same operations.
 - **Same hardware slice** (Section [5](#hw)), nothing else on the GPU, three repeats.
 
 ## 4.4 The decision rule and the numbers
@@ -307,29 +309,32 @@ grey). The HTML version can switch between the full grid and the calibration pas
 | JAX speed-up over the fastest PyTorch mode | 2.2× | **3.0×** | |
 | GPU busy | 89% | 85% | 36% |
 
-Both JAX numbers fall in the **2–5× band**. The committee is still deciding which of the two JAX settings counts
-as "cuEquivariance on" (Section 4.3), but the band is the same for both, so the decision does not hinge on it.
-The repeats agree to within 2.5% at batch 100, so the band does not hinge on noise either. The formal
-recommendation is the job of the T0 memo; under the plan's rule (*plan §4.5*) this band means *JAX for the MD
-loop, with the PyTorch model kept as the reference implementation*.
+Both JAX numbers fall in the **2–5× band**, so the band does not hinge on which JAX setting counts as
+"cuEquivariance on". The repeats agree to within 2.5% at batch 100, so it does not hinge on noise either. Under
+the plan's rule (*plan §4.5*) this band means *JAX for the MD loop, with the PyTorch model kept as the reference
+implementation*, and the project adopted that on 2026-11-10. It is provisional until the checks the committee
+asked for are done: a tensor-wise check of the converted model, a trace of the small float64 energy residual
+(Section 4.3), and one profiler trace of each winning configuration showing which GPU kernels actually ran.
 
 Four things to read off Figure 10:
 
 1. **JAX is already fast at batch 1** (0.83 s/mol-ps, against 33 for ASE). The whole 1,000-step chunk runs on the
    GPU (Figure 8), so there is no per-step Python overhead to remove. Batching then buys JAX only about 4×.
-2. **PyTorch gains about 75× from batching** (TorchSim with cuEquivariance: 38.8 s/mol-ps at batch 1 → 0.51 at
+2. **PyTorch gains about 95× from batching** (TorchSim with cuEquivariance: 48.8 s/mol-ps at batch 1 → 0.51 at
    batch 100), and it still does not catch up. TorchSim and the concatenated-`Atoms` fallback are close, with
    TorchSim faster at batch 100.
 3. **cuEquivariance helps PyTorch only at large batch.** At batch 1 and 10 it makes every PyTorch mode slower
    (ASE sequential: 33 → 43 s/mol-ps). At batch 100 it more than halves TorchSim's cost (1.15 → 0.51). With it
-   on, the GPU is idle 64% of the time at batch 100: the PyTorch side is limited by the CPU and Python, not by
-   the GPU.
+   on, the GPU is idle about 64% of the time at batch 100 (an average over the whole run): the PyTorch side is
+   limited by the CPU and Python, not by the GPU. Remove that overhead and PyTorch's GPU work alone would be
+   within about 1.1× of JAX's step. The project chose to compare the software as it ships.
 4. **The MPS pool** (many independent ASE processes sharing the GPU) beats sequential ASE by 12–20× at batch
    100, but it is 2–4× slower than true batching. It is still a fair baseline, because it is what a group
-   without a batched code would actually do.
+   without a batched code would actually do. (Its times include the 2,000 equilibration steps, about 9%.)
 
-The plan's two caveats apply. First, the GH200's fast CPU–GPU link flatters the PyTorch baseline compared with
-a conventional cluster node, and point 3 shows that PyTorch is the CPU-bound side. Second, the result depends
+The plan's two caveats apply. First, the GH200 is not the production cluster. Its fast CPU–GPU link helps
+PyTorch, but PyTorch's bottleneck here is the host, and x86 cluster nodes are often faster per core than Grace,
+so which way the gap moves there is unknown until the cluster repeat. Second, the result depends
 on which cuEquivariance setting each stack ran. Every row of the CSV records the `cuex` methods JAX actually
 traced, and whether PyTorch had cuEquivariance enabled.
 
@@ -489,8 +494,8 @@ served the equivalence gates (*feasibility §J*).
 "compat" library) that the data-centre driver accepts. One consequence surfaced only with MPS: an MPS daemon
 started on the host (driver 595.45) accepted clients from the container and then left them hanging forever in
 `cuInit`. The fix is to run the daemon **inside the image**, so that it uses the same compat library as its
-clients (`t0/run_mps.sh`, *feasibility §K*). *The plan sentence describing this is pending committee
-confirmation (2026-11-09).* If forward compatibility ever breaks after a driver change, `26.03-py3` is the
+clients (`t0/run_mps.sh`, *feasibility §K*; confirmed by the committee on 2026-11-10 for this tested setup, to
+be revalidated after any image or driver change). If forward compatibility ever breaks after a driver change, `26.03-py3` is the
 native match for driver 595.45.
 :::
 
@@ -570,7 +575,8 @@ it inside the image at build time. In the HTML version an explorer below the map
 | T0 MD drivers, MPS pool | written and smoke-tested (`t0/`) |
 | T0b species selection | done (`slice/species.csv`) |
 | T0 timing grid | complete (2026-11-10): 93 cells, 3 repeats; JAX 2.2–3.0× faster than the fastest PyTorch mode at batch 100 (Section 4.4); one cell rerun because another user's process was on the GPU |
-| Committee confirmations | pending: the JAX "cuEquivariance on" definition, the MPS-daemon sentence |
+| T0 decision | JAX for the MD loop, PyTorch kept as reference: adopted 2026-11-10, provisional until the committee's checks (conversion check, float64 residual trace, execution profiles) are done |
+| Committee confirmations | done (2026-11-10): the JAX "cuEquivariance on" definition, the in-image MPS daemon |
 | T0b stages 2–9 | not started |
 
 # Glossary {#glossary}

@@ -3,22 +3,22 @@
 <path d="M440.0,102 C440.0,132 600.0,112 600.0,142" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="ours:md_torch>torch-sim-atomistic"/>
 <path d="M440.0,102 C440.0,132 280.0,112 280.0,142" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="ours:md_torch>ase"/>
 <path d="M440.0,102 C440.0,132 440.0,112 440.0,142" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="ours:md_torch>mace-torch"/>
-<path d="M631.1,286 C631.1,316 680.0,296 680.0,326" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="nvalchemi-toolkit-ops>warp-lang"/>
+<path d="M248.9,286 C248.9,316 200.0,296 200.0,326" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="torch-ema>torch"/>
+<path d="M57.8,286 C57.8,316 200.0,296 200.0,326" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="e3nn>torch"/>
+<path d="M57.8,286 C57.8,316 360.0,296 360.0,326" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="e3nn>opt-einsum-fx"/>
 <path d="M440.0,194 C440.0,224 344.4,204 344.4,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="mace-torch>torchmetrics"/>
 <path d="M440.0,194 C440.0,224 248.9,204 248.9,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="mace-torch>torch-ema"/>
 <path d="M440.0,194 C440.0,224 200.0,296 200.0,326" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="mace-torch>torch"/>
 <path d="M440.0,194 C440.0,224 153.3,204 153.3,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="mace-torch>matscipy"/>
 <path d="M440.0,194 C440.0,224 822.2,204 822.2,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="mace-torch>h5py"/>
 <path d="M440.0,194 C440.0,224 57.8,204 57.8,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="mace-torch>e3nn"/>
-<path d="M248.9,286 C248.9,316 200.0,296 200.0,326" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="torch-ema>torch"/>
-<path d="M344.4,286 C344.4,316 200.0,296 200.0,326" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="torchmetrics>torch"/>
 <path d="M600.0,194 C600.0,224 200.0,296 200.0,326" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="torch-sim-atomistic>torch"/>
 <path d="M600.0,194 C600.0,224 726.7,204 726.7,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="torch-sim-atomistic>tables"/>
 <path d="M600.0,194 C600.0,224 631.1,204 631.1,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="torch-sim-atomistic>nvalchemi-toolkit-ops"/>
 <path d="M600.0,194 C600.0,224 822.2,204 822.2,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="torch-sim-atomistic>h5py"/>
-<path d="M57.8,286 C57.8,316 200.0,296 200.0,326" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="e3nn>torch"/>
-<path d="M57.8,286 C57.8,316 360.0,296 360.0,326" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="e3nn>opt-einsum-fx"/>
+<path d="M631.1,286 C631.1,316 680.0,296 680.0,326" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="nvalchemi-toolkit-ops>warp-lang"/>
 <path d="M520.0,378 C520.0,408 360.0,388 360.0,418" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="cuequivariance-ops-torch-cu13>cuequivariance-ops-cu13"/>
+<path d="M344.4,286 C344.4,316 200.0,296 200.0,326" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="torchmetrics>torch"/>
 <text x="972" y="76.0" font-size="10" fill="#8a8984" text-anchor="end" font-weight="normal">our code</text>
 <rect x="365.0" y="50" width="150" height="52" rx="8" fill="#fff" stroke="#0b0b0b" stroke-width="1.1" stroke-dasharray="5 4" data-key="ours:md_torch"/>
 <text x="440.0" y="79.2" font-size="10.8" fill="#0b0b0b" text-anchor="middle" font-weight="600">t0/md_torch.py</text>

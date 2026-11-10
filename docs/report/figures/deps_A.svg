@@ -3,6 +3,26 @@
 <path d="M520.0,102 C520.0,132 440.0,112 440.0,142" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="ours:convert>mace-jax"/>
 <path d="M360.0,102 C360.0,132 280.0,112 280.0,142" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="ours:md_jax>jax-md"/>
 <path d="M360.0,102 C360.0,132 440.0,112 440.0,142" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="ours:md_jax>mace-jax"/>
+<path d="M600.0,378 C600.0,408 194.3,388 194.3,418" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="cuequivariance-ops-jax-cu12>cuequivariance-ops-cu12"/>
+<path d="M280.0,194 C280.0,224 483.0,204 483.0,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="jax-md>optax"/>
+<path d="M280.0,194 C280.0,224 139.0,204 139.0,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="jax-md>jraph"/>
+<path d="M280.0,194 C280.0,224 280.0,296 280.0,326" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="jax-md>jaxlib"/>
+<path d="M280.0,194 C280.0,224 120.0,296 120.0,326" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="jax-md>jax"/>
+<path d="M280.0,194 C280.0,224 397.0,204 397.0,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="jax-md>flax"/>
+<path d="M280.0,194 C280.0,224 53.0,204 53.0,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="jax-md>e3nn-jax"/>
+<path d="M655.0,286 C655.0,316 760.0,296 760.0,326" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="e3nn>torch"/>
+<path d="M53.0,286 C53.0,316 280.0,296 280.0,326" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="e3nn-jax>jaxlib"/>
+<path d="M53.0,286 C53.0,316 120.0,296 120.0,326" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="e3nn-jax>jax"/>
+<path d="M600.0,194 C600.0,224 760.0,296 760.0,326" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="mace-torch>torch"/>
+<path d="M600.0,194 C600.0,224 741.0,204 741.0,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="mace-torch>matscipy"/>
+<path d="M600.0,194 C600.0,224 655.0,204 655.0,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="mace-torch>e3nn"/>
+<path d="M600.0,194 C600.0,224 827.0,204 827.0,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="mace-torch>ase"/>
+<path d="M569.0,286 C569.0,316 280.0,296 280.0,326" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="chex>jaxlib"/>
+<path d="M569.0,286 C569.0,316 120.0,296 120.0,326" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="chex>jax"/>
+<path d="M440.0,378 C440.0,408 71.4,388 71.4,418" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="jax-cuda12-plugin>jax-cuda12-pjrt"/>
+<path d="M483.0,286 C483.0,316 280.0,296 280.0,326" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="optax>jaxlib"/>
+<path d="M483.0,286 C483.0,316 120.0,296 120.0,326" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="optax>jax"/>
+<path d="M225.0,286 C225.0,316 120.0,296 120.0,326" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="cuequivariance-jax>jax"/>
 <path d="M440.0,194 C440.0,224 483.0,204 483.0,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="mace-jax>optax"/>
 <path d="M440.0,194 C440.0,224 741.0,204 741.0,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="mace-jax>matscipy"/>
 <path d="M440.0,194 C440.0,224 139.0,204 139.0,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="mace-jax>jraph"/>
@@ -14,29 +34,9 @@
 <path d="M440.0,194 C440.0,224 311.0,204 311.0,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="mace-jax>cuequivariance"/>
 <path d="M440.0,194 C440.0,224 569.0,204 569.0,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="mace-jax>chex"/>
 <path d="M440.0,194 C440.0,224 827.0,204 827.0,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="mace-jax>ase"/>
-<path d="M440.0,378 C440.0,408 71.4,388 71.4,418" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="jax-cuda12-plugin>jax-cuda12-pjrt"/>
-<path d="M600.0,194 C600.0,224 760.0,296 760.0,326" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="mace-torch>torch"/>
-<path d="M600.0,194 C600.0,224 741.0,204 741.0,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="mace-torch>matscipy"/>
-<path d="M600.0,194 C600.0,224 655.0,204 655.0,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="mace-torch>e3nn"/>
-<path d="M600.0,194 C600.0,224 827.0,204 827.0,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="mace-torch>ase"/>
-<path d="M397.0,286 C397.0,316 120.0,296 120.0,326" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="flax>jax"/>
-<path d="M569.0,286 C569.0,316 280.0,296 280.0,326" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="chex>jaxlib"/>
-<path d="M569.0,286 C569.0,316 120.0,296 120.0,326" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="chex>jax"/>
-<path d="M600.0,378 C600.0,408 194.3,388 194.3,418" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="cuequivariance-ops-jax-cu12>cuequivariance-ops-cu12"/>
-<path d="M225.0,286 C225.0,316 120.0,296 120.0,326" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="cuequivariance-jax>jax"/>
 <path d="M139.0,286 C139.0,316 280.0,296 280.0,326" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="jraph>jaxlib"/>
 <path d="M139.0,286 C139.0,316 120.0,296 120.0,326" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="jraph>jax"/>
-<path d="M53.0,286 C53.0,316 280.0,296 280.0,326" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="e3nn-jax>jaxlib"/>
-<path d="M53.0,286 C53.0,316 120.0,296 120.0,326" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="e3nn-jax>jax"/>
-<path d="M483.0,286 C483.0,316 280.0,296 280.0,326" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="optax>jaxlib"/>
-<path d="M483.0,286 C483.0,316 120.0,296 120.0,326" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="optax>jax"/>
-<path d="M655.0,286 C655.0,316 760.0,296 760.0,326" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="e3nn>torch"/>
-<path d="M280.0,194 C280.0,224 483.0,204 483.0,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="jax-md>optax"/>
-<path d="M280.0,194 C280.0,224 139.0,204 139.0,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="jax-md>jraph"/>
-<path d="M280.0,194 C280.0,224 280.0,296 280.0,326" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="jax-md>jaxlib"/>
-<path d="M280.0,194 C280.0,224 120.0,296 120.0,326" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="jax-md>jax"/>
-<path d="M280.0,194 C280.0,224 397.0,204 397.0,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="jax-md>flax"/>
-<path d="M280.0,194 C280.0,224 53.0,204 53.0,234" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="jax-md>e3nn-jax"/>
+<path d="M397.0,286 C397.0,316 120.0,296 120.0,326" fill="none" stroke="#c9c8c2" stroke-width="1.1" data-edge="flax>jax"/>
 <text x="972" y="76.0" font-size="10" fill="#8a8984" text-anchor="end" font-weight="normal">our code</text>
 <rect x="285.0" y="50" width="150" height="52" rx="8" fill="#fff" stroke="#0b0b0b" stroke-width="1.1" stroke-dasharray="5 4" data-key="ours:md_jax"/>
 <text x="360.0" y="79.2" font-size="10.8" fill="#0b0b0b" text-anchor="middle" font-weight="600">t0/md_jax.py</text>
