@@ -25,7 +25,7 @@ From: ubuntu:24.04
   python -m pip check
   python -m pip list --format=freeze > /opt/requirements-frozen.txt
   # Fail the build if any package or version differs from the GH200 image.
-  sort -f /opt/lock/requirements-A.txt > /tmp/lock.sorted; sort -f /opt/requirements-frozen.txt > /tmp/built.sorted
+  grep -v '^#' /opt/lock/requirements-A.txt | sort -f > /tmp/lock.sorted; sort -f /opt/requirements-frozen.txt > /tmp/built.sorted
   if ! diff /tmp/lock.sorted /tmp/built.sorted; then
     echo "frozen package list differs from the GH200 lock (diff above)"; exit 1
   fi
