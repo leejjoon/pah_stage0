@@ -1,0 +1,38 @@
+Bootstrap: docker
+From: ubuntu:24.04
+# Container A (JAX + mace-jax), rebuilt elsewhere with the package versions frozen inside the GH200 A_jax.sif.
+# Build ON an aarch64 GPU machine, from the repository root (the %files path is relative to it):
+#   apptainer build --fakeroot A_jax_locked.sif containers/A_jax_locked.def
+# Same recipe as A_jax.def (read its comments: one CUDA copy only, CPU torch before mace-jax), except that every
+# pip install is constrained by containers/requirements-A_jax-container.txt (pip freeze of the GH200 image,
+# 2026-11-07), and the build fails if the resulting freeze differs from it. The image hash will still differ from
+# the GH200 build (base-image layers and timestamps), so record the new hash next to the old one.
+%files
+  containers/requirements-A_jax-container.txt /opt/lock/requirements-A.txt
+%post
+  set -e
+  [ "$(uname -m)" = aarch64 ] || { echo "A_jax_locked.def is the aarch64 recipe (this is $(uname -m))"; exit 1; }
+  export DEBIAN_FRONTEND=noninteractive
+  apt-get update && apt-get install -y python3.12 python3.12-venv git ca-certificates
+  python3.12 -m venv /opt/venv && . /opt/venv/bin/activate
+  C="-c /opt/lock/requirements-A.txt"
+  python -m pip install $C --upgrade pip
+  python -m pip install $C torch --index-url https://download.pytorch.org/whl/cpu   # FIRST: CPU torch
+  python -m pip install $C "mace-jax[jax-cuda12] @ git+https://github.com/ACEsuit/mace-jax@e8a6f2d3e793e2020439df1736a32703c9cac170"
+  python -m pip install $C jax-md flax optax ase numpy scipy h5py matplotlib
+  python -m pip install $C mace-torch
+  python -c "import torch; assert torch.__version__.endswith('+cpu'), torch.__version__"
+  python -m pip check
+  python -m pip list --format=freeze > /opt/requirements-frozen.txt
+  # Fail the build if any package or version differs from the GH200 image.
+  sort -f /opt/lock/requirements-A.txt > /tmp/lock.sorted; sort -f /opt/requirements-frozen.txt > /tmp/built.sorted
+  if ! diff /tmp/lock.sorted /tmp/built.sorted; then
+    echo "frozen package list differs from the GH200 lock (diff above)"; exit 1
+  fi
+  echo "export LD_LIBRARY_PATH=$(ls -d /opt/venv/lib/python3.12/site-packages/nvidia/*/lib | tr '\n' ':')\${LD_LIBRARY_PATH}" >> $APPTAINER_ENVIRONMENT
+%environment
+  export PATH=/opt/venv/bin:$PATH
+  export JAX_DEFAULT_MATMUL_PRECISION=highest
+  export JAX_PLATFORMS=cuda      # fail loudly instead of silently falling back to CPU (run with --nv)
+%labels
+  project pah-sr container A, locked to the GH200 2026-11-07 package list
