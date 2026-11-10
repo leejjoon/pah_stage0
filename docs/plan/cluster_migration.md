@@ -207,7 +207,7 @@ Still to do on the project node, in order:
    environment on CPU (JAX 0.4.19, from their `environment.yaml`) and compare them with the port. Then run one
    species end to end and compare its spectrum with their published 300 K spectrum. **Done, 2026-11-11; the
    intensity gap in 2b is accepted as a caveat (see below).**
-3. Write `d1/mlmd_run.py`. Batch molecules in jax-md (group by atom count), with their protocol, unit conversions
+3. **Done, 2026-11-11 (see "Step 3 driver" below).** Write `d1/mlmd_run.py`. Batch molecules in jax-md (group by atom count), with their protocol, unit conversions
    checked (ASE friction and time units). Compute the EPNN dipole on the GPU during NVE instead of writing
    trajectories, and checkpoint so jobs can resume. Run several replicas (seeds) per species and average their
    spectra: one trajectory leaves small-PAH band ratios uncertain by tens of percent (step 2b), and replicas
@@ -258,6 +258,36 @@ Still to do on the project node, in order:
     the authors; not tested across species.
 - The published `outputs/IR_txt/C10H8_330_qm0.txt` is not the 300 K spectrum (its bands differ); use
   `outputs/IR_txt_phdb_1704/IR_txt_300K_qm0.zip`.
+
+**Step 3 driver (2026-11-11).** `d1/mlmd_run.py plan|run|status` and `d1/mlmd_spectra.py`.
+- *plan* groups systems (species × T × replica, each with a fixed seed) by atom count into work units of at most
+  `--batch` systems, sorted by cost, and fixes the settings in `plan.json`. Defaults: 50, 300, 600 K; 4 replicas;
+  batch 100; 400,000 NVT + 400,000 NVE steps. Mai's 1,704 species give 20,448 systems in 269 units (12–100 systems,
+  106 atom counts).
+- *run* takes the units with index % nshards == shard (one process per GPU) and runs each as one vmapped batch:
+  the step 2b loop (BAOAB NVT at their friction, velocity Verlet NVE), not jax-md, because that loop is already
+  checked against ASE; molecules are not padded, so a unit compiles once per shape (persistent cache in
+  `<out>/jax_cache`). The EPNN dipole is computed in the loop every 1 fs by a traceable copy of the authors' graph
+  builder (same edges, 0 < d < 3.5 Å in the same order, one jraph padding graph; edge cap 1.5× the largest initial
+  count, overflow flagged on every frame). Each unit checks the in-loop EPNN charges against the authors' per-frame
+  path, for one system per species (up to 8), on the initial geometries and again on the thermal frames at the end
+  of NVT; the gate is 1e-4 e per atom (charges, because dipole noise grows with size; tests gave ≤ 4.3e-6 e, the
+  252-atom C216H36_615 included). NVT noise is keyed by (system seed, chunk), so a trajectory does not depend on its
+  batch. Checkpoints (`state.npz` and `meta.json` written atomically, every 10 min and at the end) and a `--hours` limit let a job stop and resume.
+  Output per unit: `dipole.npy` (frames, systems, 3), `meta.json` with QA flags (non-finite, T > 30,000 K as the
+  authors' check, more than 25 NNFF neighbours, edge overflow), `state.npz`, `DONE`.
+- *mlmd_spectra.py* is the authors' `calc_MD_IR` as a function (reproduces their `3_calc_IR.py` output exactly);
+  it averages replicas in σ (cm²) before normalising and skips flagged systems.
+- Tests on the project node (`/var/tmp/$USER-pah/d1/step3_test`): the same systems batched by 10 and by 2 give
+  dipoles within ~1e-5 e·Å over 2 ps NVE; stopping after 3 chunks and resuming differs from an uninterrupted run
+  only as much as two uninterrupted runs differ (GPU scatter-add order is not deterministic; up to 1e-3 e·Å
+  after 2 ps). Indene (C9H8_495, 4.8 eV/Å at its PAHdb geometry) heats to ~900 K without NVT and is then chaotic
+  (e-folding ~25 fs); the 200 ps NVT drains that in production. Mixed batch (50, 300, 600 K together; 17, 18 and
+  252 atoms; 10 ps NVT + 2 ps NVE): each system's NVT temperature follows its own target (second-half means 47–51,
+  267–296, 580–593 K against 47–50, 282–299, 565–598 expected from 3N − 3 degrees of freedom; few systems, so
+  ±5 %); no flags; NVE E_tot spread ≤ 3e-2 eV (two float32 ulps at −1.8e5 eV for 252 atoms). `mlmd_spectra.py`
+  ran on it (21 species × T, replicas averaged).
+- Not yet measured: throughput at batch 100 (step 4). Compiles take 1–4 min per new shape (217 s for 252 atoms).
 
 On Hangang the inputs are already in place: `/appsdata/t641a02/d1/mai2025/` (zip, `src/` with code, models and
 inputs) and `/appsdata/t641a02/d1/XYZ_pahdb_1704/`.
