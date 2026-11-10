@@ -317,3 +317,28 @@ The §4.2 equivalence check was run on the project GH200 on 2026-11-07 (20 PAHdb
 
 **Rerun 2026-11-08: all three gates pass** (`GH200_feasibility_check_2026-11-07.md` §J). Forces 3.0e-5 eV/Å and interaction energies 4.2e-6 eV/atom at float32 in every cuEquivariance combination; float64 totals 2.7e-7 eV/atom from the x64 bundle, cueq off and on, with float64 math dtype shown in both stacks. Two findings: the float64 residual is systematic (about −1.7e-7 eV/atom, all in the interaction energy, E0 part below 2e-10 eV), so not rounding, but within the gate; and mace-jax's `{"backend": "cueq"}` bundle runs the same plain-JAX code as the default bundle. The CUDA kernel needs `"conv_fusion": true` as well, and then covers only the convolution (it passes all three gates; one batch-100 force call drops from 9.2 to 7.1 ms). Plan §4.4 now defines the JAX "cueq on" column that way, which the committee should confirm.
 
+
+## Addendum 2026-11-10: JAX "cuEquivariance on", kernel evidence and MPS
+
+The implementer asked the committee (Fable 5.1 and GPT-6-Astra, two rounds plus a confirmation round by Astra; Opus 5.5 non-voting) to confirm the plan §4.4 definition of JAX "cuEquivariance on" and the §4.3 MPS-daemon sentence, both written from the measurements in `GH200_feasibility_check_2026-11-07.md` §J and §K.
+
+**Confirmed.**
+- JAX "on" is `{"backend": "cueq", "conv_fusion": true}` on mace-jax `e8a6f2d`, labelled "convolution only". `{"backend": "cueq"}` alone runs the same cuequivariance-jax `naive` path as the default bundle. mace-jax `357931b` (a legacy-checkpoint conversion fix) and `dev` change no adapter, so container A stays pinned; any upgrade repeats the conversion checks, the gates and the kernel verification.
+- The MPS daemon runs inside container B for the tested forward-compatibility setup (NGC 26.10, compat libcuda 615.71, host driver 595.45). NVIDIA does not document this configuration; revalidate after image or driver changes.
+
+**Corrected.**
+- The request said PyTorch `enable_cueq` accelerates "all four layer types" (88 cuEquivariance modules). MACE 0.3.17's wrapper builds Linear and FCTP with `method="naive"`, so only the convolution and the symmetric contraction are eligible for kernels. Module counts are not kernel evidence.
+- The fused mace-jax path falls back to `naive` silently on error, and the `cuex` logger counts a call before it returns, so a logged `uniform_1d` call does not prove the kernel ran.
+- `x64_verify.py` checks that each source value occurs somewhere in the bundle; it does not establish that 52 tensors match bit-for-bit.
+- The MPS pool's timing includes equilibration (`md_torch.py`), unlike every other mode. Each torch worker opens two MPS contexts, so "P ≤ 48" is not a safe bound.
+
+**Adopted (plan §4.2, §4.3, §4.4 cuEquivariance row and CSV columns, §4.5).**
+- The decision compares the fastest validated configuration of each stack (mode × cuEquivariance setting, gates passed, execution profile on record); the 2 × 2 grid is descriptive. The caveat states the verified kernel coverage of each "on" setting.
+- One untimed execution profile per stack, configuration, batch shape and precision; every timed run records its resolved methods in a manifest, separate from the requested fusion setting. A fallback run is reported as a fallback, not as "on" or "off".
+- The float64 residual passes but is unexplained. Timing may proceed provisionally; a tensor-wise conversion check and a layer-wise residual trace are required before the recommendation, and affected runs are repeated if the timed artifact changes.
+- MPS: re-measure capacity with the daemon inside B (peak contexts and distinct PIDs), a configurable 300 s start-up deadline with bounded cleanup, and production-only pool timing.
+- Script fixes for the implementer: `eq_gates.py` requires every bundle and exits non-zero on a failure; `md_torch.py`'s docstring says the daemon runs inside the image; the torch CSV records the fusion setting and per-module methods.
+
+**Disputes resolved.** Fable held that the residual cannot change either stack's work and need not precede timing; Astra wanted it settled before timing. They agreed on provisional timing in parallel, with a repeat if the fix changes the timed artifact. A fallback run is reported separately (Astra), not counted as "off" (Fable).
+
+**After the 2026-11-10 timing grid** (`reports/t0_timing_summary.md`): the MPS pool is at least 4.3× slower than TorchSim at batch 100, so the MPS items no longer affect the decision. Fix the harness, mark the existing MPS rows "includes equilibration", and do not rerun them.
