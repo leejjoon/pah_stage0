@@ -11,3 +11,7 @@ docs/references/
 # Raw papertrail pipeline output (large; kb.sqlite and sections are kept)
 corpora/references/data/marker/
 corpora/references/data/assets/
+
+# KISTI documentation mirror (regenerate with docs/external/fetch_ksc_docs.sh); only the script is tracked
+docs/external/*
+!docs/external/fetch_ksc_docs.sh
