@@ -38,8 +38,23 @@ apptainer build --fakeroot <persistent-dir>/sif/A_jax_locked.sif containers/A_ja
 sha256sum <persistent-dir>/sif/A_jax_locked.sif
 ```
 
-The alternative is to copy the GH200 image (`/var/tmp/jjlee-pah/sif/A_jax.sif`, 7.5 GB, sha256 `7304b1be…`)
-with rsync. The hash then matches the T0 runs exactly.
+**Preferred: pull the exact T0 image from Harbor instead of building.** On 2026-11-10 the GH200 image was pushed to
+the KSC Harbor registry as an ORAS artifact: `oras://myhub.ksc.re.kr/pah/a_jax:gh200-2026-11-07`. Its layer digest
+is `sha256:7304b1becb903c165694c9cc2233335621ed65e39e73f8a2cc724a867a75adc2`, the same file the T0 runs used. The
+project `pah` is public (since 2026-11-10; anonymous manifest and blob reads checked), so pulling needs no login.
+Use `apptainer pull`, not podman: the artifact is a SIF, not a Docker image.
+
+```bash
+module load apptainer
+export APPTAINER_CACHEDIR=<persistent-dir>/apptainer-cache       # not /tmp (RAM) and not a small home
+apptainer pull <persistent-dir>/sif/A_jax.sif oras://myhub.ksc.re.kr/pah/a_jax:gh200-2026-11-07
+sha256sum <persistent-dir>/sif/A_jax.sif                          # must be 7304b1becb903c16...
+```
+
+Pushing still needs credentials: `HARBOR_USER` and `HARBOR_SECRET` in `.env` (not in git), used as
+`printf '%s' "$HARBOR_SECRET" | apptainer registry login --username "$HARBOR_USER" --password-stdin oras://myhub.ksc.re.kr`.
+They can push and pull, but deleting a repository returned 401. A 20 MB test artifact, `pah/oras-test:t1`, is left
+over from the first push test; remove it in the Harbor web UI.
 
 ## Step 2: smoke test on all four GPUs
 
