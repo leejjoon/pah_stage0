@@ -149,7 +149,7 @@ only for removed APIs (`jax.tree_map`, the `jax.config` module, the forced CPU p
 4. a sweep over all 1,704 geometries (finite energies and forces, at most 25 neighbours).
 
 On Hangang, `d1/port/slurm_mai_port_test.sbatch` runs it with one shard per GPU. Its first run, job 1251891,
-failed at import (`No module named 'jax.config'`); the `sys.modules` fix is in, and its run is still pending.
+failed at import (`No module named 'jax.config'`). With that and the fixes below, job 1253279 passed (see below).
 
 **Passed on the project node, 2026-11-10** (GPU 0, one shard, 900 s sweep), after two more fixes: a `jnp.clip`
 shim (`a_min`/`a_max` were removed; `spherical_bessel/functions.py` uses `a_max`), and `JAX_PLATFORMS=cuda,cpu`
@@ -166,6 +166,23 @@ shim (`a_min`/`a_max` were removed; `spherical_bessel/functions.py` uses `a_max`
    species with sp³ CH₂ or curvature (C24H24_357 5.1 with 12 CH₂, C60H24_812, C24H16_381, C9H8_495, C101H30_804).
    Not yet known whether these reflect a level-of-theory mismatch with the training data or model error; step 2
    should include some of them when comparing with Mai's own code and published spectra.
+
+**Passed on Hangang, 2026-11-10:** job 1253279 COMPLETED in 19 min 34 s on `node0791`, one shard per GPU, 900 s
+sweep limit. The results match the project node:
+- Both models load.
+- Naphthalene GPU vs CPU: |dE| 0, max|dF| 2.4e-7 eV/Å, max|dμ| 5.5e-8.
+- 1 ps NVE: drift +1.26e-3 eV, std 7.4e-4 eV. Through ASE a step takes 62 ms instead of 44; for one small
+  molecule that is CPU-side Python overhead, which batched jax-md avoids.
+- The sweep found no problems in the 1,538 of 1,704 species it reached. The per-GPU median max|F| is 0.26–0.27 eV/Å,
+  and the large forces fall on the same species classes, up to 5.1 eV/Å (C24H24_357, C60H24_812, C101H30_804,
+  C54H18_836).
+
+Splitting the sweep four ways did not make it 4× faster. Every shard still recompiles for nearly every atom count,
+so each GPU stopped at the time limit with about 40 species left. The 166 skipped species are the last in each
+shard's alphabetical order, among them C96H22_699 and C66H18_713/714, which the project node's full sweep covered.
+For production: group molecules by atom count, so compiles are counted per size group, not per molecule. This
+script and these options now have a COMPLETED job on Hangang.
+
 Everything else the port uses still exists in JAX 0.11 (`pmap`, `ops.segment_sum`, `lax.map`, `lax.cond`,
 `_reconstruct_array`, Flax `FrozenDict`).
 
