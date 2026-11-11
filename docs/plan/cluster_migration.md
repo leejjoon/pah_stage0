@@ -354,8 +354,8 @@ of `normal` was `planned` for pending large jobs).
 - Overhead per unit (wall time minus the steady chunks; compile, self-checks, setup, cold `jax_cache` on
   /appsdata) is 220–310 s, against 60–170 s on the project node: ~20 GPU-h over 269 units.
 - **Revised estimate for the full plan on Hangang: ~470 GPU-h (~450 MD + ~20 overhead), ~118 node-hours**, as
-  specified (200 ps NVT + 200 ps NVE). Production (new plan, default settings, new OUT, array size) is a
-  separate decision.
+  specified (200 ps NVT + 200 ps NVE). **Not run:** on 2026-11-11 the user decided against re-running Mai's
+  published grid; Hangang runs an overlap set and ~1,000 new species instead (`d1_hangang_new_species.md`).
 
 On Hangang the inputs are already in place: `/appsdata/t641a02/d1/mai2025/` (zip, `src/` with code, models and
 inputs) and `/appsdata/t641a02/d1/XYZ_pahdb_1704/`.
