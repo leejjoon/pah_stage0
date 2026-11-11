@@ -98,6 +98,29 @@ download needs PAHdb's e-mail form) copied to `/appsdata/$USER/d1/pahdb/` throug
   Å) and binds the neighbouring one (2.45 → 1.1–1.2 Å), two H per event, within 4 ps. Both are non-planar
   (z-range 2.3–2.6 Å). A 1,2-H shift in a PAH has a barrier of several eV, so at 600 K this is a model artifact
   and Mai's published 600 K spectra of such species may contain it. Nothing failed at 50 or 300 K.
+- **Full screens (jobs 1259237, 1259238; checked 2026-11-12; `runs/screen_*_v1/screen.csv`).** A species fails
+  if any of its 4 replicas fails. "Planar" means a thickness (extent along the smallest principal axis of the
+  start geometry) below 0.3 Å.
+
+  | Set | Species failing | Planar | Non-planar | Odd H (radicals, no N) | Worst cause: H shift only / bonds / hot or non-finite |
+  | --- | --- | --- | --- | --- | --- |
+  | New (PAHdb v4.00) | 139 / 1,000 (14 %) | 7 / 786 (1 %) | 132 / 214 (62 %) | 42 / 72 (58 %) | 120 / 9 / 10 |
+  | Mai's 1,704 | 365 / 1,704 (21 %) | 9 / 838 (1 %) | 356 / 866 (41 %) | 157 / 565 (28 %) | 334 / 29 / 2 |
+
+  - The failures are almost all non-planar species, mostly the C29–C34 families (C33H19, C34H20, C32H18,
+    C31H17, C30H18, C29H17), with 1–4 H moved per replica. N-PAH: 7 of 100 new and 4 of 40 of Mai's fail.
+  - The 10 new species that ran hot or non-finite include the N-PAH C52H16–18N2 (`v4u9326, 9281, 9253`), and
+    C57H22_v4u808, C59H24_v4u810; C93H21N3 (`v4u8868, 8883`) and C94H22N2_v4u8306 form many bonds.
+  - The screen is 30 ps per replica; a 400 ps production run would show more events, so the pass rate is an
+    upper bound.
+  - Not yet checked by eye: some single "H moved (1)" may be the nearest-heavy-atom test switching for an H
+    in a crowded fjord or CH2 site without a real hop, and a few "bonds broken (1)" in small sp3 species
+    (C9H8_495, C9H7_493) may be a long C–C bond crossing 2.0 Å. Look at a sample of trajectories before
+    quoting the counts.
+  - Implication: for non-planar species Mai's model is out of domain at 600 K, and their published 600 K
+    spectra for these species are suspect. Dropping and refilling as planned would remove ~62 % of the
+    non-planar new species, so the new set would become almost all planar; that is the user's choice (drop and
+    refill, keep them at 300 K only, or wait for the high-T test).
 
 **3. Overlap run.** 48 of Mai's species, stratified by Nc and class (including a few N-PAH, pentagon and
 superhydrogenated ones), × 300 and 600 K × **8 replicas**; 200 ps NVT + 200 ps NVE.
