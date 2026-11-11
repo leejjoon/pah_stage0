@@ -315,13 +315,24 @@ each (2 ps; `/var/tmp/$USER-pah/d1/step4_calib` and `step4_vmap`); `meta.json` n
   | n252 (252, 12) | 83.7 → 6.6 | 99.0 → 11.2 | 4.1e-6 | 1.3e-5 |
 
   Now t ≈ n B × 0.0022 s/ps (NVT) and n B × 0.0035 (NVE; the 1 fs dipoles cost ~60 % on top): proportional to
-  the work, so batch size no longer matters for efficiency. Compile and self-checks add 20–45 s per unit. No flags,
+  the work, so batch size no longer matters for efficiency. Compiles, self-checks and setup add 60–170 s per unit
+  (whole unit wall time minus its steady chunks), ~10 GPU-h over 269 units. No flags,
   no edge overflow.
+- Peak GPU memory, most expensive unit (n180_u000, 84 × 180 atoms, vmapped): 28 GB (`nvidia-smi`, no
+  preallocation); Hangang's GPUs have 96 GB.
+- Full-length check of the final driver: the naphthalene unit of the production plan (n018_u000: 12 systems, 50/300/
+  600 K × 4 replicas, 200 ps NVT + 200 ps NVE; `/var/tmp/$USER-pah/d1/step4_full`) in 9.8 min. No flags or edge
+  overflow; self-check dq ≤ 2.3e-6 e, dF ≤ 2.9e-6 eV/Å; NVE ⟨T⟩ 42–50, 268–336, 529–632 K; E_tot spread over
+  200 ps ≤ 0.016 eV. Against the published 300 K spectrum (`mai_spectrum_compare.py`, 4 replicas): strong-band
+  centroids within 2.5 cm⁻¹; CH-stretch share 0.18–0.24 (median 0.22) and in-plane windows above the published
+  ones, as in step 2b (32 replicas: CH median 0.23). So the vmapped driver reproduces the step 2b loop's spectra.
 - **Estimate for the full plan** (1,704 species × 50/300/600 K × 4 replicas, 269 units): **~420 GPU-h** on this GPU
   as specified (200 ps NVT + 200 ps NVE), ~270 with 20 ps NVT. On Hangang (4 GPUs per node) that is ~105
-  node-hours, e.g. 5 jobs of 24 h; the Hangang calibration job checks the speed there.
-- `d1/slurm_mlmd_run.sbatch A_jax.sif D1_DIR OUT [run options]` runs one process per GPU (shard = GPU) and sets
-  `--hours` from the job's time limit (minus 30 min, or 15 % of a short limit); resubmitting continues. Calibration
+  node-hours, e.g. a 5-task array of 24 h; the Hangang calibration job checks the speed there.
+- `d1/slurm_mlmd_run.sbatch A_jax.sif D1_DIR OUT [run options]` runs one process per GPU and sets `--hours` from
+  the job's time limit (minus 30 min, or 15 % of a short limit); resubmitting continues. Several nodes on one OUT
+  must be one Slurm array (`--array=0-4`: task k runs shards k·4+g of 4K); never two separate jobs on one OUT, and
+  resubmit with the same array size. Calibration
   on Hangang: a plan with `--nvt 4000 --nve 4000` in a fresh OUT, then
   `sbatch --time=00:30:00 d1/slurm_mlmd_run.sbatch ... --units n180_u000,n126_u000,n086_u000,n044_u000`.
 

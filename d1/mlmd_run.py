@@ -78,6 +78,8 @@ def seed_of(*parts):
 # ---------------------------------------------------------------------------------------------------------- plan
 def cmd_plan(a):
     files = sorted(glob.glob(f"{a.xyz}/*.xyz"))
+    if not files:
+        sys.exit(f"no .xyz files in {a.xyz} (inside a container, is it bound?)")
     temps = [float(t) for t in a.temps.split(",")]
     by_n = {}
     for f in files:
