@@ -119,8 +119,9 @@ download needs PAHdb's e-mail form) copied to `/appsdata/$USER/d1/pahdb/` throug
     quoting the counts.
   - Implication: for non-planar species Mai's model is out of domain at 600 K, and their published 600 K
     spectra for these species are suspect. Dropping and refilling as planned would remove ~62 % of the
-    non-planar new species, so the new set would become almost all planar; that is the user's choice (drop and
-    refill, keep them at 300 K only, or wait for the high-T test).
+    non-planar new species, so the new set would become almost all planar; options: drop and refill, keep them at
+    300 K only, or wait for the high-T test. **Decision (user, 2026-11-12): hold** until the high-T test on the
+    project node; steps 2's refill and 4 wait.
 
 **3. Overlap run.** 48 of Mai's species, stratified by Nc and class (including a few N-PAH, pentagon and
 superhydrogenated ones), × 300 and 600 K × **8 replicas**; 200 ps NVT + 200 ps NVE.

@@ -61,8 +61,9 @@ its logs, tell the user the cause, fix, and ask before resubmitting; never resub
    resumes); progress: `apptainer exec -B /appsdata A_jax.sif python d1/mlmd_run.py status <run dir>`.
 2. **Screen results: done 2026-11-12** (`<run dir>/screen.csv`; summary in `d1_hangang_new_species.md`, step 2).
    screen_new_v1: 139 of 1,000 species fail (132 of them non-planar); screen_mai_v1: 365 of 1,704 fail (356
-   non-planar). Still to do: decide what to do about non-planar species (see the plan), then the exclusion
-   option and `XYZ_new_v2`. Re-run the check with (login node is fine; numpy in container A, one BLAS thread):
+   non-planar). **On hold (user, 2026-11-12):** no dropping or refilling, no
+   `XYZ_new_v2` and no new-species production until the user's high-T test on the project node decides what to do
+   with the failing (mostly non-planar) species. Re-run the check with (login node is fine; numpy in container A, one BLAS thread):
    ```bash
    apptainer exec --env OPENBLAS_NUM_THREADS=1,OMP_NUM_THREADS=1 -B /appsdata /appsdata/$USER/sif/A_jax.sif \
      python -I d1/screen_check.py <xyz dir of the plan> <run dir> <run dir>/screen.csv
