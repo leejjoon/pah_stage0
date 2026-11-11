@@ -1,0 +1,86 @@
+# Hangang D1 MLMD: live status and how to resume
+
+**Read this first when picking the Hangang D1 work up in a new session.** The plan and its reasons are in
+`d1_hangang_new_species.md`; this file says where things stand. Update it whenever a job is submitted or finishes,
+commit and push (the project node pulls it). Last update: 2026-11-11 ~16:30 KST.
+
+## Scope (decided by the user, 2026-11-11)
+
+- Mai et al.'s published grid (1,704 species × 50/300/600 K) is **not** re-run.
+- Hangang runs: (a) a 48-species **overlap** with Mai's grid at 300 + 600 K × 8 replicas, (b) ~1,000 **new
+  species** from PAHdb v4.00 (100 N-PAH) at 300 + 600 K × 4 replicas, after (c) a 600 K **domain screen** of the
+  new species; (d) the user also asked for the same 600 K screen of **all 1,704 of Mai's species**.
+- 900/1200 K wait for the user's model-stability test on the project node. Not on Hangang yet.
+- Licence: MLMD outputs are CC BY-NC-SA 4.0 (Mai's models); run outputs never go into git.
+
+## Where everything is
+
+| What | Path |
+| --- | --- |
+| Repository clone for jobs (submit from here) | `/appsdata/t641a02/pah_stage0` (branch `gh200-containers`; a second clone in `/home01/t641a02/work/pah_stage0` is for reading) |
+| Container A | `/appsdata/t641a02/sif/A_jax.sif` (`module load apptainer/1.4.5`) |
+| Mai's code and models | `/appsdata/t641a02/d1/mai2025/src/Supplementary_Data_Code`; published spectra inside `/appsdata/t641a02/d1/mai2025/Supplementary.zip` (`outputs/IR_txt_phdb_1704/IR_txt_{50,300,600}K_qm0.zip`) |
+| PAHdb v4.00 | `/appsdata/t641a02/d1/pahdb/pahdb-complete-theoretical-v4.00.xml.gz` (sha256 = `t0/pahdb-v4.00.sha256`) |
+| Species xyz | Mai: `/appsdata/t641a02/d1/XYZ_pahdb_1704`; overlap: `.../XYZ_overlap_v1` (48, copies of Mai's); new: `.../XYZ_new_v1` (1,000, named `<formula>_v4u<uid>.xyz`) |
+| Species lists (git) | `d1/overlap_species_v1.csv`, `d1/new_species_v1.csv`, `d1/cells_v1.csv` |
+| Run directories | `/appsdata/t641a02/d1/runs/{calib01, overlap_v1, screen_new_v1, screen_mai_v1}` (each has `plan.json`, `units/`, per-GPU logs) |
+| Job logs | `mlmd_<jobid>_4294967294.log` in the `/appsdata` clone root (untracked, keep out of git) |
+
+## Jobs
+
+All on `normal`, 1 node, 4 GPUs, `d1/slurm_mlmd_run.sbatch A_jax.sif /appsdata/$USER/d1 <run dir>`.
+
+| Job | Run | Time limit | State | Notes |
+| --- | --- | --- | --- | --- |
+| 1257396 | calib01 | 0:30 | COMPLETED | Calibration, results in `cluster_migration.md` |
+| 1258657 | overlap_v1 | 0:30 | COMPLETED | Test: 4 units paused at checkpoints, 0 flags |
+| 1258658 | screen_new_v1 | 0:30 | FAILED | sbatch bound Mai's xyz dir, not the plan's; fixed in `6a51b79` |
+| 1258659 | screen_mai_v1 | 0:30 | COMPLETED | Test: 2 units done (180 systems, 0 flags, no topology change), 4 paused |
+| 1258983 | screen_new_v1 | 0:30 | submitted 2026-11-11 | Test of the fixed sbatch (`6a51b79`) |
+
+Rule (HANGANG policy, `/etc/claude-code/CLAUDE.md`): the sbatch was edited in `6a51b79`, so it is a new job
+again: the full runs below go only after **1258983 is COMPLETED** with its units paused or done and no Traceback.
+Check with `sacct -j 1258983 -X -o JobID,State,ExitCode,Elapsed` and
+`grep -E 'done |paused|Traceback|Error' mlmd_1258983_*.log`. If it failed, read the logs, tell the user the cause,
+fix, and ask before resubmitting.
+
+## Next steps
+
+1. **Full runs** (the user agreed to this sequence on 2026-11-11: test, then the three full runs; confirm with the
+   user if anything changed). 3 jobs; each resumes from its checkpoints; never two jobs on one run dir:
+   ```bash
+   cd /appsdata/t641a02/pah_stage0
+   sbatch --time=10:00:00 d1/slurm_mlmd_run.sbatch /appsdata/$USER/sif/A_jax.sif /appsdata/$USER/d1 /appsdata/$USER/d1/runs/overlap_v1     # ~25 GPU-h
+   sbatch --time=06:00:00 d1/slurm_mlmd_run.sbatch /appsdata/$USER/sif/A_jax.sif /appsdata/$USER/d1 /appsdata/$USER/d1/runs/screen_new_v1  # ~16 GPU-h
+   sbatch --time=08:00:00 d1/slurm_mlmd_run.sbatch /appsdata/$USER/sif/A_jax.sif /appsdata/$USER/d1 /appsdata/$USER/d1/runs/screen_mai_v1  # ~21 GPU-h
+   ```
+   If a run stops at its time limit before all units are done ("paused"), resubmit the same command once (it
+   resumes); progress: `apptainer exec -B /appsdata A_jax.sif python d1/mlmd_run.py status <run dir>`.
+2. **Screen results** (login node is fine; numpy in container A, one BLAS thread):
+   ```bash
+   apptainer exec --env OPENBLAS_NUM_THREADS=1,OMP_NUM_THREADS=1 -B /appsdata /appsdata/$USER/sif/A_jax.sif \
+     python -I d1/screen_check.py <xyz dir of the plan> <run dir> <run dir>/screen.csv
+   ```
+   For screen_new_v1: list failing species; drop them from the new set and refill their cells
+   (`select_new_species.py` needs an exclusion option for that; not written yet), then write `XYZ_new_v2` and
+   `d1/new_species_v2.csv`. For screen_mai_v1: the fraction of Mai's species with H shifts or other topology
+   changes at 600 K, by class and planarity; it qualifies their published 600 K spectra and informs the
+   user's high-T test. Record both in `d1_hangang_new_species.md`.
+3. **Overlap analysis** (after overlap_v1 is done): spectra with `d1/mlmd_spectra.py`; compare with Mai's published
+   300 and 600 K spectra per species (generalise `d1/port/mai_spectrum_compare.py`, which does naphthalene); seed
+   scatter of band shares vs Nc decides the replica count of step 4 (default 4). Run `screen_check.py` on it too.
+4. **New-species production** (a new plan, so ask the user first): `mlmd_run.py plan XYZ_new_v2 runs/new_v1
+   --temps 300,600 --replicas 4` (default 200 + 200 ps); ~235 GPU-h, ~59 node-hours; a 5-task array
+   (`--array=0-4`) of 6–12 h tasks, resubmitted with the same array size until done.
+
+## Known facts and pitfalls
+
+- `sbatch --test-only` start times are worst case; short jobs backfill within minutes (half of `normal` was
+  `planned` on 2026-11-11). `squeue` shows only our jobs.
+- Running container-A Python on a login node: pass `--env OPENBLAS_NUM_THREADS=1,OMP_NUM_THREADS=1`, or OpenBLAS
+  hits the login node's process limit.
+- Mai's model shows 1,2-H shifts at 600 K in non-planar species (C28H16_2170, C28H16_2173 in the calibration run).
+- Hangang GH200 speed: 7–8 % slower than the project node; 1.22 s per atom per system for 200 + 200 ps, plus
+  ~250 s per unit.
+- `/home01/t641a02/work/pah_stage0/core` (an 18 GB sparse core dump from 2026-11-10) is untracked; the user has not
+  decided whether to delete it.
