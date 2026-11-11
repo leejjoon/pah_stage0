@@ -290,7 +290,7 @@ Still to do on the project node, in order:
   ran on it (21 species × T, replicas averaged).
 - Throughput: see step 4 below.
 
-**Step 4 calibration (2026-11-11, project node, GPU 0).** Six units of the full plan, two NVT and two NVE chunks
+**Step 4 calibration (2026-11-11, project node, GPU 0).** Hangang calibration job: see `docs/plan/hangang_step4_handoff.md`. Six units of the full plan, two NVT and two NVE chunks
 each (2 ps; `/var/tmp/$USER-pah/d1/step4_calib` and `step4_vmap`); `meta.json` now records `chunk_seconds`, and
 `run --units` selects units (still split across shards).
 - With the authors' descriptor code, wall time per ps fitted t = n (0.30 + 0.0030 B) s for NVT and
