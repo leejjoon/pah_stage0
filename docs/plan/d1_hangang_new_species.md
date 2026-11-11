@@ -49,6 +49,38 @@ download needs PAHdb's e-mail form) copied to `/appsdata/$USER/d1/pahdb/` throug
 - Output: `d1/new_species_v1.csv` (UID, formula, class, cell, adjacency counts) and the xyz files, in Mai's format,
   in `/appsdata/$USER/d1/XYZ_new_v1/` (PAHdb-derived data, kept out of git). The cell table is reviewed before
   step 2.
+- **Done 2026-11-11.** PAHdb v4.00 (downloaded on Hangang, sha256 matches `t0/pahdb-v4.00.sha256`) has 4,479
+  neutrals; 46 hold other elements, 1,698 are Mai's species (1,696 of Mai's 1,704 found by structure, 1,690 with
+  the same UID; Mai's set itself has 8 duplicate structures, e.g. C18H12_211/2356/4015), 24 are duplicate
+  structures in v4, 4 are too small or large.
+  - Structure key: plain 1-WL graph hashing gave 59 false collisions among Mai's benzenoid isomers; seeding each
+    atom's label with its graph-distance profile leaves only true duplicates (identical geometry).
+  - **Domain filter (803 dropped):** Mai's species all have H, at most 2 bare edge C, 2 pentagons and 12 sp3 C.
+    v4's extra neutrals include pure-carbon clusters and cages (C26–C34 with no H, many triplet or quintet, two
+    with 12 pentagons) that the greedy fill otherwise picked as "dehydrogenated" and "pentagon" species. The
+    candidates must lie inside Mai's range (`in_domain`).
+  - In-range pool: 1,904 (479 N-PAH). v4's additions are isomer sets (144 formulas), so 1,000 species need up to
+    40 per formula (20 gives 828; the extra ones land at Nc 40–79, the main gap).
+  - Chosen: 1,000 (100 N-PAH), 83,250 atoms, 94 atom counts, at most 256 atoms; `d1/new_species_v1.csv`,
+    `d1/cells_v1.csv`. Dominant adjacency: duo 579, solo 259, trio 104, quartet 58 (Mai's set is quartet-heavy).
+    Multiplicity: 870 singlet, 119 doublet, 11 triplet.
+
+  | Nc | Mai | new (N-PAH) | total |
+  | --- | --- | --- | --- |
+  | 10–19 | 76 | 9 (0) | 85 |
+  | 20–29 | 304 | 49 (1) | 353 |
+  | 30–39 | 876 | 181 (9) | 1,057 |
+  | 40–59 | 111 | 315 (36) | 426 |
+  | 60–79 | 142 | 188 (0) | 330 |
+  | 80–99 | 79 | 167 (54) | 246 |
+  | 100–129 | 42 | 56 (0) | 98 |
+  | 130–216 | 70 | 35 (0) | 105 |
+
+  - Remaining gaps: every in-range v4 species above Nc 100 is already used (91), and hydrogenation and
+    pentagon variants are nearly absent from in-range v4 neutrals (17 superhydrogenated, 2 pentagon). Filling
+    them needs structures from outside PAHdb with their own geometries (later; not on this plan).
+  - Cost at 300 + 600 K × 4 replicas: 83,250 atoms × 8 × 1.22 s ≈ 226 GPU-h, plus ~120 units × ~250 s ≈ 8 GPU-h:
+    **~235 GPU-h, ~59 node-hours.**
 
 **2. Domain screen** (driver change, so a new job: one small test job first).
 - NNFF forces at the v4 geometries, compared with the same statistic for Mai's species at theirs.

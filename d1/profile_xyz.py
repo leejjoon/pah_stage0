@@ -55,7 +55,25 @@ def five_rings(at, nb):
 
 
 def profile(path):
-    at = read(path)
+    return profile_atoms(read(path), os.path.basename(path))
+
+
+def components(at, nb):
+    seen, n = set(), 0
+    for i in range(len(at)):
+        if i in seen:
+            continue
+        n += 1; st = [i]; seen.add(i)
+        while st:
+            v = st.pop()
+            for w in nb[v]:
+                if w not in seen:
+                    seen.add(w); st.append(w)
+    return n
+
+
+def profile_atoms(at, name):
+    """at: list of (symbol, x, y, z); name: file name, '<formula>_<uid>.xyz'."""
     nb = bonds(at)
     el = collections.Counter(a[0] for a in at)
     nC, nH = el['C'], el['H']
@@ -77,7 +95,7 @@ def profile(path):
     bare = sum(1 for i, a in enumerate(at) if a[0] == 'C' and len(nb[i]) == 2)   # dehydrogenated edge C
     ch2 = sum(1 for i, a in enumerate(at) if a[0] == 'C' and nHonC(i) == 2)
     tot = sum(groups.values()) or 1
-    return dict(file=os.path.basename(path), uid=os.path.basename(path).split('_')[-1].split('.')[0],
+    return dict(file=name, uid=name.split('_')[-1].split('.')[0], frags=components(at, nb),
                 nC=nC, nH=nH, nN=el['N'], nO=el['O'], other=sum(v for k, v in el.items() if k not in R),
                 sp3C=sp3, CH2=ch2, bareC=bare, pent=five_rings(at, nb),
                 solo=groups[1], duo=groups[2], trio=groups[3], quartet=groups[4],
