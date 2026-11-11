@@ -157,7 +157,7 @@ nominal 900 K: MLMD 800–1024 K, xTB 775–1172 K (xTB scatters more). Per 100 
 - Bands in both xTB charge states: slopes differ by ≤ 0.6 cm⁻¹ per 100 K (coronene 494/496, 1242/1238; pyrene
   648/630, 800/798), except coronene⁺ 792 (0.0 against −1.7 for the neutral's 820).
 - Control, xTB against MLMD neutral: CH-stretch centroid −9.0 to −9.3 vs −10.6 to −11.8 per 100 K; matched oop bands
-  within 0.3–2.3 cm⁻¹ per 100 K. xTB's CH-stretch broadening is about half MLMD's (+4.0–4.4 vs +5.2–8.0).
+  within 2.3 cm⁻¹ per 100 K (most within 0.5). xTB's CH-stretch broadening is smaller than MLMD's (+4.0–4.4 vs +5.2–8.0).
 - Shares: the cations' CH-stretch share rises 3–18 % per 100 K (xTB) where neutrals' stays within ±3 %; the neutrals'
   in-plane share rises 6–10 % per 100 K in xTB but 0–4 % in MLMD (the control failure noted above).
 
