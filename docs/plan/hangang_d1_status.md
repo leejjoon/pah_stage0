@@ -2,7 +2,7 @@
 
 **Read this first when picking the Hangang D1 work up in a new session.** The plan and its reasons are in
 `d1_hangang_new_species.md`; this file says where things stand. Update it whenever a job is submitted or finishes,
-commit and push (the project node pulls it). Last update: 2026-11-11 ~16:35 KST.
+commit and push (the project node pulls it). Last update: 2026-11-12 KST.
 
 ## Scope (decided by the user, 2026-11-11)
 
@@ -37,9 +37,9 @@ All on `normal`, 1 node, 4 GPUs, `d1/slurm_mlmd_run.sbatch A_jax.sif /appsdata/$
 | 1258658 | screen_new_v1 | 0:30 | FAILED | sbatch bound Mai's xyz dir, not the plan's; fixed in `6a51b79` |
 | 1258659 | screen_mai_v1 | 0:30 | COMPLETED | Test: 2 units done (180 systems, 0 flags, no topology change), 4 paused |
 | 1258983 | screen_new_v1 | 0:30 | COMPLETED | Test of the fixed sbatch: 4 units done, 4 paused; 1 flagged (C52H16N2_v4u9326, 600 K, replica 2, in paused n070_u000) |
-| 1259236 | overlap_v1 | 10:00 | submitted 2026-11-11 16:3x | Full run, resumes from the test's checkpoints (~25 GPU-h) |
-| 1259237 | screen_new_v1 | 6:00 | submitted 2026-11-11 16:3x | Full run (~16 GPU-h) |
-| 1259238 | screen_mai_v1 | 8:00 | submitted 2026-11-11 16:3x | Full run (~21 GPU-h) |
+| 1259236 | overlap_v1 | 10:00 | COMPLETED | 6:52:20, 41/41 units done, 4 flagged; Full run, resumes from the test's checkpoints (~25 GPU-h) |
+| 1259237 | screen_new_v1 | 6:00 | COMPLETED | 4:39:14, 112/112 units done, 18 flagged; Full run (~16 GPU-h) |
+| 1259238 | screen_mai_v1 | 8:00 | COMPLETED | 5:58:51, 150/150 units done, 2 flagged; Full run (~21 GPU-h) |
 
 The sbatch at `6a51b79` is now a proven job (1258983 COMPLETED). Check the full runs with
 `sacct -j 1259236,1259237,1259238 -X -o JobID,State,ExitCode,Elapsed` and
@@ -48,8 +48,9 @@ its logs, tell the user the cause, fix, and ask before resubmitting; never resub
 
 ## Next steps
 
-1. **Full runs: submitted** (1259236–1259238). Wait for them; if one ends "paused" at its time limit, resubmit that
-   same command once (it resumes). Never two jobs on one run dir. The commands, for reference:
+1. **Full runs: done** (1259236–1259238 COMPLETED 2026-11-11, no unit paused, no edge overflow). Resume rule for
+   future runs: if one ends "paused" at its time limit, resubmit that same command once. Never two jobs on one
+   run dir. The commands, for reference:
    ```bash
    cd /appsdata/t641a02/pah_stage0
    sbatch --time=10:00:00 d1/slurm_mlmd_run.sbatch /appsdata/$USER/sif/A_jax.sif /appsdata/$USER/d1 /appsdata/$USER/d1/runs/overlap_v1     # ~25 GPU-h
@@ -58,7 +59,10 @@ its logs, tell the user the cause, fix, and ask before resubmitting; never resub
    ```
    If a run stops at its time limit before all units are done ("paused"), resubmit the same command once (it
    resumes); progress: `apptainer exec -B /appsdata A_jax.sif python d1/mlmd_run.py status <run dir>`.
-2. **Screen results** (login node is fine; numpy in container A, one BLAS thread):
+2. **Screen results: done 2026-11-12** (`<run dir>/screen.csv`; summary in `d1_hangang_new_species.md`, step 2).
+   screen_new_v1: 139 of 1,000 species fail (132 of them non-planar); screen_mai_v1: 365 of 1,704 fail (356
+   non-planar). Still to do: decide what to do about non-planar species (see the plan), then the exclusion
+   option and `XYZ_new_v2`. Re-run the check with (login node is fine; numpy in container A, one BLAS thread):
    ```bash
    apptainer exec --env OPENBLAS_NUM_THREADS=1,OMP_NUM_THREADS=1 -B /appsdata /appsdata/$USER/sif/A_jax.sif \
      python -I d1/screen_check.py <xyz dir of the plan> <run dir> <run dir>/screen.csv
