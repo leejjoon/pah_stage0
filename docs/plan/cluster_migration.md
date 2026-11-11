@@ -212,8 +212,9 @@ Still to do on the project node, in order:
    trajectories, and checkpoint so jobs can resume. Run several replicas (seeds) per species and average their
    spectra: one trajectory leaves small-PAH band ratios uncertain by tens of percent (step 2b), and replicas
    batch almost for free. Pad the EPNN graphs to a fixed edge count, as `mai_spectrum.py` does.
-4. Calibrate timing at batch 100. Then, back on Hangang: `git pull` in `/appsdata/$USER/pah_stage0`, and submit one
-   short calibration job (a new job, so ask first) before production.
+4. **Done on the project node, 2026-11-11 (see "Step 4 calibration" below).** Calibrate timing at batch 100. Then,
+   back on Hangang: `git pull` in `/appsdata/$USER/pah_stage0`, and submit one short calibration job (a new job, so
+   ask first) before production.
 
 **Step 2 so far (2026-11-10, project node).** `d1/port/mai_port.py` now holds the port (shims, models, dipole);
 `mai_port_test.py` uses it.
@@ -287,12 +288,47 @@ Still to do on the project node, in order:
   267–296, 580–593 K against 47–50, 282–299, 565–598 expected from 3N − 3 degrees of freedom; few systems, so
   ±5 %); no flags; NVE E_tot spread ≤ 3e-2 eV (two float32 ulps at −1.8e5 eV for 252 atoms). `mlmd_spectra.py`
   ran on it (21 species × T, replicas averaged).
-- Not yet measured: throughput at batch 100 (step 4). Compiles take 1–4 min per new shape (217 s for 252 atoms).
+- Throughput: see step 4 below.
+
+**Step 4 calibration (2026-11-11, project node, GPU 0).** Six units of the full plan, two NVT and two NVE chunks
+each (2 ps; `/var/tmp/$USER-pah/d1/step4_calib` and `step4_vmap`); `meta.json` now records `chunk_seconds`, and
+`run --units` selects units (still split across shards).
+- With the authors' descriptor code, wall time per ps fitted t = n (0.30 + 0.0030 B) s for NVT and
+  n (0.34 + 0.0042 B) for NVE (n atoms, B systems; residuals < 1 s). The large term independent of B is
+  `PowerSpectrumGenerator.process_data`: it loops over atom centres with `jax.lax.map` (`bessel_descriptors.py`
+  l. 484), so each step runs n sequential per-centre kernels. Production at that speed: ~1,000 GPU-h.
+- The driver now patches `process_data` to `jax.vmap` the same per-centre function (`_patch_descriptors` in
+  `mlmd_run.py`), for the NNFF and the EPNN descriptors. Under vmap, `jnp.repeat` by `self._degeneracies` (array
+  repeats) built B × n × 25 × 25 × … index constants that XLA constant-folded on the CPU for > 10 min per unit, so
+  `jnp.repeat` with concrete array repeats is replaced by a gather with NumPy-built indices (bit-identical).
+  The per-unit self-check now also compares forces from the vmapped descriptor with the authors' `lax.map` path
+  (traced with the patch switched off; gate 1e-3 eV/Å) besides the charges; the reference paths keep a length-n
+  scan in their jaxpr, the engine's has none.
+
+  | unit (n atoms, B) | NVT s/ps, lax.map → vmap | NVE s/ps | max dq (e) | max dF (eV/Å) |
+  | --- | --- | --- | --- | --- |
+  | n016 (16, 12) | 4.8 → 0.8 | 6.1 → 1.6 | 4.5e-6 | 5.7e-6 |
+  | n044 (44, 100) | 26.1 → 8.8 | 33.4 → 15.0 | 5.5e-6 | 8.6e-6 |
+  | n086 (86, 99) | 51.0 → 18.1 | 64.9 → 29.5 | 5.4e-6 | 1.3e-5 |
+  | n126 (126, 92) | 72.5 → 25.6 | 91.3 → 41.4 | 5.9e-6 | 1.1e-5 |
+  | n180 (180, 84) | 98.9 → 33.9 | 125.8 → 54.6 | 5.1e-6 | 1.2e-5 |
+  | n252 (252, 12) | 83.7 → 6.6 | 99.0 → 11.2 | 4.1e-6 | 1.3e-5 |
+
+  Now t ≈ n B × 0.0022 s/ps (NVT) and n B × 0.0035 (NVE; the 1 fs dipoles cost ~60 % on top): proportional to
+  the work, so batch size no longer matters for efficiency. Compile and self-checks add 20–45 s per unit. No flags,
+  no edge overflow.
+- **Estimate for the full plan** (1,704 species × 50/300/600 K × 4 replicas, 269 units): **~420 GPU-h** on this GPU
+  as specified (200 ps NVT + 200 ps NVE), ~270 with 20 ps NVT. On Hangang (4 GPUs per node) that is ~105
+  node-hours, e.g. 5 jobs of 24 h; the Hangang calibration job checks the speed there.
+- `d1/slurm_mlmd_run.sbatch A_jax.sif D1_DIR OUT [run options]` runs one process per GPU (shard = GPU) and sets
+  `--hours` from the job's time limit (minus 30 min, or 15 % of a short limit); resubmitting continues. Calibration
+  on Hangang: a plan with `--nvt 4000 --nve 4000` in a fresh OUT, then
+  `sbatch --time=00:30:00 d1/slurm_mlmd_run.sbatch ... --units n180_u000,n126_u000,n086_u000,n044_u000`.
 
 On Hangang the inputs are already in place: `/appsdata/t641a02/d1/mai2025/` (zip, `src/` with code, models and
 inputs) and `/appsdata/t641a02/d1/XYZ_pahdb_1704/`.
 
-## Step 4 onwards (not yet written)
+## Step 4 onwards (planning notes written before step 3; superseded where they differ)
 
 - `d1/mlmd_run.py`: the production driver. It runs the Mai et al. 2025 force field and dipole model (Zenodo
   10.5281/zenodo.14998197; neutral PAHs only) in batched jax-md, NVT then NVE, saving dipole time series and

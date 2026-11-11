@@ -25,6 +25,45 @@ QA_EVERY = 100          # frames between E_tot / T samples
 CKPT_SECONDS = 600      # checkpoint at least this often
 DIPOLE_ROUND = 1e-5     # A; the authors wrote positions with %.5f
 EDGE_CAP_FACTOR = 1.5   # dipole-graph edge cap = factor x the largest initial per-molecule edge count
+SELFCHECK_F = 1e-3      # eV/A: forces with the vmapped descriptor vs the authors' lax.map one
+
+# The authors' PowerSpectrumGenerator.process_data loops over atom centres with jax.lax.map, so a step costs time
+# proportional to the atom count whatever the batch (step 4: t = n (a + b B), a = 0.30 s/ps per atom). The same
+# per-centre function under jax.vmap gives the same descriptors, in parallel. _DESC["vmap"] is read at trace time:
+# the engine traces with it on; Port.dipole (the self-check reference) and forces_ref trace with it off.
+_DESC = {"vmap": True}
+
+
+def _patch_descriptors():
+    import jax
+    from neuralil.bessel_descriptors import PowerSpectrumGenerator as PSG
+    if getattr(PSG, "_mlmd_patched", False):
+        return
+    orig = PSG.process_data
+
+    def process_data(self, coordinates, a_types, cell_size):
+        if not _DESC["vmap"]:
+            return orig(self, coordinates, a_types, cell_size)
+        deltas, radii, a_types = self.center_at_atoms(coordinates, a_types, cell_size)
+        weights = jax.nn.one_hot(a_types, self._n_types)
+        return jax.vmap(jax.checkpoint(lambda d, r: self._process_center(d, r, a_types, weights)))(deltas, radii)
+    PSG.process_data = process_data
+    PSG._mlmd_patched = True
+    # jnp.repeat with array repeats builds its gather indices with cumsum/scatter ops on constants; under the vmap
+    # those become B x n x 25 x 25 x ... constant arrays that XLA folds on the CPU for many minutes (_process_center
+    # repeats by self._degeneracies). Same result, with the indices computed once in NumPy.
+    import jax.numpy as jnp
+    _repeat = jnp.repeat
+
+    def repeat(a, repeats, axis=None, *, total_repeat_length=None, **kw):
+        if total_repeat_length is None and not kw and np.ndim(repeats) == 1 and not isinstance(repeats, jax.core.Tracer):
+            a = jnp.asarray(a)
+            if axis is None:
+                a, axis = a.ravel(), 0
+            r = np.broadcast_to(np.asarray(repeats), (a.shape[axis],))
+            return jnp.take(a, np.repeat(np.arange(a.shape[axis]), r), axis=axis)
+        return _repeat(a, repeats, axis, total_repeat_length=total_repeat_length, **kw)
+    jnp.repeat = repeat
 
 
 def natoms(path):
@@ -75,8 +114,10 @@ class Engine:
 
     def __init__(self, root, cache_dir):
         sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "port"))
-        from mai_port import Port, MASS, MAX_NEIGHBORS
+        from mai_port import Port, MASS, MAX_NEIGHBORS, _patch
         import jax
+        _patch(root)
+        _patch_descriptors()                    # before Port() binds process_data into the models
         jax.config.update("jax_compilation_cache_dir", cache_dir)
         jax.config.update("jax_persistent_cache_min_compile_time_secs", 10)
         import jax.numpy as jnp, jraph
@@ -93,6 +134,9 @@ class Engine:
         dp, epnn = m.dp, m.epnn
         r_cut, r_switch, nsd = float(dp.r_cut), float(dp.r_switch), int(dp.node_state_dim)
         cell0 = jnp.zeros((3, 3), jnp.float32)
+        # the engine's own, unjitted EPNN descriptor: m.d_desc is jitted, and its trace cache must stay the lax.map one
+        from neuralil.bessel_descriptors import PowerSpectrumGenerator
+        d_desc = PowerSpectrumGenerator(6, dp.r_cut, len(m.d_elems), MAX_NEIGHBORS).process_data
 
         def energy(p, t):                       # the calculator's function: ensemble mean, summed over atoms
             return ens.apply(params, p, t, cell0, method=ens.calc_potential_energy).sum() / ens.n_models
@@ -118,7 +162,7 @@ class Engine:
             B, n = dt_.shape
             p = jnp.round(p / DIPOLE_ROUND) * DIPOLE_ROUND
             pc = p - (w[..., None] * p).sum(1, keepdims=True) / w.sum(1)[:, None, None]
-            desc = jax.vmap(m.d_desc)(pc, dt_, jnp.zeros((B, 3, 3), jnp.float32))
+            desc = jax.vmap(d_desc)(pc, dt_, jnp.zeros((B, 3, 3), jnp.float32))
             dd = int(np.prod(desc.shape[2:]))
             dist, mask = edges_and_dist(pc, dt_)
             cnt = mask.sum()
@@ -187,6 +231,15 @@ class Engine:
             return s, mu, etot, cnt.max()
 
         self.forces = jax.jit(forces)
+        _fr = jax.jit(lambda p, t: forces(p, t)[1])
+
+        def forces_ref(p, t):                   # the authors' lax.map descriptor (traced with the switch off)
+            _DESC["vmap"] = False
+            try:
+                return _fr(p, t)
+            finally:
+                _DESC["vmap"] = True
+        self.forces_ref = forces_ref
         self.dipole = jax.jit(dipole, static_argnums=3)
         self.charges = jax.jit(charges, static_argnums=3)
         self.nvt_chunk = jax.jit(nvt_chunk)
@@ -205,7 +258,7 @@ def write_json(path, obj):
 SELFCHECK_Q = 1e-4      # e, per-atom charge: in-loop graph builder vs the authors' per-frame path
 
 
-def selfcheck(E, p, dt_, w, e_cap, atoms, systems):
+def selfcheck(E, p, t, dt_, w, e_cap, atoms, systems):
     """In-loop EPNN charges vs the authors' create_batched_graph_list path, for one system per species (at most 8).
     Charges, not dipoles, are gated: their noise does not grow with molecule size."""
     jnp = E.jnp
@@ -217,11 +270,17 @@ def selfcheck(E, p, dt_, w, e_cap, atoms, systems):
     pr = np.asarray(jnp.round(p[jnp.asarray(idx)] / DIPOLE_ROUND) * DIPOLE_ROUND)   # rounded as in the loop (float32)
     dq = dmu = 0.0
     for k, i in enumerate(idx):
-        mu1, q1 = E.m.dipole(atoms[i].__class__(atoms[i].symbols, positions=pr[k]))
+        _DESC["vmap"] = False
+        try:
+            mu1, q1 = E.m.dipole(atoms[i].__class__(atoms[i].symbols, positions=pr[k]))
+        finally:
+            _DESC["vmap"] = True
         dq = max(dq, float(np.abs(np.asarray(q_b[i]) - q1).max()))
         w_ = np.asarray(w[i], np.float64); pc = pr[k] - (w_[:, None] * pr[k]).sum(0) / w_.sum()
         dmu = max(dmu, float(np.abs((np.asarray(q_b[i])[:, None] * pc).sum(0) - mu1).max()))
-    return dq, dmu
+    ii = jnp.asarray(idx)
+    df = float(jnp.abs(E.forces(p[ii], t[ii])[1] - E.forces_ref(p[ii], t[ii])).max())
+    return dq, dmu, df
 
 
 def save_atomic(path, **arrays):
@@ -274,34 +333,39 @@ def run_unit(E, plan, xyz, u, udir, deadline, stop_after):
         chunk, nvt_T, qa_etot, qa_T = 0, [], [], []
         flags = {"nonfinite": [False] * B, "hot": [False] * B,
                  "max_neighbours": np.asarray(E.max_neighbours(p0)).tolist(), "edge_overflow": False}
-        dq, dmu = selfcheck(E, p0, dt_, w, e_cap, atoms, systems)
+        dq, dmu, df = selfcheck(E, p0, t, dt_, w, e_cap, atoms, systems)
         assert dq < SELFCHECK_Q, f"{u['id']}: in-loop EPNN charges differ from the per-frame path by {dq:.2e} e"
+        assert df < SELFCHECK_F, f"{u['id']}: vmapped-descriptor forces differ from lax.map ones by {df:.2e} eV/A"
         write_json(meta_path, {"id": u["id"], "n_atoms": n, "systems": systems, "settings": S, "edge_cap": e_cap,
-                               "selfcheck": {"initial": {"max_dq": dq, "max_dmu": dmu}}, "flags": flags})
+                               "selfcheck": {"initial": {"max_dq": dq, "max_dmu": dmu, "max_df": df}}, "flags": flags})
     mu_file = np.lib.format.open_memmap(f"{udir}/dipole.npy", mode="r+" if os.path.exists(f"{udir}/dipole.npy") else "w+",
                                         dtype=np.float32, shape=(n_frames, B, 3))
     seeds = jnp.asarray(np.array([s["seed"] for s in systems], np.uint32))
     state = (p, v, f)
     t_ckpt, t0, done_here = time.time(), time.time(), 0
+    chunk_s = []                                # (chunk, wall seconds) this session; the first of each kind includes compile
 
     def checkpoint():
         mu_file.flush()
         p, v, f = state
         save_atomic(state_path, p=np.asarray(p), v=np.asarray(v), f=np.asarray(f), chunk=chunk, nvt_T=np.array(nvt_T),
                     qa_etot=np.array(qa_etot), qa_T=np.array(qa_T))
-        m = json.load(open(meta_path)); m["flags"] = flags; write_json(meta_path, m)
+        m = json.load(open(meta_path)); m["flags"] = flags
+        m.setdefault("chunk_seconds", []).extend(chunk_s); chunk_s.clear(); write_json(meta_path, m)
 
     while chunk < n_nvt + n_nve:
         if time.time() > deadline or (stop_after is not None and done_here >= stop_after):
             checkpoint(); return False
+        tc = time.time()
         if chunk < n_nvt:
             state = E.nvt_chunk(state, seeds, chunk, t, mass, kT, c1, c2)
             nvt_T.append(np.asarray(E.ekin(state[1], mass)) / (1.5 * n * units.kB))
         else:
             if chunk == n_nvt:                  # repeat the self-check on thermal frames (end of NVT)
-                dq, dmu = selfcheck(E, state[0], dt_, w, e_cap, atoms, systems)
-                m_ = json.load(open(meta_path)); m_["selfcheck"]["end_of_nvt"] = {"max_dq": dq, "max_dmu": dmu}
+                dq, dmu, df = selfcheck(E, state[0], t, dt_, w, e_cap, atoms, systems)
+                m_ = json.load(open(meta_path)); m_["selfcheck"]["end_of_nvt"] = {"max_dq": dq, "max_dmu": dmu, "max_df": df}
                 write_json(meta_path, m_)
+                assert df < SELFCHECK_F, f"{u['id']}: vmapped-descriptor forces differ from lax.map ones by {df:.2e} eV/A (end of NVT)"
                 assert dq < SELFCHECK_Q, f"{u['id']}: in-loop EPNN charges differ from the per-frame path by {dq:.2e} e (end of NVT)"
             state, mu, etot, cnt = E.nve_chunk(state, t, mass, dt_, w, e_cap)
             j0 = (chunk - n_nvt) * (CHUNK // 2)
@@ -318,6 +382,7 @@ def run_unit(E, plan, xyz, u, udir, deadline, stop_after):
         flags["nonfinite"] = [x or bool(y) for x, y in zip(flags["nonfinite"], bad)]
         flags["hot"] = [x or bool(y) for x, y in zip(flags["hot"], np.abs(Tk) > 30000)]   # the authors' "dispersion" check
         flags["max_neighbours"] = np.maximum(flags["max_neighbours"], np.asarray(E.max_neighbours(state[0]))).tolist()
+        chunk_s.append((chunk, round(time.time() - tc, 3)))
         chunk += 1; done_here += 1
         if time.time() - t_ckpt > CKPT_SECONDS:
             checkpoint(); t_ckpt = time.time()
@@ -333,7 +398,8 @@ def run_unit(E, plan, xyz, u, udir, deadline, stop_after):
 
 def cmd_run(a):
     plan = json.load(open(f"{a.out}/plan.json"))
-    units_ = [u for i, u in enumerate(plan["units"]) if i % a.nshards == a.shard]
+    units_ = [u for u in plan["units"] if not a.units or u["id"] in a.units.split(",")]
+    units_ = [u for i, u in enumerate(units_) if i % a.nshards == a.shard]
     deadline = time.time() + a.hours * 3600
     E = Engine(a.root, os.path.abspath(f"{a.out}/jax_cache"))
     print(f"jax {E.jax.__version__} {E.jax.devices()}; shard {a.shard}/{a.nshards}: {len(units_)} units", flush=True)
@@ -381,6 +447,7 @@ def main():
     r.add_argument("--shard", type=int, default=0); r.add_argument("--nshards", type=int, default=1)
     r.add_argument("--hours", type=float, default=23.5)
     r.add_argument("--stop-after", type=int, default=None, help="stop after this many chunks (testing)")
+    r.add_argument("--units", default=None, help="comma-separated unit ids: run only these (still split across shards); for calibration")
     s = sub.add_parser("status"); s.add_argument("out")
     a = ap.parse_args()
     {"plan": cmd_plan, "run": cmd_run, "status": cmd_status}[a.cmd](a)
