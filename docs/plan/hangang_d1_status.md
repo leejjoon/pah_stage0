@@ -73,7 +73,8 @@ its logs, tell the user the cause, fix, and ask before resubmitting; never resub
    `d1/new_species_v2.csv`. For screen_mai_v1: the fraction of Mai's species with H shifts or other topology
    changes at 600 K, by class and planarity; it qualifies their published 600 K spectra and informs the
    user's high-T test. Record both in `d1_hangang_new_species.md`.
-3. **Overlap analysis** (after overlap_v1 is done): spectra with `d1/mlmd_spectra.py`; compare with Mai's published
+3. **Overlap analysis.** Screen done 2026-11-12: 4 of 48 fail, two of them (C19H12_348, C17H14_342, sp3 ring
+   opening) at 300 K too; see the plan, step 2. Still to do: spectra with `d1/mlmd_spectra.py`; compare with Mai's published
    300 and 600 K spectra per species (generalise `d1/port/mai_spectrum_compare.py`, which does naphthalene); seed
    scatter of band shares vs Nc decides the replica count of step 4 (default 4). Run `screen_check.py` on it too.
 4. **New-species production** (a new plan, so ask the user first): `mlmd_run.py plan XYZ_new_v2 runs/new_v1

@@ -122,6 +122,17 @@ download needs PAHdb's e-mail form) copied to `/appsdata/$USER/d1/pahdb/` throug
     non-planar new species, so the new set would become almost all planar; options: drop and refill, keep them at
     300 K only, or wait for the high-T test. **Decision (user, 2026-11-12): hold** until the high-T test on the
     project node; steps 2's refill and 4 wait.
+- **Overlap run screened too (job 1259236, 200 + 200 ps, 8 replicas; `runs/overlap_v1/screen.csv`):** 4 of 48
+  species fail (all 4 non-planar; 18 of the 48 are non-planar).
+  - C27H15_2249 and C32H18_1655 fail only at 600 K (H shifts, two replicas of C32H18_1655 hot with ~38 bonds
+    broken). C32H18_1655 passed the 30 ps screen, which confirms that the screen's pass rate is an upper bound.
+  - **C19H12_348 and C17H14_342 also fail at 300 K.** C19H12_348 opens the same sp3 C–C single bond (atoms 18–21,
+    CH2–CH, 1.52 Å at the start, 2.7–4.3 Å at the end) in all 8 replicas at 300 K; C17H14_342 opens CH2–CH2 /
+    CH–CH2 bonds of its hydrogenated ring (1.52–1.54 → 2.4–2.9 Å) in 3 of 8. None of these start-geometry bonds is
+    near the 2.0 Å threshold, so these are real ring openings in the model. Breaking a C–C single bond takes
+    ~3.5–4 eV, so at 300 K this is a model artifact for sp3 (superhydrogenated) sites, and Mai's published 300 K
+    spectra of such species may contain it. The 600 K screen did not test 300 K, so other sp3 species may do
+    the same; a 300 K screen of Mai's sp3 species would show how many.
 
 **3. Overlap run.** 48 of Mai's species, stratified by Nc and class (including a few N-PAH, pentagon and
 superhydrogenated ones), × 300 and 600 K × **8 replicas**; 200 ps NVT + 200 ps NVE.
