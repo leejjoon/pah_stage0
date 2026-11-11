@@ -146,6 +146,21 @@ none at 1200 K. Comparison in `xtb_test/compare.txt` and `compare.png`.
   −37 to −60). So the large cation CC shifts above are **not** a charge effect: neutral CC bands (in the better
   model) shift alike.
 
+### Slopes against each replica's actual temperature
+
+`tdep_compare.py` now also fits each band's centroid, width and share (relative to 300 K) linearly against each
+replica's NVE mean temperature, 300–900 K (`TMAX` to change), with errors from the residuals. Replica NVE ⟨T⟩ at
+nominal 900 K: MLMD 800–1024 K, xTB 775–1172 K (xTB scatters more). Per 100 K:
+- CC bands: MLMD neutral −4.6 ± 0.2 (coronene 1316), −5.4 ± 0.2 and −5.1 ± 0.3 (pyrene 1316, 1430); xTB cation
+  −3.9 to −4.7 (coronene 1330/1394/1474), −5.0 and −4.7 (naphthalene⁺ 1280/1416), −4.0 and −4.7 (pyrene⁺
+  1322/1452). Widths +0.2 to +0.6 cm⁻¹ per 100 K in both.
+- Bands in both xTB charge states: slopes differ by ≤ 0.6 cm⁻¹ per 100 K (coronene 494/496, 1242/1238; pyrene
+  648/630, 800/798), except coronene⁺ 792 (0.0 against −1.7 for the neutral's 820).
+- Control, xTB against MLMD neutral: CH-stretch centroid −9.0 to −9.3 vs −10.6 to −11.8 per 100 K; matched oop bands
+  within 0.3–2.3 cm⁻¹ per 100 K. xTB's CH-stretch broadening is about half MLMD's (+4.0–4.4 vs +5.2–8.0).
+- Shares: the cations' CH-stretch share rises 3–18 % per 100 K (xTB) where neutrals' stays within ±3 %; the neutrals'
+  in-plane share rises 6–10 % per 100 K in xTB but 0–4 % in MLMD (the control failure noted above).
+
 ### Reading so far
 
 - Band **positions and widths**: no sign of a charge-specific temperature dependence beyond a few cm⁻¹ for

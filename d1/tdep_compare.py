@@ -34,7 +34,7 @@ def load_xtb(d):
             continue
         sp, q, T = re.match(r"(\w+?)_q(\d)_(\d+)K_r\d", os.path.basename(f)).groups()
         fr, s = ir_sigma(z["dipole"], float(T), 1.0, 0)
-        R[(sp, f"xTB q={q}", float(T))].append((fr, s))
+        R[(sp, f"xTB q={q}", float(T))].append((fr, s, float(np.mean(np.array(z["qa"])[:, 1]))))
     return R
 
 
@@ -43,10 +43,10 @@ def load_mlmd(d, R):
         u = os.path.dirname(meta)
         if not os.path.exists(f"{u}/DONE"):
             continue
-        m = json.load(open(meta)); mu = np.load(f"{u}/dipole.npy")
+        m = json.load(open(meta)); mu = np.load(f"{u}/dipole.npy"); qT = np.load(f"{u}/state.npz")["qa_T"]
         for k, s in enumerate(m["systems"]):
             fr, sg = ir_sigma(mu[:, k], s["T"], 1.0, 0)
-            R[(MLMD_NAME.get(s["species"], s["species"]), "MLMD q=0", s["T"])].append((fr, sg))
+            R[(MLMD_NAME.get(s["species"], s["species"]), "MLMD q=0", s["T"])].append((fr, sg, float(qT[:, k].mean())))
     return R
 
 
@@ -58,7 +58,7 @@ MATCH = 40.0                                   # pair bands between two methods/
 def peaks_300(spectra, n=6, half=HALF):
     """The n strongest peaks of the 300 K replica-mean spectrum (separated by > 2 half-widths): {label: f0}."""
     from scipy.signal import find_peaks
-    f = spectra[0][0]; y = np.mean([s for _, s in spectra], 0)
+    f = spectra[0][0]; y = np.mean([x[1] for x in spectra], 0)
     k, pr = find_peaks(y, distance=max(1, int(2 * half / (f[1] - f[0]))), prominence=0.02 * y.max())
     top = sorted(k[np.argsort(pr["prominences"])[::-1][:n]])
     return {f"peak {f[i]:.0f}": f[i] for i in top}
@@ -66,7 +66,7 @@ def peaks_300(spectra, n=6, half=HALF):
 
 def follow(spectra, f0):
     """New position of a band last seen at f0: the maximum of the replica-mean spectrum in f0 + SEARCH."""
-    f = spectra[0][0]; y = np.mean([s for _, s in spectra], 0)
+    f = spectra[0][0]; y = np.mean([x[1] for x in spectra], 0)
     m = (f >= f0 + SEARCH[0]) & (f <= f0 + SEARCH[1])
     return f[m][np.argmax(y[m])]
 
@@ -78,6 +78,7 @@ def stat(lst, region, i):
 
 def main():
     S = load_mlmd(sys.argv[2], load_xtb(sys.argv[1]))
+    S_T = {k: [x[2] for x in v] for k, v in S.items()}       # each replica's NVE mean temperature
     global REGIONS
     base = dict(REGIONS); R = {}; PK = {}
     for (sp, lab, T), lst in S.items():          # per (species, method): regions + its own 300 K peaks
@@ -90,10 +91,10 @@ def main():
             if T > 300.0:
                 pos = {k: follow(lst, c) for k, c in pos.items()}
             REGIONS = {**base, **{k: (c - HALF, c + HALF) for k, c in pos.items()}}
-            R[(sp, lab, T)] = [metrics(f, y) for f, y in lst]
+            R[(sp, lab, T)] = [metrics(x[0], x[1]) for x in lst]
     for (sp, lab, T), lst in S.items():            # species/methods without a 300 K run: regions only
         if (sp, lab, T) not in R:
-            REGIONS = base; R[(sp, lab, T)] = [metrics(f, y) for f, y in lst]
+            REGIONS = base; R[(sp, lab, T)] = [metrics(x[0], x[1]) for x in lst]
     REGIONS = base
     species = sorted({k[0] for k in R}); labels = ["MLMD q=0", "xTB q=0", "xTB q=1"]
     temps = sorted({k[2] for k in R})
@@ -147,6 +148,59 @@ def main():
                             d, e = vb[0] - va[0], np.hypot(va[1], vb[1])
                             line += f" | {T:.0f}K {va[0]:+.3g} {vb[0]:+.3g} d={d:+.3g}+-{e:.2g}{' *' if abs(d) > 2 * e else ''}"
                     print(line)
+
+    # Linear trends against each replica's own NVE <T> (one NVE run of a small molecule is one canonical energy
+    # sample, so its mean T can be far from the nominal one), 300 K to TMAX: slope per 100 K +- s.e. (residuals).
+    # Share is relative to the 300 K replica mean, so its slope is a fractional change per 100 K.
+    tmax = float(os.environ.get("TMAX", 900))
+
+    def slope(sp, lab, reg, i):
+        x, y = [], []
+        for T in temps:
+            if 300.0 <= T <= tmax and (sp, lab, T) in R and reg in R[(sp, lab, T)][0]:
+                x += S_T[(sp, lab, T)]; y += [m[reg][i] for m in R[(sp, lab, T)]]
+        if len(x) < 4:
+            return None
+        if i == 2:
+            y = list(np.array(y) / stat(R[(sp, lab, 300.0)], reg, 2)[0])
+        x = np.array(x) / 100.0; y = np.array(y)
+        A = np.vstack([x, np.ones_like(x)]).T; c, res, *_ = np.linalg.lstsq(A, y, rcond=None)
+        s2 = ((y - A @ c) ** 2).sum() / (len(x) - 2)
+        return c[0], np.sqrt(s2 / ((x - x.mean()) ** 2).sum())
+
+    sn = ["centroid", "width", "share"]
+    print(f"\n### slopes against each replica's NVE <T>, 300-{tmax:.0f} K, per 100 K: centroid and width in cm-1, "
+          "share as a fraction of its 300 K value  (* = |d| > 2 s.e.)")
+    print("replica NVE <T> (min-max) per nominal T: " + "; ".join(
+        f"{sp} {lab} {T:.0f}: {min(v):.0f}-{max(v):.0f}" for (sp, lab, T), v in sorted(S_T.items()) if T in (300.0, 900.0)))
+    for la, lb, what in (("xTB q=0", "xTB q=1", "cation vs neutral (xTB)"), ("MLMD q=0", "xTB q=0", "control: xTB vs MLMD neutral")):
+        print(f"\n# matched bands, {what}: {la} / {lb}, d = {lb} - {la}")
+        for sp in species:
+            pa, pb = PK.get((sp, la), {}), PK.get((sp, lb), {})
+            pairs = [(r, r) for r in base]
+            for ka, fa in pa.items():
+                kb = min(pb, key=lambda k: abs(pb[k] - fa), default=None)
+                if kb is not None and abs(pb[kb] - fa) <= MATCH:
+                    pairs.append((ka, kb))
+            for ka, kb in pairs:
+                line = f"{sp:12s} {ka:18s}/{kb.split()[-1]:>5s}"
+                for i in range(3):
+                    va, vb = slope(sp, la, ka, i), slope(sp, lb, kb, i)
+                    if va and vb:
+                        d, e = vb[0] - va[0], np.hypot(va[1], vb[1])
+                        line += f" | {sn[i]} {va[0]:+.3g}+-{va[1]:.2g} {vb[0]:+.3g}+-{vb[1]:.2g} d={d:+.3g}{' *' if abs(d) > 2 * e else ''}"
+                if "|" in line:
+                    print(line)
+    print("\n# every followed band, per method: centroid / width slope per 100 K (cm-1)")
+    for sp in species:
+        for lab in labels:
+            cells = []
+            for k in PK.get((sp, lab), {}):
+                c, w = slope(sp, lab, k, 0), slope(sp, lab, k, 1)
+                if c and w:
+                    cells.append(f"{k.split()[-1]}: {c[0]:+.2f}+-{c[1]:.2f} / {w[0]:+.2f}")
+            if cells:
+                print(f"{sp:12s} {lab:9s} " + "; ".join(cells))
     if sys.argv[3] != "-":
         import matplotlib; matplotlib.use("Agg"); import matplotlib.pyplot as plt
         fig, ax = plt.subplots(len(species), 3, figsize=(13, 3.2 * len(species)), squeeze=False)
