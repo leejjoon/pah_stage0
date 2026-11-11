@@ -339,6 +339,25 @@ each (2 ps; `/var/tmp/$USER-pah/d1/step4_calib` and `step4_vmap`); `meta.json` n
 On Hangang the inputs are already in place: `/appsdata/t641a02/d1/mai2025/` (zip, `src/` with code, models and
 inputs) and `/appsdata/t641a02/d1/XYZ_pahdb_1704/`.
 
+### Chemical integrity with temperature (hot test and cold check, 2026-11-11)
+
+Mai et al. 2025 (§4) say their model is not reliable above ~600 K. `d1/mlmd_integrity.py <run> <xyz dir>` compares
+each system's bond graph at the end of a run (distance < 1.2 × sum of covalent radii) with the input geometry; the
+driver's own QA flags catch only part of this (25 of the hot test's changed systems).
+- **Hot test** (`/var/tmp/$USER-pah/d1/hot_test`): 33 species (9–216 C, incl. N-bearing, odd-electron and
+  hydrogenated ones) × 600/900/1200 K × 4 replicas, 20 ps NVT + 50 ps NVE. Intact: 105/132 at 600 K, 89/132 at
+  900 K, 43/132 at 1200 K. At 1200 K most failures are H loss (41; 37 even with a 1.35 factor) and C–C changes (37).
+  Naphthalene stays intact at all three.
+- **Cold check** (`/var/tmp/$USER-pah/d1/cold_check`): the 9 species that changed in the hot test, at 50 and 300 K
+  (4 replicas, 20 + 50 ps). Six of them change **even at 50 K**, in every replica: C9H8_495 opens a ring (C–C
+  1.51 → 4.5 Å), C60H24_812 moves H atoms between carbons, C24H24_357 and C54H18_836 stretch C–H bonds past
+  1.28 Å; C15H10_341 changes at 300 K. These are species the model gets wrong at any temperature (16/36 changed at
+  50 K, 20/36 at 300 K), not thermal failures. Only C10H9N_473, C27H15_2237 and C47H18_83 fail because of
+  temperature (900 and 1200 K).
+- Consequences: 1200 K is not usable with this model; 900 K only with the integrity filter applied per system; and
+  production at any temperature needs the integrity check, with species that fail at 50 K excluded (they are in
+  Mai's published 50–600 K spectra too, so check those before use).
+
 ## Step 4 onwards (planning notes written before step 3; superseded where they differ)
 
 - `d1/mlmd_run.py`: the production driver. It runs the Mai et al. 2025 force field and dipole model (Zenodo
