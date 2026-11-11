@@ -336,6 +336,27 @@ each (2 ps; `/var/tmp/$USER-pah/d1/step4_calib` and `step4_vmap`); `meta.json` n
   on Hangang: a plan with `--nvt 4000 --nve 4000` in a fresh OUT, then
   `sbatch --time=00:30:00 d1/slurm_mlmd_run.sbatch ... --units n180_u000,n126_u000,n086_u000,n044_u000`.
 
+**Step 4 calibration on Hangang (2026-11-11, job 1257396, node0806, COMPLETED 0:0 in 9 min 06 s).** As in
+`hangang_step4_handoff.md`: plan in `/appsdata/t641a02/d1/runs/calib01` (`--nvt 4000 --nve 4000`; 20448 systems
+in 269 units, as expected), one node, `normal` partition, 4 × GH200 120 GB, driver 570.124.06, commit 9ace17a.
+It was backfilled and started within a minute, although `sbatch --test-only` predicted a start 19 h later (half
+of `normal` was `planned` for pending large jobs).
+
+| unit | systems × atoms | NVT s/ps | NVE s/ps | vs project node (NVT, NVE) | max dq (e) | max dF (eV/Å) | unit wall time |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| n180_u000 | 84 × 180 | 36.6 | 58.8 | 1.08, 1.08 | 5.2e-6 | 1.4e-5 | 471 s |
+| n126_u000 | 92 × 126 | 27.4 | 44.4 | 1.07, 1.07 | 5.1e-6 | 1.2e-5 | 424 s |
+| n086_u000 | 99 × 86 | 19.4 | 31.7 | 1.07, 1.07 | 6.1e-6 | 1.2e-5 | 319 s |
+| n044_u000 | 100 × 44 | 9.5 | 16.0 | 1.08, 1.07 | 4.7e-6 | 8.0e-6 | 356 s |
+
+- No flags, no edge overflow; self-checks (end of NVT) as on the project node.
+- Steady chunks are 7–8 % slower than on the project GH200 (t ≈ n B × 0.0023 s/ps NVT, n B × 0.0038 NVE).
+- Overhead per unit (wall time minus the steady chunks; compile, self-checks, setup, cold `jax_cache` on
+  /appsdata) is 220–310 s, against 60–170 s on the project node: ~20 GPU-h over 269 units.
+- **Revised estimate for the full plan on Hangang: ~470 GPU-h (~450 MD + ~20 overhead), ~118 node-hours**, as
+  specified (200 ps NVT + 200 ps NVE). Production (new plan, default settings, new OUT, array size) is a
+  separate decision.
+
 On Hangang the inputs are already in place: `/appsdata/t641a02/d1/mai2025/` (zip, `src/` with code, models and
 inputs) and `/appsdata/t641a02/d1/XYZ_pahdb_1704/`.
 
