@@ -88,6 +88,16 @@ download needs PAHdb's e-mail form) copied to `/appsdata/$USER/d1/pahdb/` throug
   neighbours, edge overflow) plus a new bond-topology check at the end (no C–H or C–C bond broken or formed).
 - Criteria to match the high-T stability test on the project node. Species that fail are dropped and listed,
   not tuned; the selection refills their cells from the next candidates.
+- **Implemented without a driver change (2026-11-11):** the screen is an ordinary `mlmd_run.py` plan (600 K,
+  4 replicas, 20 ps NVT + 10 ps NVE) and `d1/screen_check.py` compares the bond topology in each unit's last
+  checkpoint (`state.npz`, `p`) with the starting geometry, besides the driver's QA flags. An H fails if its
+  nearest heavy atom changed; heavy-atom bonds fail beyond 2.0 Å, new ones below 1.6 Å. The force check at the
+  start geometry is dropped: the run itself is the test. The same check runs on every production output too.
+- **First result, on the calibration run (Mai's species, 2 ps + 2 ps):** 31 of 33 species pass. C28H16_2170
+  (2 of 4 replicas at 600 K) and C28H16_2173 (1 of 4) show 1,2-H shifts: an H leaves its carbon (1.08 → 1.4–1.6
+  Å) and binds the neighbouring one (2.45 → 1.1–1.2 Å), two H per event, within 4 ps. Both are non-planar
+  (z-range 2.3–2.6 Å). A 1,2-H shift in a PAH has a barrier of several eV, so at 600 K this is a model artifact
+  and Mai's published 600 K spectra of such species may contain it. Nothing failed at 50 or 300 K.
 
 **3. Overlap run.** 48 of Mai's species, stratified by Nc and class (including a few N-PAH, pentagon and
 superhydrogenated ones), × 300 and 600 K × **8 replicas**; 200 ps NVT + 200 ps NVE.
