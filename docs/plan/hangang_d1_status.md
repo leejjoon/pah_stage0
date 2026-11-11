@@ -2,7 +2,7 @@
 
 **Read this first when picking the Hangang D1 work up in a new session.** The plan and its reasons are in
 `d1_hangang_new_species.md`; this file says where things stand. Update it whenever a job is submitted or finishes,
-commit and push (the project node pulls it). Last update: 2026-11-11 ~16:30 KST.
+commit and push (the project node pulls it). Last update: 2026-11-11 ~16:35 KST.
 
 ## Scope (decided by the user, 2026-11-11)
 
@@ -36,18 +36,20 @@ All on `normal`, 1 node, 4 GPUs, `d1/slurm_mlmd_run.sbatch A_jax.sif /appsdata/$
 | 1258657 | overlap_v1 | 0:30 | COMPLETED | Test: 4 units paused at checkpoints, 0 flags |
 | 1258658 | screen_new_v1 | 0:30 | FAILED | sbatch bound Mai's xyz dir, not the plan's; fixed in `6a51b79` |
 | 1258659 | screen_mai_v1 | 0:30 | COMPLETED | Test: 2 units done (180 systems, 0 flags, no topology change), 4 paused |
-| 1258983 | screen_new_v1 | 0:30 | submitted 2026-11-11 | Test of the fixed sbatch (`6a51b79`) |
+| 1258983 | screen_new_v1 | 0:30 | COMPLETED | Test of the fixed sbatch: 4 units done, 4 paused; 1 flagged (C52H16N2_v4u9326, 600 K, replica 2, in paused n070_u000) |
+| 1259236 | overlap_v1 | 10:00 | submitted 2026-11-11 16:3x | Full run, resumes from the test's checkpoints (~25 GPU-h) |
+| 1259237 | screen_new_v1 | 6:00 | submitted 2026-11-11 16:3x | Full run (~16 GPU-h) |
+| 1259238 | screen_mai_v1 | 8:00 | submitted 2026-11-11 16:3x | Full run (~21 GPU-h) |
 
-Rule (HANGANG policy, `/etc/claude-code/CLAUDE.md`): the sbatch was edited in `6a51b79`, so it is a new job
-again: the full runs below go only after **1258983 is COMPLETED** with its units paused or done and no Traceback.
-Check with `sacct -j 1258983 -X -o JobID,State,ExitCode,Elapsed` and
-`grep -E 'done |paused|Traceback|Error' mlmd_1258983_*.log`. If it failed, read the logs, tell the user the cause,
-fix, and ask before resubmitting.
+The sbatch at `6a51b79` is now a proven job (1258983 COMPLETED). Check the full runs with
+`sacct -j 1259236,1259237,1259238 -X -o JobID,State,ExitCode,Elapsed` and
+`grep -E 'done |paused|Traceback|Error|units done' mlmd_<jobid>_*.log` (at most once a minute). If one fails, read
+its logs, tell the user the cause, fix, and ask before resubmitting; never resubmit in a loop.
 
 ## Next steps
 
-1. **Full runs** (the user agreed to this sequence on 2026-11-11: test, then the three full runs; confirm with the
-   user if anything changed). 3 jobs; each resumes from its checkpoints; never two jobs on one run dir:
+1. **Full runs: submitted** (1259236–1259238). Wait for them; if one ends "paused" at its time limit, resubmit that
+   same command once (it resumes). Never two jobs on one run dir. The commands, for reference:
    ```bash
    cd /appsdata/t641a02/pah_stage0
    sbatch --time=10:00:00 d1/slurm_mlmd_run.sbatch /appsdata/$USER/sif/A_jax.sif /appsdata/$USER/d1 /appsdata/$USER/d1/runs/overlap_v1     # ~25 GPU-h
