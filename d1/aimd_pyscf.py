@@ -5,6 +5,8 @@
 # Protocol as the MLMD and xTB runs: Maxwell-Boltzmann start at T, Langevin NVT (friction 0.02 per ASE time unit,
 # centre of mass fixed), then velocity-Verlet NVE, 0.5 fs; dipole about the centre of mass every 2 steps (1 fs);
 # total energy, temperature and <S^2> every 20 steps. Each SCF starts from the previous step's density matrix.
+# Basis functions: Cartesian (6D) d functions by default, as Gaussian uses for 6-31G* (and so the training data and
+# PAHdb v4); PySCF's own default is spherical (5D). --spherical switches back.
 #   python aimd_pyscf.py <xyz> <out.npz> --charge 1 --mult 2 --T 900 --seed 0 [--nvt-ps 2] [--nve-ps 20] [--threads 8]
 #   python aimd_pyscf.py <xyz> - --charge 1 --mult 2 --time-steps 10        (seconds per step, then exit)
 # The npz is rewritten every --ckpt-fs (default 100 fs) with positions, velocities and the step; rerunning the same
@@ -18,8 +20,8 @@ class PySCFCalc:
     """Minimal ASE calculator: energy, forces and centre-of-mass dipole from PySCF RKS/UKS, density reused."""
     implemented_properties = ["energy", "forces"]
 
-    def __init__(self, charge, mult, basis="6-31g*", xc="b3lypg", conv_tol=1e-9):
-        self.q, self.m, self.basis, self.xc, self.tol = charge, mult, basis, xc, conv_tol
+    def __init__(self, charge, mult, basis="6-31g*", xc="b3lypg", conv_tol=1e-9, cart=True):
+        self.q, self.m, self.basis, self.xc, self.tol, self.cart = charge, mult, basis, xc, conv_tol, cart
         self.dm = None; self.cycles = 0; self.last = None
 
     def compute(self, atoms):
@@ -29,7 +31,7 @@ class PySCFCalc:
         if self.last is not None and np.array_equal(pos, self.last[0]):
             return self.last[1]
         mol = gto.M(atom=list(zip(atoms.get_chemical_symbols(), pos)), basis=self.basis, charge=self.q,
-                    spin=self.m - 1, unit="Angstrom", verbose=0)
+                    spin=self.m - 1, unit="Angstrom", cart=self.cart, verbose=0)
         mf = (dft.RKS if self.m == 1 else dft.UKS)(mol); mf.xc = self.xc; mf.conv_tol = self.tol; mf.max_cycle = 200
         n = [0]; mf.callback = lambda env: n.__setitem__(0, n[0] + 1)
         e = mf.kernel(dm0=self.dm)
@@ -68,6 +70,7 @@ def main():
     ap.add_argument("--nvt-ps", type=float, default=2.0); ap.add_argument("--nve-ps", type=float, default=20.0)
     ap.add_argument("--threads", type=int, default=8); ap.add_argument("--ckpt-fs", type=float, default=100.0)
     ap.add_argument("--time-steps", type=int, default=0, help="time this many MD steps and exit")
+    ap.add_argument("--spherical", action="store_true", help="5D d functions (PySCF default) instead of Gaussian's 6D")
     a = ap.parse_args()
     from pyscf import lib
     from ase import units
@@ -76,7 +79,7 @@ def main():
     from ase.md.verlet import VelocityVerlet
     from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
     lib.num_threads(a.threads)
-    calc = PySCFCalc(a.charge, a.mult); at = make_atoms(a.xyz, calc); at.set_constraint(FixCom())
+    calc = PySCFCalc(a.charge, a.mult, cart=not a.spherical); at = make_atoms(a.xyz, calc); at.set_constraint(FixCom())
     dt = 0.5 * units.fs
     n_nvt, n_nve = int(round(a.nvt_ps * 2000)), int(round(a.nve_ps * 2000)); n_tot = n_nvt + n_nve
     ck = int(round(a.ckpt_fs * 2))
@@ -100,7 +103,7 @@ def main():
         k = max(0, (step - n_nvt) // 2)
         np.savez(a.out + ".tmp.npz", step=step, positions=at.positions, velocities=at.get_velocities(), dipole=mu[:k],
                  qa=np.array(qa), xyz=a.xyz, charge=a.charge, mult=a.mult, T=a.T, seed=a.seed, nvt_ps=a.nvt_ps,
-                 nve_ps=a.nve_ps, dt_fs=1.0, method="B3LYP(VWN3)/6-31G* PySCF", seconds=time.time() - t0)
+                 nve_ps=a.nve_ps, dt_fs=1.0, method="B3LYP(VWN3)/6-31G* PySCF " + ("5D" if not calc.cart else "6D"), seconds=time.time() - t0)
         os.replace(a.out + ".tmp.npz", a.out)
 
     while step < n_tot:

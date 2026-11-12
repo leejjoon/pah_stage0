@@ -152,6 +152,11 @@ disagreement stay low on unseen species. Budget at 6-31G\*: of order 100–200k 
   (`gjf_transfer/`, 32 CPUs and 60 GB each, 2 stability jobs; ~1k core-h *estimate*). `seed_gjf_631gs_v2.tgz` (6.0 MB)
   now holds `gjf/` (7,424), `gjf_stateqa/` (132), `gjf_transfer/` (80) and `species_v2.csv`. Submit `gjf_transfer` as
   its own array with `--cpus-per-task=32 --mem=70G`.
+- 2026-11-13: Gaussian's 6-31G\* uses Cartesian (6D) d functions by default (gaussian.com/basissets: the 6-31G family
+  is among the Cartesian-d exceptions); PySCF defaults to spherical (5D). The DFT MD reference had started with 5D:
+  stopped after ~1.5 h (outputs in `aimd/spherical_aborted/`) and restarted with `cart=True`, now the default of
+  `d1/aimd_pyscf.py` (`--spherical` to override). 4-31G work (timing pilot) is unaffected. Handoff for a PySCF /
+  GPU4PySCF / JAX-port study: `docs/plan/handoff_pyscf_gpu_jax.md`.
 
 ## Phase 1 run-book
 
