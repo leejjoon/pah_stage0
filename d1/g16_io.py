@@ -5,11 +5,15 @@
 #       MaxCycle=256) as PAHdb; charge and multiplicity from the frame; frame info (all sampler labels) goes to
 #       <gjf dir>/manifest.json, keyed by job name. Frames whose bond graph changed (graph_changed=1), controlled
 #       boundary geometries (config_type bound_*) and a random --stable-frac of frames at >= --stable-hot-T get a
-#       two-step job instead (committee review B2/M2): Stable=Opt (wavefunction stability test, re-optimised if
-#       unstable), then --Link1-- Force from that wavefunction (Geom=AllCheck Guess=Read; %chk next to the input).
+#       two-step job instead (committee review B2/M2): a wavefunction stability test, then --Link1-- Force from that
+#       wavefunction (Geom=AllCheck Guess=Read; %chk next to the input). Open shells: Stable=Opt (an unstable UKS
+#       solution is re-optimised). Closed shells: Stable alone (test only; Stable=Opt would turn RKS into UKS and
+#       change the method between frames), so an RKS->UKS instability is recorded, not acted on.
+#       SCF convergence is explicit (Conver=8, Gaussian's default for Force) on every job.
 #   python g16_io.py parse <log dir or files...> <out.extxyz> [--origin coords|nuclear_charge]
 #       energy (eV), forces (eV/A), dipole about the centre of mass (e*A), <S^2> before and after annihilation,
-#       SCF cycles, stability result (stable / reoptimized / not_tested), plus every label from the manifest;
+#       SCF cycles, stability result (stable / unstable_internal / unstable_rhf_uhf / reoptimized / not_tested),
+#       plus every label from the manifest;
 #       only "Normal termination" logs; failures are listed on stderr.
 # Gaussian's B3LYP uses VWN3 (PySCF "b3lypg"). With NoSymm the coordinates and forces stay in the input frame.
 # Dipole origin: --origin says which point Gaussian's reported dipole refers to; the Phase 0 translation test
@@ -55,10 +59,10 @@ def cmd_write(a):
         n_stable += stable
         manifest[name] = {**lab, "frame": k, "basis": a.basis, "stability_test": int(stable)}
         u_ = "U" if m > 1 else ""
-        scf = "SCF=(XQC,MaxConventionalCycles=64,MaxCycle=256)"
+        scf = "SCF=(XQC,Conver=8,MaxConventionalCycles=64,MaxCycle=256)"
         head = f"%nprocshared={a.nproc}\n%mem={a.mem}\n" + (f"%chk={name}.chk\n" if stable else "")
         with open(f"{a.outdir}/{name}.gjf", "w") as g:
-            g.write(head + f"#P {u_}B3LYP/{a.basis} {'Stable=Opt' if stable else 'Force'} NoSymm Int=UltraFine {scf}\n\n"
+            g.write(head + f"#P {u_}B3LYP/{a.basis} {('Stable=Opt' if m > 1 else 'Stable') if stable else 'Force'} NoSymm Int=UltraFine {scf}\n\n"
                     f"{title}\n\n{q} {m}\n")
             g.writelines(f"{s:2s} {x:14.8f} {y:14.8f} {z:14.8f}\n" for s, (x, y, z) in zip(sym, p))
             g.write("\n")
@@ -84,8 +88,14 @@ def parse_log(path, origin="coords"):
     ch = re.search(r"Charge\s*=\s*(-?\d+)\s+Multiplicity\s*=\s*(\d+)", txt)
     q, mult = int(ch.group(1)), int(ch.group(2))
     s2 = re.findall(r"S\*\*2 before annihilation\s+(\d+\.\d+),\s+after\s+(\d+\.\d+)", txt)
-    stab = ("reoptimized" if re.search(r"wavefunction has an? .*instability", txt) else "stable") \
-        if "Stability analysis" in txt or "wavefunction is stable" in txt else "not_tested"
+    stab = "not_tested"
+    if "Stability analysis" in txt or "wavefunction is stable" in txt:
+        if re.search(r"has an? RHF\s*->\s*UHF instability", txt):
+            stab = "unstable_rhf_uhf"                    # closed shell: Stable (test only), RKS kept
+        elif re.search(r"wavefunction has an? .*instability", txt):
+            stab = "reoptimized" if scf[0].startswith("U") else "unstable_internal"
+        else:
+            stab = "stable"
     mass = np.array([MASS[s] for s in sym]); com = (mass[:, None] * P).sum(0) / mass.sum()
     zn = np.array(Z, float); cnc = (zn[:, None] * P).sum(0) / zn.sum()
     o = np.zeros(3) if origin == "coords" else cnc

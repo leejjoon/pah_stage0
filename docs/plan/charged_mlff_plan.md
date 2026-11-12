@@ -160,15 +160,39 @@ wall (*estimate* from the PySCF fit; Phase 0 confirms), so ≤ ~7.5 h per task; 
 Gaussian logs are compressed after parsing (`xz`), kept on `/appsdata` (not purged), and never committed. Training
 data and models stay out of git as well (size); scripts and plans are committed.
 
-## Quality checks after each DFT batch (gate G1 in the proposal)
+## Quality checks after each DFT batch (gate G1 in the proposal; committee review M2)
 
-1. Termination: count logs without "Normal termination" (`parse_failures.txt`); resubmit once; then drop.
-2. Spin: histogram of `s2` for doublets; flag > 0.80, list by size.
-3. Outliers: per species and charge, energies against the median of its frames (a failed SCF often lands on a
-   wrong state, several eV away); forces with any component > 10 eV/Å.
-4. Force consistency on ~10 frames: central finite differences of the energy along a few coordinates against the
-   analytic force (≤ 1×10⁻⁴ Ha/bohr). *(Tool not yet written.)*
+Nothing is dropped silently: every frame keeps a `qa_flags` label, and quarantined frames stay in the data with the
+reason, for a person to decide.
+
+1. Parse: `python d1/g16_io.py parse gjf seed_dft.extxyz 2> parse_failures.txt` (stability result, ⟨S²⟩ before and
+   after annihilation, all sampler labels carried over).
+2. QA: `python d1/mlff_qa.py seed_dft.extxyz seed_qa --manifest gjf/manifest.json` (xTB env, one core; ~0.1 s per
+   frame). Per species and charge it flags:
+   - `missing`: inputs with no parsed result (resubmit once, then report);
+   - `unstable`: a closed-shell RKS→UKS or an unrepaired internal instability;
+   - `s2_review`: doublet ⟨S²⟩ > 0.80 or > group median + 0.05 (a review trigger; ≤ 0.80 certifies nothing);
+   - `energy_outlier`: E − E(minimum frame) disagrees with GFN2-xTB's on the same geometries by more than
+     max(6 robust σ, 0.5 eV): the SCF likely found another state;
+   - `dipole_outlier`: the DFT − xTB dipole difference beyond max(6 robust σ, 0.3 e·Å) of the group.
+   Informational: `reoptimized`, `persistent_change`, `graph_changed`, `boundary`. Outputs `seed_qa.extxyz` (all
+   frames, flags, xTB energy and dipole), `seed_qa_report.csv`, `seed_qa_missing.txt`.
+   Tested 2026-11-12 on PySCF B3LYP/6-31G\* data for the 64 naphthalene seed frames (neutral and cation): no flags on
+   clean data; three planted faults (+2 eV energy, ⟨S²⟩ 0.91, an RKS→UKS instability) flagged, nothing else. A wrong
+   state within 0.5 eV of the right one passes this check; the state-QA side set (item 4) covers that case.
+3. Force consistency on ~10 frames: central finite differences of the energy against the analytic force
+   (≤ 1×10⁻⁴ Ha/bohr). *(Tool not yet written.)*
+4. State-QA side set (`d1/g16_stateqa.py`): 21 pairs stratified by size (naphthalene, coronene, circumcoronene
+   always), minimum and hottest intact MD frame per charge; neutrals re-run with UB3LYP Guess=Mix (broken-symmetry
+   check), cations with Guess=Huckel and Guess=Mix, each Stable=Opt then Force; ROB3LYP Force for the three named
+   cations. 132 jobs (~300 core-h *estimate*), `make` → `/var/tmp/$USER-pah/d1/mlff_seed/gjf_stateqa/`;
+   `report <qa log dir> seed_dft.extxyz` flags species whose default SCF is not the lowest solution
+   (by > 1×10⁻⁵ Ha) and gives ROKS−UKS force and dipole differences. Run with or right after Phase 1.
 5. Coverage: points per charge, size bin, `config_type`; held-out species must have no training frames.
+
+Settings fixed on every production job: `Int=UltraFine`, `SCF=(XQC,Conver=8,...)`, `NoSymm`. Stability two-step
+jobs: open shells `Stable=Opt` (re-optimise), closed shells `Stable` (test only, RKS kept, an instability is
+flagged). Mixed-guess singlets for dications come with the dication phase.
 
 ## Phase 2 working notes
 

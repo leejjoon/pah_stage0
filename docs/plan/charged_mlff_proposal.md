@@ -186,11 +186,18 @@ PAHdb v4's three scale factors, and report the alternative of scaling to the PAH
 
 ### 5.2 Electronic-structure protocol
 
-- Gaussian 16: `#P (U)B3LYP/6-31G* Force NoSymm SCF=(XQC,MaxConventionalCycles=64,MaxCycle=256)`; unrestricted for
-  odd-electron states (cations and anions of closed-shell PAHs are doublets); dications in the PAHdb ground-state
-  multiplicity (singlet or triplet, from the PAHdb electronic-state field). `NoSymm` keeps coordinates and forces in
-  the input frame.
-- Recorded per point: energy, forces, dipole moment, ⟨S²⟩ before annihilation, SCF cycles, termination status.
+- Gaussian 16: `#P (U)B3LYP/6-31G* Force NoSymm Int=UltraFine SCF=(XQC,Conver=8,MaxConventionalCycles=64,
+  MaxCycle=256)`; unrestricted for odd-electron states (cations and anions of closed-shell PAHs are doublets);
+  dications in the PAHdb ground-state multiplicity (singlet or triplet, from the PAHdb electronic-state field).
+  `NoSymm` keeps coordinates and forces in the input frame; grid and convergence are fixed explicitly.
+- Recorded per point: energy, forces, dipole moment, ⟨S²⟩ before and after annihilation, SCF cycles, termination
+  and the stability-test result.
+- Electronic-state QA (committee review M2): a wavefunction stability test before the forces on changed, boundary and
+  10 % of hot frames (open shells re-optimised; closed shells tested only, so the method stays RKS); per-species
+  checks of energy, ⟨S²⟩ and dipole against GFN2-xTB on the same geometries; a side set of 132 jobs with other
+  initial guesses (mixed-guess unrestricted for neutrals, Hückel and mixed guesses for cations) and ROKS for three
+  cations. Problem frames are quarantined with a reason, never dropped silently. ⟨S²⟩ > 0.80 triggers review; a
+  value below it certifies nothing.
 - The dipole of an ion depends on the origin; we store it about the centre of mass, as in the neutral pipeline. A
   Phase 0 test (the same cation translated by 3 Å) establishes which origin Gaussian reports.
 
@@ -246,7 +253,7 @@ Thresholds below are proposals for review.
 | Gate | Test | Proposed threshold |
 | --- | --- | --- |
 | G0 Gaussian set-up | Energies vs PySCF on the same geometries (same functional and basis); PAHdb total energies and harmonic frequencies for naphthalene neutral and cation | ≤ 1×10⁻⁵ Ha vs PySCF (integration grids differ); PAHdb energies ≤ 1×10⁻⁵ Ha (PAHdb used Gaussian 09 and 16, whose default grids differ); frequencies ≤ 2 cm⁻¹ |
-| G1 Data quality | Normal termination; ⟨S²⟩ of doublets; spot check of forces against finite differences on a few frames | ≥ 95 % terminated; ⟨S²⟩ ≤ 0.80 kept, larger flagged; force check ≤ 1×10⁻⁴ Ha/bohr |
+| G1 Data quality | Normal termination; stability tests; ⟨S²⟩ of doublets; energy and dipole per species against xTB on the same geometries; other-guess side set; forces against finite differences on a few frames | ≥ 95 % terminated; flagged frames quarantined with a reason, not dropped; no species where another guess finds a solution > 1×10⁻⁵ Ha lower, else that species is reviewed; force check ≤ 1×10⁻⁴ Ha/bohr |
 | G2 Accuracy | Held-out species, per charge state and per sampling temperature | Force MAE ≤ 0.06 eV/Å (Mai et al.'s level), including 1200–1500 K frames; dipole MAE ≤ 0.06 D (neutrals), ≤ 0.1 D about the centre of mass (ions) |
 | G3 On-trajectory accuracy | DFT single points on frames from the model's own MD | MAE ≤ 1.5 × the held-out value |
 | G4 Stability | Bond-graph check after 20 ps NVT + 50 ps NVE, held-out species, 4 replicas | ≥ 99 % intact at 50–900 K, ≥ 95 % at 1200 K |
