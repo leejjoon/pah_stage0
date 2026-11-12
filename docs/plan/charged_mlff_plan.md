@@ -27,7 +27,7 @@ neutral-only, trained on 300 K geometries, and breaks above ~600 K (and for some
 - DFT cost (PySCF pilot, B3LYP/4-31G, `charged_tdep_validation.md`): ∝ (basis functions)^2.6, cations 1.4–1.7×
   neutrals; 6-31G\* has 15 instead of 9 functions on C, so ~3.4× the 4-31G cost. Gaussian's speed is Phase 0's job.
 
-## Decision needed: level of theory
+## Level of theory: B3LYP/6-31G\* (decided 2026-11-12)
 
 | | B3LYP/6-31G\* | B3LYP/4-31G |
 | --- | --- | --- |
@@ -35,7 +35,7 @@ neutral-only, trained on 300 K geometries, and breaks above ~600 K (and for some
 | Seed-set cost (5,800 points, PySCF-based estimate) | ~10k core-h | ~3k core-h |
 | Full data (50–80k points, ≤ 100 C) | ~85–220k core-h | ~25–65k core-h |
 
-Mai's data are not available, so the neutrals are retrained either way. Recommendation: **6-31G\***, so the
+Decided 2026-11-12: **6-31G\***. Mai's data are not available, so the neutrals are retrained either way. Reason: so the
 anharmonic trends and the harmonic library come from the same electronic structure; at Hangang's scale the extra
 cost is days, not weeks. Keep the frequency scaling question separate (PAHdb's 0.9794 vs Mai's 0.9578 for 4-31G).
 
@@ -98,6 +98,10 @@ disagreement stay low on unseen species. Budget at 6-31G\*: of order 100–200k 
   116 chosen, 23 held out. Seed geometry sampling running on the project node (64 cores, NUMA node 1):
   `/var/tmp/$USER-pah/d1/mlff_seed/frames/`. The Gaussian parser has been tested only on a hand-written log; Phase 0
   is its first real test.
+- 2026-11-12: level of theory decided, B3LYP/6-31G\*. Seed sampling done: 5,586 frames kept of 5,800 (2,791
+  neutral, 2,795 cation; dropped 15 % at 1500 K, 7 % at 1200 K, 1.4 % at 900 K). Gaussian inputs written:
+  `/var/tmp/$USER-pah/d1/mlff_seed/gjf/` (5,586 `.gjf` + `manifest.json`), packed as `seed_gjf_631gs.tgz` (4.4 MB)
+  for copying to Hangang. Not submitted.
 
 ## Phase 1 run-book
 
@@ -113,13 +117,13 @@ done
 Copy `$S/gjf` (inputs and `manifest.json`) to Hangang, `/appsdata/$USER/d1/mlff_seed/gjf`, then:
 ```bash
 cd /appsdata/$USER/d1/mlff_seed
-ls $PWD/gjf/*.gjf > list.txt; K=25; N=$(( ($(wc -l < list.txt) + K - 1) / K ))
+ls $PWD/gjf/*.gjf > list.txt; K=10; N=$(( ($(wc -l < list.txt) + K - 1) / K ))
 sbatch --array=0-$((N-1))%50 --cpus-per-task=8 --mem=20G /appsdata/$USER/pah_stage0/d1/slurm_g16.sbatch list.txt $K
 # after the array: resubmit the same command to retry unfinished inputs (finished ones are skipped)
 python3 /appsdata/$USER/pah_stage0/d1/g16_io.py parse gjf seed_dft.extxyz 2> parse_failures.txt   # --origin from Phase 0
 ```
-K = 25 inputs per task keeps every task well under 24 h for ≤ 60 C at 8 cores (*estimate*: ≤ ~1.7 core-h, i.e.
-≤ 15 min wall, per 6-31G\* point at 60 C; Phase 0 confirms). `%50` caps concurrent tasks; adjust to the QoS limits
+K = 10 inputs per task keeps every task well under 24 h at 8 cores: a 60 C cation at 6-31G\* is ~6 core-h, ~45 min
+wall (*estimate* from the PySCF fit; Phase 0 confirms), so ≤ ~7.5 h per task; 5,586 inputs = 559 tasks. `%50` caps concurrent tasks; adjust to the QoS limits
 (`sacctmgr show qos normal_cpu format=Name,MaxJobsPU,MaxSubmitPU,MaxTRESPU` on Hangang, not yet checked).
 
 ## Data layout

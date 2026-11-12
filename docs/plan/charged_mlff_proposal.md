@@ -166,7 +166,7 @@ Not in scope: N- or O-substituted PAHs (deferred), pure-carbon clusters and full
 
 ## 5. Approach
 
-### 5.1 Level of theory (decision requested)
+### 5.1 Level of theory (decided: B3LYP/6-31G\*, 2026-11-12)
 
 | | B3LYP/6-31G\* (recommended) | B3LYP/4-31G |
 | --- | --- | --- |
@@ -174,7 +174,7 @@ Not in scope: N- or O-substituted PAHs (deferred), pure-carbon clusters and full
 | Seed set, 5,800 points *(estimate)* | ~10k core-h | ~3k core-h |
 | Full data, 50–80k points, ≤ 100 C *(estimate)* | ~85–220k core-h | ~25–65k core-h |
 
-We recommend 6-31G\*: the anharmonic temperature trends and the harmonic library they modify then come from the
+We chose 6-31G\* (project decision, 2026-11-12): the anharmonic temperature trends and the harmonic library they modify then come from the
 same electronic structure, and the extra cost is days on Hangang. Mai et al.'s data are unavailable, so the neutral
 model is retrained in either case. Frequencies from MD carry the basis set's systematic offset; we would apply
 PAHdb v4's three scale factors, and report the alternative of scaling to the PAHdb harmonic positions.
