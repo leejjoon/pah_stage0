@@ -7,7 +7,7 @@
 # (or arrays) on the same OUT at once, and resubmit with the same array size so each unit stays with one shard.
 # D1_DIR holds mai2025/src/Supplementary_Data_Code (Zenodo 15771437); the species come from the plan's xyz_dir. The run stops itself
 # before the job's time limit (30 min, or 15 % of a short limit), so resubmitting the same command continues.
-# Per-GPU output: OUT/mlmd_<jobid>_t<task>_g<k>.log; progress: apptainer exec A_jax.sif python d1/mlmd_run.py status OUT.
+# Per-GPU output: OUT/mlmd_<array or job id>_t<task>_g<k>.log; progress: apptainer exec A_jax.sif python d1/mlmd_run.py status OUT.
 #SBATCH --job-name=mlmd
 #SBATCH --partition=normal
 #SBATCH --nodes=1
@@ -24,11 +24,14 @@ XYZ=$(python3 -c "import json, sys; print(json.load(open(sys.argv[1]))['xyz_dir'
 [ -d "$XYZ" ] || { echo "plan's xyz_dir $XYZ not found"; exit 1; }
 module load apptainer/1.4.5
 export APPTAINERENV_JAX_PLATFORMS=cuda,cpu   # the self-check reference may use the CPU (--env would split the comma)
-limit=$(squeue -h -j "$SLURM_JOB_ID" -o %L || true)  # time left, [D-]HH:MM:SS
+# This task's own id: in an array, SLURM_JOB_ID of one task equals the array id, and squeue -j <array id>
+# lists every task (job 1265580: two lines, so the parse failed and the run ignored the time limit).
+jid=${SLURM_ARRAY_JOB_ID:+${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}}; jid=${jid:-$SLURM_JOB_ID}
+limit=$(squeue -h -j "$jid" -o %L || true)  # time left, [D-]HH:MM:SS
 hours=$(python3 -c "
 import sys; s = sys.argv[1]; d, s = (s.split('-') + [''])[:2] if '-' in s else ('0', s)
 p = [int(x) for x in s.split(':')]; p = [0] * (3 - len(p)) + p
-h = int(d) * 24 + p[0] + p[1] / 60 + p[2] / 3600; print(round(h - min(0.5, 0.15 * h), 3))" "$limit" 2>/dev/null || echo 23.5)
+h = int(d) * 24 + p[0] + p[1] / 60 + p[2] / 3600; print(round(h - min(0.5, 0.15 * h), 3))" "$limit" 2>/dev/null) || { echo "cannot read the time limit of $jid (squeue: '$limit')"; exit 1; }
 echo "task ${SLURM_ARRAY_TASK_ID:-0}/${SLURM_ARRAY_TASK_COUNT:-1}  host $(hostname)  $(nvidia-smi --query-gpu=name,driver_version --format=csv,noheader | head -1)  run --hours $hours $*"
 ngpu=$(nvidia-smi -L | wc -l); pids=()
 task=${SLURM_ARRAY_TASK_ID:-0}; ntask=${SLURM_ARRAY_TASK_COUNT:-1}
@@ -38,10 +41,10 @@ for g in $(seq 0 $((ngpu - 1))); do
     --bind "$D1/mai2025/src/Supplementary_Data_Code":/mai:ro --bind "$XYZ":/xyz:ro \
     --bind "${SLURM_SUBMIT_DIR}/d1":/w:ro --bind "$OUT":/out "$SIF" \
     python -I /w/mlmd_run.py run /mai /xyz /out --shard $((task * ngpu + g)) --nshards $((ntask * ngpu)) --hours "$hours" "$@" \
-    > "$OUT/mlmd_${SLURM_JOB_ID}_t${task}_g$g.log" 2>&1 &
+    > "$OUT/mlmd_${SLURM_ARRAY_JOB_ID:-$SLURM_JOB_ID}_t${task}_g$g.log" 2>&1 &
   pids+=($!)
 done
 rc=0; for p in "${pids[@]}"; do wait $p || rc=1; done
-for g in $(seq 0 $((ngpu - 1))); do echo "===== GPU $g"; grep -E 'done |finished|paused|Error|Traceback|assert' "$OUT/mlmd_${SLURM_JOB_ID}_t${task}_g$g.log" || true; done
+for g in $(seq 0 $((ngpu - 1))); do echo "===== GPU $g"; grep -E 'done |finished|paused|Error|Traceback|assert' "$OUT/mlmd_${SLURM_ARRAY_JOB_ID:-$SLURM_JOB_ID}_t${task}_g$g.log" || true; done
 apptainer exec --bind "$OUT":/out "$SIF" python -I "${SLURM_SUBMIT_DIR}/d1/mlmd_run.py" status /out || true
 exit $rc
