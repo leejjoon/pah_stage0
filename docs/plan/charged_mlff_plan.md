@@ -133,6 +133,21 @@ disagreement stay low on unseen species. Budget at 6-31G\*: of order 100–200k 
 - 2026-11-12: B1 done (`docs/plan/intensity_convention.md`): MD intensities use qm=3, unclipped, replica NVE T;
   validated on harmonic oscillators (exact at all T) and on xTB naphthalene/coronene ± (MD vs harmonic); default in
   `d1/mlmd_spectra.py` and `d1/tdep_compare.py`; xTB share trends redone; cascade coupling specified.
+- 2026-11-12: M3 splits (`d1/mlff_splits.py` → `mlff_seed/species_v2.csv`; v1 kept as `species_v1.csv`). Pairs grouped
+  by carbon skeleton (bond-graph hash of the carbons), so hydrogenated variants share their parent's split. The seven
+  lab-anchor benchmark species (naphthalene, anthracene, phenanthrene, pyrene, coronene, ovalene, circumcoronene) and
+  their skeleton groups are final_test; the rest split ~70/15/15 per 10-C bin. Result: train 76, validation 17,
+  final_test 23, plus transfer_test 8 (two pairs per 10-C bin, 61–100 C, skeletons not in the seed set; sampled with
+  5 frames each: minimum, one displacement, one MD frame at 300/900/1500 K). Cost of grouping: the 10–19 C bin keeps
+  only 11 training pairs of 25 (the anchors' hydrogenated variants follow them into final_test). The 116 seed pairs'
+  frames and inputs are unchanged; only their split labels change.
+- 2026-11-12: B4 prototype (`d1/b4_impact.py`, `docs/plan/b4_diagnostic_impact.md`): with xTB-sized charge-dependent
+  strength trends the recovered cation fraction is biased by 0.03–0.14 (tolerance 0.05); with half that, ≤ 0.037. The
+  deciding number is the cation CC-band strength slope; the gate needs a DFT-level value (B3 MD, then the pilot).
+- 2026-11-12: B3 part one started (`d1/aimd_pyscf.py`): PySCF B3LYP(VWN3)/6-31G\* MD of naphthalene neutral and cation,
+  300 and 900 K, 2 replicas, 2 ps NVT + 20 ps NVE, 8 threads each on cores 0–63, detached
+  (`/var/tmp/$USER-pah/d1/aimd/run_all.sh`; checkpoints every 100 fs; rerun to resume). 8.1 s (neutral) and 11.6 s
+  (cation) per 0.5 fs step: ~4 and ~6 days; ~10 ps of NVE after ~2–3 days.
 
 ## Phase 1 run-book
 
@@ -206,7 +221,9 @@ flagged). Mixed-guess singlets for dications come with the dication phase.
 
 ## Phase 2 working notes
 
-- Splits: by species (`split` column of `species.csv`); never split frames of one species between train and test.
+- Splits: `species_v2.csv` (M3): by carbon skeleton; train for fitting, validation for model selection and active-learning
+  stopping, final_test (incl. the lab anchors) and transfer_test (61–100 C) only for the final report. Never split
+  frames of one skeleton between sets.
 - NeuralIL + EPNN: Mai et al.'s training code under `src/Supplementary_Data_Code/lib/` (`bessel-nn-potentials-velo`,
   `epnn-main`); one model per charge state. Needs a converter from extended XYZ to their input format
   *(not yet written)*. Their EPNN predicts the dipole; for ions check that its charge constraint sums to the total
