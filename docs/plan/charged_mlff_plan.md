@@ -1,6 +1,8 @@
 # Charged-state MLFF: Gaussian training data, training, active learning (draft, 2026-11-12)
 
 Status: **tools built and Phase 0 inputs ready; nothing submitted on Hangang.** Branch `charged-mlff`.
+Reviewer-facing version (self-contained, with evidence, gates, budget and questions):
+`docs/plan/charged_mlff_proposal.md`. This file is the run-book.
 Context: `docs/plan/charged_tdep_validation.md` (the xTB test: band positions transfer from neutrals to cations,
 intensities unsettled; the DFT timing pilot) and `docs/plan/cluster_migration.md` (neutral MLMD, Hangang).
 
@@ -88,3 +90,92 @@ disagreement stay low on unseen species. Budget at 6-31G\*: of order 100–200k 
 - SCF failures on distorted ions: `SCF=XQC`; failed frames are logged and dropped.
 - mace-jax MD speed is not measured yet (T0); it may make production slower than NeuralIL.
 - Pure-carbon species (812 in PAHdb v4) are excluded by design.
+
+## Status log
+
+- 2026-11-12: species selection, sampler, Gaussian I/O, Slurm array and Phase 0 inputs built. Seed selection
+  re-run after excluding bare-carbon species (812 in PAHdb v4; C24 and C60 had been picked): 655 pairs available,
+  116 chosen, 23 held out. Seed geometry sampling running on the project node (64 cores, NUMA node 1):
+  `/var/tmp/$USER-pah/d1/mlff_seed/frames/`. The Gaussian parser has been tested only on a hand-written log; Phase 0
+  is its first real test.
+
+## Phase 1 run-book
+
+On the project node (xTB env `/var/tmp/$USER-pah/mamba/xtb`):
+```bash
+S=/var/tmp/$USER-pah/d1/mlff_seed
+python3 d1/mlff_species.py /var/tmp/$USER-pah/data/pahdb-complete-theoretical-v4.00.xml $S   # species.csv, xyz/
+# sampling: one process per species and charge (sample_one.sh + xargs -P 64; see $S/sample_jobs.txt)
+for f in $S/frames/*.extxyz; do                                                              # Gaussian inputs
+  /var/tmp/$USER-pah/mamba/xtb/bin/python d1/g16_io.py write $f $S/gjf --basis "6-31G*" --nproc 8 --mem 16GB
+done
+```
+Copy `$S/gjf` (inputs and `manifest.json`) to Hangang, `/appsdata/$USER/d1/mlff_seed/gjf`, then:
+```bash
+cd /appsdata/$USER/d1/mlff_seed
+ls $PWD/gjf/*.gjf > list.txt; K=25; N=$(( ($(wc -l < list.txt) + K - 1) / K ))
+sbatch --array=0-$((N-1))%50 --cpus-per-task=8 --mem=20G /appsdata/$USER/pah_stage0/d1/slurm_g16.sbatch list.txt $K
+# after the array: resubmit the same command to retry unfinished inputs (finished ones are skipped)
+python3 /appsdata/$USER/pah_stage0/d1/g16_io.py parse gjf seed_dft.extxyz 2> parse_failures.txt   # --origin from Phase 0
+```
+K = 25 inputs per task keeps every task well under 24 h for ≤ 60 C at 8 cores (*estimate*: ≤ ~1.7 core-h, i.e.
+≤ 15 min wall, per 6-31G\* point at 60 C; Phase 0 confirms). `%50` caps concurrent tasks; adjust to the QoS limits
+(`sacctmgr show qos normal_cpu format=Name,MaxJobsPU,MaxSubmitPU,MaxTRESPU` on Hangang, not yet checked).
+
+## Data layout
+
+| Path (project node: `/var/tmp/$USER-pah/d1/`, Hangang: `/appsdata/$USER/d1/`) | Content |
+| --- | --- |
+| `mlff_seed/species.csv`, `xyz/` | Selected pairs, PAHdb geometries per charge (`<formula>_<uid>_q<charge>.xyz`) |
+| `mlff_seed/frames/*.extxyz` | Sampled geometries, centred on the centre of mass, with `config_type` and `sample_T` |
+| `mlff_seed/gjf/*.gjf`, `manifest.json`, `*.log` | Gaussian inputs, frame info keyed by job name, outputs |
+| `mlff_seed/seed_dft.extxyz` | Parsed training data: `dft_energy` (eV), `dft_forces` (eV/Å), `dft_dipole` (e·Å, about the centre of mass), `charge`, `mult`, `s2`, `scf_cycles`, `basis`, `source` |
+| `g16_phase0/` | Phase 0 inputs, `list8.txt` / `list32.txt`, `expected.json` |
+
+Gaussian logs are compressed after parsing (`xz`), kept on `/appsdata` (not purged), and never committed. Training
+data and models stay out of git as well (size); scripts and plans are committed.
+
+## Quality checks after each DFT batch (gate G1 in the proposal)
+
+1. Termination: count logs without "Normal termination" (`parse_failures.txt`); resubmit once; then drop.
+2. Spin: histogram of `s2` for doublets; flag > 0.80, list by size.
+3. Outliers: per species and charge, energies against the median of its frames (a failed SCF often lands on a
+   wrong state, several eV away); forces with any component > 10 eV/Å.
+4. Force consistency on ~10 frames: central finite differences of the energy along a few coordinates against the
+   analytic force (≤ 1×10⁻⁴ Ha/bohr). *(Tool not yet written.)*
+5. Coverage: points per charge, size bin, `config_type`; held-out species must have no training frames.
+
+## Phase 2 working notes
+
+- Splits: by species (`split` column of `species.csv`); never split frames of one species between train and test.
+- NeuralIL + EPNN: Mai et al.'s training code under `src/Supplementary_Data_Code/lib/` (`bessel-nn-potentials-velo`,
+  `epnn-main`); one model per charge state. Needs a converter from extended XYZ to their input format
+  *(not yet written)*. Their EPNN predicts the dipole; for ions check that its charge constraint sums to the total
+  charge.
+- mace-jax: `mace-jax-train` with `--heads` (one head per charge state) and energy/force keys `dft_energy` /
+  `dft_forces`; float32 training, TF32 off as in T0. Dipole: EPNN as above, or a MACE dipole head built from
+  `LinearDipoleReadoutBlock` and `DipoleSingleLoss` *(not yet written)*.
+- Validation scripts: held-out errors per charge and `sample_T`; integrity runs with the MLMD driver
+  (`d1/mlmd_run.py` with a charge-state model); harmonic frequencies from the model Hessian against PAHdb.
+  *(The MLMD driver loads Mai et al.'s models; a model-loading hook for our models is needed.)*
+
+## Phase 3 working notes
+
+- Selection per round: ensemble MD (4 models) for ~500 species-charge pairs × 300–1500 K, 20 ps each; frames every
+  0.1 ps; keep the top ~2 % by maximum force disagreement per molecule, de-duplicated (at most ~10 per trajectory).
+- Each round ~10k Gaussian points; retrain from scratch or fine-tune (to decide by comparing on round 1).
+- Stop criteria: on never-trained species, integrity failures < 1 % at ≤ 900 K and < 5 % at 1200 K, and the
+  95th percentile of ensemble force disagreement below the G2 force threshold.
+
+## Tools still to write
+
+| Tool | Phase |
+| --- | --- |
+| Force finite-difference check (G1) | 1 |
+| Data QA report (termination, ⟨S²⟩, outliers, coverage) | 1 |
+| Extended XYZ → NeuralIL/EPNN training format | 2 |
+| Model-loading hook in `d1/mlmd_run.py` for our trained models | 2 |
+| Harmonic frequencies and intensities from a model, against PAHdb (G5) | 2 |
+| MACE dipole model or EPNN for ions | 2 |
+| Active-learning selector (ensemble MD, disagreement, de-duplication) | 3 |
+
