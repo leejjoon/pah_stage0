@@ -21,9 +21,9 @@ commit and push (the project node pulls it). Last update: 2026-11-12 KST.
 | Container A | `/appsdata/t641a02/sif/A_jax.sif` (`module load apptainer/1.4.5`) |
 | Mai's code and models | `/appsdata/t641a02/d1/mai2025/src/Supplementary_Data_Code`; published spectra inside `/appsdata/t641a02/d1/mai2025/Supplementary.zip` (`outputs/IR_txt_phdb_1704/IR_txt_{50,300,600}K_qm0.zip`) |
 | PAHdb v4.00 | `/appsdata/t641a02/d1/pahdb/pahdb-complete-theoretical-v4.00.xml.gz` (sha256 = `t0/pahdb-v4.00.sha256`) |
-| Species xyz | Mai: `/appsdata/t641a02/d1/XYZ_pahdb_1704`; overlap: `.../XYZ_overlap_v1` (48, copies of Mai's); new: `.../XYZ_new_v1` (1,000, named `<formula>_v4u<uid>.xyz`) |
+| Species xyz | Mai: `/appsdata/t641a02/d1/XYZ_pahdb_1704`; overlap: `.../XYZ_overlap_v1` (48, copies of Mai's); new: `.../XYZ_new_v1` (1,000, named `<formula>_v4u<uid>.xyz`); sp3: `.../XYZ_sp3_v1` (79 of Mai's species with sp3 C, copies; list `d1/sp3_species_v1.csv`) |
 | Species lists (git) | `d1/overlap_species_v1.csv`, `d1/new_species_v1.csv`, `d1/cells_v1.csv` |
-| Run directories | `/appsdata/t641a02/d1/runs/{calib01, overlap_v1, screen_new_v1, screen_mai_v1}` (each has `plan.json`, `units/`, per-GPU logs) |
+| Run directories | `/appsdata/t641a02/d1/runs/{calib01, overlap_v1, screen_new_v1, screen_mai_v1, screen300_sp3_v1}` (each has `plan.json`, `units/`, per-GPU logs) |
 | Job logs | `mlmd_<jobid>_4294967294.log` in the `/appsdata` clone root (untracked, keep out of git) |
 
 ## Jobs
@@ -73,6 +73,15 @@ its logs, tell the user the cause, fix, and ask before resubmitting; never resub
    `d1/new_species_v2.csv`. For screen_mai_v1: the fraction of Mai's species with H shifts or other topology
    changes at 600 K, by class and planarity; it qualifies their published 600 K spectra and informs the
    user's high-T test. Record both in `d1_hangang_new_species.md`.
+2b. **300 K screen of Mai's sp3 species** (after the overlap run showed C–C ring opening at 300 K): plan
+   `runs/screen300_sp3_v1` made 2026-11-12 (79 species × 300 K × 4 replicas, 200 + 200 ps, 316 systems in 28
+   units, ~8 GPU-h, ~2–2.5 h on one node). **Not yet submitted** (the agent's submit was blocked by the
+   permission classifier; the user submits it). Proven script, one job:
+   ```bash
+   cd /appsdata/t641a02/pah_stage0
+   sbatch --time=04:00:00 d1/slurm_mlmd_run.sbatch /appsdata/$USER/sif/A_jax.sif /appsdata/$USER/d1 /appsdata/$USER/d1/runs/screen300_sp3_v1
+   ```
+   Then `screen_check.py /appsdata/t641a02/d1/XYZ_sp3_v1 <run dir> <run dir>/screen.csv`.
 3. **Overlap analysis.** Screen done 2026-11-12: 4 of 48 fail, two of them (C19H12_348, C17H14_342, sp3 ring
    opening) at 300 K too; see the plan, step 2. Still to do: spectra with `d1/mlmd_spectra.py`; compare with Mai's published
    300 and 600 K spectra per species (generalise `d1/port/mai_spectrum_compare.py`, which does naphthalene); seed
