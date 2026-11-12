@@ -41,6 +41,7 @@ All on `normal`, 1 node, 4 GPUs, `d1/slurm_mlmd_run.sbatch A_jax.sif /appsdata/$
 | 1259237 | screen_new_v1 | 6:00 | COMPLETED | 4:39:14, 112/112 units done, 18 flagged; Full run (~16 GPU-h) |
 | 1265580_[0-1] | new300_v1 | 0:30 | task 0 COMPLETED, task 1 TIMEOUT | Array test: task 1 (whose job id equals the array id) read both tasks' time limits from `squeue`, fell back to `--hours 23.5` and was killed at the limit; checkpoints intact (8 units at 57–76 chunks). Sbatch fixed in `3a2b7fa` (own `<array>_<task>` id; abort if the limit is unreadable) |
 | 1268196_[0-1] | new300_v1 | 0:30 | COMPLETED (both tasks) | Retest passed: both read `--hours 0.423`, 8 units resumed (now 124–169 of 400 chunks), 0 flagged, 0 errors. Sbatch `3a2b7fa` is proven for arrays |
+| 1268834_[0-3] | new300_v1 | 12:00 | submitted 2026-11-12 22:4x | 300 K production, 982 new species (~118 GPU-h). Resubmit the same command with `--array=0-3` if it pauses |
 | 1265105 | screen300_sp3_v1 | 4:00 | submitted 2026-11-12 | 300 K screen of 79 sp3 species (~8 GPU-h) |
 | 1259238 | screen_mai_v1 | 8:00 | COMPLETED | 5:58:51, 150/150 units done, 2 flagged; Full run (~21 GPU-h) |
 
@@ -92,7 +93,7 @@ its logs, tell the user the cause, fix, and ask before resubmitting; never resub
 3b. **New-species production at 300 K (user, 2026-11-12: option A).** 982 new species without sp3 C × 300 K
    × 4 replicas, 200 + 200 ps: plan `runs/new300_v1` (3,928 systems, 97 units, ~118 GPU-h). The 18 sp3 new
    species wait for the 300 K sp3 screen; 600 K and higher wait for the user's high-T test. The array mode is
-   new on Hangang, so a test first: `--array=0-1 --time=00:30:00` (2 jobs), **job 1265580: task 1 ignored the time limit (fixed in `3a2b7fa`); retest 1268196 passed 2026-11-12**; production (`--array=0-3 --time=12:00:00`) awaits the user's go. Then `--array=0-3 --time=12:00:00`
+   new on Hangang, so a test first: `--array=0-1 --time=00:30:00` (2 jobs), **job 1265580: task 1 ignored the time limit (fixed in `3a2b7fa`); retest 1268196 passed 2026-11-12**; production submitted as **job 1268834** (`--array=0-3 --time=12:00:00`). Then `--array=0-3 --time=12:00:00`
    (4 jobs; per-GPU max ~9.2 h; at most 5 active jobs per user, so 4 while 1265105 is queued). Changing the
    array size between the test and production is safe because the two never run at once; keep the production
    size fixed for resubmits.
