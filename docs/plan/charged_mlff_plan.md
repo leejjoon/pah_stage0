@@ -32,7 +32,7 @@ neutral-only, trained on 300 K geometries, and breaks above ~600 K (and for some
 | | B3LYP/6-31G\* | B3LYP/4-31G |
 | --- | --- | --- |
 | Consistent with | PAHdb v4 (harmonic library, geometries, all charge states) | Mai et al.'s model and published spectra |
-| Seed-set cost (5,800 points, PySCF-based estimate) | ~10k core-h | ~3k core-h |
+| Seed-set cost (7,424 points, PySCF-based estimate) | ~13k core-h | ~4k core-h |
 | Full data (50–80k points, ≤ 100 C) | ~85–220k core-h | ~25–65k core-h |
 
 Decided 2026-11-12: **6-31G\***. Mai's data are not available, so the neutrals are retrained either way. Reason: so the
@@ -60,15 +60,24 @@ sbatch --array=0-7  --cpus-per-task=32 --mem=70G --time=12:00:00 /appsdata/$USER
 ```
 Check the `--comment` application code first (`showappl | grep -i gauss`; the script assumes `appl=gaussian`).
 
-**Phase 1: seed set, neutrals and cations (~10k core-h at 6-31G\*; about a day on 5 nodes).**
+**Phase 1: seed set, neutrals and cations (~13k core-h at 6-31G\*; about a day on 5 nodes).**
 - Species: `d1/mlff_species.py` → `/var/tmp/$USER-pah/d1/mlff_seed/species.csv`: 116 closed-shell neutral /
   doublet cation pairs of the same structure (bond-graph hash), 10–60 C, ~23 per 10-C bin, farthest-point
   sampling in solo/duo/trio/quartet fractions; naphthalene, anthracene, phenanthrene, pyrene, coronene, ovalene and
   circumcoronene always included; 23 pairs held out. Anion and dication uids recorded for later. Small pairs are
   scarce in PAHdb (25 with 10–19 C, 27 with 20–29 C), so nearly all of them are in.
-- Geometries: `d1/mlff_sample.py` (GFN2-xTB Langevin MD, FixCom): per species and charge 5 displaced minima
-  (0.05 Å) and 4 frames each at 300/600/900/1200/1500 K (2 ps equilibration, 0.5 ps apart); frames whose bond graph
-  changed are dropped. 25 frames × 232 = 5,800 points.
+- Geometries (revised after committee review B2, 2026-11-12): `d1/mlff_sample.py`, every frame kept and labelled,
+  32 per species and charge: the undisplaced minimum; 3 Gaussian displacements (0.05 Å); 4 normal-mode samples
+  (2 at 300 K, 2 at 1000 K, along the GFN2-xTB Hessian's modes); 4 controlled boundary geometries (one C–H stretched
+  to 1.25 and 1.40 Å; one atom pushed 0.3–0.6 Å out of plane); 20 GFN2-xTB Langevin MD frames (4 each at
+  300/600/900/1200/1500 K, 2 ps equilibration, 0.5 ps apart, FixCom). Labels: `sample_T` ("none" for non-thermal
+  frames), `max_stretch`, `max_elong`, `graph_changed`, and for MD `changed_n` (graph changed at the frame, +50 fs,
+  +100 fs: 3 = persistent) and `after_change`. 32 × 232 = 7,424 points. The v1 frames (changed frames dropped,
+  5,586 kept) are in `frames_v1/`, `gjf_v1/`.
+- Stability tests: `g16_io.py write` makes a two-step job (Stable=Opt, then Force from that wavefunction) for frames
+  with `graph_changed=1`, all `bound_*` frames and a reproducible random 10 % of frames at ≥ 1200 K; the parser
+  records `stability` (stable / reoptimized / not_tested) and ⟨S²⟩ before and after annihilation. All jobs use
+  `Int=UltraFine` explicitly.
 - DFT: `d1/g16_io.py write` (one `.gjf` per frame, `manifest.json` with frame info) → `d1/slurm_g16.sbatch` →
   `d1/g16_io.py parse` → extended XYZ (`dft_energy` eV, `dft_forces` eV/Å, `dft_dipole` e·Å about the centre of
   mass, `s2`, `scf_cycles`, `config_type`, `sample_T`). Drop frames that did not terminate normally; record ⟨S²⟩.
@@ -102,6 +111,11 @@ disagreement stay low on unseen species. Budget at 6-31G\*: of order 100–200k 
   neutral, 2,795 cation; dropped 15 % at 1500 K, 7 % at 1200 K, 1.4 % at 900 K). Gaussian inputs written:
   `/var/tmp/$USER-pah/d1/mlff_seed/gjf/` (5,586 `.gjf` + `manifest.json`), packed as `seed_gjf_631gs.tgz` (4.4 MB)
   for copying to Hangang. Not submitted.
+- 2026-11-12: committee review (`charged_mlff_committee_review.md`) received. B2 done: sampler keeps and labels all
+  frames, adds minimum, normal-mode and boundary geometries; stability two-step jobs for flagged frames; v1 inputs
+  withdrawn (do not submit `seed_gjf_631gs_v1.tgz`). Re-sampling running. M1 done: cold-check per-species table in
+  `cluster_migration.md`. Batch size K = 10 still holds (a two-step job costs ~1.5× a single point and only ~15 %
+  of frames get one).
 
 ## Phase 1 run-book
 

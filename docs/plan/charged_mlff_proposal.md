@@ -25,7 +25,7 @@ semi-empirical test (GFN2-xTB) already indicates that band *positions and widths
 identically in neutrals and cations, but it cannot settle band *intensities*, which is what the ionisation
 diagnostics depend on; that is the main scientific reason for this work.
 
-Cost *(estimate, to be replaced by Phase 0 measurements)*: ~10k CPU core-hours for a 5,800-point seed set,
+Cost *(estimate, to be replaced by Phase 0 measurements)*: ~13k CPU core-hours for a 7,424-point seed set,
 ~85–220k core-hours for the full 50–80k-point dataset, 350–850 GPU-hours for training and validation, and
 ~1,700–2,600 GPU-hours for production spectra across four charge states (inside the project's existing D1 GPU
 budget of 4,000–4,500 GPU-h). Calendar time: about 3–4 months to production-ready models.
@@ -94,9 +94,14 @@ geometry) on runs of 20 ps NVT + 50 ps NVE, 4 replicas:
 | 9 species that failed above, 50 K | 20/36 (16 changed) |
 | same 9 species, 300 K | 16/36 (20 changed) |
 
-Six species change in every replica even at 50 K (a ring opens in C9H8_495, H atoms move between carbons in
-C60H24_812, C–H bonds stretch past 1.28 Å in others): the model gets these species wrong, independent of
-temperature. Only three species fail because of temperature. A sweep of all 1,704 published species at 50 and 300 K
+Per species (replicas of 4 changed; corrected 2026-11-12 from the raw end states, full table in
+`cluster_migration.md`): four species change in every replica at every temperature, from 50 K (C9H8_495: a ring
+opens, C–C 1.51 → 4.5 Å; C60H24_812: H atoms move between carbons; C24H24_357 and C54H18_836: C–H bonds past
+1.28 Å), which is the 16/36. C15H10_341 joins at 300 K (20/36) and C29H17_2133 at 600 K; C10H9N_473, C27H15_2237 and
+C47H18_83 fail in 1 of 4 replicas at 600 K and all 4 from 900 K. Of the other 24 species, 23 have at least one
+changed replica at 1200 K; only naphthalene is intact throughout. The check uses end states only, so at 900–1200 K
+it does not separate a persistent change from a bond caught mid-stretch; at 50 K the distortions are far beyond
+thermal amplitude. A sweep of all 1,704 published species at 50 and 300 K
 (one replica each) is running to list the species the model breaks at low temperature *(in progress: 76 of 124 units
 done on 2026-11-12)*.
 
@@ -171,7 +176,7 @@ Not in scope: N- or O-substituted PAHs (deferred), pure-carbon clusters and full
 | | B3LYP/6-31G\* (recommended) | B3LYP/4-31G |
 | --- | --- | --- |
 | Consistent with | PAHdb v4.00: harmonic library, geometries, all charge states, its three scale factors | Mai et al.'s model and published spectra; PAHdb ≤ v3.20 |
-| Seed set, 5,800 points *(estimate)* | ~10k core-h | ~3k core-h |
+| Seed set, 7,424 points *(estimate)* | ~13k core-h | ~4k core-h |
 | Full data, 50–80k points, ≤ 100 C *(estimate)* | ~85–220k core-h | ~25–65k core-h |
 
 We chose 6-31G\* (project decision, 2026-11-12): the anharmonic temperature trends and the harmonic library they modify then come from the
@@ -202,13 +207,16 @@ PAHdb v4's three scale factors, and report the alternative of scaling to the PAH
 
 ### 5.4 Configurations
 
-- Per species and charge state *(tool built; seed sampling running)*: 5 copies of the DFT minimum with 0.05 Å random
-  displacements, and 4 frames each at 300, 600, 900, 1200 and 1500 K from GFN2-xTB Langevin MD (2 ps equilibration,
-  frames 0.5 ps apart, centre of mass fixed). 25 frames each, 5,800 points for the seed set.
-- Frames whose bond graph changed during xTB MD are dropped: the seed set describes intact molecules. Whether to add
-  deliberately distorted or dissociating frames so the models fail safely is an open question (§11). Of the seed set,
-  15 % of 1500 K frames, 7 % at 1200 K and 1.4 % at 900 K were dropped, none below: 5,586 frames kept of 5,800
-  *(measured, 2026-11-12)*.
+- Per species and charge state *(revised after the committee review, finding B2; re-sampling running)*, 32 frames, all
+  kept and labelled: the undisplaced DFT minimum; 3 random displacements (0.05 Å); 4 normal-mode samples (300 and
+  1000 K, GFN2-xTB Hessian); 4 controlled boundary geometries (C–H stretched to 1.25 and 1.40 Å; one atom 0.3–0.6 Å
+  out of plane); 20 GFN2-xTB Langevin MD frames, 4 each at 300, 600, 900, 1200 and 1500 K (2 ps equilibration,
+  0.5 ps apart, centre of mass fixed). 7,424 points for the seed set.
+- Each frame carries its largest bond stretch, whether its bond graph differs from the minimum, and for MD frames
+  whether the change persists over the next 100 fs. In the first version, changed frames were dropped (15 % at 1500 K,
+  7 % at 1200 K); in tests most of them are transient (the change is gone 50 fs later). Changed frames, boundary
+  geometries and 10 % of frames at ≥ 1200 K get a wavefunction stability test before the force calculation. Whether
+  they enter training is decided from that test and the electronic-state checks, not automatically.
 - Sampling to 1500 K is the key difference from Mai et al.'s 300 K training data. xTB's own errors only affect which
   geometries are sampled; all labels come from DFT.
 
@@ -258,7 +266,7 @@ band trends (O-D) becomes an injected systematic.
 | Phase | What | CPU core-h | GPU-h | Calendar |
 | --- | --- | --- | --- | --- |
 | 0 | Gaussian set-up and timing (28 jobs) | < 100 | – | 1 week |
-| 1 | Seed set: 116 pairs × 2 charges × 25 frames | ~10k | – | 1–2 weeks |
+| 1 | Seed set: 116 pairs × 2 charges × 32 frames | ~13k | – | 1–2 weeks |
 | 2 | Train two model families, ensembles; gates G2–G6 | ~2k (G3 single points) | 100–300 | 3–4 weeks |
 | 3 | Active learning, 3–5 rounds; to 100 C; anions, dications | ~75–210k | 250–550 | 6–8 weeks |
 | 4 | Production spectra, 4 charge states × ~2,000 species × 4 T × 4 replicas | – | ~1,700–2,600 | 2–4 weeks |

@@ -349,11 +349,28 @@ driver's own QA flags catch only part of this (25 of the hot test's changed syst
   900 K, 43/132 at 1200 K. At 1200 K most failures are H loss (41; 37 even with a 1.35 factor) and C–C changes (37).
   Naphthalene stays intact at all three.
 - **Cold check** (`/var/tmp/$USER-pah/d1/cold_check`): the 9 species that changed in the hot test, at 50 and 300 K
-  (4 replicas, 20 + 50 ps). Six of them change **even at 50 K**, in every replica: C9H8_495 opens a ring (C–C
-  1.51 → 4.5 Å), C60H24_812 moves H atoms between carbons, C24H24_357 and C54H18_836 stretch C–H bonds past
-  1.28 Å; C15H10_341 changes at 300 K. These are species the model gets wrong at any temperature (16/36 changed at
-  50 K, 20/36 at 300 K), not thermal failures. Only C10H9N_473, C27H15_2237 and C47H18_83 fail because of
-  temperature (900 and 1200 K).
+  (4 replicas, 20 + 50 ps). Corrected 2026-11-12 from the raw end states (`integrity_full.txt` in both run
+  directories; the first version of this note said "six species at 50 K", which mixed the hot-test list with the
+  cold check). Replicas (of 4) whose end-state bond graph differs from the input:
+
+  | Species | 50 K | 300 K | 600 K | 900 K | 1200 K | What changes |
+  | --- | --- | --- | --- | --- | --- | --- |
+  | C9H8_495 | 4 | 4 | 4 | 4 | 4 | Ring opens (C–C 1.51 → 4.5 Å at 50 K) |
+  | C24H24_357 | 4 | 4 | 4 | 4 | 4 | Several C–H past 1.28 Å (1.29 at 50 K) |
+  | C54H18_836 | 4 | 4 | 4 | 4 | 4 | One C–H 1.075 → 1.32 Å |
+  | C60H24_812 | 4 | 4 | 4 | 4 | 4 | H atoms move between carbons |
+  | C15H10_341 | 0 | 4 | 4 | 4 | 4 | C–C and C–H changes |
+  | C29H17_2133 | 0 | 0 | 4 | 4 | 4 | |
+  | C10H9N_473 | 0 | 0 | 1 | 4 | 4 | |
+  | C27H15_2237 | 0 | 0 | 1 | 4 | 4 | |
+  | C47H18_83 | 0 | 0 | 1 | 4 | 4 | |
+
+  So 4 species fail at every temperature (16/36 at 50 K), C15H10_341 from 300 K (20/36), C29H17_2133 from 600 K, and
+  three species from 600–900 K. Of the other 24 hot-test species, 23 have at least one changed replica at 1200 K
+  (4 at 900 K, none at 600 K); naphthalene (C10H8_330) is the only species intact at all temperatures. This is an
+  end-state check: it does not separate a persistent change from a bond caught mid-stretch. At 50 K a 1.29–1.32 Å
+  C–H bond is far beyond thermal amplitude, so those are real distortions; at 900–1200 K a persistence check
+  (several frames) is needed before calling a single C–H at ~1.3 Å a failure.
 - Consequences: 1200 K is not usable with this model; 900 K only with the integrity filter applied per system; and
   production at any temperature needs the integrity check, with species that fail at 50 K excluded (they are in
   Mai's published 50–600 K spectra too, so check those before use).

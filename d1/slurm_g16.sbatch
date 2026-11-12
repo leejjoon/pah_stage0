@@ -30,7 +30,7 @@ sed -n "$((T * K + 1)),$((T * K + K))p" "$LIST" | while read -r gjf; do
   if [ -f "$log" ] && tail -n 5 "$log" | grep -q "Normal termination"; then continue; fi
   t0=$(date +%s)
   ( cd "$(dirname "$gjf")" && g16 < "$(basename "$gjf")" > "$(basename "$log")" 2>&1 )
-  st=$?; rm -f "$SCR"/*
+  st=$?; rm -f "$SCR"/* "${gjf%.gjf}.chk"            # .chk only exists for two-step stability jobs
   echo "$(date '+%T') $(basename "$gjf") exit $st $(( $(date +%s) - t0 )) s $(tail -n 1 "$log" | cut -c1-60)"
 done
 echo "$(date '+%F %T') task $T done"
