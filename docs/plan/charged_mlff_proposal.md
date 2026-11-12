@@ -103,7 +103,7 @@ changed replica at 1200 K; only naphthalene is intact throughout. The check uses
 it does not separate a persistent change from a bond caught mid-stretch; at 50 K the distortions are far beyond
 thermal amplitude. A sweep of all 1,704 published species at 50 and 300 K (one replica each, 20 ps NVT + 30 ps NVE) found
 **62 species (3.6 %) whose bond graph the model changes**: 17 at 50 K and 45 more at 300 K, mostly C–H bonds lost or
-H atoms moving, 12 with C–C changes *(measured, 2026-11-12; list in `docs/plan/mai_model_lowT_failures.csv`)*.
+H atoms moving; 8 species with C–C changes *(measured, 2026-11-12; list in `docs/plan/mai_model_lowT_failures.csv`)*.
 
 ### 3.3 Do cations and neutrals have the same temperature dependence? A GFN2-xTB test *(measured, 2026-11-11/12)*
 
