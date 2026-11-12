@@ -123,6 +123,9 @@ disagreement stay low on unseen species. Budget at 6-31G\*: of order 100–200k 
   Gaussian inputs written (`gjf/`, B3LYP/6-31G\*, Int=UltraFine): 1,454 two-step stability jobs (all 928 boundary
   frames, 387 MD, 106 nms, 33 disp), 5,970 single Force jobs. Packed as `seed_gjf_631gs_v2.tgz` (5.8 MB). Estimated
   ~14–15k core-h with the stability steps. Not submitted; Phase 0 first.
+- 2026-11-12: M2 done (electronic-state QA: `d1/mlff_qa.py`, `d1/g16_stateqa.py`, stability and convergence settings in
+  `g16_io.py`). Seed inputs regenerated with them (neutrals: test-only `Stable`, 728; cations `Stable=Opt`, 726; all
+  `Conver=8`, `Int=UltraFine`); `seed_gjf_631gs_v2.tgz` (5.9 MB) now holds `gjf/` (7,424) and `gjf_stateqa/` (132).
 
 ## Phase 1 run-book
 
