@@ -21,7 +21,7 @@ commit and push (the project node pulls it). Last update: 2026-11-12 KST.
 | Container A | `/appsdata/t641a02/sif/A_jax.sif` (`module load apptainer/1.4.5`) |
 | Mai's code and models | `/appsdata/t641a02/d1/mai2025/src/Supplementary_Data_Code`; published spectra inside `/appsdata/t641a02/d1/mai2025/Supplementary.zip` (`outputs/IR_txt_phdb_1704/IR_txt_{50,300,600}K_qm0.zip`) |
 | PAHdb v4.00 | `/appsdata/t641a02/d1/pahdb/pahdb-complete-theoretical-v4.00.xml.gz` (sha256 = `t0/pahdb-v4.00.sha256`) |
-| Species xyz | Mai: `/appsdata/t641a02/d1/XYZ_pahdb_1704`; overlap: `.../XYZ_overlap_v1` (48, copies of Mai's); new: `.../XYZ_new_v1` (1,000, named `<formula>_v4u<uid>.xyz`); new at 300 K: `.../XYZ_new300_v1` (982 = new_v1 minus 18 sp3 species, list `d1/new300_species_v1.csv`); sp3: `.../XYZ_sp3_v1` (79 of Mai's species with sp3 C, copies; list `d1/sp3_species_v1.csv`) |
+| Species xyz | Mai: `/appsdata/t641a02/d1/XYZ_pahdb_1704`; overlap: `.../XYZ_overlap_v1` (48, copies of Mai's); new: `.../XYZ_new_v1` (1,000, named `<formula>_v4u<uid>.xyz`); new at 300 K: `.../XYZ_new300_v1`, plus `.../XYZ_new300sp3_v1` (the 18 sp3) (982 = new_v1 minus 18 sp3 species, list `d1/new300_species_v1.csv`); sp3: `.../XYZ_sp3_v1` (79 of Mai's species with sp3 C, copies; list `d1/sp3_species_v1.csv`) |
 | Species lists (git) | `d1/overlap_species_v1.csv`, `d1/new_species_v1.csv`, `d1/cells_v1.csv` |
 | Run directories | `/appsdata/t641a02/d1/runs/{calib01, overlap_v1, screen_new_v1, screen_mai_v1, screen300_sp3_v1, new300_v1}` (each has `plan.json`, `units/`, per-GPU logs) |
 | Job logs | `mlmd_<jobid>_4294967294.log` in the `/appsdata` clone root (untracked, keep out of git) |
@@ -86,8 +86,13 @@ its logs, tell the user the cause, fix, and ask before resubmitting; never resub
    sbatch --time=04:00:00 d1/slurm_mlmd_run.sbatch /appsdata/$USER/sif/A_jax.sif /appsdata/$USER/d1 /appsdata/$USER/d1/runs/screen300_sp3_v1
    ```
    Then `screen_check.py /appsdata/t641a02/d1/XYZ_sp3_v1 <run dir> <run dir>/screen.csv`.
-   **Done 2026-11-13: 22 of 79 fail at 300 K** (details in the plan, step 2). Open: whether the 18 new sp3
-   species get a 300 K run (and are screened afterwards) or are left out; the user decides.
+   **Done 2026-11-13: 22 of 79 fail at 300 K** (details in the plan, step 2). **User decision 2026-11-13:** the 18
+   new sp3 species get the 300 K production run too, and failures are dropped after the screen. Plan
+   `runs/new300sp3_v1` (xyz `XYZ_new300sp3_v1`, list `d1/new300sp3_species_v1.csv`; 72 systems in 18 units,
+   ~2.6 GPU-h, ~0.8 h on one node). Command (one job; the fixed sbatch has not yet completed a non-array run):
+   ```bash
+   sbatch --time=01:30:00 d1/slurm_mlmd_run.sbatch /appsdata/$USER/sif/A_jax.sif /appsdata/$USER/d1 /appsdata/$USER/d1/runs/new300sp3_v1
+   ```
 3. **Overlap analysis.** Screen done 2026-11-12: 4 of 48 fail, two of them (C19H12_348, C17H14_342, sp3 ring
    opening) at 300 K too; see the plan, step 2. Still to do: spectra with `d1/mlmd_spectra.py`; compare with Mai's published
    300 and 600 K spectra per species (generalise `d1/port/mai_spectrum_compare.py`, which does naphthalene); seed
