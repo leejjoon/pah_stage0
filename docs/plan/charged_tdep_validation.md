@@ -172,3 +172,35 @@ nominal 900 K: MLMD 800–1024 K, xTB 775–1172 K (xTB scatters more). Per 100 
   small cation, or a charged-state model).
 - Exceptions to look at: Jahn–Teller cations (coronene⁺) behave differently in the oop region.
 - Limits: 3 species, 4 replicas, nominal temperatures (NVE ⟨T⟩ scatters by tens of %), xTB non-spin-polarised.
+
+## DFT timing pilot for a charged-state MLFF (2026-11-12, project node)
+
+For the option of training charge-state MLFF heads (mace-jax 0.2.0 has no charge/spin input, but has multi-head
+fine-tuning; one head per charge state). `d1/dft_timing.py`: PySCF 2.15 (conda-forge, aarch64), B3LYP with
+Gaussian's VWN3 (`b3lypg`)/4-31G, the PAHdb and Mai et al. level; RKS for neutrals, UKS for doublet cations; energy,
+forces and the centre-of-mass dipole on a geometry displaced by 0.05 Å per coordinate. Grace cores on NUMA node 1.
+Results: `/var/tmp/$USER-pah/d1/dft_pilot/out/`. GPU4PySCF has no aarch64 wheel on PyPI (checked 2026-11-12).
+
+| Species | Basis functions | Core-h per point, neutral / cation (8 threads) | Cation SCF cycles | Cation ⟨S²⟩ |
+| --- | --- | --- | --- | --- |
+| naphthalene C10H8 | 106 | 0.013 / 0.018 | 14 | 0.764 |
+| coronene C24H12 | 240 | 0.089 / 0.15 | 20 | 0.767 |
+| ovalene C32H14 | 316 | 0.29 / 0.47 | 18 | 0.775 |
+| circumcoronene C54H18 | 522 | 0.90 / 1.30 | 19 | 0.777 |
+| C90H24 | 858 | 3.2 / 5.3 | 33 | 0.812 |
+| C144H30 | 1356 | 9.4 / 13.4 | 30 | 1.043 |
+
+- Cost ∝ (basis functions)^2.6; cations cost 1.4–1.7× neutrals (more SCF cycles). All SCFs converged.
+- Threads: 8 threads run at 84–94 % of single-thread efficiency; 32 threads at 44 % (coronene) to 87 % (C144). Run
+  small species on 1–8 threads, large ones on 32.
+- Density fitting (default auxiliary basis): only 0.9–2.5× faster, and forces differ by up to 2e-3 Ha/bohr in the
+  largest component, comparable to Mai et al.'s force MAE (1.2e-3 Ha/bohr). Not usable for training data as is.
+- Spin contamination of the large cations grows with size (⟨S²⟩ 0.81 at C90, 1.04 at C144 against 0.75): UB3LYP
+  data for big cations need a check (or restricted open-shell) before training on them.
+- Averaged over the sizes of Mai et al.'s 1,704 species (median ~35 C): 1.1 core-h per neutral point and 1.7 per
+  cation point; 0.3 / 0.5 if only species ≤ 60 C are used, 0.5 / 0.8 for ≤ 100 C.
+
+Data budget, 50–80k points (most of them ions), PySCF on CPU: **~75–130k core-h for all sizes, ~25–65k core-h with
+species ≤ 100 C** (MLFFs are local; the largest species would then be extrapolation tests), plus ~10–20 % for
+retries. Wall-clock: ~96 free Grace cores here, 4–8 weeks; 5 Hangang CPU nodes (core count to check; x86 per-core
+speed not measured), of order a week. Gaussian, if licensed on Hangang, is likely faster and is untested.
