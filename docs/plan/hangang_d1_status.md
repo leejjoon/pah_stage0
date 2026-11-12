@@ -42,7 +42,7 @@ All on `normal`, 1 node, 4 GPUs, `d1/slurm_mlmd_run.sbatch A_jax.sif /appsdata/$
 | 1265580_[0-1] | new300_v1 | 0:30 | task 0 COMPLETED, task 1 TIMEOUT | Array test: task 1 (whose job id equals the array id) read both tasks' time limits from `squeue`, fell back to `--hours 23.5` and was killed at the limit; checkpoints intact (8 units at 57–76 chunks). Sbatch fixed in `3a2b7fa` (own `<array>_<task>` id; abort if the limit is unreadable) |
 | 1268196_[0-1] | new300_v1 | 0:30 | COMPLETED (both tasks) | Retest passed: both read `--hours 0.423`, 8 units resumed (now 124–169 of 400 chunks), 0 flagged, 0 errors. Sbatch `3a2b7fa` is proven for arrays |
 | 1268834_[0-3] | new300_v1 | 12:00 | submitted 2026-11-12 22:4x | 300 K production, 982 new species (~118 GPU-h). Resubmit the same command with `--array=0-3` if it pauses |
-| 1265105 | screen300_sp3_v1 | 4:00 | submitted 2026-11-12 | 300 K screen of 79 sp3 species (~8 GPU-h) |
+| 1265105 | screen300_sp3_v1 | 4:00 | COMPLETED (3:08) | 300 K screen of 79 sp3 species: 28/28 units done; 22 of 79 species fail (13 H lost, 5 C–C broken, 4 H moved) |
 | 1259238 | screen_mai_v1 | 8:00 | COMPLETED | 5:58:51, 150/150 units done, 2 flagged; Full run (~21 GPU-h) |
 
 The sbatch at `6a51b79` is now a proven job (1258983 COMPLETED). Check the full runs with
@@ -86,6 +86,8 @@ its logs, tell the user the cause, fix, and ask before resubmitting; never resub
    sbatch --time=04:00:00 d1/slurm_mlmd_run.sbatch /appsdata/$USER/sif/A_jax.sif /appsdata/$USER/d1 /appsdata/$USER/d1/runs/screen300_sp3_v1
    ```
    Then `screen_check.py /appsdata/t641a02/d1/XYZ_sp3_v1 <run dir> <run dir>/screen.csv`.
+   **Done 2026-11-13: 22 of 79 fail at 300 K** (details in the plan, step 2). Open: whether the 18 new sp3
+   species get a 300 K run (and are screened afterwards) or are left out; the user decides.
 3. **Overlap analysis.** Screen done 2026-11-12: 4 of 48 fail, two of them (C19H12_348, C17H14_342, sp3 ring
    opening) at 300 K too; see the plan, step 2. Still to do: spectra with `d1/mlmd_spectra.py`; compare with Mai's published
    300 and 600 K spectra per species (generalise `d1/port/mai_spectrum_compare.py`, which does naphthalene); seed

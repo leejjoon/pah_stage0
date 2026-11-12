@@ -133,6 +133,20 @@ download needs PAHdb's e-mail form) copied to `/appsdata/$USER/d1/pahdb/` throug
     ~3.5–4 eV, so at 300 K this is a model artifact for sp3 (superhydrogenated) sites, and Mai's published 300 K
     spectra of such species may contain it. The 600 K screen did not test 300 K, so other sp3 species may do
     the same; a 300 K screen of Mai's sp3 species would show how many.
+- **300 K screen of Mai's 79 sp3 species (job 1265105, 200 + 200 ps, 4 replicas; checked 2026-11-13;
+  `runs/screen300_sp3_v1/screen.csv`): 22 of 79 fail (28 %) at 300 K.**
+  - Worst event per species: 13 lose an H (it dissociates: C16H12_337 r0 and C96H25_688 r1 end with the H
+    2,000–4,700 Å away), 5 break a C–C single bond at a CH2 site (C9H8_495, C15H10_341, C17H14_342, C19H12_348,
+    C19H14_349; e.g. 1.55 → 4.87 Å), 4 move an H to another carbon (e.g. C10H9_376 CH2 → neighbouring C).
+  - The C96H25/C96H26 isomers (684–691): an H moves or leaves in nearly every replica.
+  - 21 of the 22 also failed the 600 K screen; C23H13N_232 fails only here (an H lost).
+  - Checked by eye on six cases: the flags are real events, not artifacts of the test.
+  - Mai's published 300 K spectra of these 22 species are suspect too. For the library: sp3 (superhydrogenated
+    or CH2-bearing) species are outside the model's domain even at 300 K about a quarter of the time.
+- **`screen_check.py` now reports "H lost"** (an H more than 2.0 Å from every heavy atom; before, a lost H
+  could keep its starting carbon as the nearest heavy atom and pass, as C23H13N_232 did). Rerun on all runs
+  2026-11-13: pass/fail counts unchanged (overlap 4/48, new 139/1,000, Mai 365/1,704); species with H lost:
+  3, 18 and 32.
 
 **3. Overlap run.** 48 of Mai's species, stratified by Nc and class (including a few N-PAH, pentagon and
 superhydrogenated ones), × 300 and 600 K × **8 replicas**; 200 ps NVT + 200 ps NVE.

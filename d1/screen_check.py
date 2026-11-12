@@ -2,7 +2,8 @@
 the driver's QA flags plus the bond topology at the last checkpoint against the starting geometry.
 A system fails if it is non-finite, hot (T > 30,000 K), has more than 25 neighbours, sits in a unit with edge
 overflow, or changed its bonds:
-  - an H whose nearest heavy atom changed (H hop or loss; nearest-atom test, so C-H stretching does not count);
+  - an H whose nearest heavy atom changed (H hop; nearest-atom test, so C-H stretching does not count);
+  - an H more than 2.0 A from every heavy atom (H lost, i.e. dissociated);
   - a heavy-atom pair bonded at the start (d < 1.15 (r_i + r_j)) that is more than 2.0 A apart at the end;
   - a heavy-atom pair not bonded at the start that is closer than 1.6 A at the end.
 A species passes only if all its systems pass. Usage (container A, numpy):
@@ -12,7 +13,7 @@ import sys, os, json, csv, glob
 import numpy as np
 
 R = {"C": 0.76, "H": 0.31, "N": 0.71, "O": 0.66}
-BROKEN, FORMED, MAX_NEIGH = 2.0, 1.6, 25
+BROKEN, FORMED, MAX_NEIGH, H_LOST = 2.0, 1.6, 25, 2.0
 
 
 def read_xyz(path):
@@ -28,9 +29,13 @@ def topology_change(sym, x0, x1):
     out = []
     if len(hh):
         n0 = hv[np.linalg.norm(x0[hh, None] - x0[None, hv], axis=-1).argmin(1)]
-        n1 = hv[np.linalg.norm(x1[hh, None] - x1[None, hv], axis=-1).argmin(1)]
-        if (n0 != n1).any():
-            out.append("H moved (%d)" % int((n0 != n1).sum()))
+        d1h = np.linalg.norm(x1[hh, None] - x1[None, hv], axis=-1)
+        n1, lost = hv[d1h.argmin(1)], d1h.min(1) > H_LOST
+        moved = (n0 != n1) & ~lost
+        if moved.any():
+            out.append("H moved (%d)" % int(moved.sum()))
+        if lost.any():
+            out.append("H lost (%d)" % int(lost.sum()))
     d0 = np.linalg.norm(x0[hv, None] - x0[None, hv], axis=-1)
     d1 = np.linalg.norm(x1[hv, None] - x1[None, hv], axis=-1)
     bonded = (d0 < 1.15 * (rad[hv, None] + rad[None, hv])) & ~np.eye(len(hv), dtype=bool)
