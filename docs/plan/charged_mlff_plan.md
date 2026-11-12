@@ -148,6 +148,10 @@ disagreement stay low on unseen species. Budget at 6-31G\*: of order 100–200k 
   300 and 900 K, 2 replicas, 2 ps NVT + 20 ps NVE, 8 threads each on cores 0–63, detached
   (`/var/tmp/$USER-pah/d1/aimd/run_all.sh`; checkpoints every 100 fs; rerun to resume). 8.1 s (neutral) and 11.6 s
   (cation) per 0.5 fs step: ~4 and ~6 days; ~10 ps of NVE after ~2–3 days.
+- 2026-11-13: transfer_test sampled (16 runs, 80 frames, 2 with a changed bond graph) and written as Gaussian inputs
+  (`gjf_transfer/`, 32 CPUs and 60 GB each, 2 stability jobs; ~1k core-h *estimate*). `seed_gjf_631gs_v2.tgz` (6.0 MB)
+  now holds `gjf/` (7,424), `gjf_stateqa/` (132), `gjf_transfer/` (80) and `species_v2.csv`. Submit `gjf_transfer` as
+  its own array with `--cpus-per-task=32 --mem=70G`.
 
 ## Phase 1 run-book
 
