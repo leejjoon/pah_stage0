@@ -206,8 +206,9 @@ PAHdb v4's three scale factors, and report the alternative of scaling to the PAH
   displacements, and 4 frames each at 300, 600, 900, 1200 and 1500 K from GFN2-xTB Langevin MD (2 ps equilibration,
   frames 0.5 ps apart, centre of mass fixed). 25 frames each, 5,800 points for the seed set.
 - Frames whose bond graph changed during xTB MD are dropped: the seed set describes intact molecules. Whether to add
-  deliberately distorted or dissociating frames so the models fail safely is an open question (§11). So far ~22 % of
-  1500 K frames and ~7 % of 1200 K frames are dropped, almost none below *(measured, first 40 of 232 runs)*.
+  deliberately distorted or dissociating frames so the models fail safely is an open question (§11). Of the seed set,
+  15 % of 1500 K frames, 7 % at 1200 K and 1.4 % at 900 K were dropped, none below: 5,586 frames kept of 5,800
+  *(measured, 2026-11-12)*.
 - Sampling to 1500 K is the key difference from Mai et al.'s 300 K training data. xTB's own errors only affect which
   geometries are sampled; all labels come from DFT.
 
