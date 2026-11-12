@@ -21,9 +21,9 @@ commit and push (the project node pulls it). Last update: 2026-11-12 KST.
 | Container A | `/appsdata/t641a02/sif/A_jax.sif` (`module load apptainer/1.4.5`) |
 | Mai's code and models | `/appsdata/t641a02/d1/mai2025/src/Supplementary_Data_Code`; published spectra inside `/appsdata/t641a02/d1/mai2025/Supplementary.zip` (`outputs/IR_txt_phdb_1704/IR_txt_{50,300,600}K_qm0.zip`) |
 | PAHdb v4.00 | `/appsdata/t641a02/d1/pahdb/pahdb-complete-theoretical-v4.00.xml.gz` (sha256 = `t0/pahdb-v4.00.sha256`) |
-| Species xyz | Mai: `/appsdata/t641a02/d1/XYZ_pahdb_1704`; overlap: `.../XYZ_overlap_v1` (48, copies of Mai's); new: `.../XYZ_new_v1` (1,000, named `<formula>_v4u<uid>.xyz`); sp3: `.../XYZ_sp3_v1` (79 of Mai's species with sp3 C, copies; list `d1/sp3_species_v1.csv`) |
+| Species xyz | Mai: `/appsdata/t641a02/d1/XYZ_pahdb_1704`; overlap: `.../XYZ_overlap_v1` (48, copies of Mai's); new: `.../XYZ_new_v1` (1,000, named `<formula>_v4u<uid>.xyz`); new at 300 K: `.../XYZ_new300_v1` (982 = new_v1 minus 18 sp3 species, list `d1/new300_species_v1.csv`); sp3: `.../XYZ_sp3_v1` (79 of Mai's species with sp3 C, copies; list `d1/sp3_species_v1.csv`) |
 | Species lists (git) | `d1/overlap_species_v1.csv`, `d1/new_species_v1.csv`, `d1/cells_v1.csv` |
-| Run directories | `/appsdata/t641a02/d1/runs/{calib01, overlap_v1, screen_new_v1, screen_mai_v1, screen300_sp3_v1}` (each has `plan.json`, `units/`, per-GPU logs) |
+| Run directories | `/appsdata/t641a02/d1/runs/{calib01, overlap_v1, screen_new_v1, screen_mai_v1, screen300_sp3_v1, new300_v1}` (each has `plan.json`, `units/`, per-GPU logs) |
 | Job logs | `mlmd_<jobid>_4294967294.log` in the `/appsdata` clone root (untracked, keep out of git) |
 
 ## Jobs
@@ -87,6 +87,13 @@ its logs, tell the user the cause, fix, and ask before resubmitting; never resub
    opening) at 300 K too; see the plan, step 2. Still to do: spectra with `d1/mlmd_spectra.py`; compare with Mai's published
    300 and 600 K spectra per species (generalise `d1/port/mai_spectrum_compare.py`, which does naphthalene); seed
    scatter of band shares vs Nc decides the replica count of step 4 (default 4). Run `screen_check.py` on it too.
+3b. **New-species production at 300 K (user, 2026-11-12: option A).** 982 new species without sp3 C × 300 K
+   × 4 replicas, 200 + 200 ps: plan `runs/new300_v1` (3,928 systems, 97 units, ~118 GPU-h). The 18 sp3 new
+   species wait for the 300 K sp3 screen; 600 K and higher wait for the user's high-T test. The array mode is
+   new on Hangang, so a test first: `--array=0-1 --time=00:30:00` (2 jobs). Then `--array=0-3 --time=12:00:00`
+   (4 jobs; per-GPU max ~9.2 h; at most 5 active jobs per user, so 4 while 1265105 is queued). Changing the
+   array size between the test and production is safe because the two never run at once; keep the production
+   size fixed for resubmits.
 4. **New-species production** (a new plan, so ask the user first): `mlmd_run.py plan XYZ_new_v2 runs/new_v1
    --temps 300,600 --replicas 4` (default 200 + 200 ps); ~235 GPU-h, ~59 node-hours; a 5-task array
    (`--array=0-4`) of 6–12 h tasks, resubmitted with the same array size until done.
