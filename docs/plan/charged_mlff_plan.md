@@ -41,8 +41,9 @@ cost is days, not weeks. Keep the frequency scaling question separate (PAHdb's 0
 
 ## Phases
 
-**Phase 0: Gaussian on Hangang (inputs ready; < 100 core-h).** `d1/g16_phase0.py` →
-`/var/tmp/$USER-pah/d1/g16_phase0/` (28 inputs, `expected.json`):
+**Phase 0: Gaussian on Hangang (inputs ready; ~150–200 core-h).** `d1/g16_phase0.py` →
+`/var/tmp/$USER-pah/d1/g16_phase0/` (30 inputs, `expected.json`; packed as `/var/tmp/$USER-pah/d1/g16_phase0.tgz`,
+regenerated 2026-11-12 with the production settings `Int=UltraFine`, `Conver=8`):
 - `timing/`: the PySCF pilot's 12 geometries (C10–C144, neutral and cation, same displacement) at 4-31G and 6-31G\*.
   4-31G energies must match PySCF `b3lypg` (expect ≤ ~1e-5 Ha: grids differ); gives Gaussian's real cost per size.
 - `origin/`: the naphthalene cation and the same geometry shifted by +3 Å in x. If Gaussian's dipole is about the
@@ -51,11 +52,14 @@ cost is days, not weeks. Keep the frequency scaling question separate (PAHdb's 0
 - `pahdb/`: naphthalene neutral (uid 330) and cation (uid 359) at their PAHdb geometries, 6-31G\* Freq: energies
   against PAHdb `total_e` (−385.89270636 / −385.61361154 Ha) and frequencies against PAHdb's stored values.
 
-On Hangang (copy the directory to `/appsdata/$USER/d1/g16_phase0`, then):
+- `stability/`: naphthalene neutral and cation as two-step stability → Force jobs, the form production uses for
+  flagged frames (a real log for the parser's stability and second-step parsing).
+
+On Hangang (copy `g16_phase0.tgz` to `/appsdata/$USER/d1/` and unpack it there, then):
 ```bash
 cd /appsdata/$USER/d1/g16_phase0
 for n in 8 32; do grep -l "nprocshared=$n" $PWD/*/*.gjf > list$n.txt; done
-sbatch --array=0-19 --cpus-per-task=8  --mem=20G --time=04:00:00 /appsdata/$USER/pah_stage0/d1/slurm_g16.sbatch list8.txt 1
+sbatch --array=0-21 --cpus-per-task=8  --mem=20G --time=04:00:00 /appsdata/$USER/pah_stage0/d1/slurm_g16.sbatch list8.txt 1
 sbatch --array=0-7  --cpus-per-task=32 --mem=70G --time=12:00:00 /appsdata/$USER/pah_stage0/d1/slurm_g16.sbatch list32.txt 1
 ```
 Check the `--comment` application code first (`showappl | grep -i gauss`; the script assumes `appl=gaussian`).

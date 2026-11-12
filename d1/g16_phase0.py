@@ -5,6 +5,8 @@
 #          expected.json) and 6-31G* (cost); neutral and cation, C10-C144; 8 CPUs up to C54, 32 above.
 #  origin  the naphthalene cation pilot geometry and the same shifted by +3 A in x: the reported dipoles differ by
 #          q * 3 A in x if Gaussian's dipole is about the coordinate origin, by 0 if about the centre of nuclear charge.
+#  stability  naphthalene neutral and cation, the two-step stability -> Force jobs production uses (a real log for the
+#          parser: stability result, <S^2>, second-step forces).
 #  pahdb   naphthalene neutral and cation at their PAHdb geometries, 6-31G* single point + Freq: energies and
 #          frequencies against PAHdb v4.00 (total_e and transitions in expected.json).
 import json, os, sys
@@ -12,7 +14,7 @@ from xml.etree.ElementTree import iterparse
 import numpy as np
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-ROUTE = "#P {u}B3LYP/{basis} {job} NoSymm SCF=(XQC,MaxConventionalCycles=64,MaxCycle=256)"
+ROUTE = "#P {u}B3LYP/{basis} {job} NoSymm Int=UltraFine SCF=(XQC,Conver=8,MaxConventionalCycles=64,MaxCycle=256)"
 L = lambda e: e.tag.split("}")[-1]
 
 
@@ -37,6 +39,17 @@ def gjf(path, sym, P, q, m, basis, job="Force", nproc=8, mem="16GB"):
     return path
 
 
+def stable_gjf(path, sym, P, q, m, basis, nproc=8, mem="16GB"):
+    """Stability test (open shell: Stable=Opt; closed shell: Stable, test only), then Force from that wavefunction."""
+    os.makedirs(os.path.dirname(path), exist_ok=True); name = os.path.basename(path)[:-4]
+    head = f"%nprocshared={nproc}\n%mem={mem}\n%chk={name}.chk\n"; u = "U" if m > 1 else ""
+    with open(path, "w") as g:
+        g.write(head + ROUTE.format(u=u, basis=basis, job="Stable=Opt" if m > 1 else "Stable") + f"\n\n{name}\n\n{q} {m}\n")
+        g.writelines(f"{s:2s} {x:14.8f} {y:14.8f} {z:14.8f}\n" for s, (x, y, z) in zip(sym, P))
+        g.write("\n--Link1--\n" + head + ROUTE.format(u=u, basis=basis, job="Force") + " Geom=AllCheck Guess=Read\n\n")
+    return path
+
+
 def main():
     pilot, seed, xml, out = sys.argv[1:5]
     exp = {"timing_pyscf_b3lypg_4-31g": {}, "pahdb": {}}; files = []
@@ -56,6 +69,8 @@ def main():
             if name == "naphthalene" and q == 1:
                 files.append(gjf(f"{out}/origin/naph_q1_at0.gjf", sym, P, 1, 2, "4-31G"))
                 files.append(gjf(f"{out}/origin/naph_q1_shift3x.gjf", sym, P + [3.0, 0, 0], 1, 2, "4-31G"))
+            if name == "naphthalene":                    # two-step stability jobs as production writes them (parser test)
+                files.append(stable_gjf(f"{out}/stability/naph_q{q}_stable.gjf", sym, P, q, 2 if q else 1, "6-31G*"))
     want = {"330": 0, "359": 1}                                              # naphthalene neutral, cation (PAHdb uids)
     for _, el in iterparse(open(xml, "rb"), events=("end",)):
         if L(el) != "specie":
