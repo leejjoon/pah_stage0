@@ -126,6 +126,15 @@ Reading: band positions and widths transfer from neutrals to cations within a fe
 not settle: xTB fails the neutral control exactly in the in-plane region that carries the CC bands, so its
 cation intensity trends cannot be trusted. Limits: three species, four replicas, xTB without spin polarisation.
 
+Intensity convention (committee review B1, `docs/plan/intensity_convention.md`): the share numbers above used the
+authors' estimator (no quantum correction, negative values clipped), which weights bands roughly by 1/ν and inflates
+high-frequency bands with temperature (a 1613/893 cm⁻¹ ratio by 27 % from 300 to 1200 K for purely harmonic data).
+Redone with the harmonic quantum correction, unclipped, each replica's own temperature and the integrity filter:
+the neutral CH-stretch share now falls 1.4–2.4 % per 100 K instead of rising; the cation CH-stretch rise survives
+(+0.7 / +7 / +24 % per 100 K for coronene / naphthalene / pyrene); xTB's neutral in-plane share rises 11–16 % per
+100 K against 0.2–2.8 % in Mai et al.'s model, so the control fails more clearly. Band positions and widths change by
+≤ 0.3 cm⁻¹ per 100 K. Mai et al.'s published spectra use the authors' convention.
+
 ### 3.4 What the DFT data will cost *(measured with PySCF, 2026-11-12; Gaussian not yet timed)*
 
 B3LYP (Gaussian's VWN3 variant)/4-31G energy + forces + dipole, geometry displaced by 0.05 Å, 8 threads on Grace

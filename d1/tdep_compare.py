@@ -1,6 +1,6 @@
 # Temperature dependence of IR bands: GFN2-xTB neutral vs cation (d1/xtb_md.py), and the neutral MLMD reference
 # (d1/mlmd_run.py), for docs/plan/charged_tdep_validation.md. Spectra with the authors' calc_MD_IR maths
-# (mlmd_spectra.ir_sigma, qm 0, frequencies scaled by 0.9578 for both methods: only shifts and widths relative to
+# (mlmd_spectra.ir_sigma, qm 3 unclipped by default (see below), frequencies scaled by 0.9578 for both methods: only shifts and widths relative to
 # 300 K are compared, never absolute positions across methods).
 #   python tdep_compare.py <xtb runs dir> <mlmd run dir> <png or ->
 # Per species, method/charge and temperature, per replica: for three regions (CH out-of-plane 600-1000, CC/CH
@@ -12,17 +12,28 @@ from collections import defaultdict
 import numpy as np
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from mlmd_spectra import ir_sigma
+from mlmd_integrity import bonds, read_xyz
+
+# Intensity convention (committee review B1; d1/estimator_check.py): qm=3 (harmonic quantum correction) without
+# clipping negative values, with each replica's own mean NVE temperature in the prefactor, reproduces harmonic
+# integrated intensities at every T. The authors' convention (qm=0, clipped, nominal T) inflates high-frequency bands
+# with T (a 1613/893 cm^-1 ratio by 27 % from 300 to 1200 K for purely harmonic data) and narrow-line integrals.
+# Environment: QM (default 3), CLIP (default 0), TNOM=1 to use the nominal T in the prefactor (old behaviour).
+QM = int(os.environ.get("QM", 3)); CLIP = os.environ.get("CLIP", "0") == "1"; TNOM = os.environ.get("TNOM", "0") == "1"
+SKIPPED = []                                    # trajectories left out by the integrity check
 
 REGIONS = {"oop 600-1000": (600, 1000), "inplane 1000-1700": (1000, 1700), "CHstr 2700-3300": (2700, 3300)}
 MLMD_NAME = {"C10H8_330": "naphthalene", "C16H10_334": "pyrene", "C24H12_18": "coronene"}
 
 
 def metrics(f, s):
+    """Per window: centroid and rms width from the non-negative part of the spectrum (shape), and the share of the
+    300-3800 cm^-1 total from the full spectrum (an unclipped spectrum's ripples cancel over a window)."""
     tot = s.sum(); out = {}
     for name, (lo, hi) in REGIONS.items():
-        m = (f >= lo) & (f < hi); w = s[m]; x = f[m]
+        m = (f >= lo) & (f < hi); x = f[m]; w = np.clip(s[m], 0, None)
         c = (w * x).sum() / w.sum()
-        out[name] = (c, np.sqrt((w * (x - c) ** 2).sum() / w.sum()), w.sum() / tot)
+        out[name] = (c, np.sqrt((w * (x - c) ** 2).sum() / w.sum()), s[m].sum() / tot)
     return out
 
 
@@ -33,8 +44,12 @@ def load_xtb(d):
         if int(z["frames_done"]) < len(z["dipole"]) or len(z["dipole"]) < 1000:
             continue
         sp, q, T = re.match(r"(\w+?)_q(\d)_(\d+)K_r\d", os.path.basename(f)).groups()
-        fr, s = ir_sigma(z["dipole"], float(T), 1.0, 0)
-        R[(sp, f"xTB q={q}", float(T))].append((fr, s, float(np.mean(np.array(z["qa"])[:, 1]))))
+        sym, p0 = read_xyz(str(z["xyz"]))
+        if bonds(sym, p0) != bonds(sym, z["positions"]):          # bond graph changed by the end of the run
+            SKIPPED.append(os.path.basename(f)); continue
+        Tm = float(np.mean(np.array(z["qa"])[:, 1]))
+        fr, s = ir_sigma(z["dipole"], float(T) if TNOM else Tm, 1.0, QM, CLIP)
+        R[(sp, f"xTB q={q}", float(T))].append((fr, s, Tm))
     return R
 
 
@@ -43,10 +58,16 @@ def load_mlmd(d, R):
         u = os.path.dirname(meta)
         if not os.path.exists(f"{u}/DONE"):
             continue
-        m = json.load(open(meta)); mu = np.load(f"{u}/dipole.npy"); qT = np.load(f"{u}/state.npz")["qa_T"]
+        m = json.load(open(meta)); mu = np.load(f"{u}/dipole.npy"); st = np.load(f"{u}/state.npz"); qT = st["qa_T"]
+        xyz = os.path.join(os.path.dirname(os.path.abspath(d)), "xyz")      # <run>/../xyz, as the MLMD runs are laid out
         for k, s in enumerate(m["systems"]):
-            fr, sg = ir_sigma(mu[:, k], s["T"], 1.0, 0)
-            R[(MLMD_NAME.get(s["species"], s["species"]), "MLMD q=0", s["T"])].append((fr, sg, float(qT[:, k].mean())))
+            if os.path.isdir(xyz):
+                sym, p0 = read_xyz(f"{xyz}/{s['species']}.xyz")
+                if bonds(sym, p0) != bonds(sym, st["p"][k]):
+                    SKIPPED.append(f"{s['species']} {s['T']:.0f}K r{s['replica']}"); continue
+            Tm = float(qT[:, k].mean())
+            fr, sg = ir_sigma(mu[:, k], s["T"] if TNOM else Tm, 1.0, QM, CLIP)
+            R[(MLMD_NAME.get(s["species"], s["species"]), "MLMD q=0", s["T"])].append((fr, sg, Tm))
     return R
 
 
@@ -78,6 +99,8 @@ def stat(lst, region, i):
 
 def main():
     S = load_mlmd(sys.argv[2], load_xtb(sys.argv[1]))
+    print(f"intensity convention: qm={QM}, clip={CLIP}, prefactor T={'nominal' if TNOM else 'replica NVE mean'}; "
+          f"left out by the integrity check: {len(SKIPPED)} {SKIPPED}")
     S_T = {k: [x[2] for x in v] for k, v in S.items()}       # each replica's NVE mean temperature
     global REGIONS
     base = dict(REGIONS); R = {}; PK = {}

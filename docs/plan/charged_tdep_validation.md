@@ -161,6 +161,14 @@ nominal 900 K: MLMD 800–1024 K, xTB 775–1172 K (xTB scatters more). Per 100 
 - Shares: the cations' CH-stretch share rises 3–18 % per 100 K (xTB) where neutrals' stays within ±3 %; the neutrals'
   in-plane share rises 6–10 % per 100 K in xTB but 0–4 % in MLMD (the control failure noted above).
 
+### Intensity convention (added 2026-11-12, committee review B1)
+
+The share numbers in this section used the authors' estimator (qm=0, clipped, nominal T). `docs/plan/
+intensity_convention.md` shows it weights bands roughly by 1/ν and adds a spurious temperature trend; redone with
+qm=3, unclipped, replica NVE temperature and the integrity filter (`/var/tmp/$USER-pah/d1/xtb_test/compare_new.txt`,
+old convention in `compare_old.txt`), intensity trends change by up to 2× and the neutral CH-stretch share trend
+changes sign. Positions and widths change by ≤ 0.3 cm⁻¹ per 100 K. Read the share numbers above as superseded.
+
 ### Reading so far
 
 - Band **positions and widths**: no sign of a charge-specific temperature dependence beyond a few cm⁻¹ for
