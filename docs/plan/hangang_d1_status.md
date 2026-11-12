@@ -41,6 +41,7 @@ All on `normal`, 1 node, 4 GPUs, `d1/slurm_mlmd_run.sbatch A_jax.sif /appsdata/$
 | 1259237 | screen_new_v1 | 6:00 | COMPLETED | 4:39:14, 112/112 units done, 18 flagged; Full run (~16 GPU-h) |
 | 1265580_[0-1] | new300_v1 | 0:30 | task 0 COMPLETED, task 1 TIMEOUT | Array test: task 1 (whose job id equals the array id) read both tasks' time limits from `squeue`, fell back to `--hours 23.5` and was killed at the limit; checkpoints intact (8 units at 57–76 chunks). Sbatch fixed in `3a2b7fa` (own `<array>_<task>` id; abort if the limit is unreadable) |
 | 1268196_[0-1] | new300_v1 | 0:30 | COMPLETED (both tasks) | Retest passed: both read `--hours 0.423`, 8 units resumed (now 124–169 of 400 chunks), 0 flagged, 0 errors. Sbatch `3a2b7fa` is proven for arrays |
+| 1270903 | new300sp3_v1 | 1:30 | submitted 2026-11-13 | 300 K run of the 18 new sp3 species (~2.6 GPU-h); screen afterwards, drop failures |
 | 1268834_[0-3] | new300_v1 | 12:00 | submitted 2026-11-12 22:4x | 300 K production, 982 new species (~118 GPU-h). Resubmit the same command with `--array=0-3` if it pauses |
 | 1265105 | screen300_sp3_v1 | 4:00 | COMPLETED (3:08) | 300 K screen of 79 sp3 species: 28/28 units done; 22 of 79 species fail (13 H lost, 5 C–C broken, 4 H moved) |
 | 1259238 | screen_mai_v1 | 8:00 | COMPLETED | 5:58:51, 150/150 units done, 2 flagged; Full run (~21 GPU-h) |
@@ -89,7 +90,7 @@ its logs, tell the user the cause, fix, and ask before resubmitting; never resub
    **Done 2026-11-13: 22 of 79 fail at 300 K** (details in the plan, step 2). **User decision 2026-11-13:** the 18
    new sp3 species get the 300 K production run too, and failures are dropped after the screen. Plan
    `runs/new300sp3_v1` (xyz `XYZ_new300sp3_v1`, list `d1/new300sp3_species_v1.csv`; 72 systems in 18 units,
-   ~2.6 GPU-h, ~0.8 h on one node). Command (one job; the fixed sbatch has not yet completed a non-array run):
+   ~2.6 GPU-h, ~0.8 h on one node). **Submitted 2026-11-13 as job 1270903.** Command (one job):
    ```bash
    sbatch --time=01:30:00 d1/slurm_mlmd_run.sbatch /appsdata/$USER/sif/A_jax.sif /appsdata/$USER/d1 /appsdata/$USER/d1/runs/new300sp3_v1
    ```
