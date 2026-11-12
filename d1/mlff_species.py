@@ -40,7 +40,7 @@ def read_pahdb(path):
             continue
         atoms = [(int(kid(a, "type").text), [float(kid(a, c).text) for c in "xyz"]) for a in kid(el, "geometry")]
         Z = [z for z, _ in atoms]
-        if set(Z) <= {1, 6}:
+        if set(Z) == {1, 6}:                               # C and H, both present (no bare carbon clusters)
             com = " ".join((x.text or "") for x in kid(el, "comments")).lower()
             m = re.search(r"b3lyp/([\w\-\+\*]+)", com)
             out.append(dict(uid=int(el.get("uid")), formula=kid(el, "formula").text, charge=int(kid(el, "charge").text),
