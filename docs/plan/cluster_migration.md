@@ -371,6 +371,14 @@ driver's own QA flags catch only part of this (25 of the hot test's changed syst
   end-state check: it does not separate a persistent change from a bond caught mid-stretch. At 50 K a 1.29–1.32 Å
   C–H bond is far beyond thermal amplitude, so those are real distortions; at 900–1200 K a persistence check
   (several frames) is needed before calling a single C–H at ~1.3 Å a failure.
+- **Low-temperature sweep of all 1,704 published species** (`/var/tmp/$USER-pah/d1/sweep`, 2026-11-12): 50 and 300 K,
+  one replica, 20 ps NVT + 30 ps NVE, 124 units, ~14 h on GPU 0. The model changes the bond graph of **62 species
+  (3.6 %)**: 17 at 50 K (15 of them also at 300 K, 2 only at 50 K) and 45 more only at 300 K. At 50 K: 4 with C–C
+  changes, 7 losing a C–H bond, 4 gaining one, 2 with H moving. At 300 K (60 systems): 30 losing a C–H bond, 14 with
+  H moving, 8 gaining a C–H bond, 8 with C–C changes. 20 of the 62 have an odd number of H (radicals); 1 contains N.
+  At 300 K a C–H bond past the 1.28 Å cut is ~6–7 classical thermal standard deviations from equilibrium, so these
+  are distortions, not a bond caught mid-stretch. List: `docs/plan/mai_model_lowT_failures.csv`. These species are
+  in Mai et al.'s published 50–600 K spectra; exclude them, or check their published spectra, before use.
 - Consequences: 1200 K is not usable with this model; 900 K only with the integrity filter applied per system; and
   production at any temperature needs the integrity check, with species that fail at 50 K excluded (they are in
   Mai's published 50–600 K spectra too, so check those before use).

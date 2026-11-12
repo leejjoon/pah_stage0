@@ -1,0 +1,63 @@
+species,fails_50K,fails_300K,change_50K,change_300K,bonds_gained_300K,bonds_lost_300K
+C9H8_495,1,1,C-C,C-C,1,1
+C10H12_332,1,1,C-H lost,C-C,2,2
+C15H10_341,0,1,,C-C,1,2
+C16H12_337,0,1,,H moved,1,1
+C17H14_342,0,1,,C-C,1,3
+C19H12_348,1,1,C-C,C-C,0,1
+C19H14_349,1,1,C-C,C-C,0,2
+C23H13N_230,0,1,,C-H gained,1,0
+C24H16_379,1,1,C-H lost,C-H lost,0,3
+C24H16_381,1,1,C-H lost,C-H lost,0,3
+C24H24_357,1,1,C-H lost,C-H lost,0,12
+C28H16_2177,0,1,,H moved,2,2
+C28H16_2213,0,1,,H moved,2,2
+C30H18_1942,0,1,,H moved,2,5
+C30H18_1944,0,1,,C-H lost,0,2
+C30H18_1966,0,1,,C-H lost,0,2
+C31H17_1836,0,1,,H moved,1,2
+C32H18_1571,0,1,,C-H lost,0,2
+C32H18_1651,0,1,,C-H lost,0,2
+C32H18_1669,0,1,,C-H lost,0,2
+C32H18_1763,0,1,,H moved,2,2
+C33H19_1191,0,1,,H moved,1,2
+C33H19_1217,0,1,,C-H lost,0,2
+C33H19_1221,1,0,C-H lost,,,
+C33H19_1226,0,1,,C-H lost,0,2
+C33H19_1319,1,0,C-H lost,,,
+C33H19_1350,0,1,,C-H lost,0,2
+C33H19_1375,0,1,,H moved,1,5
+C33H19_1377,0,1,,C-H lost,0,2
+C33H19_1473,0,1,,C-H lost,0,3
+C33H19_1477,0,1,,C-H lost,0,1
+C33H19_1479,0,1,,H moved,2,2
+C33H19_1485,0,1,,C-H lost,0,2
+C34H18_1143,0,1,,H moved,1,2
+C34H20_1038,0,1,,C-H lost,0,1
+C34H20_1104,0,1,,C-H lost,0,2
+C34H20_1108,0,1,,C-H lost,0,1
+C34H20_1128,0,1,,C-H lost,0,2
+C34H20_1129,0,1,,H moved,2,2
+C34H20_932,0,1,,H moved,2,2
+C34H20_961,0,1,,C-H lost,0,4
+C34H20_962,0,1,,C-H lost,0,2
+C34H20_965,0,1,,C-H lost,0,1
+C34H20_966,0,1,,C-H lost,0,1
+C34H20_967,0,1,,C-H lost,0,1
+C34H20_985,0,1,,C-H lost,0,1
+C34H20_989,0,1,,C-H lost,0,1
+C54H18_836,1,1,C-H lost,C-H lost,0,1
+C56H20_806,0,1,,C-H gained,2,0
+C56H20_807,0,1,,C-H gained,1,0
+C58H22_809,1,1,C-H gained,C-H gained,4,0
+C60H24_812,1,1,C-H gained,C-C,4,2
+C96H25_684,0,1,,C-H gained,1,0
+C96H25_685,0,1,,C-H gained,1,0
+C96H25_687,0,1,,C-H lost,0,1
+C96H25_688,0,1,,C-H lost,0,1
+C96H25_689,1,1,H moved,C-H lost,0,1
+C96H25_690,1,1,C-H gained,C-H gained,1,0
+C96H26_691,1,1,C-H gained,H moved,3,1
+C98H26_801,0,1,,C-H gained,2,0
+C100H28_803,1,1,H moved,H moved,4,1
+C101H30_804,1,1,C-C,C-C,3,2
