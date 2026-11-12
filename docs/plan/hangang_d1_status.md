@@ -39,6 +39,7 @@ All on `normal`, 1 node, 4 GPUs, `d1/slurm_mlmd_run.sbatch A_jax.sif /appsdata/$
 | 1258983 | screen_new_v1 | 0:30 | COMPLETED | Test of the fixed sbatch: 4 units done, 4 paused; 1 flagged (C52H16N2_v4u9326, 600 K, replica 2, in paused n070_u000) |
 | 1259236 | overlap_v1 | 10:00 | COMPLETED | 6:52:20, 41/41 units done, 4 flagged; Full run, resumes from the test's checkpoints (~25 GPU-h) |
 | 1259237 | screen_new_v1 | 6:00 | COMPLETED | 4:39:14, 112/112 units done, 18 flagged; Full run (~16 GPU-h) |
+| 1265105 | screen300_sp3_v1 | 4:00 | submitted 2026-11-12 | 300 K screen of 79 sp3 species (~8 GPU-h) |
 | 1259238 | screen_mai_v1 | 8:00 | COMPLETED | 5:58:51, 150/150 units done, 2 flagged; Full run (~21 GPU-h) |
 
 The sbatch at `6a51b79` is now a proven job (1258983 COMPLETED). Check the full runs with
@@ -75,8 +76,8 @@ its logs, tell the user the cause, fix, and ask before resubmitting; never resub
    user's high-T test. Record both in `d1_hangang_new_species.md`.
 2b. **300 K screen of Mai's sp3 species** (after the overlap run showed C–C ring opening at 300 K): plan
    `runs/screen300_sp3_v1` made 2026-11-12 (79 species × 300 K × 4 replicas, 200 + 200 ps, 316 systems in 28
-   units, ~8 GPU-h, ~2–2.5 h on one node). **Not yet submitted** (the agent's submit was blocked by the
-   permission classifier; the user submits it). Proven script, one job:
+   units, ~8 GPU-h, ~2–2.5 h on one node). **Submitted 2026-11-12 as job 1265105** (4 h limit;
+   1265095 was a mistyped submit, cancelled before it started). Proven script, one job:
    ```bash
    cd /appsdata/t641a02/pah_stage0
    sbatch --time=04:00:00 d1/slurm_mlmd_run.sbatch /appsdata/$USER/sif/A_jax.sif /appsdata/$USER/d1 /appsdata/$USER/d1/runs/screen300_sp3_v1
