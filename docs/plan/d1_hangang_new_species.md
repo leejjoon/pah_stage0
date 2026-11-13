@@ -154,6 +154,19 @@ download needs PAHdb's e-mail form) copied to `/appsdata/$USER/d1/pahdb/` throug
   1–5 H or break one C–C bond. Worse than Mai's sp3 set (22/79), as expected: v4.00's superhydrogenated species
   go further beyond the model's training set (350 superhydrogenated configurations of 17,175). The 14 failures
   are dropped from the 300 K library (user, 2026-11-13).
+- **300 K production of the 982 non-sp3 new species (jobs 1268834, 1274456, 1274694; 200 + 200 ps, 4 replicas;
+  checked 2026-11-14; `runs/new300_v1/screen.csv`): 62 of 982 fail (143 of 3,928 systems); 920 pass.**
+  - Non-planar 56/196 (29 %), planar 6/786 (the N-PAH C52H16–17N2 and C93H21N3/C94H22N2, which also blow up:
+    up to 89 bonds broken in one replica).
+  - 56 of the 62 show only "H moved (1–2)", mostly in the C29–C34 non-planar families. Checked in four final
+    geometries: two H swap between carbons 2.4–2.5 Å apart (each ends 1.13–1.19 Å from the other carbon and
+    1.5 Å from its own), or one H sits bridged between them (1.34–1.46 Å to both). Real model artifacts, not
+    test artifacts; this was not seen in the 16-ish non-planar overlap species at 300 K.
+  - 59 of the 62 also failed the 30 ps 600 K screen; only C26H16_v4u2266, C29H17_v4u2142 and C34H20_v4u984 fail
+    here alone. So the 600 K screen predicts 300 K trouble well; 64 species that failed the 600 K screen pass at
+    300 K over 400 ps.
+  - The 62 are dropped from the 300 K library, as for the sp3 species. 300 K library from the new set: 920 + 4
+    sp3 = 924 species.
 
 **3. Overlap run.** 48 of Mai's species, stratified by Nc and class (including a few N-PAH, pentagon and
 superhydrogenated ones), × 300 and 600 K × **8 replicas**; 200 ps NVT + 200 ps NVE.
