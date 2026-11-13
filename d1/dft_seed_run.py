@@ -4,6 +4,10 @@
 #                              [--only PAIR,...] [--names FRAME,...] [--limit N]
 #       one JSON per frame, <out>/<pair>_q<q>_f<k>.json (the g16_io.py job name); finished frames are skipped, so a
 #       killed run resumes. --shard i/n takes every n-th frame (largest molecules first) for one process per GPU.
+#       --hours H: start no new frame after H hours (for Slurm time limits; a resubmit continues).
+#   python dft_seed_run.py compare <ref dir> <new dir>
+#       frames present in both: max |dE|, |dF|, |dmu|, d<S^2> and stability verdicts against the G2 targets (1e-7 Ha,
+#       1e-5 Ha/bohr, 1e-3 D, 1e-4); exit status 1 if any frame misses them. Checks a new machine against this one.
 #   python dft_seed_run.py collect <out dir> <parsed.extxyz>
 #       all JSONs -> one extxyz in g16_io.py parse's format (dft_energy eV, dft_forces eV/A, dft_dipole e*A about the
 #       centre of mass, s2, stability, scf_cycles, method, every manifest label), ready for mlff_qa.py; prints a QA
@@ -110,6 +114,9 @@ def cmd_run(a):
     print(f"shard {a.shard}: {len(fr)} frames, {n_done} done, {len(todo)} to run ({env['gpu']})", flush=True)
     t_all = time.time()
     for j, (name, lab, sym, pos, st) in enumerate(todo):
+        if a.hours and time.time() - t_all > a.hours * 3600:
+            print(f"stopping after {a.hours} h: {len(todo) - j} frames left for the next run", flush=True)
+            break
         t0 = time.time()
         r = label(sym, pos, int(lab["charge"]), int(lab["mult"]), st)
         r.update(name=name, labels=lab, stability_test=st, symbols=list(sym), positions=np.asarray(pos).tolist(),
@@ -149,6 +156,31 @@ def cmd_collect(a):
           f"GPU time: {t.sum() / 3600:.2f} h over {len(R)} frames (mean {t.mean():.1f} s)")
 
 
+def cmd_compare(a):
+    ref = {os.path.basename(f)[:-5]: f for f in glob.glob(f"{a.ref}/*.json")}
+    new = {os.path.basename(f)[:-5]: f for f in glob.glob(f"{a.new}/*.json")}
+    names = sorted(set(ref) & set(new))
+    if not names:
+        sys.exit("no frames in common")
+    tol = dict(dE_Ha=1e-7, dF_Ha_bohr=1e-5, dmu_D=1e-3, ds2=1e-4)
+    worst = dict.fromkeys(tol, 0.0); bad = []
+    for n in names:
+        r, x = json.load(open(ref[n])), json.load(open(new[n]))
+        d = dict(dE_Ha=abs(r["energy_Ha"] - x["energy_Ha"]),
+                 dF_Ha_bohr=float(np.abs(np.subtract(r["forces_eVA"], x["forces_eVA"])).max()) / HB_TO_EVA,
+                 dmu_D=float(np.abs(np.subtract(r["dipole_eA"], x["dipole_eA"])).max()) / DEBYE_EA,
+                 ds2=abs(r["s2"] - x["s2"]))
+        for k in tol:
+            worst[k] = max(worst[k], d[k])
+        if any(d[k] > tol[k] for k in tol) or r["stability"] != x["stability"]:
+            bad.append((n, {k: f"{v:.1e}" for k, v in d.items()}, r["stability"], x["stability"]))
+        print(f"{n} " + " ".join(f"{k}={v:.1e}" for k, v in d.items()) + f" stab {r['stability']}/{x['stability']} "
+              f"t {r['t_wall']}/{x['t_wall']} s ({r.get('gpu')} / {x.get('gpu')})")
+    print(f"{len(names)} frames; worst " + ", ".join(f"{k} {worst[k]:.1e} (target {tol[k]:.0e})" for k in tol))
+    print("PASS" if not bad else f"FAIL: {bad}")
+    sys.exit(1 if bad else 0)
+
+
 def main():
     ap = argparse.ArgumentParser(); sub = ap.add_subparsers(dest="cmd", required=True)
     r = sub.add_parser("run"); r.add_argument("frames", nargs="+"); r.add_argument("--out", required=True)
@@ -156,9 +188,11 @@ def main():
     r.add_argument("--shard", default="0/1"); r.add_argument("--only", default=None, help="comma-separated pairs")
     r.add_argument("--names", default=None, help="comma-separated frame names (e.g. C10H8_330_q1_f008)")
     r.add_argument("--limit", type=int, default=0)
+    r.add_argument("--hours", type=float, default=0, help="start no new frame after this many hours (0: no limit)")
+    m = sub.add_parser("compare"); m.add_argument("ref"); m.add_argument("new")
     c = sub.add_parser("collect"); c.add_argument("outdir"); c.add_argument("out")
     a = ap.parse_args()
-    {"run": cmd_run, "collect": cmd_collect}[a.cmd](a)
+    {"run": cmd_run, "collect": cmd_collect, "compare": cmd_compare}[a.cmd](a)
 
 
 if __name__ == "__main__":

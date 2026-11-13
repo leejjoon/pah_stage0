@@ -91,7 +91,8 @@ Check the `--comment` application code first (`showappl | grep -i gauss`; the sc
   `Int=UltraFine` explicitly.
 - DFT (2026-11-14): `d1/dft_seed_run.sh` → `d1/dft_seed_run.py run` (GPU4PySCF, container D, 2 processes per GPU;
   same frame names and stability sample as below, from `gjf/manifest.json`) → `dft_seed_run.py collect` → the same
-  extended XYZ as `g16_io.py parse` → `d1/mlff_qa.py`. Pilot of 4 pairs (202 frames) done, all clean. Gaussian route,
+  extended XYZ as `g16_io.py parse` → `d1/mlff_qa.py`. Pilot of 4 pairs (202 frames) done, all clean. On Hangang (planned for the full set): `d1/slurm_dft_seed.sbatch`, steps in
+  `docs/plan/cluster_migration.md` ("Seed-set DFT"). Gaussian route,
   kept for reference: `d1/g16_io.py write` (one `.gjf` per frame, `manifest.json` with frame info) → `d1/slurm_g16.sbatch` →
   `d1/g16_io.py parse` → extended XYZ (`dft_energy` eV, `dft_forces` eV/Å, `dft_dipole` e·Å about the centre of
   mass, `s2`, `scf_cycles`, `config_type`, `sample_T`). Drop frames that did not terminate normally; record ⟨S²⟩.
