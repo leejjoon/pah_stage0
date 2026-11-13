@@ -42,7 +42,7 @@ All on `normal`, 1 node, 4 GPUs, `d1/slurm_mlmd_run.sbatch A_jax.sif /appsdata/$
 | 1265580_[0-1] | new300_v1 | 0:30 | task 0 COMPLETED, task 1 TIMEOUT | Array test: task 1 (whose job id equals the array id) read both tasks' time limits from `squeue`, fell back to `--hours 23.5` and was killed at the limit; checkpoints intact (8 units at 57–76 chunks). Sbatch fixed in `3a2b7fa` (own `<array>_<task>` id; abort if the limit is unreadable) |
 | 1268196_[0-1] | new300_v1 | 0:30 | COMPLETED (both tasks) | Retest passed: both read `--hours 0.423`, 8 units resumed (now 124–169 of 400 chunks), 0 flagged, 0 errors. Sbatch `3a2b7fa` is proven for arrays |
 | 1270903 | new300sp3_v1 | 1:30 | COMPLETED (1:10) | 300 K run of the 18 new sp3 species: 14 fail the screen and are dropped; 4 kept (C14H16_v4u339, C27H14_v4u69, C55H20_v4u318, C96H28_v4u190) |
-| 1268834_[0-3] | new300_v1 | 12:00 | submitted 2026-11-12 22:4x | 300 K production, 982 new species (~118 GPU-h). Resubmit the same command with `--array=0-3` if it pauses |
+| 1268834_[0-3] | new300_v1 | 12:00 | RUNNING since 10:39–10:48, 2026-11-13 (51 % at 14:20; 16/97 units done, 1 flagged system) | 300 K production, 982 new species (~118 GPU-h). Resubmit the same command with `--array=0-3` if it pauses |
 | 1265105 | screen300_sp3_v1 | 4:00 | COMPLETED (3:08) | 300 K screen of 79 sp3 species: 28/28 units done; 22 of 79 species fail (13 H lost, 5 C–C broken, 4 H moved) |
 | 1259238 | screen_mai_v1 | 8:00 | COMPLETED | 5:58:51, 150/150 units done, 2 flagged; Full run (~21 GPU-h) |
 
@@ -110,6 +110,15 @@ its logs, tell the user the cause, fix, and ask before resubmitting; never resub
    (`--array=0-4`) of 6–12 h tasks, resubmitted with the same array size until done.
 
 ## Known facts and pitfalls
+
+- **/appsdata file-count quota (2026-11-13):** group bs0358 is at 4,977,743 of 5,000,000 files (`lfs quota -h -g
+  bs0358 /appsdata`); t641a02 owns 250,179 of them. JAX's persistent compilation cache writes then fail with
+  "Disk quota exceeded" (a harmless UserWarning: it only recompiles). If the group reaches the limit, checkpoint
+  and dipole writes fail too and the run crashes. Check the quota before every submit. The D1 run directories
+  were thought to hold few files, but the per-run `jax_cache` dirs (XLA per-fusion autotune cache) held ~243k of
+  the 250k. At the limit, 4 of the 16 GPU processes of job 1268834 crashed writing checkpoints (atomic, so no
+  damage). Fix applied 2026-11-13 (user's choice): all `runs/*/jax_cache` deleted, t641a02 down to 6,800 files,
+  group to 4,734,364. To do: move the cache off /appsdata or disable the autotune cache in `mlmd_run.py`.
 
 - `sbatch --test-only` start times are worst case; short jobs backfill within minutes (half of `normal` was
   `planned` on 2026-11-11). `squeue` shows only our jobs.
