@@ -118,7 +118,11 @@ its logs, tell the user the cause, fix, and ask before resubmitting; never resub
   were thought to hold few files, but the per-run `jax_cache` dirs (XLA per-fusion autotune cache) held ~243k of
   the 250k. At the limit, 4 of the 16 GPU processes of job 1268834 crashed writing checkpoints (atomic, so no
   damage). Fix applied 2026-11-13 (user's choice): all `runs/*/jax_cache` deleted, t641a02 down to 6,800 files,
-  group to 4,734,364. To do: move the cache off /appsdata or disable the autotune cache in `mlmd_run.py`.
+  group to 4,734,364. The other members then cleaned up: group at 1,218,999 files at 14:34. **Fix (2026-11-13):**
+  `mlmd_run.py run --cache-dir`, and the sbatch now puts the cache in `/scratch/$USER/jax_cache`, shared by all
+  runs (/scratch has its own group file quota; purge only costs a recompile). Jobs submitted before this commit
+  still write `OUT/jax_cache`: delete it after they end. The changed sbatch is a new job again: one short test
+  (`--array=0-1 --time=00:30:00` on new300_v1, after 1268834 ends) before the production resubmit.
 
 - `sbatch --test-only` start times are worst case; short jobs backfill within minutes (half of `normal` was
   `planned` on 2026-11-11). `squeue` shows only our jobs.

@@ -33,14 +33,17 @@ import sys; s = sys.argv[1]; d, s = (s.split('-') + [''])[:2] if '-' in s else (
 p = [int(x) for x in s.split(':')]; p = [0] * (3 - len(p)) + p
 h = int(d) * 24 + p[0] + p[1] / 60 + p[2] / 3600; print(round(h - min(0.5, 0.15 * h), 3))" "$limit" 2>/dev/null) || { echo "cannot read the time limit of $jid (squeue: '$limit')"; exit 1; }
 echo "task ${SLURM_ARRAY_TASK_ID:-0}/${SLURM_ARRAY_TASK_COUNT:-1}  host $(hostname)  $(nvidia-smi --query-gpu=name,driver_version --format=csv,noheader | head -1)  run --hours $hours $*"
+# JAX compilation cache on /scratch, shared by all runs: its XLA autotune part writes ~10^5 small files, which
+# filled the group's /appsdata file quota on 2026-11-13. /scratch purges files unused for 15 days (only a recompile).
+CACHE=/scratch/$USER/jax_cache; mkdir -p "$CACHE"
 ngpu=$(nvidia-smi -L | wc -l); pids=()
 task=${SLURM_ARRAY_TASK_ID:-0}; ntask=${SLURM_ARRAY_TASK_COUNT:-1}
 [ "${SLURM_ARRAY_TASK_MIN:-0}" = 0 ] || { echo "array indices must start at 0"; exit 1; }
 for g in $(seq 0 $((ngpu - 1))); do
   apptainer exec --nv --env CUDA_VISIBLE_DEVICES=$g,XLA_PYTHON_CLIENT_PREALLOCATE=false \
     --bind "$D1/mai2025/src/Supplementary_Data_Code":/mai:ro --bind "$XYZ":/xyz:ro \
-    --bind "${SLURM_SUBMIT_DIR}/d1":/w:ro --bind "$OUT":/out "$SIF" \
-    python -I /w/mlmd_run.py run /mai /xyz /out --shard $((task * ngpu + g)) --nshards $((ntask * ngpu)) --hours "$hours" "$@" \
+    --bind "${SLURM_SUBMIT_DIR}/d1":/w:ro --bind "$OUT":/out --bind "$CACHE":/cache "$SIF" \
+    python -I /w/mlmd_run.py run /mai /xyz /out --cache-dir /cache --shard $((task * ngpu + g)) --nshards $((ntask * ngpu)) --hours "$hours" "$@" \
     > "$OUT/mlmd_${SLURM_ARRAY_JOB_ID:-$SLURM_JOB_ID}_t${task}_g$g.log" 2>&1 &
   pids+=($!)
 done

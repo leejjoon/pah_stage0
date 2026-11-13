@@ -403,7 +403,7 @@ def cmd_run(a):
     units_ = [u for u in plan["units"] if not a.units or u["id"] in a.units.split(",")]
     units_ = [u for i, u in enumerate(units_) if i % a.nshards == a.shard]
     deadline = time.time() + a.hours * 3600
-    E = Engine(a.root, os.path.abspath(f"{a.out}/jax_cache"))
+    E = Engine(a.root, os.path.abspath(a.cache_dir or f"{a.out}/jax_cache"))
     print(f"jax {E.jax.__version__} {E.jax.devices()}; shard {a.shard}/{a.nshards}: {len(units_)} units", flush=True)
     for u in units_:
         udir = f"{a.out}/units/{u['id']}"
@@ -448,6 +448,8 @@ def main():
     r = sub.add_parser("run"); r.add_argument("root"); r.add_argument("xyz"); r.add_argument("out")
     r.add_argument("--shard", type=int, default=0); r.add_argument("--nshards", type=int, default=1)
     r.add_argument("--hours", type=float, default=23.5)
+    r.add_argument("--cache-dir", default=None, help="JAX compilation cache (default OUT/jax_cache); its XLA autotune "
+                   "cache writes ~10^5 small files, so the Hangang sbatch puts it on /scratch")
     r.add_argument("--stop-after", type=int, default=None, help="stop after this many chunks (testing)")
     r.add_argument("--units", default=None, help="comma-separated unit ids: run only these (still split across shards); for calibration")
     s = sub.add_parser("status"); s.add_argument("out")
