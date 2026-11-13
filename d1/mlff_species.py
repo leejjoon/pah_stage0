@@ -106,7 +106,7 @@ def main():
                 if r is None:
                     continue
                 with open(f"{a.out}/xyz/{name}_q{q}.xyz", "w") as g:
-                    g.write(f"{len(r['Z'])}\nPAHdb v4.00 uid {r['uid']} charge {q} {r['method']}/{r['basis']}\n")
+                    g.write(f"{len(r['Z'])}\nsource=PAHdb_v4.00 uid={r['uid']} charge={q} method={r['method']}/{r['basis']}\n")
                     g.writelines(f"{SYM[z]} {x:.6f} {y:.6f} {zz:.6f}\n" for z, (x, y, zz) in zip(r["Z"], r["P"]))
             split = "holdout" if chosen.index(p) in held else "train"
             e = p["n"]["edges"]

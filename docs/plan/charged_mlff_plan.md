@@ -169,6 +169,16 @@ disagreement stay low on unseen species. Budget at 6-31G\*: of order 100–200k 
   i.e. ~50–400× slower than the batched NeuralIL. Outputs energy and forces only (no charges or dipoles). Spin input
   convention (OMol25: multiplicity?) not yet confirmed. Benchmark cost with a batched driver: MD stability ~25–40 GPU-h
   per model. UMA needs gated Hugging Face access; AIMNet2 needs a package install (not yet done).
+- 2026-11-14: M4 timing, AIMNet2 (`aimnet` 0.2.6, MIT code; weights' licence not stated; venv
+  `/var/tmp/$USER-pah/venvs/aimnet` on container B's Python, plus warp-lang 1.19.0 and nvalchemi-toolkit-ops 0.5.0;
+  `d1/fm_timing_aimnet.py`, output `fm_bench/aimnet2_timing.txt`). `aimnet2` (closed-shell, wB97M-D3) and `aimnet2-nse`
+  (open-shell, takes the multiplicity): one molecule ~9.5 ms per MD step (C10–C54), 13.3 ms (C96); batches of 64
+  0.14–0.20 ms per molecule-step (~0.3–0.4 s per ps per molecule, 10–50× faster than MACE-OMOL); < 0.1 GB. Outputs
+  atomic charges and a dipole (charge-only). Warning: closed-shell `aimnet2` gives a 16 D dipole for the C96H26
+  neutral (`aimnet2-nse`: 0.8 D). Spin convention for MACE-OMOL confirmed: OMol25 `spin` = multiplicity.
+  Pitfall found and fixed: the seed xyz comment ("PAHdb v4.00 uid 330 charge 0 ...") made ASE set
+  info["charge"] = True, which AIMNet2's ASE wrapper reads before its own argument; the comments are now key=value
+  (`source=PAHdb_v4.00 uid=330 charge=0 method=...`), in the files and in `mlff_species.py` / `mlff_splits.py`.
 
 ## Phase 1 run-book
 
