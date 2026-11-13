@@ -42,7 +42,7 @@ All on `normal`, 1 node, 4 GPUs, `d1/slurm_mlmd_run.sbatch A_jax.sif /appsdata/$
 | 1265580_[0-1] | new300_v1 | 0:30 | task 0 COMPLETED, task 1 TIMEOUT | Array test: task 1 (whose job id equals the array id) read both tasks' time limits from `squeue`, fell back to `--hours 23.5` and was killed at the limit; checkpoints intact (8 units at 57–76 chunks). Sbatch fixed in `3a2b7fa` (own `<array>_<task>` id; abort if the limit is unreadable) |
 | 1268196_[0-1] | new300_v1 | 0:30 | COMPLETED (both tasks) | Retest passed: both read `--hours 0.423`, 8 units resumed (now 124–169 of 400 chunks), 0 flagged, 0 errors. Sbatch `3a2b7fa` is proven for arrays |
 | 1270903 | new300sp3_v1 | 1:30 | COMPLETED (1:10) | 300 K run of the 18 new sp3 species: 14 fail the screen and are dropped; 4 kept (C14H16_v4u339, C27H14_v4u69, C55H20_v4u318, C96H28_v4u190) |
-| 1268834_[0-3] | new300_v1 | 12:00 | RUNNING since 10:39–10:48, 2026-11-13 (51 % at 14:20; 16/97 units done, 1 flagged system) | 300 K production, 982 new species (~118 GPU-h). Resubmit the same command with `--array=0-3` if it pauses |
+| 1268834_[0-3] | new300_v1 | 12:00 | tasks 1, 3 COMPLETED; 0, 2 FAILED (only the 4 quota crashes) | 300 K production, 982 new species (~118 GPU-h). Resubmit the same command with `--array=0-3` if it pauses |
 | 1265105 | screen300_sp3_v1 | 4:00 | COMPLETED (3:08) | 300 K screen of 79 sp3 species: 28/28 units done; 22 of 79 species fail (13 H lost, 5 C–C broken, 4 H moved) |
 | 1259238 | screen_mai_v1 | 8:00 | COMPLETED | 5:58:51, 150/150 units done, 2 flagged; Full run (~21 GPU-h) |
 
@@ -108,6 +108,19 @@ its logs, tell the user the cause, fix, and ask before resubmitting; never resub
 4. **New-species production** (a new plan, so ask the user first): `mlmd_run.py plan XYZ_new_v2 runs/new_v1
    --temps 300,600 --replicas 4` (default 200 + 200 ps); ~235 GPU-h, ~59 node-hours; a 5-task array
    (`--array=0-4`) of 6–12 h tasks, resubmitted with the same array size until done.
+
+## Finishing new300_v1 (2026-11-13 19:30)
+
+After 1268834: 74/97 units done (83 % of the work), 4 in progress (n120_u001, n086_u000, n086_u001 at 360–384 of
+400 chunks; n074_u000 at 0), 19 not started; ~20 GPU-h left. `new300_v1/jax_cache` deleted. Round-robin over the
+whole plan would leave 12 of 16 GPUs idle, so pass the remaining units with `--units` (same list for every task,
+so no unit is taken twice): 2 tasks, per-GPU max ~3.3 h. The sbatch changed (cache on /scratch), so first a test
+with the same list and array size, then the rest:
+```bash
+U=n120_u001,n086_u000,n086_u001,n072_u000,n074_u000,n082_u000,n064_u000,n166_u000,n050_u001,n054_u002,n126_u000,n046_u000,n128_u000,n186_u000,n088_u000,n112_u000,n110_u000,n154_u000,n042_u000,n182_u000,n170_u000,n140_u000,n124_u000
+sbatch --array=0-1 --time=00:30:00 d1/slurm_mlmd_run.sbatch /appsdata/$USER/sif/A_jax.sif /appsdata/$USER/d1 /appsdata/$USER/d1/runs/new300_v1 --units $U   # test
+sbatch --array=0-1 --time=05:00:00 d1/slurm_mlmd_run.sbatch /appsdata/$USER/sif/A_jax.sif /appsdata/$USER/d1 /appsdata/$USER/d1/runs/new300_v1 --units $U   # rest
+```
 
 ## Known facts and pitfalls
 
