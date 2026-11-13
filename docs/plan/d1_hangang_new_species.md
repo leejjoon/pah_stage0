@@ -147,6 +147,13 @@ download needs PAHdb's e-mail form) copied to `/appsdata/$USER/d1/pahdb/` throug
   could keep its starting carbon as the nearest heavy atom and pass, as C23H13N_232 did). Rerun on all runs
   2026-11-13: pass/fail counts unchanged (overlap 4/48, new 139/1,000, Mai 365/1,704); species with H lost:
   3, 18 and 32.
+- **The 18 new sp3 species at 300 K (job 1270903, 200 + 200 ps, 4 replicas; checked 2026-11-13;
+  `runs/new300sp3_v1/screen.csv`): 14 of 18 fail; kept: C14H16_v4u339, C27H14_v4u69, C55H20_v4u318,
+  C96H28_v4u190.** The heavily hydrogenated small ones (C10H16, C10H18, C18H24; H/C 1.3–1.8, nearly or fully
+  saturated) fall apart in every replica (hot, 5–16 H lost, up to 22 bonds broken); the larger ones lose or move
+  1–5 H or break one C–C bond. Worse than Mai's sp3 set (22/79), as expected: v4.00's superhydrogenated species
+  go further beyond the model's training set (350 superhydrogenated configurations of 17,175). The 14 failures
+  are dropped from the 300 K library (user, 2026-11-13).
 
 **3. Overlap run.** 48 of Mai's species, stratified by Nc and class (including a few N-PAH, pentagon and
 superhydrogenated ones), × 300 and 600 K × **8 replicas**; 200 ps NVT + 200 ps NVE.
