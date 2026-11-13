@@ -389,14 +389,23 @@ The B3LYP/6-31G\* labels for the 7,504 seed frames (`docs/plan/charged_mlff_plan
 `docs/research/pyscf_gpu_jax.md` §5) are about 87 H100-hours. On the project node that is about 33 h on both GPUs;
 here, 5 nodes (20 GPUs) should take roughly 4–5 h of wall time plus queue wait. Nothing about MPS applies (none is used).
 
-**1. Container D** (myhub, public like A; built on the project node, `containers/D_gpu4pyscf.def`):
-```bash
-module load apptainer/1.4.5
-export APPTAINER_CACHEDIR=/appsdata/$USER/apptainer-cache
-apptainer pull /appsdata/$USER/sif/D_gpu4pyscf.sif oras://myhub.ksc.re.kr/pah/d_gpu4pyscf:gh200-2026-11-14
-sha256sum /appsdata/$USER/sif/D_gpu4pyscf.sif     # must be 09afb47a44974c8b4575ba18b8664e6eb0f681bd3264c47c858be0d5ae20893b
-apptainer cache clean --force
-```
+**1. Container D** (`D_gpu4pyscf.sif`, 6.1 GB, sha256 `09afb47a44974c8b4575ba18b8664e6eb0f681bd3264c47c858be0d5ae20893b`;
+built on the project node from `containers/D_gpu4pyscf.def`). **Not in myhub:** three pushes on 2026-11-14
+(`apptainer push … oras://myhub.ksc.re.kr/pah/d_gpu4pyscf:gh200-2026-11-14`) failed after 60–90 s with
+`Patch …/blobs/uploads/…: file already closed`, part-way through the upload. A's 7.5 GB push on 2026-11-10 took
+60 s in all, so a per-request time limit on myhub's side is the likely cause; the API was also slow that day.
+Get the image one of these ways:
+- copy it from the project node, resumably: `rsync -P gh200:/var/tmp/jjlee-pah/sif/D_gpu4pyscf.sif
+  /appsdata/$USER/sif/` (or by any route that reaches the cluster; run on a data-transfer node `dm01`–`dm04`), then
+  check the hash;
+- or build it on a GPU compute node (aarch64; about 7 min with 48 build jobs, too much for the login node's
+  120 CPU-minutes): `salloc` one node, then
+  `APPTAINER_TMPDIR=/scratch/$USER/tmp apptainer build --fakeroot /appsdata/$USER/sif/D_gpu4pyscf.sif
+  containers/D_gpu4pyscf.def` from the repository root. Its hash will differ (time stamps); the check job in
+  step 3 is what validates it;
+- or retry the push from the project node later and pull it here:
+  `apptainer pull /appsdata/$USER/sif/D_gpu4pyscf.sif oras://myhub.ksc.re.kr/pah/d_gpu4pyscf:gh200-2026-11-14`
+  (with `APPTAINER_CACHEDIR=/appsdata/$USER/apptainer-cache`, then `apptainer cache clean --force`).
 
 **2. Code and inputs.** The scripts are on branch `feat-gpu-gh200`
 (`cd /appsdata/$USER/pah_stage0 && git fetch && git checkout feat-gpu-gh200`). The inputs come from the project node
