@@ -4,6 +4,13 @@ Version 1, 2026-11-12. Status: **for independent review** (shared copy for comme
 Regression" (`docs/plan/big_picture_proposal.md`), data stream D1. Operational companion:
 `docs/plan/charged_mlff_plan.md`. Evidence: `docs/plan/charged_tdep_validation.md`, `docs/plan/cluster_migration.md`.
 
+**Note added 2026-11-14 (not yet worked into the text):** Gaussian 16 turned out not to be usable on Hangang. The
+training data will be computed with GPU4PySCF instead, at the same level of theory (B3LYP with Gaussian's VWN3, 6-31G\*
+with 6D d functions, (99, 590) grid). It reproduces PAHdb's Gaussian energies to ≤ 2 µHa and IR intensities to ~2 %
+(*measured*, `docs/research/pyscf_gpu_jax.md` §1). On the project GH200 the seed set costs ≈ 87 H100-hours including
+stability tests (*estimate from measured times and a 202-frame pilot*, ibid. §5), replacing the core-hour figures
+in §3.4, the budget and Phase 0/G0 below. A revision of this proposal should carry this through.
+
 This document is meant to be read on its own. Section 11 lists the questions we most want reviewers to answer.
 Statements marked *(measured)* come from our own runs on the dates given; *(source)* gives the paper and section;
 *(estimate)* is a projection that a named step will replace with a measurement.
