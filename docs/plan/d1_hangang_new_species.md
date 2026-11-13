@@ -167,6 +167,19 @@ download needs PAHdb's e-mail form) copied to `/appsdata/$USER/d1/pahdb/` throug
     300 K over 400 ps.
   - The 62 are dropped from the 300 K library, as for the sp3 species. 300 K library from the new set: 920 + 4
     sp3 = 924 species.
+  - **Hidden events (dipole check, 2026-11-14).** The screen sees only the final geometry, so an H that hops and
+    returns would pass. The driver keeps no trajectory, but `dipole.npy` (NVE, every 1 fs) does: a hop shifts the
+    1-ps mean dipole. Metric: largest distance of a 1-ps window mean from the system's median window. On the four
+    units with the most failures (n054_u001, n050_u000, n052_u000, n046_u000; C29–C34 families):
+    - failing systems: median 0.47 e·Å, 71 of 81 above 0.2 (the other 10 are swaps that leave the dipole nearly
+      unchanged, so the metric is a partial check);
+    - passing replicas of species that fail elsewhere: 16 of 39 above 0.2 (likely hop-and-return; these
+      species are dropped anyway);
+    - species with all replicas passing: median 0.044, 99th percentile 0.21, max 0.22 (3 of 157 systems above
+      0.2: C34H20_v4u948 r3, C34H20_v4u964 r0 and r3, both of which failed the 600 K screen). No clear hidden
+      hops among the kept species in this sample; the three borderline ones are worth a look before use.
+    - For future runs (600 K and up), a per-chunk topology check in the driver would catch transient events
+      directly.
 
 **3. Overlap run.** 48 of Mai's species, stratified by Nc and class (including a few N-PAH, pentagon and
 superhydrogenated ones), × 300 and 600 K × **8 replicas**; 200 ps NVT + 200 ps NVE.
