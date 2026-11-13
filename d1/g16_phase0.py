@@ -81,9 +81,14 @@ def main():
             atoms = [(int(kid(a, "type").text), [float(kid(a, c).text) for c in "xyz"]) for a in kid(el, "geometry")]
             sym = ["H" if z == 1 else "C" for z, _ in atoms]; P = np.array([p for _, p in atoms])
             files.append(gjf(f"{out}/pahdb/naph_uid{uid}_q{q}_freq.gjf", sym, P, q, 2 if q else 1, "6-31G*", job="Freq"))
+            # PAHdb v4 stores *scaled* frequencies; each mode's <frequency scale=...> gives its factor (0.9794 /
+            # 0.9691 / 0.9597 by range), so the harmonic Gaussian value is stored / scale.
+            fq = [kid(m, "frequency") for m in kid(el, "transitions")]
+            sc = [float(f.get("scale")) for f in fq]
             exp["pahdb"][f"uid{uid}"] = {"total_e_Ha": float(kid(el, "total_e").text), "method": kid(el, "method").text,
-                                         "frequencies_cm-1_unscaled_as_stored": [float(kid(m, "frequency").text) for m in kid(el, "transitions")],
-                                         "frequency_scale_attr": kid(kid(el, "transitions")[0], "frequency").get("scale")}
+                                         "frequencies_cm-1_scaled_as_stored": [float(f.text) for f in fq],
+                                         "frequency_scale_per_mode": sc,
+                                         "frequencies_cm-1_unscaled": [float(f.text) / s for f, s in zip(fq, sc)]}
         el.clear()
     for n in (8, 32):                                   # one Slurm array per CPU count (--cpus-per-task)
         sel = [f for f in files if f"%nprocshared={n}\n" in open(f).read()]

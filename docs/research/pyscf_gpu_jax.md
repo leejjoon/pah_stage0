@@ -26,6 +26,12 @@ everything else is marked *sourced* (with the source) or *estimated*.
   circumcoronene, true −2068.57). **The DFT MD running on the GH200 uses the old code**: any step that needed more
   than 200 SCF cycles is wrong. None of the 25 pilot runs needed the fallback.
 
+**Update 2026-11-14 (GH200, §5):** GPU4PySCF now runs on the GH200's H100 (container D, built from source). Same
+results as CPU PySCF and wasp33a (energies to 1e-9 Ha); 1.1× (C10) to 9× (C144) faster than the RTX 5000 Ada, because
+a single SCF keeps the H100 busy only 13–37 % of the time (launch-bound small kernels). Two processes per GPU give
+~1.35× from C24 up; MPS adds nothing. Seed set: **≈ 87 H100-hours including stability tests, ≈ 33 h on the node's two
+GPUs.** The DFT MD never hit the Newton-fallback bug.
+
 ## Setup (deviations from the handoff)
 
 - **Node:** `wasp33a`, not the GH200: 2× Xeon Gold 6526Y (32 cores), 4× RTX 5000 Ada (32 GB, FP64 ≈ 1/64 FP32),
@@ -248,13 +254,108 @@ the smallest species (C10–C24).
 **Recommendation:** use GPU4PySCF. Revisit dftax only if end-to-end differentiation through the SCF becomes a real
 requirement.
 
-## 4. Next steps
+## 4. Next steps (as of 2026-11-13; see §5 for what was done on the GH200)
 
-1. Tell whoever runs the GH200 MD about the Newton-fallback bug; check its logs/energy series for steps that hit the
-   fallback (a jump of thousands of Ha). Use the fixed `d1/aimd_pyscf.py` for new runs, with the (99, 590) grid.
-2. Production driver for the seed set on GPU4PySCF: the settings of §1.3, one process per GPU, store energy,
-   forces, COM dipole, ⟨S²⟩, cycles, convergence and Newton flags; stability analysis on a sample (§2.5).
-3. Measure on an H100 (GH200 source build, or a Hangang x86 GPU node if it has one): the FP64 gain decides between
-   ~280 RTX-hours and a few tens of H100-hours.
+1. ~~Check the GH200 DFT MD for the Newton-fallback bug.~~ Done 2026-11-14 (§5.1): never triggered.
+2. ~~Production driver for the seed set.~~ `d1/dft_seed_run.py` (§5.5).
+3. ~~Measure on an H100.~~ §5.3–5.4.
 4. Optional: one Gaussian spot check (energy, forces, dipole on two displaced ions) if Gaussian becomes available
    anywhere, to close T1.3 directly.
+
+## 5. GH200 (H100) results (2026-11-14)
+
+Project node `gh200`: GH200 144 GB (H100, sm_90), driver 595.45 (CUDA 13.2), Grace CPU. Container D
+(`containers/D_gpu4pyscf.md`): GPU4PySCF 1.9.2 and gpu4pyscf-libxc 0.9.0 built from source for aarch64/sm_90, CuPy
+14.2.0 rebuilt with cuTENSOR (the aarch64 wheel lacks it), PySCF 2.15.0, CUDA 12.9. Runs and tables:
+`d1/h100_bench.sh`; outputs under `/var/tmp/jjlee-pah/d1/h100_*`. Everything here is *measured* unless marked.
+
+### 5.1 The GH200 DFT MD and the Newton-fallback bug
+
+The MD (`/var/tmp/jjlee-pah/d1/aimd/`, 8 naphthalene runs) was stopped on 2026-11-13, not running. Its checkpoints
+show at most 9 SCF cycles (neutral) and 14 (cation) in the recorded steps (every 20th), no energy jumps (largest
+change of the conserved energy between records 0.1–0.3 eV, thermal), dipoles continuous (≤ 0.04 D per step) and
+⟨S²⟩ ≤ 0.772. The 200-cycle fallback was never reached, so the 3.0 ps (neutral) and 2.0 ps (cation) done so far are
+valid. It still has to be finished on another server (fixed script; the (99, 590) grid is optional for C10).
+
+### 5.2 Agreement on the H100
+
+Same four displaced points as §2.2 (0.05 Å, seed 0, production setting), GPU (container D) against CPU PySCF 2.15.0
+(env `dft`, 18 Grace threads):
+
+| Point | ΔE (Ha) | max \|ΔF\| (Ha/bohr) | \|Δμ\| (D) | Δ⟨S²⟩ | cycles CPU / GPU |
+|---|---|---|---|---|---|
+| C10H8 q0 | 2e-11 | 2.3e-7 | 1.6e-5 | 0 | 13 / 13 |
+| C10H8 q1 | 1e-11 | 4.0e-7 | 1.9e-5 | 1e-7 | 20 / 21 |
+| C24H12 q0 | 9e-11 | 2.1e-7 | 8e-6 | 0 | 15 / 15 |
+| C24H12 q1 | 1.7e-10 | 6.9e-7 | 3.0e-5 | 1.4e-7 | 27 / 28 |
+
+All far inside the targets (1e-7, 1e-5, 1e-3, 1e-4). Every energy of the C10–C144 series (12 points) and the CPU
+energies on the Grace CPU equal the wasp33a values to the printed 1e-9 Ha (aarch64 vs x86, H100 vs Ada). Stability
+analysis (§2.5 cases, C10 and C24, q0 and q1): same verdicts as CPU (all stable, no re-optimisation), energies within
+2e-10 Ha.
+
+**Noise floor:** `conv_tol` 1e-11 on circumcoronene q0 again did not converge in 200 cycles (Newton fallback, final
+energy 2e-9 Ha from the production value); q1 converged in 25. The floor is not specific to the Ada card; keep
+`conv_tol` 1e-9 with `conv_tol_grad` 1e-6.
+
+### 5.3 Timings on one H100
+
+Energy + forces + dipole, displaced geometry, production setting, after warm-up, one process:
+
+| Molecule | nao | q0: s (cycles) | q1: s (cycles) | RTX 5000 Ada q0 / q1 (s, §2.3) | gain q0 / q1 |
+|---|---|---|---|---|---|
+| C10H8 | 166 | 11 (13) | 17 (21) | 12 / 19 | 1.1 / 1.1 |
+| C24H12 coronene | 384 | 15 (15) | 27 (28) | 37 / 74 | 2.5 / 2.7 |
+| C32H14 ovalene | 508 | 16 (15) | 29 (27) | 58 / 106 | 3.6 / 3.7 |
+| C54H18 circumcoronene | 846 | 27 (18) | 41 (28) | 150 / 229 | 5.5 / 5.6 |
+| C90H24 | 1398 | 59 (23) | 115 (46) | 452 / 793 | 7.7 / 6.9 |
+| C144H30 | 2220 | 126 (25) | 246 (46) | 1123 / 1733 | 8.9 / 7.0 |
+
+- Up to C32 the time hardly grows with size: overhead, not arithmetic, sets it (§5.4). The FP64 advantage
+  (~30–60× peak, *sourced*) shows only from C54 up, as 5–9×.
+- GPU memory ≤ 2.9 GB (C144 q1). Stability analysis on the H100 (pilot, §5.5): 33–105 s for C10–C48, 276 s for a C96
+  cation; 1.4–4× the point's SCF + forces (neutrals, with the RKS→UKS test, cost more). CPU: 980–1590 s for C24 on 18 threads.
+- Cation ⟨S²⟩ grows with size as on wasp33a (0.813 at C90, 1.040 at C144).
+
+### 5.4 Several processes per GPU, MPS, and why
+
+Ovalene, coronene and naphthalene (q0), 8 displaced frames per process, total points per hour:
+
+| Molecule | 1 process | 2 | 4 | MPS: 1 | MPS: 2 | MPS: 4 |
+|---|---|---|---|---|---|---|
+| C10H8 | 364 | 374 | 360 | 370 | 352 | 381 |
+| C24H12 | 237 | 325 | 329 | 242 | 312 | 313 |
+| C32H14 | 215 | 288 | 309 | 203 | 271 | 299 |
+
+- Unlike the Ada card, extra processes do help from C24 up: ~1.35× with 2 processes, up to 1.44× with 4. MPS (host
+  daemon, 29 client connections logged) adds nothing on top. Capping OpenMP threads per process (4 × 16, 2 × 32)
+  changed nothing. Naphthalene does not gain at all.
+- Nsight Systems (one process, two points after warm-up): the GPU is busy only **13 %** of the wall time for
+  naphthalene and **37 %** for ovalene. A point launches 80–220 thousand kernels with a median length of ~3 µs; the
+  largest kernels are the J (`md_j_*`) and K (`rys_k_*`) builds. So a single SCF is launch- and host-bound, not
+  FP64-bound, on the H100. Extra processes recover part of the idle time; that they stop at ~1.4×, with or without
+  MPS, points to a shared host-side limit (driver launch path or per-process host work), not to the GPU.
+- Consequence for a JAX/vmap port (§3): a batch that fused many molecules' kernels would attack exactly this idle
+  time, so the case for batching is stronger on the H100 than on the Ada card. It is still not worth the 10–80
+  person-weeks for the seed set (below); revisit if the full data set (50–80k points) runs on GH200s.
+- Production: **2 processes per GPU, no MPS.**
+
+### 5.5 Seed-set driver and pilot
+
+`d1/dft_seed_run.py` is the GPU4PySCF counterpart of the Gaussian route (`g16_io.py`): same frames and frame names,
+the same stability sample (the `stability_test` flags in `gjf/manifest.json`, 1,454 of 7,424; Stable=Opt for
+cations, test only for neutrals), and `collect` writes the same extended XYZ as `g16_io.py parse` (`dft_energy` eV,
+`dft_forces` eV/Å, `dft_dipole` e·Å about the centre of mass, `s2`, `stability`, `scf_cycles`, labels), so
+`mlff_qa.py` runs on it unchanged. Resumable (one JSON per frame, written atomically), sharded over processes
+(`d1/dft_seed_run.sh`, `GPUS`, `NPROC`).
+
+Pilot (one process, GPU 0): C10H8_330, C24H14_204, C48H20_146 (32 frames per charge) and the transfer pair
+C96H30_3317 (5 per charge), 202 frames, 33 with a stability test. 2.12 GPU-hours. Every SCF converged within 47
+cycles, no Newton fallback, cation ⟨S²⟩ ≤ 0.786, all 33 stability tests stable; `mlff_qa.py` with the xTB
+references quarantined nothing (24 boundary and 13 graph-changed frames labelled). Output:
+`/var/tmp/jjlee-pah/d1/seed_dft/` (the pilot frames count toward the full run).
+
+**Seed-set cost** (`d1/seed_cost.py`: series times interpolated in nao, scaled by the pilot's measured/predicted
+ratio 1.06; stability tests at the pilot's 2.8× a single point): 57.6 GPU-h of single points + 29.0 GPU-h of stability
+tests = **≈ 87 GPU-hours on one H100**, i.e. **≈ 33 h on the node's two GPUs** with 2 processes each (~1.3×).
+*Estimated from measured times.* Against §2.3: ~280 RTX 5000 Ada hours without stability tests.

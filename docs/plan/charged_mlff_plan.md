@@ -1,6 +1,11 @@
 # Charged-state MLFF: Gaussian training data, training, active learning (draft, 2026-11-12)
 
 Status: **tools built and Phase 0 inputs ready; nothing submitted on Hangang.** Branch `charged-mlff`.
+**Update 2026-11-14: the DFT is GPU4PySCF on the GH200, not Gaussian on Hangang.** Gaussian is not available there
+(`docs/research/pyscf_gpu_jax.md`); GPU4PySCF reproduces PAHdb's Gaussian B3LYP/6-31G\* to ≤ 2 µHa with `b3lypg`, 6D d
+and the (99, 590) grid, and runs on the GH200's H100 (container D, `containers/D_gpu4pyscf.md`). Seed set ≈ 87
+H100-hours with the stability sample, ≈ 33 h on the node's two GPUs (pyscf_gpu_jax.md §5). The Gaussian sections
+below (Phase 0, `g16_io.py write`, Slurm) are kept for a spot check if Gaussian ever becomes available.
 Reviewer-facing version (self-contained, with evidence, gates, budget and questions):
 `docs/plan/charged_mlff_proposal.md`. This file is the run-book.
 Context: `docs/plan/charged_tdep_validation.md` (the xTB test: band positions transfer from neutrals to cations,
@@ -14,7 +19,8 @@ neutral-only, trained on 300 K geometries, and breaks above ~600 K (and for some
 
 ## Facts this plan rests on
 
-- Hangang has Gaussian `gaussian/g16.c02` (module, commercial tree). `normal_cpu`: 680 nodes, 174,080 CPUs (256 per
+- ~~Hangang has Gaussian `gaussian/g16.c02` (module, commercial tree).~~ Not usable (2026-11-13); PAHdb is the only
+  Gaussian reference. `normal_cpu`: 680 nodes, 174,080 CPUs (256 per
   node), ~770 GB per node, 24 h, nodes shared between jobs (`Exclusive=NO`); `long_cpu` 2.5 days. About half the
   `normal_cpu` nodes were idle when checked (2026-11-12). Per-user job limits (QoS `normal_cpu`) not yet known.
 - **PAHdb v4.00 C/H species are B3LYP/6-31G\***, not 4-31G: 2,524 closed-shell neutrals, 1,469 doublet cations,
@@ -41,7 +47,8 @@ cost is days, not weeks. Keep the frequency scaling question separate (PAHdb's 0
 
 ## Phases
 
-**Phase 0: Gaussian on Hangang (inputs ready; ~150–200 core-h).** `d1/g16_phase0.py` →
+**Phase 0: Gaussian on Hangang (inputs ready; ~150–200 core-h). Will not run (no Gaussian); replaced by the PySCF/PAHdb
+match and the GPU/CPU checks of `docs/research/pyscf_gpu_jax.md` §1, §2.2 and §5.2.** `d1/g16_phase0.py` →
 `/var/tmp/$USER-pah/d1/g16_phase0/` (30 inputs, `expected.json`; packed as `/var/tmp/$USER-pah/d1/g16_phase0.tgz`,
 regenerated 2026-11-12 with the production settings `Int=UltraFine`, `Conver=8`):
 - `timing/`: the PySCF pilot's 12 geometries (C10–C144, neutral and cation, same displacement) at 4-31G and 6-31G\*.
@@ -82,7 +89,10 @@ Check the `--comment` application code first (`showappl | grep -i gauss`; the sc
   with `graph_changed=1`, all `bound_*` frames and a reproducible random 10 % of frames at ≥ 1200 K; the parser
   records `stability` (stable / reoptimized / not_tested) and ⟨S²⟩ before and after annihilation. All jobs use
   `Int=UltraFine` explicitly.
-- DFT: `d1/g16_io.py write` (one `.gjf` per frame, `manifest.json` with frame info) → `d1/slurm_g16.sbatch` →
+- DFT (2026-11-14): `d1/dft_seed_run.sh` → `d1/dft_seed_run.py run` (GPU4PySCF, container D, 2 processes per GPU;
+  same frame names and stability sample as below, from `gjf/manifest.json`) → `dft_seed_run.py collect` → the same
+  extended XYZ as `g16_io.py parse` → `d1/mlff_qa.py`. Pilot of 4 pairs (202 frames) done, all clean. Gaussian route,
+  kept for reference: `d1/g16_io.py write` (one `.gjf` per frame, `manifest.json` with frame info) → `d1/slurm_g16.sbatch` →
   `d1/g16_io.py parse` → extended XYZ (`dft_energy` eV, `dft_forces` eV/Å, `dft_dipole` e·Å about the centre of
   mass, `s2`, `scf_cycles`, `config_type`, `sample_T`). Drop frames that did not terminate normally; record ⟨S²⟩.
 
@@ -157,6 +167,12 @@ disagreement stay low on unseen species. Budget at 6-31G\*: of order 100–200k 
   stopped after ~1.5 h (outputs in `aimd/spherical_aborted/`) and restarted with `cart=True`, now the default of
   `d1/aimd_pyscf.py` (`--spherical` to override). 4-31G work (timing pilot) is unaffected. Handoff for a PySCF /
   GPU4PySCF / JAX-port study: `docs/plan/handoff_pyscf_gpu_jax.md`.
+- 2026-11-14: GPU4PySCF 1.9.2 built for the GH200 (container D) and validated on the H100 against CPU PySCF and
+  wasp33a (`docs/research/pyscf_gpu_jax.md` §5). The B3 part one MD checkpoints never hit the Newton-fallback bug; the
+  MD itself still has to be finished on another server. Seed-set driver `d1/dft_seed_run.py`; pilot (C10H8_330,
+  C24H14_204, C48H20_146, C96H30_3317; 202 frames, 2.1 GPU-h) clean: all converged, no Newton fallback, all 33
+  stability tests stable, `mlff_qa.py` quarantined nothing. Results in `/var/tmp/$USER-pah/d1/seed_dft/`. Full run
+  (≈ 87 GPU-h, ≈ 33 h on both GPUs) not started.
 
 ## Phase 1 run-book
 
