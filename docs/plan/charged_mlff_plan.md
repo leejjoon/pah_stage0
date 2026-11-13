@@ -162,6 +162,13 @@ disagreement stay low on unseen species. Budget at 6-31G\*: of order 100–200k 
   2.0 ps of 22 ps; rerunning the same `d1/aimd_pyscf.py` command next to its npz resumes; launcher `run_all.sh`).
   Measured on Grace cores, 8 threads, 6D: 8.8 s (neutral) and ~13 s (cation) per 0.5 fs step, i.e. ~4 and ~6 days
   per trajectory. The B4 gate's deciding number (the cation CC-band strength slope) comes from these runs.
+- 2026-11-13: M4 timing test, MACE-OMOL-0 (extra-large, ASL licence, weights in `/var/tmp/$USER-pah/models/`), container
+  B (mace-torch 0.3.17), GPU 0 (`d1/fm_timing.py`; output `/var/tmp/$USER-pah/d1/fm_bench/mace_omol_timing.txt`):
+  one molecule per call ~50 ms per MD step at any size 18–122 atoms (~100 s per ps; overhead-bound), float32 and
+  float64 alike; batches of 64 geometries 1.9 (C10) / 4.0 (C24) / 8.4 (C54) / ~15 (C96) ms per molecule-step in float32,
+  i.e. ~50–400× slower than the batched NeuralIL. Outputs energy and forces only (no charges or dipoles). Spin input
+  convention (OMol25: multiplicity?) not yet confirmed. Benchmark cost with a batched driver: MD stability ~25–40 GPU-h
+  per model. UMA needs gated Hugging Face access; AIMNet2 needs a package install (not yet done).
 
 ## Phase 1 run-book
 
