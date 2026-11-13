@@ -36,7 +36,7 @@ class PySCFCalc:
         n = [0]; mf.callback = lambda env: n.__setitem__(0, n[0] + 1)
         e = mf.kernel(dm0=self.dm)
         if not mf.converged:
-            mf = mf.newton(); e = mf.kernel(mf.make_rdm1())
+            mf = mf.newton(); e = mf.kernel(mf.mo_coeff, mf.mo_occ)   # newton().kernel takes MOs first, not a density
         self.dm = mf.make_rdm1(); self.cycles = n[0]
         g = mf.nuc_grad_method().kernel()
         mass = atoms.get_masses(); com = (mass[:, None] * pos).sum(0) / mass.sum()

@@ -33,7 +33,7 @@ def main():
     mf.callback = lambda env: cycles.append(env["cycle"])
     t0 = time.time(); e = mf.kernel(); t_scf = time.time() - t0
     if not mf.converged:                                    # second-order fallback, as production would use
-        mf = mf.newton(); t1 = time.time(); e = mf.kernel(mf.make_rdm1()); t_scf += time.time() - t1
+        mf = mf.newton(); t1 = time.time(); e = mf.kernel(mf.mo_coeff, mf.mo_occ); t_scf += time.time() - t1  # newton().kernel takes MOs first, not a density
     t0 = time.time(); g = mf.nuc_grad_method().kernel(); t_grad = time.time() - t0
     m = mol.atom_mass_list(); com = (m[:, None] * mol.atom_coords(unit="Angstrom")).sum(0) / m.sum()
     # PySCF's dipole is about the coordinate origin; for an ion shift it to the centre of mass (4.80321 Debye per e*A)
