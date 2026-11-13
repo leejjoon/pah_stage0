@@ -157,6 +157,11 @@ disagreement stay low on unseen species. Budget at 6-31G\*: of order 100–200k 
   stopped after ~1.5 h (outputs in `aimd/spherical_aborted/`) and restarted with `cart=True`, now the default of
   `d1/aimd_pyscf.py` (`--spherical` to override). 4-31G work (timing pilot) is unaffected. Handoff for a PySCF /
   GPU4PySCF / JAX-port study: `docs/plan/handoff_pyscf_gpu_jax.md`.
+- 2026-11-13: **TODO, run elsewhere:** the DFT MD reference (B3 part one) was stopped on the project node at the user's
+  request; it belongs on another server. Checkpoints kept in `/var/tmp/$USER-pah/d1/aimd/` (neutral 3.0 ps, cation
+  2.0 ps of 22 ps; rerunning the same `d1/aimd_pyscf.py` command next to its npz resumes; launcher `run_all.sh`).
+  Measured on Grace cores, 8 threads, 6D: 8.8 s (neutral) and ~13 s (cation) per 0.5 fs step, i.e. ~4 and ~6 days
+  per trajectory. The B4 gate's deciding number (the cation CC-band strength slope) comes from these runs.
 
 ## Phase 1 run-book
 
