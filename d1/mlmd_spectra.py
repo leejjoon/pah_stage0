@@ -6,10 +6,14 @@
 # freq) in cm^2 (unnormalised), mean (replica mean of sigma, normalised to a peak of 1), and <..>_qm<k>.txt in the
 # authors' format (normalised replica mean). Replicas are averaged before normalising. Flagged systems are skipped.
 # Hidden-event check: the screen (screen_check.py) sees only the final geometry, so an H that hops and returns
-# passes. Such a hop shifts the slowly varying dipole. dipole_shift = largest distance (e*A) of a 1 ps window mean
-# from the median of the window means; above SHIFT_FLAG the system is flagged in <spectra outdir>/qa.csv (calibrated
-# 2026-11-14 on new300_v1: failing systems median 0.47, species with all replicas passing median 0.044, max 0.22).
-# Flagged systems still get spectra; dropping is decided downstream from qa.csv and screen.csv.
+# passes. A hop changes the slowly varying dipole. Over 1 ps windows: vec_shift = largest distance (e*A) of a window
+# mean of the dipole vector from the median window mean; mag_shift = the same for the window mean of |mu|; mu_med =
+# median of those |mu| means. The molecule tumbles, so for a polar molecule vec_shift reflects rotation, not
+# chemistry (overlap_v1: C11H7N_465, C59H20_96, 0.7-1.2 in every replica). mag_shift is rotation-invariant but
+# misses many events (sp3 ring openings barely change |mu|). Flag if mag_shift > MAG_FLAG, or if the molecule has
+# no permanent dipole (mu_med < POLAR) and vec_shift > VEC_FLAG. Calibrated 2026-11-14 on overlap_v1 and four
+# new300_v1 units: species passing the screen reach vec 0.16 (nonpolar) and mag 0.114. A partial check: it
+# catches most hops in nonpolar species, few in polar ones. Flagged systems still get spectra; qa.csv records it.
 #   python mlmd_spectra.py --check <dipole txt> <their spectrum txt> <T>   reproduce one 3_calc_IR.py output
 import argparse, glob, json, os, sys
 import numpy as np
@@ -17,7 +21,7 @@ from scipy import fftpack, signal
 from scipy.constants import physical_constants as pc
 
 FRACTION, SCALE, FMIN, FMAX = 0.07987, 0.9578, 300.0, 3800.0
-SHIFT_FLAG, SHIFT_WINDOW_FS = 0.2, 1000.0
+VEC_FLAG, MAG_FLAG, POLAR, SHIFT_WINDOW_FS = 0.2, 0.15, 0.25, 1000.0
 
 
 def ir_sigma(mu, T, dt_fs=1.0, qm=0):
@@ -50,10 +54,13 @@ def ir_sigma(mu, T, dt_fs=1.0, qm=0):
 
 
 def dipole_shift(mu, dt_fs=1.0):
-    """Largest distance (e*A) of a 1 ps window mean of the dipole from the median window mean."""
+    """(vec_shift, mag_shift, mu_med, flag) over 1 ps windows; see the header."""
     w = max(1, int(round(SHIFT_WINDOW_FS / dt_fs))); n = len(mu) // w
-    m = np.asarray(mu[:n * w], np.float64).reshape(n, w, 3).mean(1)
-    return float(np.linalg.norm(m - np.median(m, axis=0), axis=1).max())
+    x = np.asarray(mu[:n * w], np.float64).reshape(n, w, 3)
+    m = x.mean(1); a = np.linalg.norm(x, axis=2).mean(1)
+    vec = float(np.linalg.norm(m - np.median(m, axis=0), axis=1).max())
+    mag = float(np.abs(a - np.median(a)).max()); med = float(np.median(a))
+    return vec, mag, med, int(mag > MAG_FLAG or (med < POLAR and vec > VEC_FLAG))
 
 
 def save_txt(path, f, y):
@@ -92,17 +99,17 @@ def main():
         reps.sort(key=lambda r: r[0])
         out = [ir_sigma(mu, T, dt_fs, a.qm) for _, mu, dt_fs, _ in reps]
         shift = [dipole_shift(mu, dt_fs) for _, mu, dt_fs, _ in reps]
-        qa += [(sp, T, r[0], r[3], round(x, 4), int(x > SHIFT_FLAG)) for r, x in zip(reps, shift)]
+        qa += [(sp, T, r[0], r[3], *(round(v, 4) for v in x[:3]), x[3]) for r, x in zip(reps, shift)]
         f = out[0][0]; sig = np.array([o[1] for o in out]); mean = sig.mean(0); mean /= mean.max()
         tag = f"{sp}_{T:g}K"
         np.savez(f"{a.out}/{tag}.npz", freq=f, sigma=sig, mean=mean, replicas=[r[0] for r in reps], qm=a.qm,
-                 dipole_shift=shift)
+                 dipole_shift=np.array(shift))
         save_txt(f"{a.out}/{tag}_qm{a.qm}.txt", f, mean)
     with open(f"{a.out}/qa.csv", "w") as fo:
-        fo.write("species,T,replica,unit,dipole_shift,shift_flag\n")
+        fo.write("species,T,replica,unit,vec_shift,mag_shift,mu_med,shift_flag\n")
         fo.writelines(",".join(map(str, q)) + "\n" for q in qa)
     print(f"{len(groups)} species x T spectra in {a.out}; {len(skipped)} flagged systems skipped; "
-          f"{sum(q[5] for q in qa)} of {len(qa)} systems above dipole_shift {SHIFT_FLAG} e*A (qa.csv)")
+          f"{sum(q[-1] for q in qa)} of {len(qa)} systems flagged by the dipole-shift check (qa.csv)")
     for x in skipped[:20]:
         print("   skipped", x)
 
