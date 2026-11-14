@@ -5,6 +5,11 @@
 # writes, per species and temperature, <spectra outdir>/<species>_<T>K.npz: freq (cm^-1, scaled), sigma (replicas,
 # freq) in cm^2 (unnormalised), mean (replica mean of sigma, normalised to a peak of 1), and <..>_qm<k>.txt in the
 # authors' format (normalised replica mean). Replicas are averaged before normalising. Flagged systems are skipped.
+# Hidden-event check: the screen (screen_check.py) sees only the final geometry, so an H that hops and returns
+# passes. Such a hop shifts the slowly varying dipole. dipole_shift = largest distance (e*A) of a 1 ps window mean
+# from the median of the window means; above SHIFT_FLAG the system is flagged in <spectra outdir>/qa.csv (calibrated
+# 2026-11-14 on new300_v1: failing systems median 0.47, species with all replicas passing median 0.044, max 0.22).
+# Flagged systems still get spectra; dropping is decided downstream from qa.csv and screen.csv.
 #   python mlmd_spectra.py --check <dipole txt> <their spectrum txt> <T>   reproduce one 3_calc_IR.py output
 import argparse, glob, json, os, sys
 import numpy as np
@@ -12,6 +17,7 @@ from scipy import fftpack, signal
 from scipy.constants import physical_constants as pc
 
 FRACTION, SCALE, FMIN, FMAX = 0.07987, 0.9578, 300.0, 3800.0
+SHIFT_FLAG, SHIFT_WINDOW_FS = 0.2, 1000.0
 
 
 def ir_sigma(mu, T, dt_fs=1.0, qm=0):
@@ -43,6 +49,13 @@ def ir_sigma(mu, T, dt_fs=1.0, qm=0):
     return wn[m], sigma[m]
 
 
+def dipole_shift(mu, dt_fs=1.0):
+    """Largest distance (e*A) of a 1 ps window mean of the dipole from the median window mean."""
+    w = max(1, int(round(SHIFT_WINDOW_FS / dt_fs))); n = len(mu) // w
+    m = np.asarray(mu[:n * w], np.float64).reshape(n, w, 3).mean(1)
+    return float(np.linalg.norm(m - np.median(m, axis=0), axis=1).max())
+
+
 def save_txt(path, f, y):
     np.savetxt(path, np.column_stack((f, y)), fmt="%.1f %.4e", header="Freq_MD (cm^-1) Inten_MD (Normalized intensity)")
 
@@ -59,12 +72,13 @@ def main():
               f"(after the authors' %.1f/%.4e rounding)")
         sys.exit(0 if len(F) == len(f) and np.abs(F - fr).max() == 0 and np.abs(Y - yr).max() <= 1e-4 else 1)
     ap = argparse.ArgumentParser(); ap.add_argument("run"); ap.add_argument("out"); ap.add_argument("--qm", type=int, default=0)
+    ap.add_argument("--units", default=None, help="comma-separated unit ids: only these (testing)")
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
     groups, skipped = {}, []
     for meta in sorted(glob.glob(f"{a.run}/units/*/meta.json")):
         d = os.path.dirname(meta)
-        if not os.path.exists(f"{d}/DONE"):
+        if not os.path.exists(f"{d}/DONE") or (a.units and os.path.basename(d) not in a.units.split(",")):
             continue
         m = json.load(open(meta)); fl = m["flags"]
         mu = np.load(f"{d}/dipole.npy", mmap_mode="r")
@@ -72,15 +86,23 @@ def main():
         for k, s in enumerate(m["systems"]):
             if fl["nonfinite"][k] or fl["hot"][k] or fl["max_neighbours"][k] > 25 or fl["edge_overflow"]:
                 skipped.append((s["species"], s["T"], s["replica"])); continue
-            groups.setdefault((s["species"], s["T"]), []).append((s["replica"], np.asarray(mu[:, k]), dt_fs))
+            groups.setdefault((s["species"], s["T"]), []).append((s["replica"], np.asarray(mu[:, k]), dt_fs, m["id"]))
+    qa = []
     for (sp, T), reps in sorted(groups.items()):
         reps.sort(key=lambda r: r[0])
-        out = [ir_sigma(mu, T, dt_fs, a.qm) for _, mu, dt_fs in reps]
+        out = [ir_sigma(mu, T, dt_fs, a.qm) for _, mu, dt_fs, _ in reps]
+        shift = [dipole_shift(mu, dt_fs) for _, mu, dt_fs, _ in reps]
+        qa += [(sp, T, r[0], r[3], round(x, 4), int(x > SHIFT_FLAG)) for r, x in zip(reps, shift)]
         f = out[0][0]; sig = np.array([o[1] for o in out]); mean = sig.mean(0); mean /= mean.max()
         tag = f"{sp}_{T:g}K"
-        np.savez(f"{a.out}/{tag}.npz", freq=f, sigma=sig, mean=mean, replicas=[r[0] for r in reps], qm=a.qm)
+        np.savez(f"{a.out}/{tag}.npz", freq=f, sigma=sig, mean=mean, replicas=[r[0] for r in reps], qm=a.qm,
+                 dipole_shift=shift)
         save_txt(f"{a.out}/{tag}_qm{a.qm}.txt", f, mean)
-    print(f"{len(groups)} species x T spectra in {a.out}; {len(skipped)} flagged systems skipped")
+    with open(f"{a.out}/qa.csv", "w") as fo:
+        fo.write("species,T,replica,unit,dipole_shift,shift_flag\n")
+        fo.writelines(",".join(map(str, q)) + "\n" for q in qa)
+    print(f"{len(groups)} species x T spectra in {a.out}; {len(skipped)} flagged systems skipped; "
+          f"{sum(q[5] for q in qa)} of {len(qa)} systems above dipole_shift {SHIFT_FLAG} e*A (qa.csv)")
     for x in skipped[:20]:
         print("   skipped", x)
 
