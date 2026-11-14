@@ -140,8 +140,7 @@ show more failures at 600 K (non-planar), so 600 K also gets the filter. Steps (
    `mlmd_integrity.py`; catches hop-and-return too). Test plan `runs/test_bond_v1`: 600 K, 10 + 10 ps, 2 replicas,
    positives C10H16_v4u333, C29H17_v4u2132, C32H18_v4u1530; negatives C46H18_v4u6921, C82H24_v4u561,
    C100H26_v4u10772. Test job (one job): `sbatch --time=00:30:00 d1/slurm_mlmd_run.sbatch
-   /appsdata/$USER/sif/A_jax.sif /appsdata/$USER/d1 /appsdata/$USER/d1/runs/test_bond_v1`. **Waiting for a job slot:
-   the seed_dft array 1277040 (5 tasks, other session) holds all 5.**
+   /appsdata/$USER/sif/A_jax.sif /appsdata/$USER/d1 /appsdata/$USER/d1/runs/test_bond_v1`. **Submitted 2026-11-15 08:3x as job 1280872.**
 2. 600 K production: the 857 library species that passed the 600 K screen (~109 GPU-h, 4-task array).
 3. 900 K pilot: ~100 of the 857, stratified by size and planarity, full 200 + 200 ps (~12 GPU-h); decide 900 K
    production from its yield.
