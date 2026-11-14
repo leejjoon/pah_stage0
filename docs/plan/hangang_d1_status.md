@@ -140,8 +140,13 @@ show more failures at 600 K (non-planar), so 600 K also gets the filter. Steps (
    `mlmd_integrity.py`; catches hop-and-return too). Test plan `runs/test_bond_v1`: 600 K, 10 + 10 ps, 2 replicas,
    positives C10H16_v4u333, C29H17_v4u2132, C32H18_v4u1530; negatives C46H18_v4u6921, C82H24_v4u561,
    C100H26_v4u10772. Test job (one job): `sbatch --time=00:30:00 d1/slurm_mlmd_run.sbatch
-   /appsdata/$USER/sif/A_jax.sif /appsdata/$USER/d1 /appsdata/$USER/d1/runs/test_bond_v1`. **Submitted 2026-11-15 08:3x as job 1280872.**
-2. 600 K production: the 857 library species that passed the 600 K screen (~109 GPU-h, 4-task array).
+   /appsdata/$USER/sif/A_jax.sif /appsdata/$USER/d1 /appsdata/$USER/d1/runs/test_bond_v1`. **Job 1280872 COMPLETED 2026-11-15 (7:47): passed.** Positives flagged in
+   6/6 systems (all at chunk 0: C29H17/C32H18 have two C–H stretched 1.08 → 1.30–1.52 Å within 1 ps, C10H16 falls
+   apart), negatives 0/6, identical to `mlmd_integrity.py` on the end states. Driver `126aa42` proven.
+2. 600 K production: the 857 library species that passed the 600 K screen (~109 GPU-h). Plan `runs/new600_v1`
+   (xyz `XYZ_new600_v1`, list `d1/new600_species_v1.csv`; 3,428 systems, 93 units); 4-task array, per-GPU max
+   ~8.6 h: `sbatch --array=0-3 --time=12:00:00 d1/slurm_mlmd_run.sbatch /appsdata/$USER/sif/A_jax.sif
+   /appsdata/$USER/d1 /appsdata/$USER/d1/runs/new600_v1` (awaiting the user's go).
 3. 900 K pilot: ~100 of the 857, stratified by size and planarity, full 200 + 200 ps (~12 GPU-h); decide 900 K
    production from its yield.
 4. 1200 K: none with this model (user to choose: extrapolate, empirical widths, or a retrained model).
