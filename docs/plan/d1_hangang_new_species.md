@@ -188,6 +188,21 @@ superhydrogenated ones), × 300 and 600 K × **8 replicas**; 200 ps NVT + 200 ps
 - Seed scatter of band shares as a function of Nc; it sets the replica count of step 4 (4 by default; fewer above
   an Nc where the scatter is small).
 - ~21 GPU-h (~5–6 node-hours).
+- **Result (2026-11-14; `d1/overlap_compare.py`, output `spectra/overlap_v1/compare_mai.csv`).** Spectra with
+  `mlmd_spectra.py`; systems failing the screen or the dipole check left out (C19H12_348 at 300 and 600 K,
+  C17H14_342, C27H15_2249 and C32H18_1655 at 600 K have fewer than 3 clean replicas and are skipped). Six band
+  windows (CH oop 650–950, CC/CH in-plane 1100–1500, CC stretch 1500–1700, CH stretch 2950–3150, 300–650,
+  950–1100 cm⁻¹); per window its share of the 300–3800 cm⁻¹ intensity and its centroid.
+  - **Our runs reproduce Mai's published spectra within the seed scatter.** The published share lies inside our
+    replica range in 70–89 % of species per window (expected 78 % for 8 replicas if both come from the same
+    distribution); median share differences −0.008 to +0.002; median centroid offsets ≤ 0.8 cm⁻¹, typical
+    |offset| 0.6–3.4 cm⁻¹. The largest systematic is CH oop at 300 K (published share 0.0075 lower than ours,
+    inside our range in 72 %).
+  - **Replica scatter:** one replica's band share has a relative sd of 7 % (Nc < 30) to 5 % (Nc ≥ 60) at 300 K and
+    5.5 % to 3.4 % at 600 K. With 4 replicas the species mean is good to ~2.5–3.5 % at 300 K and ~2–3 % at 600 K;
+    2 % at 300 K would need 6–13 replicas. **Recommendation: keep 4 replicas** (step 4's default); the
+    regression works on population spectra that average many species, so per-species seed noise averages down
+    further.
 
 **4. New-species production.** ~1,000 species × 300 and 600 K × 4 replicas (or as step 3 sets),
 200 ps NVT + 200 ps NVE.
