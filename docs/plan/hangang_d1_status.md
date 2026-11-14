@@ -131,6 +131,22 @@ sbatch --array=0-1 --time=05:00:00 d1/slurm_mlmd_run.sbatch /appsdata/$USER/sif/
 by the bond-graph check (C96H28_v4u190). Details in
 `d1_hangang_new_species.md`, step 2.
 
+## High-T plan (user's hot-test summary and decision, 2026-11-14)
+
+Hot test (project node): 1200 K unusable with this model; 900 K usable only with a per-system integrity filter;
+600 K 105/132 replicas intact (all 27 changes in the 9 cold-check species). The Hangang screens (2,704 species)
+show more failures at 600 K (non-planar), so 600 K also gets the filter. Steps (ask before each submit):
+1. **Driver: per-chunk bond-graph check** (`mlmd_run.py`, `flags["bond_change_chunk"]`, criterion of
+   `mlmd_integrity.py`; catches hop-and-return too). Test plan `runs/test_bond_v1`: 600 K, 10 + 10 ps, 2 replicas,
+   positives C10H16_v4u333, C29H17_v4u2132, C32H18_v4u1530; negatives C46H18_v4u6921, C82H24_v4u561,
+   C100H26_v4u10772. Test job (one job): `sbatch --time=00:30:00 d1/slurm_mlmd_run.sbatch
+   /appsdata/$USER/sif/A_jax.sif /appsdata/$USER/d1 /appsdata/$USER/d1/runs/test_bond_v1`. **Waiting for a job slot:
+   the seed_dft array 1277040 (5 tasks, other session) holds all 5.**
+2. 600 K production: the 857 library species that passed the 600 K screen (~109 GPU-h, 4-task array).
+3. 900 K pilot: ~100 of the 857, stratified by size and planarity, full 200 + 200 ps (~12 GPU-h); decide 900 K
+   production from its yield.
+4. 1200 K: none with this model (user to choose: extrapolate, empirical widths, or a retrained model).
+
 ## Known facts and pitfalls
 
 - **Shared clone, branch switches (2026-11-14):** at 10:05–10:07 another session checked out `feat-gpu-gh200` in
