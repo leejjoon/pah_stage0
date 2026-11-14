@@ -88,19 +88,21 @@ def main():
         if not os.path.exists(f"{d}/DONE") or (a.units and os.path.basename(d) not in a.units.split(",")):
             continue
         m = json.load(open(meta)); fl = m["flags"]
-        mu = np.load(f"{d}/dipole.npy", mmap_mode="r")
         dt_fs = m["settings"]["dt_fs"] * m["settings"]["frame_every"]
+        mu = np.load(f"{d}/dipole.npy")         # one unit at a time (a few hundred MB); keep only spectra
         for k, s in enumerate(m["systems"]):
             if fl["nonfinite"][k] or fl["hot"][k] or fl["max_neighbours"][k] > 25 or fl["edge_overflow"]:
                 skipped.append((s["species"], s["T"], s["replica"])); continue
-            groups.setdefault((s["species"], s["T"]), []).append((s["replica"], np.asarray(mu[:, k]), dt_fs, m["id"]))
+            x = np.ascontiguousarray(mu[:, k])
+            groups.setdefault((s["species"], s["T"]), []).append(
+                (s["replica"], ir_sigma(x, s["T"], dt_fs, a.qm), dipole_shift(x, dt_fs), m["id"]))
+        del mu
     qa = []
     for (sp, T), reps in sorted(groups.items()):
         reps.sort(key=lambda r: r[0])
-        out = [ir_sigma(mu, T, dt_fs, a.qm) for _, mu, dt_fs, _ in reps]
-        shift = [dipole_shift(mu, dt_fs) for _, mu, dt_fs, _ in reps]
+        shift = [r[2] for r in reps]
         qa += [(sp, T, r[0], r[3], *(round(v, 4) for v in x[:3]), x[3]) for r, x in zip(reps, shift)]
-        f = out[0][0]; sig = np.array([o[1] for o in out]); mean = sig.mean(0); mean /= mean.max()
+        f = reps[0][1][0]; sig = np.array([r[1][1] for r in reps]); mean = sig.mean(0); mean /= mean.max()
         tag = f"{sp}_{T:g}K"
         np.savez(f"{a.out}/{tag}.npz", freq=f, sigma=sig, mean=mean, replicas=[r[0] for r in reps], qm=a.qm,
                  dipole_shift=np.array(shift))
