@@ -360,6 +360,112 @@ of `normal` was `planned` for pending large jobs).
 On Hangang the inputs are already in place: `/appsdata/t641a02/d1/mai2025/` (zip, `src/` with code, models and
 inputs) and `/appsdata/t641a02/d1/XYZ_pahdb_1704/`.
 
+### Chemical integrity with temperature (hot test and cold check, 2026-11-11)
+
+Mai et al. 2025 (§4) say their model is not reliable above ~600 K. `d1/mlmd_integrity.py <run> <xyz dir>` compares
+each system's bond graph at the end of a run (distance < 1.2 × sum of covalent radii) with the input geometry; the
+driver's own QA flags catch only part of this (25 of the hot test's changed systems).
+- **Hot test** (`/var/tmp/$USER-pah/d1/hot_test`): 33 species (9–216 C, incl. N-bearing, odd-electron and
+  hydrogenated ones) × 600/900/1200 K × 4 replicas, 20 ps NVT + 50 ps NVE. Intact: 105/132 at 600 K, 89/132 at
+  900 K, 43/132 at 1200 K. At 1200 K most failures are H loss (41; 37 even with a 1.35 factor) and C–C changes (37).
+  Naphthalene stays intact at all three.
+- **Cold check** (`/var/tmp/$USER-pah/d1/cold_check`): the 9 species that changed in the hot test, at 50 and 300 K
+  (4 replicas, 20 + 50 ps). Corrected 2026-11-12 from the raw end states (`integrity_full.txt` in both run
+  directories; the first version of this note said "six species at 50 K", which mixed the hot-test list with the
+  cold check). Replicas (of 4) whose end-state bond graph differs from the input:
+
+  | Species | 50 K | 300 K | 600 K | 900 K | 1200 K | What changes |
+  | --- | --- | --- | --- | --- | --- | --- |
+  | C9H8_495 | 4 | 4 | 4 | 4 | 4 | Ring opens (C–C 1.51 → 4.5 Å at 50 K) |
+  | C24H24_357 | 4 | 4 | 4 | 4 | 4 | Several C–H past 1.28 Å (1.29 at 50 K) |
+  | C54H18_836 | 4 | 4 | 4 | 4 | 4 | One C–H 1.075 → 1.32 Å |
+  | C60H24_812 | 4 | 4 | 4 | 4 | 4 | H atoms move between carbons |
+  | C15H10_341 | 0 | 4 | 4 | 4 | 4 | C–C and C–H changes |
+  | C29H17_2133 | 0 | 0 | 4 | 4 | 4 | |
+  | C10H9N_473 | 0 | 0 | 1 | 4 | 4 | |
+  | C27H15_2237 | 0 | 0 | 1 | 4 | 4 | |
+  | C47H18_83 | 0 | 0 | 1 | 4 | 4 | |
+
+  So 4 species fail at every temperature (16/36 at 50 K), C15H10_341 from 300 K (20/36), C29H17_2133 from 600 K, and
+  three species from 600–900 K. Of the other 24 hot-test species, 23 have at least one changed replica at 1200 K
+  (4 at 900 K, none at 600 K); naphthalene (C10H8_330) is the only species intact at all temperatures. This is an
+  end-state check: it does not separate a persistent change from a bond caught mid-stretch. At 50 K a 1.29–1.32 Å
+  C–H bond is far beyond thermal amplitude, so those are real distortions; at 900–1200 K a persistence check
+  (several frames) is needed before calling a single C–H at ~1.3 Å a failure.
+- **Low-temperature sweep of all 1,704 published species** (`/var/tmp/$USER-pah/d1/sweep`, 2026-11-12): 50 and 300 K,
+  one replica, 20 ps NVT + 30 ps NVE, 124 units, ~14 h on GPU 0. The model changes the bond graph of **62 species
+  (3.6 %)**: 17 at 50 K (15 of them also at 300 K, 2 only at 50 K) and 45 more only at 300 K. At 50 K: 4 with C–C
+  changes, 7 losing a C–H bond, 4 gaining one, 2 with H moving. At 300 K (60 systems): 30 losing a C–H bond, 14 with
+  H moving, 8 gaining a C–H bond, 8 with C–C changes. 20 of the 62 have an odd number of H (radicals); 1 contains N.
+  At 300 K a C–H bond past the 1.28 Å cut is ~6–7 classical thermal standard deviations from equilibrium, so these
+  are distortions, not a bond caught mid-stretch. List: `docs/plan/mai_model_lowT_failures.csv`. These species are
+  in Mai et al.'s published 50–600 K spectra; exclude them, or check their published spectra, before use.
+- Consequences: 1200 K is not usable with this model; 900 K only with the integrity filter applied per system; and
+  production at any temperature needs the integrity check, with species that fail at 50 K excluded (they are in
+  Mai's published 50–600 K spectra too, so check those before use).
+
+## Seed-set DFT for the charged MLFF (GPU4PySCF, container D; prepared 2026-11-14)
+
+Handoff for the Hangang session (context, expected results, what to report): `docs/plan/hangang_seed_dft_handoff.md`.
+
+The B3LYP/6-31G\* labels for the 7,504 seed frames (`docs/plan/charged_mlff_plan.md` Phase 1; engine and validation in
+`docs/research/pyscf_gpu_jax.md` §5) are about 87 H100-hours. On the project node that is about 33 h on both GPUs;
+here, 5 nodes (20 GPUs) should take roughly 4–5 h of wall time plus queue wait. Nothing about MPS applies (none is used).
+
+**1. Container D** (myhub, public like A, no login needed; built on the project node from
+`containers/D_gpu4pyscf.def`). Pushed 2026-11-14 as an ORAS artifact; its layer digest is the SIF's sha256,
+checked anonymously against the registry manifest.
+```bash
+module load apptainer/1.4.5
+mkdir -p /appsdata/$USER/sif
+export APPTAINER_CACHEDIR=/appsdata/$USER/apptainer-cache
+apptainer pull /appsdata/$USER/sif/D_gpu4pyscf.sif oras://myhub.ksc.re.kr/pah/d_gpu4pyscf:gh200-2026-11-14
+sha256sum /appsdata/$USER/sif/D_gpu4pyscf.sif     # must be 09afb47a44974c8b4575ba18b8664e6eb0f681bd3264c47c858be0d5ae20893b
+apptainer cache clean --force
+```
+Run the pull on a GPU login node (`dm01`–`dm04` have no Apptainer). The first three pushes (by Claude, same day)
+failed after 60–90 s with `Patch …/blobs/uploads/…: file already closed`; a later push by hand went through. If a
+future push fails the same way, retry it. Fallbacks if the pull ever fails: `rsync -P` the SIF from the project
+node (`/var/tmp/jjlee-pah/sif/`), or build it on a GPU compute node with
+`APPTAINER_TMPDIR=/scratch/$USER/tmp apptainer build --fakeroot /appsdata/$USER/sif/D_gpu4pyscf.sif
+containers/D_gpu4pyscf.def` from the repository root (about 7 min; too much for the login node's 120 CPU-minutes;
+its hash will differ, and the check job in step 3 validates it).
+
+**2. Code and inputs.** The scripts are on branch `feat-gpu-gh200`
+(`cd /appsdata/$USER/pah_stage0 && git fetch && git checkout feat-gpu-gh200`). The inputs come from the project node
+as one tarball (copy it to `/appsdata/$USER/d1/`), `/var/tmp/jjlee-pah/d1/seed_hangang.tgz` (5.7 MB, sha256 `d711af72…7f63`; no Mai et al. geometries):
+`seed_hangang/mlff_seed/` (`frames/`, `frames_transfer/`, `gjf*/manifest.json`, `species_v2.csv`) and
+`seed_hangang/seed_dft_ref/` (the project node's 202 pilot results, the reference for the check below).
+```bash
+cd /appsdata/$USER/d1 && tar xzf seed_hangang.tgz
+```
+
+**3. Check job (one node, about 15 min).** 15 of the pilot frames (C10–C96, both charges, 7 with stability tests),
+rerun here and compared with the project node's results against the G2 targets (1e-7 Ha, 1e-5 Ha/bohr, 1e-3 D):
+```bash
+cd /appsdata/$USER/pah_stage0
+S=/appsdata/$USER/d1/seed_hangang
+sbatch --time=01:00:00 d1/slurm_dft_seed.sbatch /appsdata/$USER/sif/D_gpu4pyscf.sif $S/mlff_seed $S/check \
+  --names C10H8_330_q0_f008,C10H8_330_q0_f031,C10H8_330_q1_f006,C10H8_330_q1_f031,C24H14_204_q0_f008,C24H14_204_q0_f031,C24H14_204_q1_f007,C24H14_204_q1_f030,C48H20_146_q0_f008,C48H20_146_q0_f030,C48H20_146_q1_f008,C48H20_146_q1_f031,C96H30_3317_q0_f004,C96H30_3317_q1_f004,C96H30_3317_q1_f003
+python3 d1/dft_seed_run.py compare $S/seed_dft_ref $S/check      # must print PASS; compare the t_wall pairs too
+```
+`compare` needs only numpy on the host Python; otherwise run it with `apptainer exec D_gpu4pyscf.sif python …`.
+
+**4. Production.** Seed the output with the pilot results (they are skipped), then one array of up to 5 nodes:
+```bash
+mkdir -p $S/seed_dft && cp $S/seed_dft_ref/*.json $S/seed_dft/
+sbatch --array=0-4 d1/slurm_dft_seed.sbatch /appsdata/$USER/sif/D_gpu4pyscf.sif $S/mlff_seed $S/seed_dft
+ls $S/seed_dft/*.json | wc -l        # 7,504 when complete
+```
+Each node runs 4 GPUs × 2 processes, one shard each, pinned to the GPU's cores (`nvidia-smi topo -m`). Finished
+frames are skipped by file name, so resubmitting the same command, with any array size, continues; processes stop
+starting new frames 30 min before the time limit. Never run two jobs on the same output directory at once.
+Logs: `$S/seed_dft/logs/`.
+
+**5. Afterwards, on the project node:** copy `$S/seed_dft/` back to `/var/tmp/jjlee-pah/d1/seed_dft/`, then
+`python d1/dft_seed_run.py collect … seed_dft.extxyz` and `d1/mlff_qa.py` (xTB references, `xtb` env), as in
+`docs/plan/charged_mlff_plan.md`.
+
 ## Step 4 onwards (planning notes written before step 3; superseded where they differ)
 
 - `d1/mlmd_run.py`: the production driver. It runs the Mai et al. 2025 force field and dipole model (Zenodo

@@ -1,0 +1,16 @@
+Bootstrap: docker
+From: nvidia/cuda:12.9.1-devel-ubuntu24.04
+# Container D: GPU4PySCF 1.9.2 (B3LYP/6-31G* training data for the charged MLFF), aarch64 + H100 (sm_90).
+# One CUDA (12.9, from the base image); the host driver (595.45, CUDA 13.2) runs it without forward compatibility,
+# so a host MPS daemon serves its clients. Build and test notes: containers/D_gpu4pyscf.md.
+#   apptainer build --fakeroot /var/tmp/$USER-pah/sif/D_gpu4pyscf.sif containers/D_gpu4pyscf.def
+%files
+  containers/D_gpu4pyscf_post.sh /opt/D_gpu4pyscf_post.sh
+%post
+  NJOBS=48 bash /opt/D_gpu4pyscf_post.sh
+%environment
+  export PATH=/opt/venv/bin:$PATH
+  export CUPY_CACHE_DIR=${CUPY_CACHE_DIR:-/var/tmp/$USER-pah/cache/cupy}
+  export CUPY_ACCELERATORS=cub,cutensor
+%labels
+  project pah-sr D1 container D (GPU4PySCF)
