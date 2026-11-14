@@ -126,6 +126,12 @@ sbatch --array=0-1 --time=05:00:00 d1/slurm_mlmd_run.sbatch /appsdata/$USER/sif/
 
 ## Known facts and pitfalls
 
+- **Shared clone, branch switches (2026-11-14):** at 10:05–10:07 another session checked out `feat-gpu-gh200` in
+  `/appsdata/t641a02/pah_stage0`; a spectra run started then used that branch's `mlmd_spectra.py` (qm=3, no
+  clip, measured T; no `qa.csv`), writing `spectra/new300_v1`. The rerun with this branch's tool is
+  `spectra/new300_v1_qm0` (qm=0 + `qa.csv`). The branches have diverged (33 vs 36 commits); the production spectral
+  convention (committee review B1) lives on `feat-gpu-gh200`. Merge pending; do not switch branches in this clone.
+
 - **/appsdata file-count quota (2026-11-13):** group bs0358 is at 4,977,743 of 5,000,000 files (`lfs quota -h -g
   bs0358 /appsdata`); t641a02 owns 250,179 of them. JAX's persistent compilation cache writes then fail with
   "Disk quota exceeded" (a harmless UserWarning: it only recompiles). If the group reaches the limit, checkpoint

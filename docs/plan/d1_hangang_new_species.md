@@ -167,6 +167,20 @@ download needs PAHdb's e-mail form) copied to `/appsdata/$USER/d1/pahdb/` throug
     300 K over 400 ps.
   - The 62 are dropped from the 300 K library, as for the sp3 species. 300 K library from the new set: 920 + 4
     sp3 = 924 species.
+  - **Dipole check on the whole production (2026-11-14; `spectra/new300_v1_qm0/qa.csv`, rotation-aware version of
+    `mlmd_spectra.py`).** Flagged: 57 of 141 failing systems, 11 of 105 passing replicas of failing species, 24 of
+    3,680 systems of kept species, in 9 species:
+    - rotation false alarms (weakly polar N-PAH, |mu| 0.21–0.23 just under the 0.25 polar cut; every replica at
+      vec 0.20–0.26 with mag ≤ 0.03, like C52H17_835 in the overlap run): C31H14N_v4u9356, C52H18N2_v4u9240,
+      C53H18N_v4u9214, C53H18N_v4u9225, C95H24N_v4u7524. Keep.
+    - likely hidden hops (one or two replicas, C29–C34 families): C30H18_v4u1936 r2 (vec 0.32, mag 0.26),
+      C34H20_v4u948 r3 (vec 0.22, mag 0.14), C34H20_v4u964 r0 and r3, C30H18_v4u1946 r2 (vec 0.20–0.21).
+      Recommended: drop (the borderline pair of the earlier check is among them).
+    - kept sp3 species (`spectra/new300sp3_v1/qa.csv`): C14H16_v4u339 (mag 0.48–0.72) and C55H20_v4u318 (mag
+      0.15–0.17) are flagged in every replica; C27H14_v4u69 and C96H28_v4u190 are not. A shift in every replica
+      may be conformer interconversion of the saturated ring rather than chemistry; the dipole cannot tell.
+      Given 14 of 18 sp3 species fail the screen, recommended: drop both.
+    - With these drops the new 300 K set is 916 + 2 sp3 = 918 species (user to confirm).
   - **Hidden events (dipole check, 2026-11-14).** The screen sees only the final geometry, so an H that hops and
     returns would pass. The driver keeps no trajectory, but `dipole.npy` (NVE, every 1 fs) does: a hop shifts the
     1-ps mean dipole. Metric: largest distance of a 1-ps window mean from the system's median window. On the four
