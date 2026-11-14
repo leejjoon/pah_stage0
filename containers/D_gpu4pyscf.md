@@ -17,6 +17,7 @@ GPU4PySCF 1.9.2 for the B3LYP/6-31G\* training data of the charged MLFF (`docs/r
 
 The full list is `containers/requirements-D_gpu4pyscf-container.txt`. Image:
 `/var/tmp/$USER-pah/sif/D_gpu4pyscf.sif`, sha256 `09afb47a44974c8b4575ba18b8664e6eb0f681bd3264c47c858be0d5ae20893b`
+In myhub as a public ORAS artifact (same digest): `apptainer pull D_gpu4pyscf.sif oras://myhub.ksc.re.kr/pah/d_gpu4pyscf:gh200-2026-11-14`.
 (6.1 GB).
 
 ## Why it is built from source
