@@ -130,7 +130,10 @@ sbatch --array=0-1 --time=05:00:00 d1/slurm_mlmd_run.sbatch /appsdata/$USER/sif/
   `/appsdata/t641a02/pah_stage0`; a spectra run started then used that branch's `mlmd_spectra.py` (qm=3, no
   clip, measured T; no `qa.csv`), writing `spectra/new300_v1`. The rerun with this branch's tool is
   `spectra/new300_v1_qm0` (qm=0 + `qa.csv`). The branches have diverged (33 vs 36 commits); the production spectral
-  convention (committee review B1) lives on `feat-gpu-gh200`. Merge pending; do not switch branches in this clone.
+  convention (committee review B1) lives on `feat-gpu-gh200`. **Merged into `gh200-containers` 2026-11-14 (`88e61df`):**
+  `mlmd_spectra.py` now defaults to the production convention (qm=3, no clip, replica NVE temperature) and keeps
+  `--units`, per-unit loading and `qa.csv`; Mai's convention is `--qm 0 --clip --tnom`. Do not switch branches in
+  this clone; use a separate clone or `git worktree` for other branches.
 
 - **/appsdata file-count quota (2026-11-13):** group bs0358 is at 4,977,743 of 5,000,000 files (`lfs quota -h -g
   bs0358 /appsdata`); t641a02 owns 250,179 of them. JAX's persistent compilation cache writes then fail with
