@@ -385,6 +385,8 @@ driver's own QA flags catch only part of this (25 of the hot test's changed syst
 
 ## Seed-set DFT for the charged MLFF (GPU4PySCF, container D; prepared 2026-11-14)
 
+Handoff for the Hangang session (context, expected results, what to report): `docs/plan/hangang_seed_dft_handoff.md`.
+
 The B3LYP/6-31G\* labels for the 7,504 seed frames (`docs/plan/charged_mlff_plan.md` Phase 1; engine and validation in
 `docs/research/pyscf_gpu_jax.md` §5) are about 87 H100-hours. On the project node that is about 33 h on both GPUs;
 here, 5 nodes (20 GPUs) should take roughly 4–5 h of wall time plus queue wait. Nothing about MPS applies (none is used).
