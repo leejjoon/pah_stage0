@@ -124,6 +124,13 @@ sbatch --array=0-1 --time=00:30:00 d1/slurm_mlmd_run.sbatch /appsdata/$USER/sif/
 sbatch --array=0-1 --time=05:00:00 d1/slurm_mlmd_run.sbatch /appsdata/$USER/sif/A_jax.sif /appsdata/$USER/d1 /appsdata/$USER/d1/runs/new300_v1 --units $U   # rest
 ```
 
+## 300 K library from the new species (2026-11-14)
+
+`d1/new300_library_v1.csv`: 917 species with 4 clean replicas at 300 K (production-convention spectra in
+`spectra/new300_v1` and `spectra/new300sp3_v1`). Of the 1,000: 76 fail the screen (62 non-sp3, 14 sp3), 6 dropped by the dipole check, 1
+by the bond-graph check (C96H28_v4u190). Details in
+`d1_hangang_new_species.md`, step 2.
+
 ## Known facts and pitfalls
 
 - **Shared clone, branch switches (2026-11-14):** at 10:05–10:07 another session checked out `feat-gpu-gh200` in

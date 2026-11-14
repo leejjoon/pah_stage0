@@ -181,6 +181,14 @@ download needs PAHdb's e-mail form) copied to `/appsdata/$USER/d1/pahdb/` throug
       may be conformer interconversion of the saturated ring rather than chemistry; the dipole cannot tell.
       Given 14 of 18 sp3 species fail the screen, recommended: drop both.
     - With these drops the new 300 K set is 916 + 2 sp3 = 918 species (user to confirm).
+  - **Final 300 K spectra and library (2026-11-14, user's go).** Made with the merged `mlmd_spectra.py` in the
+    production convention (qm=3, no clip, replica NVE temperature; committee review B1) with `--xyz` (bond-graph
+    skip, `mlmd_integrity.py`): `spectra/new300_v1` (949 species with ≥ 1 clean replica) and `spectra/new300sp3_v1`.
+    The Mai-convention copies are `spectra/new300_v1_qm0` and `new300sp3_v1_qm0`; 33 species' files from the run
+    without `--xyz` were set aside in `spectra/new300_v1_stale_noxyz`. The bond-graph check skipped one replica of
+    C96H28_v4u190 that the screen passed, so that species is dropped too. **Library list:
+    `d1/new300_library_v1.csv`, 917 species** (916 non-sp3 + C27H14_v4u69), each with 4
+    clean replicas at 300 K.
   - **Hidden events (dipole check, 2026-11-14).** The screen sees only the final geometry, so an H that hops and
     returns would pass. The driver keeps no trajectory, but `dipole.npy` (NVE, every 1 fs) does: a hop shifts the
     1-ps mean dipole. Metric: largest distance of a 1-ps window mean from the system's median window. On the four
