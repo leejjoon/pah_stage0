@@ -256,3 +256,16 @@ topology check (screen_check.py criteria, `flags.topo_change_chunk/_chunks`). 47
 - Conclusion: 900 K is workable for planar species with per-replica filtering (~88 % of systems kept); non-planar
   species are mostly lost, the small ones entirely.
 
+## 600 K production (jobs 1280975 cancelled, 1281347; 2026-11-15)
+
+857 species (library species that passed the 600 K screen), 4 replicas, 200 + 200 ps, per-chunk topology check from
+the resume (all units were still in NVT when the check was fixed, so the whole NVE part is covered). 93/93 units
+done, no errors. Topology changed in 153 of 3,428 systems; 810 species keep all 4 replicas intact.
+- Spectra: `spectra/new600_v1` (production convention; systems with a topology change skipped; `qa.csv`): 829
+  species with ≥ 1 clean replica.
+- Dipole check on the intact systems: 17 flagged, all judged false alarms except C52H18N2_v4u9249 r1 (vec 0.98,
+  mag 0.24; that species already lost 2 replicas): the weakly polar N-PAH (C31H14N_v4u9356, C52H18N2_v4u9240,
+  C53H18N_v4u9214/9225, C95H24N_v4u7524; vec 0.21–0.24, mag ≤ 0.05) as at 300 K, and the two largest planar
+  species (C172H38_v4u6426, C196H38_v4u6418; vec 0.20–0.21, |mu| 0.20), thermal size at 600 K.
+- **600 K library: `d1/new600_library_v1.csv`, 810 species with 4 intact replicas.**
+

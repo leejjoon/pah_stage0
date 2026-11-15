@@ -7,7 +7,8 @@
 # integrated intensities at every T. The authors' convention (qm=0, clipped, nominal T; their published IR_txt_*_qm0
 # files) weights bands by (1-exp(-x))/x, x = h c nu / kT, i.e. roughly 1/nu: at 300 K the CH stretch comes out at
 # ~0.07-0.09 of its harmonic intensity and the CH out-of-plane bands at ~0.2-0.3. --xyz <dir> also skips systems whose
-# end-of-run bond graph differs from the input (d1/mlmd_integrity.py).
+# end-of-run bond graph differs from the input (d1/mlmd_integrity.py). Runs with the per-chunk check (mlmd_run.py
+# flags.topo_change_chunk, 2026-11-15) skip any system whose topology changed at any chunk end; --keep-topo keeps them.
 # writes, per species and temperature, <spectra outdir>/<species>_<T>K.npz: freq (cm^-1, scaled), sigma (replicas,
 # freq) in cm^2 (unnormalised), mean (replica mean of sigma, normalised to a peak of 1), and <..>_qm<k>.txt in the
 # authors' format (normalised replica mean). Replicas are averaged before normalising. Flagged systems are skipped.
@@ -93,6 +94,8 @@ def main():
     ap.add_argument("--tnom", action="store_true", help="nominal T in the prefactor (authors) instead of the replica NVE mean")
     ap.add_argument("--xyz", default=None, help="input xyz dir: skip systems whose bond graph changed by the end")
     ap.add_argument("--units", default=None, help="comma-separated unit ids: only these (testing)")
+    ap.add_argument("--keep-topo", action="store_true",
+                    help="keep systems whose per-chunk topology check (mlmd_run.py flags.topo_change_chunk) fired")
     a = ap.parse_args()
     if a.xyz:
         sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))   # python -I leaves the script dir off sys.path
@@ -110,6 +113,8 @@ def main():
         for k, s in enumerate(m["systems"]):
             if fl["nonfinite"][k] or fl["hot"][k] or fl["max_neighbours"][k] > 25 or fl["edge_overflow"]:
                 skipped.append((s["species"], s["T"], s["replica"], "QA flag")); continue
+            if not a.keep_topo and fl.get("topo_change_chunk", [-1] * len(m["systems"]))[k] >= 0:
+                skipped.append((s["species"], s["T"], s["replica"], "topology changed during the run")); continue
             if a.xyz:
                 sym, p0 = read_xyz(f"{a.xyz}/{s['species']}.xyz")
                 if bonds(sym, p0) != bonds(sym, st["p"][k]):

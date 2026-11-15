@@ -159,8 +159,7 @@ show more failures at 600 K (non-planar), so 600 K also gets the filter. Steps (
 779 planar species of the 857 (list `d1/new900_species_v1.csv`, xyz `XYZ_new900_v1`), 900 K, 4 replicas, 200 + 200 ps,
 per-chunk topology check; plan `runs/new900_v1` (3,116 systems, 85 units, ~99 GPU-h). Split into two disjoint unit
 lists so all 5 job slots are used: `runs/new900_v1/units_A.txt` (36 largest units, ~73 GPU-h) as **job 1282825**
-(`--array=0-2 --time=10:00:00 ... --units $(cat units_A.txt)`), and `units_B.txt` (49 units, ~26 GPU-h) as a
-2-task array once 600 K job 1281347 frees its slots: `sbatch --array=0-1 --time=06:00:00
+(`--array=0-2 --time=10:00:00 ... --units $(cat units_A.txt)`), and `units_B.txt` (49 units, ~26 GPU-h) as **job 1284012** (submitted 23:3x 2026-11-15, after 600 K job 1281347 COMPLETED, 93/93 units): `sbatch --array=0-1 --time=06:00:00
 d1/slurm_mlmd_run.sbatch /appsdata/$USER/sif/A_jax.sif /appsdata/$USER/d1 /appsdata/$USER/d1/runs/new900_v1
 --units $(cat /appsdata/$USER/d1/runs/new900_v1/units_B.txt)`. Resubmit each part only with its own list and
 array size. Spectra must use only systems with `topo_change_chunk == -1`.
