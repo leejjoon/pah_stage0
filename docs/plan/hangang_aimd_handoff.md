@@ -4,6 +4,9 @@ Written 2026-11-15 on the project node (`gh200`), for a session on KISTI Hangang
 Claude. Branch `feat-gpu-gh200`. Container D and the general Hangang setup are as in
 `docs/plan/hangang_seed_dft_handoff.md` (steps 1–2 there: code, image); do those first if they are not done.
 
+**Alternative route (2026-11-15):** the same checkpoints on a cloud VM's CPUs, `docs/plan/cloud_aimd_handoff.md`
+(branch `cloud-aimd`). Run them in one place only; ask the user which.
+
 ## What this is
 
 This is the DFT-level reference for the charged-MLFF work: committee review B3, part one

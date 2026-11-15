@@ -179,6 +179,11 @@ disagreement stay low on unseen species. Budget at 6-31G\*: of order 100–200k 
   agree to 3e-10 Ha / 8e-6 Ha/bohr at the MD's default grid; NVE energy continuous across the switch), one trajectory
   per GPU, 5.7 / 7.5 s per step (neutral / cation); 2 nodes for ~3.5 days via the self-resubmitting
   `d1/slurm_aimd.sbatch`; handoff `docs/plan/hangang_aimd_handoff.md`. Checkpoints: neutral 3.8 ps, cation 2.5–2.6 ps.
+- 2026-11-15: B3 part one MD, second route prepared (branch `cloud-aimd`; user's request, as Hangang time for it looked
+  large): the same checkpoints on a cloud VM's CPUs with the conda-forge PySCF they started with (recommended: one GCP
+  `c4a-highcpu-64` Spot VM, Arm Neoverse V2 like Grace; 8 runs × 8 cores, ~7,400 core-h, ~4.5–6 days).
+  `aimd_pyscf.py` now saves and exits on SIGTERM (Spot preemption); `d1/cloud/` holds the launcher, VM setup, env lock
+  and keep-alive; handoff `docs/plan/cloud_aimd_handoff.md`. Run in one place only.
 
 ## Phase 1 run-book
 

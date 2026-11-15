@@ -14,11 +14,12 @@
 # continue on the other engine (the npz records which engine ran which steps, field `engines`). For naphthalene a
 # step takes 5.7 s (neutral) / 7.5 s (cation) on an H100 (dipole and <S^2> included), one trajectory per GPU
 # (launch-bound: two per GPU gain nothing), against 8.8 / 13 s on 8 Grace threads with the conda-forge PySCF.
-# --hours H stops cleanly (checkpoint written) after H hours, for Slurm time limits; rerun to continue.
+# --hours H stops cleanly (checkpoint written) after H hours, for Slurm time limits; rerun to continue. SIGTERM
+# (a Spot/preemptible VM shutting down, systemd stop, scancel) does the same after the current step, so nothing is lost.
 # The npz is rewritten every --ckpt-fs (default 100 fs) with positions, velocities and the step; rerunning the same
 # command resumes from it (the NVT thermostat restarts with a fresh random stream). Needs the micromamba env
 # /var/tmp/$USER-pah/mamba/dft (pyscf) and ase.
-import argparse, os, time
+import argparse, os, signal, time
 import numpy as np
 
 
@@ -84,6 +85,7 @@ def main():
     ap.add_argument("--spherical", action="store_true", help="5D d functions (PySCF default) instead of Gaussian's 6D")
     ap.add_argument("--gpu", action="store_true", help="GPU4PySCF instead of PySCF (container D)")
     ap.add_argument("--hours", type=float, default=0, help="checkpoint and stop after this many hours (0: no limit)")
+    ap.add_argument("--tag", default="", help="appended to the engine name in `engines` (e.g. cloud-aarch64)")
     a = ap.parse_args()
     from pyscf import lib
     from ase import units
@@ -101,7 +103,8 @@ def main():
         md = VelocityVerlet(at, dt); md.run(1)
         t0 = time.time(); md.run(a.time_steps); s = (time.time() - t0) / a.time_steps
         print(f"{a.xyz} q={a.charge}: {s:.2f} s per step at {a.threads} threads, SCF cycles at the last step "
-              f"{calc.cycles}; {s * 2000 / 3600:.2f} h per ps; {s * n_tot / 3600:.0f} h for {n_tot} steps")
+              f"{calc.cycles}; {s * 2000 / 3600:.2f} h per ps; {s * n_tot / 3600:.0f} h for {n_tot} steps; peak RSS "
+              f"{__import__('resource').getrusage(0).ru_maxrss / 2**20:.1f} GB")
         return
     step = 0; mu = np.full((n_nve // 2, 3), np.nan); qa = []; engines = ""
     if os.path.exists(a.out):
@@ -111,10 +114,11 @@ def main():
         print(f"resuming {a.out} at step {step} of {n_tot}", flush=True)
     else:
         MaxwellBoltzmannDistribution(at, temperature_K=a.T, rng=np.random.default_rng(a.seed))
-    eng = "GPU4PySCF" if a.gpu else "PySCF-CPU"
+    eng = ("GPU4PySCF" if a.gpu else "PySCF-CPU") + (f"@{a.tag}" if a.tag else "")
     if step < n_tot and not engines.endswith(f":{eng};"):
         engines += f"{step}:{eng};"                      # step from which each engine ran
-    t0 = time.time(); paused = False
+    t0 = time.time(); paused = False; term = []
+    signal.signal(signal.SIGTERM, lambda *_: term.append(1))   # finish the step, save, exit
 
     def save():
         k = max(0, (step - n_nvt) // 2)
@@ -130,7 +134,7 @@ def main():
         md = (Langevin(at, dt, temperature_K=a.T, friction=0.02, fixcm=False,
                        rng=np.random.default_rng(a.seed * 1000 + step)) if nvt else VelocityVerlet(at, dt))
         while step < stop:
-            if a.hours and time.time() - t0 > a.hours * 3600:
+            if term or (a.hours and time.time() - t0 > a.hours * 3600):
                 paused = True; break
             md.run(1); step += 1
             if not nvt and (step - n_nvt) % 2 == 0:
@@ -140,7 +144,8 @@ def main():
                            calc.last[1]["s2"], calc.cycles))
         save()
         if paused:
-            print(f"{a.out}: paused at step {step} of {n_tot} after {a.hours} h; rerun to continue", flush=True)
+            why = "on SIGTERM" if term else f"after {a.hours} h"
+            print(f"{a.out}: paused at step {step} of {n_tot} {why}; rerun to continue", flush=True)
             return
     print(f"{a.out}: done, {n_tot} steps in {time.time() - t0:.0f} s this session", flush=True)
 
