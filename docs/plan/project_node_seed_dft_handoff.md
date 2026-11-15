@@ -101,8 +101,8 @@ run on Hangang (no xTB module, no aarch64 `tblite` wheel).
   `083ca247a59fbfc373388bdd845dbc8181d3ee8f638052d42893552321fcc202`): `transfer2/` with `seed_dft/` (160 JSON),
   `seed_dft.extxyz`, `species_transfer2.csv`, `candidates.csv` (all 32 with screen results and the decision),
   `selected_pairs.txt`, `bs_screen/`, `frames_transfer/`, `gjf_transfer/manifest.json`, `xyz/`. The first tailcat
-  send failed (the receiver had stopped); if it has not arrived, it is on Hangang at
-  `/appsdata/t641a02/d1/seed_dft_transfer2.tgz`.
+  send failed (the receiver had stopped); resent with `tailcat cp` on 2026-11-16 (sender exit 0, hash not yet
+  confirmed on the receiving side). The original stays on Hangang at `/appsdata/t641a02/d1/seed_dft_transfer2.tgz`.
 - **On the project node:** run `mlff_qa.py` on `transfer2/seed_dft.extxyz` as for the seed set (manifest
   `transfer2/gjf_transfer/manifest.json`). `transfer_test` is now the 5 kept pairs of `species_v2.csv` plus the 16 of
   `species_transfer2.csv` (21 pairs); `species_v2.csv` itself is unchanged.
