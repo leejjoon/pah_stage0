@@ -164,7 +164,8 @@ screen_check.py criteria (H hop = nearest heavy atom changed; H lost > 2.0 A; C-
 and 3 of 56 (900 K) systems, all real events. Both jobs are still in NVT (the spectra use NVE only), so stopping
 them now and resuming with the fixed driver loses no NVE coverage. Test plan `runs/test_topo_v1` (same 6 species,
 900 K, 20 + 20 ps, 2 replicas). 1280975 and 1281196 cancelled 2026-11-15 ~11:15 (checkpoints
-intact; 600 K: 93 units left, ~81 GPU-h; pilot: 47 units left, ~13 GPU-h). Test job 1281309 submitted. User: at
+intact; 600 K: 93 units left, ~81 GPU-h; pilot: 47 units left, ~13 GPU-h). Test job 1281309 COMPLETED and passed (900 K: positives 6/6 flagged, in a changed state 30–40 of 40
+chunks; negatives 0/6 over 40 chunks). Resubmitted 2026-11-15 ~11:50: **600 K job 1281347_[0-1], pilot job 1281348**. User: at
 most 3 nodes at a time for the resubmits: 600 K `--array=0-1 --time=14:00:00` (per-GPU max ~11.4 h) and the pilot
 on 1 node `--time=05:00:00` (~3.5 h).
 
