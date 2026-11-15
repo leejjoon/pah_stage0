@@ -17,6 +17,11 @@
 # Stability (frames with stability_test=1 in the manifest, as g16_io.py write chose them): open shells Stable=Opt
 # (internal UKS instability -> re-optimise, at most 5 rounds); closed shells test only (internal and RKS->UKS),
 # recorded, not acted on, so the method stays RKS for every frame.
+# Broken-symmetry check (opt-in, run --stab-all --bs, needs --names): every selected closed-shell frame is
+# stability-tested; if RKS->UKS unstable, a UKS SCF (same settings) starts from the rotated orbitals of the
+# external test (fallback: Guess=Mix, alpha HOMO/LUMO rotated 45 deg), is re-optimised on internal instabilities
+# (<= 5 rounds), and bs_* keys record its energy, <S^2>, E_RKS - E_BS, max |dF| and dipole. The RKS labels are
+# unchanged; output goes to its own --out, never the production one.
 import argparse, glob, json, os, socket, sys, time
 import numpy as np
 
@@ -44,7 +49,7 @@ def frames_of(paths, manifest_path):
     return out
 
 
-def label(sym, pos, charge, mult, stab_test):
+def label(sym, pos, charge, mult, stab_test, bs=False):
     import cupy
     from pyscf import gto
     from gpu4pyscf import dft
@@ -62,7 +67,7 @@ def label(sym, pos, charge, mult, stab_test):
     if stab_test:
         t1 = time.time()
         if mult == 1:     # Gaussian "Stable": test only
-            _, _, st_i, st_e = mf.stability(internal=True, external=True, return_status=True)
+            _, mo_ext, st_i, st_e = mf.stability(internal=True, external=True, return_status=True)
             stability = "stable" if st_i and st_e else ("unstable_internal" if not st_i else "unstable_rhf_uhf")
         else:             # Gaussian "Stable=Opt"
             e_pre = float(e)
@@ -83,7 +88,10 @@ def label(sym, pos, charge, mult, stab_test):
     m = np.array([MASS[s] for s in sym]); com = (m[:, None] * pos).sum(0) / m.sum()
     mu_com = mu * DEBYE_EA - charge * com            # e*A, about the centre of mass (mu_B = mu_A - q (B - A))
     s2 = float(mf.spin_square()[0]) if mult > 1 else 0.0
-    return dict(energy_eV=float(e) * HARTREE_EV, energy_Ha=float(e), forces_eVA=(-g * HB_TO_EVA).tolist(),
+    extra = {}
+    if bs and mult == 1 and stab_test and stability == "unstable_rhf_uhf":
+        extra = broken_symmetry(mol, mf, float(e), mo_ext, -g * HB_TO_EVA, charge, com)
+    return dict(**extra,energy_eV=float(e) * HARTREE_EV, energy_Ha=float(e), forces_eVA=(-g * HB_TO_EVA).tolist(),
                 dipole_eA=mu_com.tolist(), s2=s2, converged=bool(mf.converged), newton=newton, scf_cycles=cycles,
                 stability=stability, reopt_rounds=reopt, energy_before_reopt_Ha=e_pre,
                 method=("R" if mult == 1 else "U") + "B3LYP", nao=int(mol.nao),
@@ -91,18 +99,80 @@ def label(sym, pos, charge, mult, stab_test):
                 gpu_mem_gb=round(cupy.get_default_memory_pool().total_bytes() / 1e9, 3))
 
 
+def _as_uhf_mo(mo, nao):
+    """The external stability test's rotated orbitals as a (2, nao, nmo) array, or None if not in that form."""
+    try:
+        if isinstance(mo, (tuple, list)) and len(mo) == 2:
+            a, b = (np.asarray(x.get() if hasattr(x, "get") else x) for x in mo)
+        else:
+            m = np.asarray(mo.get() if hasattr(mo, "get") else mo)
+            if m.ndim != 3 or m.shape[0] != 2:
+                return None
+            a, b = m
+        return np.stack([a, b]) if a.shape == b.shape and a.shape[0] == nao else None
+    except Exception:
+        return None
+
+
+def broken_symmetry(mol, rks, e_rks, mo_ext, f_rks, charge, com):
+    """UKS from the RKS->UKS instability (rotated external orbitals, then Guess=Mix); bs_* keys for the result."""
+    import cupy
+    from gpu4pyscf import dft
+    mo_r = rks.mo_coeff.get() if hasattr(rks.mo_coeff, "get") else np.asarray(rks.mo_coeff)
+    occ_r = rks.mo_occ.get() if hasattr(rks.mo_occ, "get") else np.asarray(rks.mo_occ)
+    occ = np.stack([(occ_r > 0).astype(float)] * 2)
+    nocc = int((occ_r > 0).sum())
+    mix = np.stack([mo_r.copy(), mo_r.copy()])                         # Guess=Mix: alpha HOMO/LUMO at 45 deg
+    h, l = mo_r[:, nocc - 1].copy(), mo_r[:, nocc].copy()
+    mix[0][:, nocc - 1], mix[0][:, nocc] = (h + l) / np.sqrt(2), (h - l) / np.sqrt(2)
+    guesses = [("stability", _as_uhf_mo(mo_ext, mol.nao)), ("mix", mix)]
+    tried = []
+    for gname, mo0 in guesses:
+        if mo0 is None:
+            tried.append(f"{gname}:unusable"); continue
+        uf = dft.UKS(mol, xc="b3lypg"); uf.grids.atom_grid = (99, 590)
+        uf.conv_tol = 1e-9; uf.conv_tol_grad = 1e-6; uf.max_cycle = 200; uf.verbose = 0
+        dm0 = uf.make_rdm1(cupy.asarray(mo0), cupy.asarray(occ))
+        eu = uf.kernel(dm0=dm0); cyc = int(getattr(uf, "cycles", 0)); newton = False
+        if not uf.converged:
+            uf = uf.newton(); eu = uf.kernel(uf.mo_coeff, uf.mo_occ); newton = True
+        reopt = 0
+        while True:
+            mo, _, st, _ = uf.stability(internal=True, external=False, return_status=True)
+            if st or reopt == 5:
+                break
+            reopt += 1
+            eu = uf.kernel(dm0=uf.make_rdm1(mo, uf.mo_occ))
+        s2 = float(uf.spin_square()[0]); de = e_rks - float(eu)
+        if s2 < 0.01 and abs(de) < 1e-7:                                 # fell back to the closed-shell solution
+            tried.append(f"{gname}:collapsed"); continue
+        gu = uf.nuc_grad_method().kernel(); gu = np.asarray(gu.get() if hasattr(gu, "get") else gu)
+        mu = uf.dip_moment(unit="Debye", verbose=0); mu = np.asarray(mu.get() if hasattr(mu, "get") else mu)
+        f_bs = -gu * HB_TO_EVA
+        return dict(bs_guess=gname, bs_tried=tried, bs_energy_Ha=float(eu), bs_dE_Ha=de, bs_s2=s2,
+                    bs_converged=bool(uf.converged), bs_newton=newton, bs_cycles=cyc, bs_reopt=reopt,
+                    bs_stable=bool(st), bs_higher=bool(de < 0),
+                    bs_dF_max_eVA=float(np.abs(f_bs - f_rks).max()), bs_forces_eVA=f_bs.tolist(),
+                    bs_dipole_eA=(mu * DEBYE_EA - charge * com).tolist())
+    return dict(bs_guess=None, bs_tried=tried)
+
+
 def cmd_run(a):
+    if (a.stab_all or a.bs) and not a.names:
+        sys.exit("--stab-all/--bs need --names (they are for a few named frames, never a whole set)")
+    if a.bs and not a.stab_all:
+        sys.exit("--bs needs --stab-all")
     import cupy, gpu4pyscf, pyscf
     fr = frames_of(a.frames, a.manifest)
     if a.only:
         keep = set(a.only.split(","))
         fr = [f for f in fr if f[0].rsplit("_q", 1)[0] in keep]
+    if a.names:                                      # before sharding, so named frames spread over all shards
+        keep = set(a.names.split(","))
+        fr = [f for f in fr if f[0] in keep]
     fr.sort(key=lambda f: (-len(f[2]), f[0]))        # largest first, so the shards finish together
     i, n = map(int, a.shard.split("/"))
     fr = fr[i::n]
-    if a.names:
-        keep = set(a.names.split(","))
-        fr = [f for f in fr if f[0] in keep]
     todo = [f for f in fr if not os.path.exists(f"{a.out}/{f[0]}.json")]
     n_done = len(fr) - len(todo)
     if a.limit:
@@ -118,7 +188,9 @@ def cmd_run(a):
             print(f"stopping after {a.hours} h: {len(todo) - j} frames left for the next run", flush=True)
             break
         t0 = time.time()
-        r = label(sym, pos, int(lab["charge"]), int(lab["mult"]), st)
+        if a.stab_all:
+            st = 1
+        r = label(sym, pos, int(lab["charge"]), int(lab["mult"]), st, bs=a.bs)
         r.update(name=name, labels=lab, stability_test=st, symbols=list(sym), positions=np.asarray(pos).tolist(),
                  t_wall=round(time.time() - t0, 2), date=time.strftime("%Y-%m-%d %H:%M:%S"), **env)
         tmp = f"{a.out}/.{name}.json.tmp"
@@ -126,6 +198,11 @@ def cmd_run(a):
         print(f"[{j + 1}/{len(todo)}] {name} E={r['energy_Ha']:.9f} cyc={r['scf_cycles']}{'+N' if r['newton'] else ''} "
               f"conv={r['converged']} s2={r['s2']:.4f} stab={r['stability']} t={r['t_wall']}s "
               f"(elapsed {(time.time() - t_all) / 3600:.2f} h)", flush=True)
+        if "bs_guess" in r:
+            print(f"    BS: guess={r['bs_guess']} tried={r['bs_tried']}" + (
+                f" dE={r['bs_dE_Ha']:.6f} Ha s2={r['bs_s2']:.4f} dFmax={r['bs_dF_max_eVA']:.3f} eV/A "
+                f"conv={r['bs_converged']} reopt={r['bs_reopt']} stable={r['bs_stable']}" if r['bs_guess'] else ""),
+                flush=True)
 
 
 def cmd_collect(a):
@@ -189,6 +266,8 @@ def main():
     r.add_argument("--names", default=None, help="comma-separated frame names (e.g. C10H8_330_q1_f008)")
     r.add_argument("--limit", type=int, default=0)
     r.add_argument("--hours", type=float, default=0, help="start no new frame after this many hours (0: no limit)")
+    r.add_argument("--stab-all", action="store_true", help="stability-test every selected frame (needs --names)")
+    r.add_argument("--bs", action="store_true", help="broken-symmetry UKS on RKS->UKS unstable frames (needs --stab-all)")
     m = sub.add_parser("compare"); m.add_argument("ref"); m.add_argument("new")
     c = sub.add_parser("collect"); c.add_argument("outdir"); c.add_argument("out")
     a = ap.parse_args()

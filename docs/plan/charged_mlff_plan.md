@@ -111,6 +111,10 @@ disagreement stay low on unseen species. Budget at 6-31G\*: of order 100–200k 
 
 - Spin contamination of large cations (PySCF UKS ⟨S²⟩ 0.81 at C90, 1.04 at C144): cap cations at ~100 C or test
   restricted open-shell on a few.
+- Open-shell (diradicaloid) neutrals: 9 of 124 seed pairs have an RKS→UKS unstable minimum and are excluded from
+  Phase 1 (2026-11-15 entry above). The class is solo-H-rich and grows with size, so it matters most for the large
+  PAHs. Every new species (Phase 3, 60–100 C) gets the same minimum test as a gate before labelling; a broken-symmetry
+  or multireference treatment for the class is an open decision.
 - SCF failures on distorted ions: `SCF=XQC`; failed frames are logged and dropped.
 - mace-jax MD speed is not measured yet (T0); it may make production slower than NeuralIL.
 - Pure-carbon species (812 in PAHdb v4) are excluded by design.
@@ -179,6 +183,20 @@ disagreement stay low on unseen species. Budget at 6-31G\*: of order 100–200k 
   agree to 3e-10 Ha / 8e-6 Ha/bohr at the MD's default grid; NVE energy continuous across the switch), one trajectory
   per GPU, 5.7 / 7.5 s per step (neutral / cation); 2 nodes for ~3.5 days via the self-resubmitting
   `d1/slurm_aimd.sbatch`; handoff `docs/plan/hangang_aimd_handoff.md`. Checkpoints: neutral 3.8 ps, cation 2.5–2.6 ps.
+- 2026-11-15: seed set labelled on Hangang (`docs/plan/hangang_seed_dft_handoff.md`): 7,504 frames, 137 GPU-h, all
+  converged, 3 Newton fallbacks (cation MD frames, no stability test). Stability tests: 50 neutral frames RKS→UKS
+  unstable; 34 cation frames with ⟨S²⟩ > 0.85. Broken-symmetry check (`dft_seed_run.py run --stab-all --bs`: UKS
+  from the external-instability orbitals, same settings) on all 124 neutral minima: 9 pairs are open-shell at the
+  minimum (E_RKS − E_BS 2.8–22.8 mHa, ⟨S²⟩_BS 0.82–1.12, max |ΔF| 0.35–1.37 eV/Å); 2 are barely unstable (≤ 0.13 mHa,
+  ⟨S²⟩ ≤ 0.17, |ΔF| ≤ 0.11 eV/Å); 113 are stable. The gap (0.13 → 2.8 mHa) makes the split threshold-independent.
+  **Decision (Phase 1):** pairs whose neutral minimum is RKS→UKS unstable with E_RKS − E_BS ≥ 1 mHa (B3LYP/6-31G\*)
+  are excluded as whole pairs, in every split: `d1/seed_exclusions_open_shell.csv` (6 train, 3 transfer_test;
+  transfer_test drops from 8 to 5 pairs). The other pairs keep RKS labels on every frame; their unstable frames stay in
+  the data, flagged. This is an **open item, not a permanent scope cut**: the excluded pairs are solo-H-rich (median
+  solo/H 0.42 against 0.08 for the rest) and large (3 of the 8 pairs at 61–100 C, 6 of 116 below), so the cut acts as
+  a solo-H and size selection (the Wang 2026 Fig. 1 bias) and must be stated as such wherever Phase 1 results are
+  reported. An open-shell treatment of this class is still to be decided (see Risks). Per-frame and per-minimum
+  results: `seed_dft_bs_check.tgz` (`bs_check_summary.csv`, `bs_minima_summary.csv`).
 
 ## Phase 1 run-book
 
