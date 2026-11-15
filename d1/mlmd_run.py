@@ -311,14 +311,18 @@ def run_unit(E, plan, xyz, u, udir, deadline, stop_after):
     T = np.array([s["T"] for s in systems]); kT = jnp.asarray(units.kB * T, jnp.float32)
     c1 = float(np.exp(-S["friction_ase"] * E.dt)); c2 = float(np.sqrt(1 - c1 ** 2))
     p0 = jnp.asarray(np.array([a.positions for a in atoms]), jnp.float32)
-    # Per-chunk chemical integrity: the bond graph of mlmd_integrity.py (distance < 1.2 x sum of covalent radii),
-    # checked after every chunk (1 ps) against the input geometry. flags["bond_change_chunk"][k] is the first chunk
-    # whose end state differs, -1 if none. Unlike an end-of-run check, it also catches an H that hops and returns
-    # (still missed if it hops and returns within one chunk).
+    # Per-chunk chemical integrity, checked after every chunk (1 ps) against the input geometry with the criteria
+    # of screen_check.py, which thermal vibration does not trip: an H whose nearest heavy atom changed (hop) or that
+    # is > 2.0 A from every heavy atom (lost); a heavy-atom bond stretched beyond 2.0 A or a new one below 1.6 A.
+    # flags["topo_change_chunk"][k]: first chunk in a changed state (-1 if none); flags["topo_change_chunks"][k]: how
+    # many chunk ends were in a changed state. Catches an H that hops and returns (unless within one chunk).
+    # (The first version used mlmd_integrity.py's bond graph, distance < 1.2 x covalent radii: a C-H bond is "lost"
+    # at 1.284 A, which hot C-H vibrations reach. In jobs 1280975 and 1281196 it flagged ~20 % of systems at 600 K
+    # and all at 900 K, nearly all transient. Its flag, "bond_change_chunk", is kept in older meta.json files.)
     sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-    from mlmd_integrity import bonds
+    from screen_check import topology_change
     syms = [a.get_chemical_symbols() for a in atoms]
-    bonds0 = [bonds(sy, a.positions) for sy, a in zip(syms, atoms)]
+    pos0 = [np.asarray(a.positions, np.float64) for a in atoms]
 
     os.makedirs(udir, exist_ok=True)
     meta_path, state_path = f"{udir}/meta.json", f"{udir}/state.npz"
@@ -330,7 +334,8 @@ def run_unit(E, plan, xyz, u, udir, deadline, stop_after):
         p, v, f = (jnp.asarray(ck[k]) for k in ("p", "v", "f"))
         chunk, nvt_T, qa_etot, qa_T = int(ck["chunk"]), list(ck["nvt_T"]), list(ck["qa_etot"]), list(ck["qa_T"])
         flags = json.load(open(meta_path))["flags"]
-        flags.setdefault("bond_change_chunk", [-1] * B)     # units started before the check: it starts here
+        flags.setdefault("topo_change_chunk", [-1] * B)     # units started before the check: it starts here
+        flags.setdefault("topo_change_chunks", [0] * B)
         e_cap = json.load(open(meta_path))["edge_cap"]
         print(f"  resume {u['id']} at chunk {chunk}/{n_nvt + n_nve}", flush=True)
     else:
@@ -344,7 +349,7 @@ def run_unit(E, plan, xyz, u, udir, deadline, stop_after):
         chunk, nvt_T, qa_etot, qa_T = 0, [], [], []
         flags = {"nonfinite": [False] * B, "hot": [False] * B,
                  "max_neighbours": np.asarray(E.max_neighbours(p0)).tolist(), "edge_overflow": False,
-                 "bond_change_chunk": [-1] * B}
+                 "topo_change_chunk": [-1] * B, "topo_change_chunks": [0] * B}
         dq, dmu, df = selfcheck(E, p0, t, dt_, w, e_cap, atoms, systems)
         assert dq < SELFCHECK_Q, f"{u['id']}: in-loop EPNN charges differ from the per-frame path by {dq:.2e} e"
         assert df < SELFCHECK_F, f"{u['id']}: vmapped-descriptor forces differ from lax.map ones by {df:.2e} eV/A"
@@ -395,8 +400,10 @@ def run_unit(E, plan, xyz, u, udir, deadline, stop_after):
         flags["hot"] = [x or bool(y) for x, y in zip(flags["hot"], np.abs(Tk) > 30000)]   # the authors' "dispersion" check
         flags["max_neighbours"] = np.maximum(flags["max_neighbours"], np.asarray(E.max_neighbours(state[0]))).tolist()
         for k in range(B):
-            if flags["bond_change_chunk"][k] < 0 and np.isfinite(pk[k]).all() and bonds(syms[k], pk[k]) != bonds0[k]:
-                flags["bond_change_chunk"][k] = chunk
+            if np.isfinite(pk[k]).all() and topology_change(syms[k], pos0[k], np.asarray(pk[k], np.float64)):
+                flags["topo_change_chunks"][k] += 1
+                if flags["topo_change_chunk"][k] < 0:
+                    flags["topo_change_chunk"][k] = chunk
         chunk_s.append((chunk, round(time.time() - tc, 3)))
         chunk += 1; done_here += 1
         if time.time() - t_ckpt > CKPT_SECONDS:
@@ -407,8 +414,8 @@ def run_unit(E, plan, xyz, u, udir, deadline, stop_after):
     write_json(meta_path, m)
     open(f"{udir}/DONE", "w").write(time.strftime("%Y-%m-%d %H:%M:%S") + "\n")
     nbad = sum(flags["nonfinite"]) + sum(flags["hot"]) + sum(x > E.max_nb for x in flags["max_neighbours"])
-    nbond = sum(c >= 0 for c in flags["bond_change_chunk"])
-    print(f"  done {u['id']}: {B} systems x {n} atoms; flagged systems {nbad}; bond graph changed {nbond}; "
+    nbond = sum(c >= 0 for c in flags["topo_change_chunk"])
+    print(f"  done {u['id']}: {B} systems x {n} atoms; flagged systems {nbad}; topology changed {nbond}; "
           f"edge overflow {flags['edge_overflow']}", flush=True)
     return True
 

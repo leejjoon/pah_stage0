@@ -154,6 +154,17 @@ show more failures at 600 K (non-planar), so 600 K also gets the filter. Steps (
    /appsdata/$USER/d1/runs/pilot900_v1`. **Submitted 2026-11-15 as job 1281196.** Decide 900 K production from its yield.
 4. 1200 K: none with this model (user to choose: extrapolate, empirical widths, or a retrained model).
 
+## Per-chunk check, second version (2026-11-15 11:xx)
+
+The first per-chunk check (bond graph, 1.2 x covalent radii) counts a C-H bond as lost at 1.284 A, which hot C-H
+vibrations reach: in the running jobs 1280975 (600 K) and 1281196 (900 K pilot) it flagged 244 of 1,244 and 56 of
+56 started systems, of which only 8 and 5 were still changed at their last checkpoint. Replaced by the
+screen_check.py criteria (H hop = nearest heavy atom changed; H lost > 2.0 A; C-C broken > 2.0 A, formed < 1.6 A),
+`flags["topo_change_chunk"]` and `flags["topo_change_chunks"]`. On the current checkpoints: 2 of 1,244 (600 K)
+and 3 of 56 (900 K) systems, all real events. Both jobs are still in NVT (the spectra use NVE only), so stopping
+them now and resuming with the fixed driver loses no NVE coverage. Test plan `runs/test_topo_v1` (same 6 species,
+900 K, 20 + 20 ps, 2 replicas). Awaiting the user: scancel 1280975 1281196, test, resubmit both.
+
 ## Known facts and pitfalls
 
 - **Shared clone, branch switches (2026-11-14):** at 10:05–10:07 another session checked out `feat-gpu-gh200` in
