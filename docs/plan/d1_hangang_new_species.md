@@ -269,3 +269,16 @@ done, no errors. Topology changed in 153 of 3,428 systems; 810 species keep all 
   species (C172H38_v4u6426, C196H38_v4u6418; vec 0.20–0.21, |mu| 0.20), thermal size at 600 K.
 - **600 K library: `d1/new600_library_v1.csv`, 810 species with 4 intact replicas.**
 
+## 900 K production (jobs 1282825 and 1284012, two disjoint unit lists; 2026-11-15/16)
+
+779 planar species of the 857, 4 replicas, 200 + 200 ps, per-chunk topology check throughout. 85/85 units, no
+errors. Topology changed in 345 of 3,116 systems (11.1 %, as in the pilot's 12 % for planar species); by Nc:
+< 30 4/12, 30–50 67/896, 50–80 137/1,304, 80–120 118/780, ≥ 120 19/124. 549 species keep all 4 replicas intact.
+- Spectra: `spectra/new900_v1` (production convention, topology-changed systems skipped, `qa.csv`): 760 species.
+- Dipole check at 900 K: 24 of 2,771 intact systems above the thresholds (vec 0.20–0.30, mag ≤ 0.21), but they
+  are the tail of a continuous distribution (nonpolar vec: median 0.064, 99 % 0.19, 99.9 % 0.28; at 600 K 0.056,
+  0.17, 0.22), unlike the hops at 300–600 K (0.4–2.0). With the per-chunk topology check present for the whole run,
+  it is the primary filter; the dipole flags stay in `qa.csv` for reference and drop nothing.
+- **900 K library: `d1/new900_library_v1.csv`, 549 species with 4 intact replicas.** 549 species are in all
+  three libraries (300, 600 and 900 K).
+

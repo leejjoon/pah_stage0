@@ -156,6 +156,9 @@ show more failures at 600 K (non-planar), so 600 K also gets the filter. Steps (
 
 ## 900 K production (user's go, 2026-11-15 17:5x; node limit lifted: use up to 5)
 
+**Done 2026-11-16 ~04:00: 85/85 units; library `d1/new900_library_v1.csv` (549 species).** Libraries of the new
+species: 300 K 917, 600 K 810, 900 K 549; 549 in all three.
+
 779 planar species of the 857 (list `d1/new900_species_v1.csv`, xyz `XYZ_new900_v1`), 900 K, 4 replicas, 200 + 200 ps,
 per-chunk topology check; plan `runs/new900_v1` (3,116 systems, 85 units, ~99 GPU-h). Split into two disjoint unit
 lists so all 5 job slots are used: `runs/new900_v1/units_A.txt` (36 largest units, ~73 GPU-h) as **job 1282825**
