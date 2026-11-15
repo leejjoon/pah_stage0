@@ -238,3 +238,21 @@ superhydrogenated ones), × 300 and 600 K × **8 replicas**; 200 ps NVT + 200 ps
 The NNFF and EPNN models (and Mai's data) are CC BY-NC-SA 4.0, so the MLMD spectra made with them are released
 under CC BY-NC-SA 4.0, as an adaptation, with attribution to Mai et al. 2025. The rest of D1 can keep the
 proposal's open licence; the MLMD part is a separately licensed component. Run outputs stay out of git.
+
+## 900 K pilot (job 1281348, 2026-11-15)
+
+88 of the 857 species (63 planar, 25 non-planar; random within Nc bins), 900 K, 4 replicas, 200 + 200 ps, per-chunk
+topology check (screen_check.py criteria, `flags.topo_change_chunk/_chunks`). 47 of 48 units finished (n048_u000,
+4 systems, left unfinished); one unit finished before the check fix and is not counted, and units started before the
+11:15 cancel were checked only from their resume. Systems with any hop, H loss or broken bond during the run:
+
+| Nc | < 30 | 30–50 | 50–80 | 80–120 | ≥ 120 | Total |
+| --- | --- | --- | --- | --- | --- | --- |
+| Planar | 4/12 | 3/60 | 6/60 | 11/60 | 6/60 | 30/252 (12 %) |
+| Non-planar | 20/20 | 12/16 | 4/20 | 4/20 | 2/12 | 42/88 (48 %) |
+
+- Species with all 4 replicas intact: planar 43/63, non-planar 5/22.
+- Of the changed systems, 59 stay changed for most of the run; 13 are brief (< 10 % of the remaining chunks).
+- Conclusion: 900 K is workable for planar species with per-replica filtering (~88 % of systems kept); non-planar
+  species are mostly lost, the small ones entirely.
+
