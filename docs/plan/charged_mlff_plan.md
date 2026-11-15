@@ -203,6 +203,18 @@ disagreement stay low on unseen species. Budget at 6-31G\*: of order 100–200k 
   now 5 + 16 = 21 pairs (`species_transfer2.csv`). Near-minimum frames only (median RMSD 0.085 Å against 0.51 Å for 1200 K MD),
   so they widen species coverage, not temperature coverage. Results go back with `species_transfer2.csv`. Handoff to
   the project node: `docs/plan/project_node_seed_dft_handoff.md`.
+- 2026-11-16 (project node): Hangang results unpacked to `/var/tmp/jjlee-pah/d1/mlff_seed/seed_dft/`; the 202 pilot
+  frames are identical to the earlier pilot labels. `mlff_qa.py` on all 7,504 frames: no missing frames and no energy outliers;
+  9 dipole outliers (all cations, ⟨S²⟩ 0.76–0.78; 2 in excluded pairs), 196 `s2_review` (134 in excluded pairs), 50
+  `unstable` (33 in excluded pairs; kept: C38H16_3164 6, C26H16_814 5, C40H18_10742 5, C34H16_7213 1). Coverage
+  (`d1/mlff_coverage.py`) after the exclusions: train 70 pairs (2,240 frames per charge), validation 17, final_test
+  23, transfer_test 5 (before the backfill); median solo/H of the kept train pairs 0.08 against 0.50 for the excluded ones; all checks pass.
+  **G1 force check passed** (`d1/fd_force_check.py`, 10 frames, both charges, 10–60 C, MD/minimum, the largest-force
+  frame at 67.7 eV/Å and the Newton-fallback frame): worst |FD − F_prod| 2.5×10⁻⁵ Ha/bohr (target 1×10⁻⁴); the
+  omitted grid-response term ≤ 1.4×10⁻⁵ Ha/bohr; the labels were recomputed on this node to within 1e-12 (Newton
+  frame: 4e-10 Ha, 8e-8 Ha/bohr). The 7 kept dipole-outlier cations, stability-tested (`run --stab-all`, internal UKS):
+  all stable, energies and dipoles identical to the labels, so the outliers are a DFT–xTB disagreement, not a
+  different SCF state. Other states, reached from different guesses, remain for the state-QA side set (item 4).
 
 ## Phase 1 run-book
 
@@ -261,7 +273,9 @@ reason, for a person to decide.
    clean data; three planted faults (+2 eV energy, ⟨S²⟩ 0.91, an RKS→UKS instability) flagged, nothing else. A wrong
    state within 0.5 eV of the right one passes this check; the state-QA side set (item 4) covers that case.
 3. Force consistency on ~10 frames: central finite differences of the energy against the analytic force
-   (≤ 1×10⁻⁴ Ha/bohr). *(Tool not yet written.)*
+   (≤ 1×10⁻⁴ Ha/bohr). `d1/fd_force_check.py` (container D, production settings; per frame the 3 largest and 3
+   random components, h = 0.005 bohr, displaced SCFs from the reference density at 1e-11 Ha; also reports the
+   grid-response term the production gradient omits). Done 2026-11-16 on 10 frames (status log).
 4. State-QA side set (`d1/g16_stateqa.py`): 21 pairs stratified by size (naphthalene, coronene, circumcoronene
    always), minimum and hottest intact MD frame per charge; neutrals re-run with UB3LYP Guess=Mix (broken-symmetry
    check), cations with Guess=Huckel and Guess=Mix, each Stable=Opt then Force; ROB3LYP Force for the three named
@@ -269,6 +283,9 @@ reason, for a person to decide.
    `report <qa log dir> seed_dft.extxyz` flags species whose default SCF is not the lowest solution
    (by > 1×10⁻⁵ Ha) and gives ROKS−UKS force and dipole differences. Run with or right after Phase 1.
 5. Coverage: points per charge, size bin, `config_type`; held-out species must have no training frames.
+   `python d1/mlff_coverage.py seed_qa.extxyz species_v2.csv <out prefix>` (kept/excluded after
+   `d1/seed_exclusions_open_shell.csv`, solo/H of kept and excluded pairs, qa_flags per split; exit 1 if a pair is
+   unknown, lacks a charge, or a skeleton spans two splits).
 
 Settings fixed on every production job: `Int=UltraFine`, `SCF=(XQC,Conver=8,...)`, `NoSymm`. Stability two-step
 jobs: open shells `Stable=Opt` (re-optimise), closed shells `Stable` (test only, RKS kept, an instability is
@@ -302,8 +319,6 @@ flagged). Mixed-guess singlets for dications come with the dication phase.
 
 | Tool | Phase |
 | --- | --- |
-| Force finite-difference check (G1) | 1 |
-| Data QA report (termination, ⟨S²⟩, outliers, coverage) | 1 |
 | Extended XYZ → NeuralIL/EPNN training format | 2 |
 | Model-loading hook in `d1/mlmd_run.py` for our trained models | 2 |
 | Harmonic frequencies and intensities from a model, against PAHdb (G5) | 2 |
