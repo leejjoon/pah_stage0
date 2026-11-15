@@ -201,4 +201,7 @@ The analysis (spectra from the NVE dipoles, the B4 cation band-strength slope) r
 
 | File | Size | sha256 |
 |---|---|---|
-| `/var/tmp/jjlee-pah/d1/aimd_naph_cloud.tgz` | | |
+| `/var/tmp/jjlee-pah/d1/aimd_naph_cloud.tgz` | 292 kB | `80ef488e928841b60fd9b5078955598b0f97a9c316acf6a7b890a36370dfdbca` |
+
+Built from commit `d33e57e` (`aimd_cloud/code/VERSION`) and the Hangang inputs tarball (checkpoints as in the table
+above). Rebuilding changes the hash (timestamps); give the new one to whoever installs.
