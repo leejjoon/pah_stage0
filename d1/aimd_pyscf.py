@@ -9,6 +9,12 @@
 # PAHdb v4); PySCF's own default is spherical (5D). --spherical switches back.
 #   python aimd_pyscf.py <xyz> <out.npz> --charge 1 --mult 2 --T 900 --seed 0 [--nvt-ps 2] [--nve-ps 20] [--threads 8]
 #   python aimd_pyscf.py <xyz> - --charge 1 --mult 2 --time-steps 10        (seconds per step, then exit)
+# --gpu runs the same calculation with GPU4PySCF (container D): same grid (PySCF default, level 3, NWChem pruning)
+# and settings; at a 900 K checkpoint geometry GPU and CPU agree to 3e-10 Ha and 8e-6 Ha/bohr, so a trajectory can
+# continue on the other engine (the npz records which engine ran which steps, field `engines`). For naphthalene a
+# step takes 5.7 s (neutral) / 7.5 s (cation) on an H100 (dipole and <S^2> included), one trajectory per GPU
+# (launch-bound: two per GPU gain nothing), against 8.8 / 13 s on 8 Grace threads with the conda-forge PySCF.
+# --hours H stops cleanly (checkpoint written) after H hours, for Slurm time limits; rerun to continue.
 # The npz is rewritten every --ckpt-fs (default 100 fs) with positions, velocities and the step; rerunning the same
 # command resumes from it (the NVT thermostat restarts with a fresh random stream). Needs the micromamba env
 # /var/tmp/$USER-pah/mamba/dft (pyscf) and ase.
@@ -20,12 +26,16 @@ class PySCFCalc:
     """Minimal ASE calculator: energy, forces and centre-of-mass dipole from PySCF RKS/UKS, density reused."""
     implemented_properties = ["energy", "forces"]
 
-    def __init__(self, charge, mult, basis="6-31g*", xc="b3lypg", conv_tol=1e-9, cart=True):
-        self.q, self.m, self.basis, self.xc, self.tol, self.cart = charge, mult, basis, xc, conv_tol, cart
+    def __init__(self, charge, mult, basis="6-31g*", xc="b3lypg", conv_tol=1e-9, cart=True, gpu=False):
+        self.q, self.m, self.basis, self.xc, self.tol, self.cart, self.gpu = charge, mult, basis, xc, conv_tol, cart, gpu
         self.dm = None; self.cycles = 0; self.last = None
 
     def compute(self, atoms):
-        from pyscf import gto, dft
+        from pyscf import gto
+        if self.gpu:
+            from gpu4pyscf import dft
+        else:
+            from pyscf import dft
         from ase.units import Hartree, Bohr
         pos = atoms.positions
         if self.last is not None and np.array_equal(pos, self.last[0]):
@@ -37,12 +47,13 @@ class PySCFCalc:
         e = mf.kernel(dm0=self.dm)
         if not mf.converged:
             mf = mf.newton(); e = mf.kernel(mf.mo_coeff, mf.mo_occ)   # newton().kernel takes MOs first, not a density
-        self.dm = mf.make_rdm1(); self.cycles = n[0]
-        g = mf.nuc_grad_method().kernel()
+        self.dm = mf.make_rdm1(); self.cycles = n[0] or int(getattr(mf, "cycles", 0))   # GPU4PySCF: no callback
+        g = mf.nuc_grad_method().kernel(); g = np.asarray(g.get() if hasattr(g, "get") else g)
         mass = atoms.get_masses(); com = (mass[:, None] * pos).sum(0) / mass.sum()
-        mu = np.asarray(mf.dip_moment(unit="Debye", verbose=0)) / 4.80320471 - self.q * com     # e*A about the COM
+        mu = mf.dip_moment(unit="Debye", verbose=0); mu = np.asarray(mu.get() if hasattr(mu, "get") else mu)
+        mu = mu / 4.80320471 - self.q * com     # e*A about the COM
         s2 = float(mf.spin_square()[0]) if self.m > 1 else 0.0
-        res = dict(energy=e * Hartree, forces=-g * Hartree / Bohr, dipole=mu, s2=s2)
+        res = dict(energy=float(e) * Hartree, forces=-g * Hartree / Bohr, dipole=mu, s2=s2)
         self.last = (pos.copy(), res)
         return res
 
@@ -71,6 +82,8 @@ def main():
     ap.add_argument("--threads", type=int, default=8); ap.add_argument("--ckpt-fs", type=float, default=100.0)
     ap.add_argument("--time-steps", type=int, default=0, help="time this many MD steps and exit")
     ap.add_argument("--spherical", action="store_true", help="5D d functions (PySCF default) instead of Gaussian's 6D")
+    ap.add_argument("--gpu", action="store_true", help="GPU4PySCF instead of PySCF (container D)")
+    ap.add_argument("--hours", type=float, default=0, help="checkpoint and stop after this many hours (0: no limit)")
     a = ap.parse_args()
     from pyscf import lib
     from ase import units
@@ -79,7 +92,7 @@ def main():
     from ase.md.verlet import VelocityVerlet
     from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
     lib.num_threads(a.threads)
-    calc = PySCFCalc(a.charge, a.mult, cart=not a.spherical); at = make_atoms(a.xyz, calc); at.set_constraint(FixCom())
+    calc = PySCFCalc(a.charge, a.mult, cart=not a.spherical, gpu=a.gpu); at = make_atoms(a.xyz, calc); at.set_constraint(FixCom())
     dt = 0.5 * units.fs
     n_nvt, n_nve = int(round(a.nvt_ps * 2000)), int(round(a.nve_ps * 2000)); n_tot = n_nvt + n_nve
     ck = int(round(a.ckpt_fs * 2))
@@ -90,20 +103,25 @@ def main():
         print(f"{a.xyz} q={a.charge}: {s:.2f} s per step at {a.threads} threads, SCF cycles at the last step "
               f"{calc.cycles}; {s * 2000 / 3600:.2f} h per ps; {s * n_tot / 3600:.0f} h for {n_tot} steps")
         return
-    step = 0; mu = np.full((n_nve // 2, 3), np.nan); qa = []
+    step = 0; mu = np.full((n_nve // 2, 3), np.nan); qa = []; engines = ""
     if os.path.exists(a.out):
         z = np.load(a.out); step = int(z["step"]); at.positions = z["positions"]; at.set_velocities(z["velocities"])
         mu[:len(z["dipole"])] = z["dipole"]; qa = [tuple(r) for r in z["qa"]]
-        print(f"resuming {a.out} at step {step} of {n_tot}")
+        engines = str(z["engines"]) if "engines" in z.files else ("0:PySCF-CPU;" if step else "")
+        print(f"resuming {a.out} at step {step} of {n_tot}", flush=True)
     else:
         MaxwellBoltzmannDistribution(at, temperature_K=a.T, rng=np.random.default_rng(a.seed))
-    t0 = time.time()
+    eng = "GPU4PySCF" if a.gpu else "PySCF-CPU"
+    if step < n_tot and not engines.endswith(f":{eng};"):
+        engines += f"{step}:{eng};"                      # step from which each engine ran
+    t0 = time.time(); paused = False
 
     def save():
         k = max(0, (step - n_nvt) // 2)
         np.savez(a.out + ".tmp.npz", step=step, positions=at.positions, velocities=at.get_velocities(), dipole=mu[:k],
                  qa=np.array(qa), xyz=a.xyz, charge=a.charge, mult=a.mult, T=a.T, seed=a.seed, nvt_ps=a.nvt_ps,
-                 nve_ps=a.nve_ps, dt_fs=1.0, method="B3LYP(VWN3)/6-31G* PySCF " + ("5D" if not calc.cart else "6D"), seconds=time.time() - t0)
+                 nve_ps=a.nve_ps, dt_fs=1.0, method="B3LYP(VWN3)/6-31G* PySCF " + ("5D" if not calc.cart else "6D"),
+                 engines=engines, seconds=time.time() - t0)
         os.replace(a.out + ".tmp.npz", a.out)
 
     while step < n_tot:
@@ -112,6 +130,8 @@ def main():
         md = (Langevin(at, dt, temperature_K=a.T, friction=0.02, fixcm=False,
                        rng=np.random.default_rng(a.seed * 1000 + step)) if nvt else VelocityVerlet(at, dt))
         while step < stop:
+            if a.hours and time.time() - t0 > a.hours * 3600:
+                paused = True; break
             md.run(1); step += 1
             if not nvt and (step - n_nvt) % 2 == 0:
                 mu[(step - n_nvt) // 2 - 1] = calc.last[1]["dipole"]
@@ -119,7 +139,10 @@ def main():
                 qa.append((step, at.get_temperature(), at.get_potential_energy() + at.get_kinetic_energy(),
                            calc.last[1]["s2"], calc.cycles))
         save()
-    print(f"{a.out}: done, {n_tot} steps in {time.time() - t0:.0f} s this session")
+        if paused:
+            print(f"{a.out}: paused at step {step} of {n_tot} after {a.hours} h; rerun to continue", flush=True)
+            return
+    print(f"{a.out}: done, {n_tot} steps in {time.time() - t0:.0f} s this session", flush=True)
 
 
 if __name__ == "__main__":

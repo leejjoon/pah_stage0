@@ -174,6 +174,11 @@ disagreement stay low on unseen species. Budget at 6-31G\*: of order 100–200k 
   C24H14_204, C48H20_146, C96H30_3317; 202 frames, 2.1 GPU-h) clean: all converged, no Newton fallback, all 33
   stability tests stable, `mlff_qa.py` quarantined nothing. Results in `/var/tmp/$USER-pah/d1/seed_dft/`. Full run
   (≈ 87 GPU-h, ≈ 33 h on both GPUs) not started.
+- 2026-11-15: both D1 DFT jobs move to Hangang (user's decision). Seed-set DFT: `d1/slurm_dft_seed.sbatch`, handoff
+  `docs/plan/hangang_seed_dft_handoff.md`. B3 part one MD: continued on GPUs with `d1/aimd_pyscf.py --gpu` (GPU and CPU
+  agree to 3e-10 Ha / 8e-6 Ha/bohr at the MD's default grid; NVE energy continuous across the switch), one trajectory
+  per GPU, 5.7 / 7.5 s per step (neutral / cation); 2 nodes for ~3.5 days via the self-resubmitting
+  `d1/slurm_aimd.sbatch`; handoff `docs/plan/hangang_aimd_handoff.md`. Checkpoints: neutral 3.8 ps, cation 2.5–2.6 ps.
 
 ## Phase 1 run-book
 
