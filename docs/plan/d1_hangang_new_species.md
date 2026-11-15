@@ -306,3 +306,26 @@ errors. Topology changed in 345 of 3,116 systems (11.1 %, as in the pilot's 12 %
   for oop and in-plane bands. A linear extrapolation to 1200 K looks defensible for positions with that uncertainty;
   widths and shares need the profile fits first.
 
+## Emission temperatures: how much IR comes out above 900 K? (2026-11-16; `d1/emission_temp.py`, `spectra/emission_temp_v1.csv`)
+
+Thermal approximation (as PAHdb's cascade): after absorbing a photon of energy E, U(T_max) = E with U from the
+species' PAHdb v4.00 harmonic modes (all 3N-6); cooling is by IR alone, so the emitted energy fraction above T_c is
+1 - U(T_c)/E. 917 library species (neutral). Median share of emitted IR energy above 900 K [median T_max]:
+
+| Nc | 3 eV | 6 eV | 8 eV | 10 eV | 13.6 eV |
+| --- | --- | --- | --- | --- | --- |
+| < 30 (32) | 0 [731 K] | 0.27 [1087] | 0.45 [1300] | 0.56 [1504] | 0.68 [1858] |
+| 30-50 (291) | 0 [636] | 0.05 [930] | 0.29 [1104] | 0.43 [1270] | 0.58 [1555] |
+| 50-80 (343) | 0 [529] | 0 [759] | 0 [892] | 0.19 [1018] | 0.40 [1233] |
+| 80-120 (200) | 0 | 0 | 0 | 0 [791] | 0.08 [945] |
+| >= 120 (51) | 0 | 0 | 0 | 0 | 0 [776] |
+
+Above 1200 K: only Nc < 50 with E >= 8 eV (up to 0.48 for Nc < 30 at 13.6 eV, 0.33 for Nc 30-50). Above 600 K:
+most of the emission for Nc < 80 at E >= 6 eV.
+- **Reading:** temperatures above 900 K matter only for small PAHs (Nc < ~80) in hard fields (E >= 8 eV), but there
+  they carry a large share (20-70 %) of the emission. D1 draws Nc means of 30-120 and E of 5-13.6 eV, so a
+  substantial part of the population grid depends on the > 900 K trends. These are energy fractions over all bands;
+  short-wavelength bands (3.3 um) are emitted preferentially at high T, so their > 900 K share is larger still.
+- The 300 and 600 K MLMD set nearly all emission for Nc >= 80 at any E, and for all sizes at E <= 6 eV (apart from
+  Nc < 30).
+
