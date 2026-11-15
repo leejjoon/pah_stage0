@@ -12,8 +12,8 @@
 #   CKPT_FS    checkpoint interval in fs (default 20: 40 steps, 6-9 min). SIGTERM also saves, after the current step.
 #   AIMD_TAG   engine tag recorded in the npz `engines` field (default cloud-<arch>)
 #   AIMD_PY    python of the env (default $HOME/aimd/env/bin/python); AIMD_CODE: dir of aimd_pyscf.py (default: ..)
-# Cores are taken in order 0,1,2,...: on x86 VMs create the VM with one thread per core (GCP --threads-per-core=1),
-# or each "core" here is half a physical core.
+# Each run gets whole physical cores (one logical CPU per core, from lscpu), whatever the SMT numbering. On x86 VMs
+# still prefer one thread per core (GCP --threads-per-core=1): the idle siblings are otherwise paid for.
 # Exit: 0 all done, 3 some paused or stopped (rerun to continue), 1 a run crashed (read RUN_DIR/logs/<run>.log).
 set -uo pipefail
 mode=${1:?usage: launch_aimd.sh run|timing|status RUN_DIR}; RUN=$(realpath "${2:?RUN_DIR}")
@@ -41,7 +41,8 @@ for n in sys.argv[2:]:
     if not os.path.exists(p): print(f"{n:18s} no checkpoint"); continue
     z = np.load(p); s = int(z["step"]); tot = int(round((float(z["nvt_ps"]) + float(z["nve_ps"])) * 2000))
     qa = np.array(z["qa"]); last = np.round(qa[-1], 3).tolist() if len(qa) else "-"
-    print(f"{n:18s} {s:6d} {tot:6d}  {100 * s / tot:5.1f}  {last}  {z['engines']}")
+    eng = z["engines"] if "engines" in z.files else "-"   # checkpoints written before the field existed have none
+    print(f"{n:18s} {s:6d} {tot:6d}  {100 * s / tot:5.1f}  {last}  {eng}")
 EOF
   exit 0
 fi
@@ -52,7 +53,10 @@ if [ "$mode" = run ]; then   # finished runs need no cores
   all=("${runs[@]}"); runs=("${todo[@]}")
   [ ${#runs[@]} = 0 ] && { echo "all runs done"; touch "$RUN/ALL_DONE"; exit 0; }
 fi
-ncpu=$(nproc); need=0
+# one logical CPU per physical core, in core order: SMT siblings are numbered 0,1 on some machines (Ryzen) and
+# 0,N on others, so "cores 0-7" would put 8 threads on 4 cores on the former
+mapfile -t pcpu < <(lscpu -p=CPU,CORE,SOCKET | grep -v '^#' | sort -t, -k3,3n -k2,2n -k1,1n | awk -F, '!seen[$3","$2]++ {print $1}')
+ncpu=${#pcpu[@]}; need=0
 for n in "${runs[@]}"; do [[ $n == naph_q1_* ]] && need=$((need + T1)) || need=$((need + T0)); done
 [ $need -le "$ncpu" ] || { echo "runs need $need cores, this machine has $ncpu"; exit 1; }
 echo "$(date '+%F %T') $(hostname) $mode: ${#runs[@]} runs, $need of $ncpu cores, q0 $T0 / q1 $T1 threads, ckpt ${CK} fs"
@@ -61,7 +65,7 @@ pids=(); names=(); c=0
 for n in "${runs[@]}"; do
   [[ $n =~ ^naph_q([01])_([0-9]+)K_r([0-9]+)$ ]] || { echo "bad run name $n"; exit 1; }
   q=${BASH_REMATCH[1]}; T=${BASH_REMATCH[2]}; r=${BASH_REMATCH[3]}
-  th=$([ "$q" = 1 ] && echo "$T1" || echo "$T0"); cpus="$c-$((c + th - 1))"; c=$((c + th))
+  th=$([ "$q" = 1 ] && echo "$T1" || echo "$T0"); cpus=$(IFS=,; echo "${pcpu[*]:c:th}"); c=$((c + th))
   args=("$RUN/C10H8_330_q$q.xyz")
   if [ "$mode" = timing ]; then
     args+=(- --time-steps 20)

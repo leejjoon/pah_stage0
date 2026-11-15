@@ -12,6 +12,64 @@ with the same conda-forge PySCF the runs started with.
 abandoned part-way, carry its latest checkpoints to the other (`make_bundle.sh` takes any tarball of the same
 layout).
 
+## Current route: gmunu (KASI), since 2026-11-15
+
+**The 8 runs are on gmunu (`gmunu.kasi.re.kr`, port 7774 in `~/.ssh/config`), not in the cloud.** Do not run these
+checkpoints anywhere else. Why: the GCP project `naph-aimd-2611` (org nais.re.kr, billing `015AF0-546A55-3F1C6E`)
+has 12 vCPUs for all regions, and the request for 72 was denied automatically. gmunu has no time limit and no
+quota, and its queue was empty.
+
+- **Where:** `~/aimd` on gmunu: `env/` (conda-forge, the versions below, water energy checked), `code/`, and `run/` with
+  the checkpoints, `logs/<run>.log` and `logs/slurm_<job>_<id>.out`. `/home` is shared with the compute nodes.
+- **Jobs** (submitted 2026-11-15 16:08 from `~/aimd/run`; 32 cores per run, `d1/cloud/gmunu_aimd.sbatch`):
+
+  | Job | Node type | Runs | From step |
+  |---|---|---|---|
+  | `aimd-q0` | Zen 2 (`--constraint=AMD-R6525-7702`) | the 4 neutrals | 7,600 |
+  | `aimd-q1z3` | Zen 3 (`AMD-R6525-7713`; only node6 is up) | cation 300 K r1, 900 K r1 | 5,200, 5,000 |
+  | `aimd-q1z2` | Zen 2 | cation 300 K r0, 900 K r0 | 5,200, 5,456 |
+
+  Cation 900 K r0 ran 5,000 → 5,456 on a GCP c4a-highcpu-8 Spot VM first (`engines` shows it); the VM is deleted, its
+  logs are in `run/logs/gcp/`, and the step-5,000 checkpoint is kept as `run/naph_q1_900K_r0.step5000.npz.bak`.
+- **Expected:** neutrals about 4.5 days, cations 6–7 days (node6 pair faster).
+- **Restarts** are automatic; every path was tested on copies before production:
+  - Each job has a 3-day limit. Five minutes before it, the runs save and the job resubmits itself (up to 20 times).
+  - After a node failure, Slurm requeues the job, and it resumes.
+  - After `scancel`, the runs save and the job stays stopped. To continue, submit the same command again (below).
+- **Progress:** `~/aimd/code/cloud/launch_aimd.sh status ~/aimd/run`, `squeue -u $USER`, `tail ~/aimd/run/logs/slurm_aimd-*.out`.
+- **Resubmit by hand** (after a crash is fixed, or after `scancel`), from `~/aimd/run`:
+  ```bash
+  S=~/aimd/code/cloud/gmunu_aimd.sbatch; sub() { A="-J $1 --constraint=$2"; AIMD_SBATCH_ARGS="$A" sbatch $A $S ~/aimd/run $3 32; }
+  sub aimd-q0   AMD-R6525-7702 naph_q0_300K_r0,naph_q0_300K_r1,naph_q0_900K_r0,naph_q0_900K_r1
+  sub aimd-q1z3 AMD-R6525-7713 naph_q1_300K_r1,naph_q1_900K_r1
+  sub aimd-q1z2 AMD-R6525-7702 naph_q1_300K_r0,naph_q1_900K_r0
+  ```
+  A run that is already going elsewhere is skipped (a per-run flock, which works across gmunu nodes).
+- **Results:** when `status` shows all 8 at 44,000, copy `~/aimd/run` back to the project node, then follow step 8
+  below (the analysis part).
+
+**Timings** (s/step for a cation and a neutral; "8×8" means 8 runs at once with 8 cores each):
+
+| Machine | Layout | Cation | Neutral |
+|---|---|---|---|
+| Grace (project node) | 8×8 | 13 | 8.8 |
+| GCP Axion c4a | 1×8 | 12.80 | 8.58 |
+| z2mini (Ryzen AI Max+ 395, Zen 5) | 2×8 | 12.54 | 8.61 |
+| gmunu Zen 2 (EPYC 7702) | 8×8 | 26.4–27.5 | 19.7–20.3 |
+| gmunu Zen 2 | 8×16 | 18.8–19.4 | 12.9–13.1 |
+| gmunu Zen 2 | 4×32 | 15.8–16.1 | – |
+| gmunu Zen 2 | 2×64; 1×64 | 15.3–15.9; 16.1 | – |
+| gmunu Zen 3 (EPYC 7713) | 8×16; 1×16; 1×32 | 18.5–19.4; 16.3; 13.2 | 11.7–12.2 |
+
+On gmunu a run stops getting faster at 32 cores, so extra nodes do not help. Faster cores do: node7 and node8 (Zen 3)
+are drained ("SlurmdSpoolDir is full"); if gmunu's admin clears them, 2 cations per Zen 3 node would finish about
+half a day sooner.
+
+**Launcher changes made for this:** `launch_aimd.sh` now gives each run whole physical cores read from `lscpu`. On
+z2mini the two hyperthreads of a core are numbered 0,1, so the old `cores 0-7` put 8 threads on 4 cores. `status`
+no longer crashes on checkpoints that have no `engines` field. The x86 path of `setup_vm.sh` was tested on z2mini
+and on gmunu.
+
 ## What this is
 
 The DFT-level reference for the charged-MLFF work: committee review B3, part one (`docs/plan/charged_mlff_plan.md`).

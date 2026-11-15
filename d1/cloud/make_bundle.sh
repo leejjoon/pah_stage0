@@ -14,7 +14,8 @@ mkdir -p "$W/aimd_cloud/code/cloud" "$W/aimd_cloud/run" "$W/in"
 tar xzf "$IN" -C "$W/in"
 cp "$W"/in/aimd_naph/naph_q[01]_*K_r[0-9].npz "$W"/in/aimd_naph/C10H8_330_q[01].xyz "$W/aimd_cloud/run/"
 cp "$REPO/d1/aimd_pyscf.py" "$W/aimd_cloud/code/"
-cp "$REPO"/d1/cloud/{launch_aimd.sh,setup_vm.sh,gcp_keepalive.sh,dft_env_linux-aarch64.lock} "$W/aimd_cloud/code/cloud/"
+cp "$REPO"/d1/cloud/{launch_aimd.sh,setup_vm.sh,gcp_keepalive.sh,gmunu_aimd.sbatch,dft_env_linux-aarch64.lock} \
+  "$W/aimd_cloud/code/cloud/"
 echo "$(git -C "$REPO" rev-parse --short HEAD)$(git -C "$REPO" diff --quiet -- d1 || echo '+dirty')" > "$W/aimd_cloud/code/VERSION"
 tar czf "$OUT" -C "$W" --owner=0 --group=0 aimd_cloud
 tar tzf "$OUT" | sed 's|^|  |'
