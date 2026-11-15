@@ -282,3 +282,27 @@ errors. Topology changed in 345 of 3,116 systems (11.1 %, as in the pilot's 12 %
 - **900 K library: `d1/new900_library_v1.csv`, 549 species with 4 intact replicas.** 549 species are in all
   three libraries (300, 600 and 900 K).
 
+## Band trends with temperature, first pass (2026-11-16; `d1/tdep_fit.py`, `spectra/tdep_bands_v1.csv`)
+
+549 species in all three libraries (planar neutrals), production-convention spectra, x = each replica's NVE mean T
+(12 points per band). Bands as in `tdep_compare.py` (6 strongest at 300 K, followed to 600 and 900 K), measured in a
++-20 cm^-1 window; 3,294 bands. Per 100 K, median [10-90 %]:
+
+| Family | Centroid shift | Width (in window) | Share | Significantly curved (centroid) | Quadratic - linear at 1200 K |
+| --- | --- | --- | --- | --- | --- |
+| CH oop (600-1000) | -1.46 [-2.48..-0.14] | +0.27 | -1.0 % | 54 % | 2.2 cm^-1 |
+| CC/CH in-plane (1000-1700) | -3.57 [-5.59..-2.12] | +0.28 | -3.6 % | 56 % | 5.0 cm^-1 |
+| CH stretch (2800-3300) | -5.49 [-6.61..-4.38] | +0.32 | -10.7 % | 58 % | 8.5 cm^-1 |
+
+- Shifts depend weakly on size: in-plane -4.0 (Nc < 40) to -3.2 (Nc 90-130); oop -1.7 to -1.4; CH stretch -5.1
+  to -6.0 cm^-1 per 100 K.
+- **The +-20 cm^-1 window underestimates broad bands.** Over whole regions the CH stretch shifts by -9.9 [-10.2..-9.6]
+  and broadens by +6.6 cm^-1 per 100 K (matching `charged_tdep_validation.md`: -10.6 to -11.8 for small species),
+  the oop region (800-950) by -1.7 and +0.6. Band widths from the window method are not usable; a profile fit per
+  band (e.g. Drude, as PAHFIT measures them) is needed before the trends become rules.
+- **Linearity:** the curvature is often statistically significant (small errors from 12 points), but small in size:
+  extrapolating linearly to 1200 K differs from the quadratic by 2-8 cm^-1 per band (region-level: oop ~0, CC +2,
+  CH stretch +4.9 against a total shift of ~-90 cm^-1), i.e. ~5-15 % of the shift. Shifts accelerate slightly with T
+  for oop and in-plane bands. A linear extrapolation to 1200 K looks defensible for positions with that uncertainty;
+  widths and shares need the profile fits first.
+
