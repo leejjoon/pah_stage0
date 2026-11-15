@@ -151,7 +151,7 @@ show more failures at 600 K (non-planar), so 600 K also gets the filter. Steps (
    per bin, only 3 planar below 30 C), full 200 + 200 ps, 4 replicas. Plan `runs/pilot900_v1` (xyz
    `XYZ_pilot900_v1`, list `d1/pilot900_species_v1.csv`; 352 systems, 48 units, ~16 GPU-h, per-GPU max ~4.3 h):
    `sbatch --time=06:00:00 d1/slurm_mlmd_run.sbatch /appsdata/$USER/sif/A_jax.sif /appsdata/$USER/d1
-   /appsdata/$USER/d1/runs/pilot900_v1` (awaiting the user's go). Decide 900 K production from its yield.
+   /appsdata/$USER/d1/runs/pilot900_v1`. **Submitted 2026-11-15 as job 1281196.** Decide 900 K production from its yield.
 4. 1200 K: none with this model (user to choose: extrapolate, empirical widths, or a retrained model).
 
 ## Known facts and pitfalls
