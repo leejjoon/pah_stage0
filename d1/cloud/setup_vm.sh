@@ -13,9 +13,9 @@ cmd=${1:?usage: setup_vm.sh install | service [--poweroff-when-done] [THREADS_Q0
 if [ "$cmd" = install ]; then
   arch=$(uname -m); echo "$(hostname): $arch, $(nproc) CPUs, $(lscpu | sed -n 's/^Model name: *//p' | head -1)"
   mkdir -p "$A/bin"
-  if [ "$SRC" != "$A" ]; then
-    [ -e "$A/run" ] && { echo "$A/run exists: not overwriting checkpoints (move it away first)"; exit 1; }
-    cp -a "$SRC/code" "$SRC/run" "$A/"
+  if [ "$SRC" != "$A" ]; then   # rerunnable: code is refreshed, checkpoints already in ~/aimd/run are never touched
+    rm -rf "$A/code"; cp -a "$SRC/code" "$A/"; echo "code: copied to $A/code"
+    if [ -e "$A/run" ]; then echo "run: $A/run exists, kept as it is"; else cp -a "$SRC/run" "$A/"; echo "run: copied"; fi
   fi
   if [ ! -x "$A/bin/micromamba" ]; then
     case $arch in aarch64) mm=linux-aarch64 ;; x86_64) mm=linux-64 ;; *) echo "unsupported $arch"; exit 1 ;; esac
@@ -72,7 +72,7 @@ StandardError=append:$A/run/logs/launcher.log
 WantedBy=multi-user.target
 EOF
   sudo systemctl daemon-reload && sudo systemctl enable aimd && sudo systemctl restart aimd   # a running unit saves first
-  sleep 5; systemctl --no-pager status aimd | head -5; tail -n 12 "$A/run/logs/launcher.log"
+  sleep 5; { systemctl --no-pager status aimd | head -5; } || true; tail -n 12 "$A/run/logs/launcher.log"
   exit 0
 fi
 echo "unknown command $cmd"; exit 1
