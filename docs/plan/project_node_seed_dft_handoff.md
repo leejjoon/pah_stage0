@@ -78,27 +78,40 @@ The originals stay on Hangang under `/appsdata/t641a02/d1/` (not purged). The al
      three named cations (gpu4pyscf 1.9.2 has ROKS energies but no ROKS gradients; use CPU PySCF).
    - Coverage report (item 5), after the exclusions.
 
-## In progress on Hangang: transfer_test backfill
+## transfer_test backfill (done on Hangang 2026-11-16)
 
 The exclusion cut `transfer_test` from 8 pairs to 5. The user chose a naive backfill, because the xTB sampler cannot
-run on Hangang (no xTB module, no aarch64 `tblite` wheel):
+run on Hangang (no xTB module, no aarch64 `tblite` wheel).
 
-- `d1/transfer_backfill.py candidates` picked 32 unused PAHdb pairs (8 per 10-C bin, 61–100 C, B3LYP/6-31G\* in
-  PAHdb for both charges, one per skeleton, no skeleton shared with the seed set, Mai et al. uids excluded), by
-  farthest-point sampling in edge-type fractions seeded with the 5 kept transfer pairs. Frames per charge: the PAHdb
-  minimum plus 4 Gaussian displacements (σ 0.02–0.05 Å), labelled `sampler=naive` and `disp_sigma`.
-  Layout: `/appsdata/t641a02/d1/seed_hangang/transfer2/` (`frames_transfer/`, `gjf_transfer/manifest.json`, `xyz/`,
-  `candidates.csv`).
-- Next: the open-shell screen of the 32 neutral minima (job 1284679, running on 2026-11-16), then
-  `transfer_backfill.py select` (drop E_RKS − E_BS ≥ 1 mHa, keep the 4 most diverse passers per bin, ~16 pairs) and
-  the DFT of their 160 frames (`--only $(cat transfer2/selected_pairs.txt)`, 2 nodes). The results come back as a
-  separate tarball with `species_transfer2.csv`; `species_v2.csv` is not changed.
+- **Candidates** (`d1/transfer_backfill.py candidates`): 32 unused PAHdb pairs, 8 per 10-C bin (61–100 C), B3LYP/6-31G\*
+  in PAHdb for both charges, one per skeleton, no skeleton shared with the seed set, Mai et al. uids excluded; picked
+  by farthest-point sampling in edge-type fractions, seeded with the 5 kept transfer pairs. Frames per charge: the
+  PAHdb minimum plus 4 Gaussian displacements (σ 0.02/0.03/0.04/0.05 Å), labelled `sampler=naive` and `disp_sigma`.
+- **Screen:** the same open-shell criterion as the seed set, on all 32 neutral minima: 7 open-shell (E_RKS − E_BS
+  3.6–37.2 mHa, ⟨S²⟩_BS 0.84–2.41; solo-H share 0.33–0.64, again the solo-rich ones), 1 barely unstable
+  (C74H22_9921, 0.2 mHa, allowed), 24 stable.
+- **Selected** (`transfer_backfill.py select`, 4 most diverse passers per bin): 16 pairs, solo-H share 0–0.60.
+  - 61–70: C66H24_3594, C62H20_6671, C62H22_6648, C62H22_6649
+  - 71–80: C74H22_6602, C78H30_6585, C72H26_3547, C78H26_3529
+  - 81–90: C84H24_174, C90H30_171, C84H28_3381, C84H24_6508
+  - 91–100: C92H24_6477, C96H30_3309, C96H28_3373, C100H26_7494
+- **DFT:** 160 frames, 4.6 GPU-h; all converged, no Newton fallback. Cation ⟨S²⟩ > 0.80 on 7 frames, at most 0.851
+  (C90H30_171_q1_f004), rising with σ. Largest force component 24.3 eV/Å (a σ = 0.05 Å frame).
+- **Tarball** `seed_dft_transfer2.tgz` (1.95 MB, sha256
+  `083ca247a59fbfc373388bdd845dbc8181d3ee8f638052d42893552321fcc202`): `transfer2/` with `seed_dft/` (160 JSON),
+  `seed_dft.extxyz`, `species_transfer2.csv`, `candidates.csv` (all 32 with screen results and the decision),
+  `selected_pairs.txt`, `bs_screen/`, `frames_transfer/`, `gjf_transfer/manifest.json`, `xyz/`. The first tailcat
+  send failed (the receiver had stopped); if it has not arrived, it is on Hangang at
+  `/appsdata/t641a02/d1/seed_dft_transfer2.tgz`.
+- **On the project node:** run `mlff_qa.py` on `transfer2/seed_dft.extxyz` as for the seed set (manifest
+  `transfer2/gjf_transfer/manifest.json`). `transfer_test` is now the 5 kept pairs of `species_v2.csv` plus the 16 of
+  `species_transfer2.csv` (21 pairs); `species_v2.csv` itself is unchanged.
 - **Limit:** these frames are near-minimum only. Their median RMSD from the minimum is 0.085 Å, against 0.27 Å for
   300 K MD and 0.51 Å for 1200 K MD in the seed set. They add species diversity, not temperature coverage: compare
   transfer errors on `min` and `disp` frames only, and say so where results are reported.
-- **Optional, needs the project node soon:** MD frames for the selected pairs with the original sampler
-  (`d1/mlff_sample.py`, xTB, 300–1500 K, as for the original transfer pairs: one frame at 300/900/1500 K), sent to
-  Hangang and labelled before 2026-11-22. That would give real 900–1500 K transfer frames.
+- **Optional:** MD frames for the 16 pairs with the original sampler (`d1/mlff_sample.py`, xTB; one frame at
+  300/900/1500 K, as for the original transfer pairs), labelled on Hangang before the allocation ends on 2026-11-22
+  (or on the project node's GPUs). That would give real 900–1500 K transfer frames.
 
 ## Rules (unchanged)
 
