@@ -197,6 +197,11 @@ disagreement stay low on unseen species. Budget at 6-31G\*: of order 100–200k 
   a solo-H and size selection (the Wang 2026 Fig. 1 bias) and must be stated as such wherever Phase 1 results are
   reported. An open-shell treatment of this class is still to be decided (see Risks). Per-frame and per-minimum
   results: `seed_dft_bs_check.tgz` (`bs_check_summary.csv`, `bs_minima_summary.csv`).
+- 2026-11-16: transfer_test backfill started on Hangang without xTB (`d1/transfer_backfill.py`; PAHdb minimum + 4
+  Gaussian displacements per charge, `sampler=naive`): 32 candidates screened with the same open-shell criterion,
+  ~4 passers per 10-C bin to be labelled. Near-minimum frames only (median RMSD 0.085 Å against 0.51 Å for 1200 K MD),
+  so they widen species coverage, not temperature coverage. Results go back with `species_transfer2.csv`. Handoff to
+  the project node: `docs/plan/project_node_seed_dft_handoff.md`.
 
 ## Phase 1 run-book
 
