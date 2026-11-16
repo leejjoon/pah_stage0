@@ -539,3 +539,23 @@ share above 900 K; model breakdown by T and planarity; PAHdb intensities.
   temperature trends show consistency, not correct physics; the temperature rules stand either way. Not mentioned in
   the reference corpus; worth reporting to the PAHdb team.
 
+### Comparison with PAHdb v3.20 (2026-11-16)
+
+PAHdb v3.20 (4,233 species, 2019-09-12) downloaded on the login node to `/appsdata/t641a02/d1/pahdb/` (14.2 MB; sha256 in
+`t0/pahdb-v3.20.sha256`); the same survey and Kekule check (`spectra/pahdb320_*.csv`). Pure C/H neutrals:
+
+| Class (stated multiplicity) | v3.20: n, km/mol per C, CH share | v4.00: n, km/mol per C, CH share |
+| --- | --- | --- |
+| Kekule (singlet) | 1,224, 27.9, 0.41 | 1,874, 23.5, 0.41 |
+| non-Kekule |imb| 1 (doublet) | 705, 27.5, 0.43 | 721, 23.9, 0.42 |
+| non-Kekule |imb| 2 (triplet) | 51, 26.4, 0.43 | 51, 22.9, 0.43 |
+| non-Kekule, listed as singlet | **3**, 49-65, 0.25-0.28 | **334**, 117 (|imb| 2), 0.11 |
+
+- v3.20 lists only three non-Kekule species as singlets: C32H18 uid 1741 (|imb| 2), C82H24 uid 561 (4), C126H30 uid 569 (6).
+  They are unchanged in v4.00 (same states; 50-65 km/mol per C, CH share 0.22-0.28, i.e. ~2x normal but not extreme).
+- **The other 331 are new in v4.00** (uid up to 10,770; v3.20's maximum is 4,287), including every extreme case (CH share
+  < 15 %). v3.20 listed its 51 imbalance-2 neutrals as triplets, with normal spectra.
+- So the problem is essentially a v4.00 one: the species added in v4.00 that cannot be closed-shell were listed (and
+  evidently computed) as closed-shell singlets. Mai et al.'s training data came from v3.2, which contained only the
+  three mild cases.
+
