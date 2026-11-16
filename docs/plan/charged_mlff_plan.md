@@ -249,6 +249,19 @@ disagreement stay low on unseen species. Budget at 6-31G\*: of order 100–200k 
   (max 0.865). transfer2 MD (128): 1 unstable neutral (C84H24_6508), cation ⟨S²⟩ max 0.829. Largest force component
   15.4 eV/Å (an NMS 1,800 K frame). Nothing dropped. Tarball `/appsdata/t641a02/d1/seed_dft_hot_t2md.tgz` (3.2 MB,
   sha256 `92fac185c1c14a17ef677af8d4d64da680f1e19768327e920c59a348f03cc9f7`): `dft/` (702 JSON) and `dft.extxyz`.
+- 2026-11-16 (project node): `seed_dft_hot_t2md.tgz` received (hash confirmed), unpacked to
+  `/var/tmp/jjlee-pah/d1/mlff_seed/hot_t2md_dft/`. All 114 duplicate `min` frames reproduce the existing labels
+  (≤ 2e-8 Ha). `mlff_qa.py` (hot 574, transfer2 MD 128; none missing): the hot batch first gave 8 energy outliers, 7
+  of them the `min` frames: in a hot group 6 of 7 frames sit at 1,800 K with a shared DFT − xTB offset of ~1–1.5 eV,
+  so the median moves and the reference frame (residual 0 by construction) looks like the outlier. Fixed: the
+  reference frame is never flagged as an energy outlier (no effect on the seed set, which had none). Left: 1 energy
+  outlier, C22H14_307_q1_hot_f003 (0.94 eV; stable; minao, huckel, atom and 1e guesses all reach the label energy to
+  1e-9 Ha, so an xTB error, not another state); 2 dipole outliers, C34H16_6459_q1_hot_f004 (0.53 e·Å, stable) and
+  C66H24_3594_q1_md_f003 (0.32 e·Å, stability-tested here: stable, label reproduced); 31 + 1 `unstable` neutral and
+  42 + 6 `s2_review` cation frames as Hangang reported. Coverage over all four datasets (`mlff_coverage.py`, output
+  `/var/tmp/jjlee-pah/d1/coverage_all.md`): all checks pass; 1,800 K frames (MD + NMS) 180/36/30 per charge in
+  train/validation/final_test; transfer_test 21 pairs with MD at 300/900/1,500 K. The `min` row counts each duplicate
+  `min` frame again (train 100 against 70 unique); drop the duplicates when building the training data.
 
 ## Phase 1 run-book
 

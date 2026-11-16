@@ -87,7 +87,9 @@ def main():
             lim = max(6 * robust_sigma(arr), floor); med = np.median(arr)
             for f, v in zip(fs, arr):
                 f.setdefault("qa", {})[flag] = v - med
-                if abs(v - med) > lim:
+                # the reference frame's energy residual is 0 by construction: if it lies far from the group median,
+                # the other frames share a DFT-xTB offset (hot groups: most frames at one high T), not a wrong state
+                if abs(v - med) > lim and not (flag == "energy_outlier" and f is ref):
                     f["flags"].append(flag)
     missing = []
     mp = a.manifest or os.path.join(os.path.dirname(os.path.abspath(a.parsed)), "gjf", "manifest.json")
