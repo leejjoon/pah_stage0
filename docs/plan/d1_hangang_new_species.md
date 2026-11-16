@@ -370,3 +370,19 @@ Per 100 K, median over species [10-90 %]; share = band or window integral relati
 - Not yet done: comparison with laboratory hot-PAH spectra; size dependence of these trends (all numbers above are
   medians over Nc 22-216).
 
+### Size dependence (`profile_fit.py bysize`)
+
+Median per Nc bin (Nc 20-40 / 40-60 / 60-90 / 90-130 / 130-220; 55 / 217 / 168 / 98 / 11 species):
+- **Positions.** 3.3 um: -9.1 in every bin (no size dependence). 6.2 um: -4.7 / -4.1 / -3.9 / -4.5 / -5.1 (none
+  significant). 7.7 um: -3.8 to -2.8, weakly smaller for large ones. Out-of-plane bands shift more in small PAHs:
+  11.2 um -2.3 to -1.6, 12.7 um -1.2 to -0.9, 13.5 um -1.4 to +0.6 (+2.4 +- 0.2 per decade of Nc; band identity by
+  position, so in large PAHs the 13.5 um window holds different modes).
+- **Broadening.** 3.3 um +6.5 to +7.6 (+1.1 +- 0.3 per decade); 6.2 um +0.8 to +1.6 (+1.2 +- 0.2 per decade);
+  others flat within errors (oop +0.4 to +0.9).
+- **Strength.** 3.3 um -4.0 to -4.8 % per 100 K; 6.2 um ~0; 7.7 um -1 to -1.6 %; 8.6 um +2.6 to +3.3 %; 11.2 um -5.8 %
+  (Nc 20-40) to -3.9 %.
+- **Widths at 300 K** fall with size for the oop bands (FWHM 4.2-4.6 cm^-1 at Nc 20-40 to 2.1-2.9 at Nc >= 130) and for
+  3.3 um (23.8 to ~19-20).
+- For rules: per band a constant temperature slope is adequate except the oop band positions (and the 300 K oop
+  widths), which need a log10(Nc) term.
+

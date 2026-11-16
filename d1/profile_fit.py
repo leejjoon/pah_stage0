@@ -2,6 +2,7 @@
 # strength against temperature (docs/plan/d1_hangang_new_species.md, "Band profiles").
 #   python profile_fit.py fit <library csv> <spectra dir 300> <dir 600> <dir 900> <out csv> [--n N | --start i --stop j]
 #   python profile_fit.py summary <fits csv> [more csv ...]
+#   python profile_fit.py bysize <fits csv> [more csv ...]     per-band trends by Nc bin and per decade of Nc
 # Blended features (3.3 um CH stretch; the 6.2, 7.7 and 8.6 um complexes) are measured as whole complexes in fixed
 # windows (COMPLEXES): intensity-weighted centroid and rms width of the non-negative part, the FWHM read directly from
 # the spectrum (5 cm^-1 boxcar), and the window's share of the total. Multi-component fits of these blends are
@@ -201,5 +202,49 @@ def complexes_summary(R):
     print()
 
 
+def cmd_bysize(a):
+    """Per species and band: linear slopes of position, width and strength against the replicas' NVE T; then medians
+    per Nc bin and an OLS trend per decade of Nc. Complexes: peak (centroid for 3.3), rms width (FWHM for 3.3), window
+    share; oop components: centre, FWHM, area, grouped by component and named by their 300 K band; components that
+    overlap a neighbour at 900 K are left out."""
+    import warnings; warnings.simplefilter("ignore")
+    R = [r for f in a for r in csv.DictReader(open(f))]
+    by = {}
+    for r in R:
+        if r["replica"] != "mean":
+            by.setdefault((r["species"], r["region"], r["band"] if r["region"] == "complex" else r["comp"]), []).append(r)
+    res = {}
+    for (sp, reg, k), v in by.items():
+        b300 = [r for r in v if r["T"] == "300"]
+        if len(b300) < 3 or len(v) < 9 or not b300[0]["band"]:
+            continue
+        band = b300[0]["band"]
+        if reg != "complex" and any(r["overlap"] == "1" for r in v if r["T"] == "900"):
+            continue
+        x = np.array([float(r["T_nve"]) for r in v]) / 100
+        pos = "peak" if reg == "complex" and band != "3.3" else "center"
+        wid = "rmsw" if reg == "complex" and band != "3.3" else "fwhm"
+        st = "win" if reg == "complex" else "area"
+        y0 = np.mean([float(r[st]) for r in b300])
+        sl = [np.polyfit(x, np.array([float(r[q]) for r in v]) / (y0 if q == st else 1), 1)[0] for q in (pos, wid, st)]
+        res.setdefault(band, []).append((int(v[0]["nC"]), *sl, np.mean([float(r[wid]) for r in b300])))
+    bins = [(20, 40), (40, 60), (60, 90), (90, 130), (130, 220)]
+    for q, i, unit in (("position shift", 1, "cm-1 per 100 K"), ("broadening", 2, "cm-1 per 100 K"),
+                       ("strength", 3, "fraction of 300 K per 100 K"), ("width at 300 K", 4, "cm-1; FWHM for 3.3 and oop, rms for 6-9 um")):
+        print(f"\n{q} ({unit}): median per Nc bin (n); trend = OLS slope per decade of Nc +- s.e.")
+        print("  band " + "".join(f"{f'{lo}-{hi}':>13s}" for lo, hi in bins) + "      trend")
+        for b, *_ in COMPLEXES + [x for x in BANDS if x[0] in ("11.2", "12.0", "12.7", "13.5")]:
+            v = np.array(res.get(b, []))
+            if not len(v):
+                continue
+            cells = ""
+            for lo, hi in bins:
+                m = (v[:, 0] >= lo) & (v[:, 0] < hi)
+                cells += f"{np.median(v[m, i]):>8.3f}({m.sum():3d})" if m.sum() >= 5 else f"{'-':>13s}"
+            X = np.log10(v[:, 0]); A = np.vstack([X, np.ones_like(X)]).T; c, *_ = np.linalg.lstsq(A, v[:, i], rcond=None)
+            s2 = ((v[:, i] - A @ c) ** 2).sum() / (len(X) - 2); se = np.sqrt(s2 / ((X - X.mean()) ** 2).sum())
+            print(f"  {b:>5s}{cells}  {c[0]:+.3f} +- {se:.3f}")
+
+
 if __name__ == "__main__":
-    {"fit": cmd_fit, "summary": cmd_summary}[sys.argv[1]](sys.argv[2:])
+    {"fit": cmd_fit, "summary": cmd_summary, "bysize": cmd_bysize}[sys.argv[1]](sys.argv[2:])
