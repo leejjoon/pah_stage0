@@ -468,3 +468,27 @@ so most components are rejected (290 of 2,398 kept).
   produce: it would need a separate pedestal term in the emission model.
 - Caveat: isolated bands are a minority and may be the less congested ones; the 6.2 um value rests on 14 bands.
 
+### Pedestal (broad background) against temperature (2026-11-16; `d1/pedestal.py`)
+
+Lower envelope of each spectrum (running minimum over 41 cm^-1, then a running mean), integrated per region as a share
+of the 300-3800 cm^-1 total. MLMD, 549 species, median at 300 / 600 / 900 K and per-species slope:
+
+| Region (cm^-1) | 300 K | 600 K | 900 K | Slope per 100 K |
+| --- | --- | --- | --- | --- |
+| oop 650-1000 | 0.9 % | 3.5 % | 5.4 % | +0.82 % |
+| in-plane 1100-1700 | 4.0 % | 6.9 % | 8.3 % | +0.73 % |
+| gap 1700-2800 (overtones, combinations) | 1.6 % | 4.1 % | 6.9 % | +0.92 % |
+| CH stretch 2800-3300 | 8.3 % | 13.2 % | 14.6 % | +1.05 % |
+
+The same floor measured on PAHdb sticks broadened with the per-line widths (60 species) gives the part that band wings
+explain. MLMD minus sticks, at 300 / 600 / 900 K: oop -1.4 / -0.3 / +0.6 %; in-plane -8.5 / -10.3 / -11.0 %; **gap +2.2 /
++5.1 / +8.4 %**; CH stretch +3.2 / -0.3 / -2.6 %.
+- **In-plane: no pedestal beyond the band wings.** MLMD's floor there is lower than the broadened sticks' (its
+  in-plane intensity is lower overall than PAHdb's) and grows less. So the hypothesis was wrong: adding a pedestal
+  changes nothing, and the 6.2/7.7 um rms-growth gap of the closure (+2.9 vs +5.3, -0.1 vs +4.2 cm^-1) remains. Likely
+  causes: the congested 6.2/7.7 um lines broaden faster than the isolated ones the per-line widths come from, and
+  PAHdb and Mai's model spread these lines differently.
+- **Gap 1700-2800 cm^-1: a real, growing background** that harmonic sticks lack: overtone and combination intensity
+  (the region of the observed 5.25 and 5.7 um bands), rising from ~2 % to ~8 % of the total between 300 and 900 K
+  (+1 % per 100 K). The emission model needs it as a separate component if the 5-6 um region matters.
+
