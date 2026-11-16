@@ -262,6 +262,12 @@ disagreement stay low on unseen species. Budget at 6-31G\*: of order 100–200k 
   `/var/tmp/jjlee-pah/d1/coverage_all.md`): all checks pass; 1,800 K frames (MD + NMS) 180/36/30 per charge in
   train/validation/final_test; transfer_test 21 pairs with MD at 300/900/1,500 K. The `min` row counts each duplicate
   `min` frame again (train 100 against 70 unique); drop the duplicates when building the training data.
+- 2026-11-17: **Decision (with the user): Phase 1 training data drop `unstable` frames only** (49 neutral frames whose
+  RKS label lies above a UKS solution; no correct label exists for them yet). Kept, flagged: `s2_review`,
+  `dipole_outlier`, `energy_outlier` (every one examined was a correct DFT label, the disagreement on the xTB side),
+  `graph_changed` / `persistent_change` (committee review B2). Built with `d1/mlff_dataset.py ... --drop-flags
+  unstable` → `/var/tmp/jjlee-pah/d1/dataset_v1/` (`<split>_q<q>.extxyz`, `report.md`): frames q0 / q1, train
+  2,387 / 2,420, validation 578 / 580, final_test 753 / 766, transfer_test 152 / 153.
 
 ## Phase 1 run-book
 
