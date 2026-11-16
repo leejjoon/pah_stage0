@@ -239,6 +239,16 @@ disagreement stay low on unseen species. Budget at 6-31G\*: of order 100–200k 
   1,800 K ×4 (574 frames; changed bond graph in 109/164 NMS and 84/328 MD frames, 13 persistent), every 1,800 K frame
   stability-tested; and the optional transfer2 MD frames, 16 pairs × 2 charges, min + MD 300/900/1,500 K (128 frames,
   5 changed at 1,500 K). DFT on Hangang: `docs/plan/hangang_hot_t2md_handoff.md`, tarball `hot_t2md_1116.tgz`.
+- 2026-11-16 (Hangang): hot seed batch and transfer2 MD frames labelled (`docs/plan/hangang_hot_t2md_handoff.md`).
+  Check job 1289049 (3 frames against the project node's `smoke_ref/`): worst dE 3.6e-12 Ha, dF 2.4e-12 Ha/bohr,
+  dμ 2.5e-11 D, d⟨S²⟩ 1.7e-13, PASS. Production array 1289160 (2 nodes, ~1.9 h): 702 frames, 28.4 GPU-h (mean 146 s),
+  none unconverged, no Newton fallback. Hot batch (574): 492 tested, 31 neutral `unstable_rhf_uhf` (RKS label kept,
+  flagged) in 10 pairs, mostly the pairs already unstable in the seed set (C38H16_3164 6, C26H16_814 5, C40H18_10742 5,
+  C34H16_7213 4) plus C22H14_307 5, C28H14_2226 2 and one each in C34H16_7262, C38H16_7100, C38H16_7102, C40H22_533;
+  12/164 NMS and 19/328 MD frames, 13 of them with a changed bond graph; cations: 42 of 287 with ⟨S²⟩ > 0.80, 3 > 0.85
+  (max 0.865). transfer2 MD (128): 1 unstable neutral (C84H24_6508), cation ⟨S²⟩ max 0.829. Largest force component
+  15.4 eV/Å (an NMS 1,800 K frame). Nothing dropped. Tarball `/appsdata/t641a02/d1/seed_dft_hot_t2md.tgz` (3.2 MB,
+  sha256 `92fac185c1c14a17ef677af8d4d64da680f1e19768327e920c59a348f03cc9f7`): `dft/` (702 JSON) and `dft.extxyz`.
 
 ## Phase 1 run-book
 
