@@ -559,3 +559,15 @@ PAHdb v3.20 (4,233 species, 2019-09-12) downloaded on the login node to `/appsda
   evidently computed) as closed-shell singlets. Mai et al.'s training data came from v3.2, which contained only the
   three mild cases.
 
+### Decision (user, 2026-11-17): exclude now, test cheap recomputation
+
+- **The 334 pure C/H non-Kekule "singlets" of PAHdb v4.00 are excluded from D1's harmonic library** (list:
+  `d1/pahdb_v4_exclude_nonkekule_v1.csv`, from `docs/reports/pahdb_v4_nonkekule/`). They are also in our MD selection:
+  184 of the 1,000 new species, 184 / 183 / 137 of the 300 / 600 / 900 K libraries; the temperature rules do not
+  depend on them. **The T0b slice contains one: C52H20 uid 10452 (`slice/species.csv`); its neutral/cation pair needs
+  replacing.**
+- Recomputing them as triplets with finite-difference frequencies would take ~3,400-5,500 H100 GPU-h (median 7-11 h
+  per species; C90-130 59 % of it). Next: test analytic frequencies (GPU4PySCF `hessian/uks.py`, available) with IR
+  intensities from the CPHF response, which GPU4PySCF implements only for closed-shell (`properties/ir.py`); an
+  open-shell version is needed and is validated first on the naphthalene cation (uid 359).
+
