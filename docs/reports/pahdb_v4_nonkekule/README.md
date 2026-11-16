@@ -56,6 +56,15 @@ the normal intensity.
 
 ![fig3](out/fig3.png)
 
+**Figure 4.** The same species in v3.20 (dashed) and v4.00 (solid), one per class: same uid, formula, Kekulé class
+and imbalance; 2,027 neutral pure-C/H species are shared. The Kekulé species (uid 4), the radical (uid 1144) and the
+imbalance-2 triplet (uid 1503) change only slightly between versions: total intensity is ~12 % lower in v4.00 and some
+bands shift by a few cm⁻¹. The one non-Kekulé singlet of this size present in both (uid 1741) is likewise nearly
+unchanged, at ~2× the normal intensity. None of the 331 species added in v4.00 has a v3.20 counterpart, so the
+extreme cases cannot be compared across versions.
+
+![fig4](out/fig4.png)
+
 ## Method (`pahdb_nonkekule.py`)
 
 1. **Selection.** Neutral species containing only C and H, with no sp3 carbon.

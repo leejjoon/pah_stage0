@@ -11,7 +11,8 @@ Needs only numpy and matplotlib. For every neutral pure C/H species without sp3 
     nA - nB (for an alternant hydrocarbon, |nA - nB| = 2S of the ground state, Lieb 1989);
   - reads the electronic state from <symmetry> (e.g. "1-A'" -> multiplicity 1) and the harmonic intensities;
   - computes the total intensity per carbon atom and the share of the CH stretch (> 2700 cm^-1).
-Writes OUTDIR/species_v{3.20,4.00}.csv, OUTDIR/affected_v4.00.csv, OUTDIR/table.md and OUTDIR/fig{1,2,3}.png.
+Writes OUTDIR/species_v{3.20,4.00}.csv, OUTDIR/affected_v4.00.csv, OUTDIR/table.md and OUTDIR/fig{1,2,3,4}.png.
+Figure 4 overlays the v3.20 and v4.00 spectra of species present in both (same uid, formula, Kekule class and imbalance).
 """
 import csv, gzip, os, sys
 import xml.etree.ElementTree as ET
@@ -178,6 +179,30 @@ def main(x320, x400, out):
     axs[1].set_xlabel("wavenumber (cm$^{-1}$, as listed; lines broadened to 10 cm$^{-1}$ FWHM)")
     fig.suptitle(f"{f}, two isomers in v4.00 (note the different y scales)", x=0.01, ha="left", fontsize=10)
     fig.tight_layout(); fig.savefig(f"{out}/fig3.png", dpi=140); plt.close(fig)
+    # fig 4: the same species in both versions, one per class (same uid, formula, Kekule class and imbalance)
+    v3 = {r["uid"]: r for r in data["3.20"]}; v4 = {r["uid"]: r for r in data["4.00"]}
+    same = [u for u in v4 if u in v3 and v3[u]["formula"] == v4[u]["formula"] and cls(v3[u]) == cls(v4[u])
+            and v3[u]["imbalance"] == v4[u]["imbalance"]]
+    picks = []
+    for c in ("Kekule", "non-Kekule, odd imbalance (radical)", "non-Kekule, even imbalance, listed as multiplicity 3",
+              "non-Kekule, even imbalance, listed as singlet"):
+        s_ = sorted((u for u in same if cls(v4[u]) == c), key=lambda u: (abs(v4[u]["nC"] - 32), u))
+        if s_:
+            picks.append((c, s_[0]))
+    x = np.arange(500, 3300, 1.0)
+    fig, axs = plt.subplots(len(picks), 1, figsize=(9, 2.1 * len(picks)), sharex=True)
+    for ax, (c, u) in zip(np.atleast_1d(axs), picks):
+        for v, r, col, ls in (("3.20", v3[u], "#52514e", "--"), ("4.00", v4[u], "#e34948" if c == classes[3] else "#2a78d6", "-")):
+            nu = np.array(r["nu"].split(), float); I = np.array(r["I"].split(), float)
+            y = sum(i * 5 ** 2 / ((x - n) ** 2 + 5 ** 2) / (np.pi * 5) for n, i in zip(nu, I))
+            ax.plot(x, y, color=col, ls=ls, lw=1.1, label=f"v{v}: {r['state']}, {r['I_total']:.0f} km/mol, CH {100 * r['CH_share']:.0f} %")
+        ax.set_title(f"uid {u} {v4[u]['formula']}: {c}", loc="left", fontsize=9); ax.legend(fontsize=7, loc="upper left")
+        ax.set_ylabel("km/mol per cm$^{-1}$", fontsize=8)
+    np.atleast_1d(axs)[-1].set_xlabel("wavenumber (cm$^{-1}$, as listed; 10 cm$^{-1}$ FWHM)")
+    fig.suptitle(f"The same species in v3.20 and v4.00 ({len(same)} shared neutral pure C/H species; one per class, Nc nearest 32)",
+                 x=0.01, ha="left", fontsize=10)
+    fig.tight_layout(); fig.savefig(f"{out}/fig4.png", dpi=140); plt.close(fig)
+    print("fig4:", [(c, u) for c, u in picks], f"; shared species {len(same)}")
     print("figures and tables in", out)
 
 
