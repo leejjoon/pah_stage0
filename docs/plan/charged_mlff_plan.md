@@ -268,6 +268,18 @@ disagreement stay low on unseen species. Budget at 6-31G\*: of order 100–200k 
   `graph_changed` / `persistent_change` (committee review B2). Built with `d1/mlff_dataset.py ... --drop-flags
   unstable` → `/var/tmp/jjlee-pah/d1/dataset_v1/` (`<split>_q<q>.extxyz`, `report.md`): frames q0 / q1, train
   2,387 / 2,420, validation 578 / 580, final_test 753 / 766, transfer_test 152 / 153.
+- 2026-11-17 (project node): **electronic-state QA side set done** (Quality checks item 4; `d1/dft_stateqa.py`,
+  GPU4PySCF, production settings; 132 jobs on 21 pairs, `/var/tmp/jjlee-pah/d1/stateqa/out`, 0 errors).
+  - mix (84; UKS from the alpha HOMO/LUMO rotated 45°, then stability re-optimisation): lower than the label only
+    for the positive control C46H20_10574 q0 (already excluded as open-shell): f000 −7.5 mHa, ⟨S²⟩ 1.04, dF max
+    0.53 eV/Å; f028 −12.8 mHa, ⟨S²⟩ 1.31, dF max 0.60 eV/Å. So the mixed guess does find a broken-symmetry
+    solution where one exists; every other frame is within 2e-9 Ha of its label.
+  - huckel (42 cations): none lower. C54H18_37_q1_f000 converged to another doublet 4.0 mHa *above* the label
+    (⟨S²⟩ 0.775, dF max 1.08 eV/Å): a separate surface, the label is the lower state.
+  - roks (6 cations: C10H8_330, C24H12_18, C54H18_37, f000/f028): ROKS 1.2–1.8 mHa above UKS, dF max 0.026–0.081
+    eV/Å (rms ≤ 0.014), dmu ≤ 0.006 e·Å. Using UKS rather than ROKS for the cation labels moves forces by at most
+    0.08 eV/Å (no numeric MLFF force target is set yet to compare with).
+  - Conclusion: the default SCF finds the lowest state for the kept training labels; no new flags.
 
 ## Phase 1 run-book
 
