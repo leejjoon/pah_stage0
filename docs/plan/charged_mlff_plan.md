@@ -215,6 +215,15 @@ disagreement stay low on unseen species. Budget at 6-31G\*: of order 100–200k 
   frame: 4e-10 Ha, 8e-8 Ha/bohr). The 7 kept dipole-outlier cations, stability-tested (`run --stab-all`, internal UKS):
   all stable, energies and dipoles identical to the labels, so the outliers are a DFT–xTB disagreement, not a
   different SCF state. Other states, reached from different guesses, remain for the state-QA side set (item 4).
+- 2026-11-16 (project node): transfer2 received (`seed_dft_transfer2.tgz`, hash confirmed), unpacked to
+  `/var/tmp/jjlee-pah/d1/mlff_seed/transfer2/`. `mlff_qa.py` on its 160 frames: none missing (the 160 the report lists
+  are the 16 unselected candidates), no energy outliers, 7 `s2_review` cations (⟨S²⟩ 0.80–0.85, σ = 0.03–0.05 Å
+  displacements), 1 dipole outlier (C78H26_3529_q1_f004, 0.63 e·Å). The dipole outlier and the highest-⟨S²⟩ frame
+  (C90H30_171_q1_f004) are stable (`run --stab-all`), with energies and dipoles identical to the labels. The groups are 5 frames, so the
+  robust-σ outlier thresholds are loose there (DFT − xTB energy residuals reach 2.3 eV at σ = 0.05 Å and pass); the stability tests carry these
+  frames. Coverage with both datasets (`mlff_coverage.py seed_qa.extxyz,transfer2_qa.extxyz
+  species_v2.csv,species_transfer2.csv`): transfer_test 21 pairs, 105 frames per charge, 61–100 C (25–30 per 10-C
+  bin), median solo/H 0.10 (the 3 excluded pairs: 0.41); no skeleton shared with the seed splits; all checks pass.
 
 ## Phase 1 run-book
 

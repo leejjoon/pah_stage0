@@ -2,7 +2,10 @@
 # Phase 1 exclusions (d1/seed_exclusions_open_shell.csv). Reads the labelled extxyz (mlff_qa.py output preferred, for
 # qa_flags; dft_seed_run.py collect output also works), the species splits and the exclusion list; prints Markdown
 # tables and writes <out>_frames.csv (one row per split, charge, 10-C bin, config_type: frames kept / excluded).
-#   python mlff_coverage.py <seed.extxyz> <species_v2.csv> <out prefix> [--exclude d1/seed_exclusions_open_shell.csv]
+#   python mlff_coverage.py <seed.extxyz>[,<more.extxyz>] <species_v2.csv>[,<more species.csv>] <out prefix>
+#                           [--exclude d1/seed_exclusions_open_shell.csv]
+# Several datasets (e.g. the seed set and the transfer_test backfill, transfer2/) are joined: comma-separated lists of
+# extxyz files and species tables (a pair may appear in only one table).
 # Checks (exit status 1 if one fails): every frame's pair is in the species table; no carbon skeleton spans two
 # splits; every excluded pair is in the species table; every pair has frames for both charges.
 import argparse, collections, csv, os, re, sys
@@ -35,9 +38,13 @@ def main():
     ap.add_argument("--exclude", default=os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                                       "seed_exclusions_open_shell.csv"))
     a = ap.parse_args()
-    sp = {r["pair"]: r for r in csv.DictReader(open(a.species))}
+    sp = {}; fails = []
+    for path in a.species.split(","):
+        for r in csv.DictReader(open(path)):
+            if r["pair"] in sp:
+                fails.append(f"pair {r['pair']} in two species tables")
+            sp[r["pair"]] = r
     excl = {r["pair"] for r in csv.DictReader(open(a.exclude))}
-    fails = []
     skel = collections.defaultdict(set)
     for r in sp.values():
         skel[r["skeleton"]].add(r["split"])
@@ -45,7 +52,7 @@ def main():
     fails += [f"excluded pair {p} not in {a.species}" for p in excl - set(sp)]
     cnt = collections.Counter(); charges = collections.defaultdict(set); flags = collections.Counter()
     ctypes = set(); unknown = set()
-    for info in frames(a.extxyz):
+    for info in (i for path in a.extxyz.split(",") for i in frames(path)):
         pair = info["source"].rsplit("_q", 1)[0]
         if pair not in sp:
             unknown.add(pair); continue
