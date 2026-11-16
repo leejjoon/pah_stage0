@@ -224,6 +224,21 @@ disagreement stay low on unseen species. Budget at 6-31G\*: of order 100–200k 
   frames. Coverage with both datasets (`mlff_coverage.py seed_qa.extxyz,transfer2_qa.extxyz
   species_v2.csv,species_transfer2.csv`): transfer_test 21 pairs, 105 frames per charge, 61–100 C (25–30 per 10-C
   bin), median solo/H 0.10 (the 3 excluded pairs: 0.41); no skeleton shared with the seed splits; all checks pass.
+- 2026-11-16: **Decision (with the user): MD temperature = the cascade's quantum (microcanonical) temperature; the
+  production MD grid goes to 1,500 K for 21–40 C; a hot seed batch at 1,800 K for 21–40 C, in all splits.**
+  Basis (`d1/peak_temperature.py`, PAHdb v4 harmonic frequencies, 4,680 pure CₓHᵧ q = 0/+1, cold start): the peak
+  temperature (median) is 1,300/1,500/1,860 K for 21–30 C and 1,190/1,380/1,690 K for 31–40 C at 8/10/13.6 eV, and
+  has a median under 1,000 K at 10 eV above 50 C. The emission share above 1,200 K (median, hottest decile) at 8 eV is 15 % (32 %)
+  for 21–30 C and 0 (8 %) for 31–40 C; above 1,500 K it is ≤ 4 % for all of 21–80 C at ≤ 8 eV (21–30 C at 13.6 eV:
+  30 %). So the 1,200 K grid top is the gap for small species, not the 1,500 K training ceiling; 1,800 K is a 1.2×
+  margin over the new grid top. Not done: 2,000–2,400 K (only needed at ≥ 10 eV, or below 20 C); species under 20 C
+  reach 1,900–2,800 K at 8–13.6 eV and are outside the T0b populations (20–110 C); including them would need a
+  photodestruction (H loss) decision. A classical temperature with the same energy is about half the quantum one
+  (21–30 C at 10 eV: 880 K against 1,500 K), which is why the rule had to be stated.
+  Sampled on the project node (xTB, `mlff_sample.py`): hot batch, 41 pairs × 2 charges, min + NMS 1,800 K ×2 + MD
+  1,800 K ×4 (574 frames; changed bond graph in 109/164 NMS and 84/328 MD frames, 13 persistent), every 1,800 K frame
+  stability-tested; and the optional transfer2 MD frames, 16 pairs × 2 charges, min + MD 300/900/1,500 K (128 frames,
+  5 changed at 1,500 K). DFT on Hangang: `docs/plan/hangang_hot_t2md_handoff.md`, tarball `hot_t2md_1116.tgz`.
 
 ## Phase 1 run-book
 

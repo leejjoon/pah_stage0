@@ -109,9 +109,8 @@ run on Hangang (no xTB module, no aarch64 `tblite` wheel).
 - **Limit:** these frames are near-minimum only. Their median RMSD from the minimum is 0.085 Å, against 0.27 Å for
   300 K MD and 0.51 Å for 1200 K MD in the seed set. They add species diversity, not temperature coverage: compare
   transfer errors on `min` and `disp` frames only, and say so where results are reported.
-- **Optional:** MD frames for the 16 pairs with the original sampler (`d1/mlff_sample.py`, xTB; one frame at
-  300/900/1500 K, as for the original transfer pairs), labelled on Hangang before the allocation ends on 2026-11-22
-  (or on the project node's GPUs). That would give real 900–1500 K transfer frames.
+- **Done 2026-11-16 (sampled on the project node):** MD frames for the 16 pairs (min + one xTB MD frame at
+  300/900/1500 K), sent to Hangang with the hot batch: `docs/plan/hangang_hot_t2md_handoff.md`.
 
 ## Rules (unchanged)
 
