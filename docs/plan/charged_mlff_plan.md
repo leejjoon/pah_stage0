@@ -343,12 +343,24 @@ flagged). Mixed-guess singlets for dications come with the dication phase.
 - Splits: `species_v2.csv` (M3): by carbon skeleton; train for fitting, validation for model selection and active-learning
   stopping, final_test (incl. the lab anchors) and transfer_test (61–100 C) only for the final report. Never split
   frames of one skeleton between sets.
-- NeuralIL + EPNN: Mai et al.'s training code under `src/Supplementary_Data_Code/lib/` (`bessel-nn-potentials-velo`,
-  `epnn-main`); one model per charge state. Needs a converter from extended XYZ to their input format
-  *(not yet written)*. Their EPNN predicts the dipole; for ions check that its charge constraint sums to the total
-  charge.
+- **Training data** (`d1/mlff_dataset.py`, 2026-11-17): from the QA'd extxyz files and species tables to one
+  extxyz per split and charge, frames copied verbatim. Applies the open-shell exclusions (whole pairs), drops the
+  repeated `min` frames of later batches (centred positions checked to 1e-6 Å), and drops frames by `qa_flags` only
+  if `--drop-flags` names them (the choice is the user's; the report states it). `report.md` gives frame counts per
+  split and charge after each step and the solo-H bias sentence. Seed + transfer2 + hot + transfer2 MD, no flags
+  dropped: train 2,420, validation 580, final_test 766, transfer_test 153 frames per charge.
+- Isolated-atom energies (UKS b3lypg/6-31G\* cart, (99, 590), CPU PySCF): H doublet −0.5002727827 Ha
+  (−13.613116 eV), C triplet −37.8462799650 Ha (−1029.849742 eV); `/var/tmp/jjlee-pah/d1/e0s/e0s_b3lypg_631gs_eV.json`.
+  Whether the cation head uses these or fitted E0s is to be decided at training time.
+- NeuralIL + EPNN: Mai et al.'s supplementary code under `src/Supplementary_Data_Code/lib/` (`bessel-nn-potentials-velo`,
+  `epnn-main`) is the libraries only: no training scripts and no data format (`database_loading.py` is an example
+  reader for another project's JSON). So no converter: a training script that reads the curated extxyz and calls
+  `neuralil.training` *(not yet written)*; one model per charge state. Their EPNN predicts the dipole; for ions check
+  that its charge constraint sums to the total charge.
 - mace-jax: `mace-jax-train` with `--heads` (one head per charge state) and energy/force keys `dft_energy` /
-  `dft_forces`; float32 training, TF32 off as in T0. Dipole: EPNN as above, or a MACE dipole head built from
+  `dft_forces`; float32 training, TF32 off as in T0. Checked in container A (mace-jax 0.2.0): `--heads` takes a dict
+  with per-head `train_path`/`valid_path`/`test_path`, `energy_key`/`forces_key` and E0s; `--E0s` takes a dict or a
+  JSON file; a dipole loss exists (`energy_forces_dipole`). Dipole: EPNN as above, or a MACE dipole head built from
   `LinearDipoleReadoutBlock` and `DipoleSingleLoss` *(not yet written)*.
 - Validation scripts: held-out errors per charge and `sample_T`; integrity runs with the MLMD driver
   (`d1/mlmd_run.py` with a charge-state model); harmonic frequencies from the model Hessian against PAHdb.
@@ -366,7 +378,7 @@ flagged). Mixed-guess singlets for dications come with the dication phase.
 
 | Tool | Phase |
 | --- | --- |
-| Extended XYZ → NeuralIL/EPNN training format | 2 |
+| NeuralIL/EPNN training script over the curated extxyz (`d1/mlff_dataset.py` output) | 2 |
 | Model-loading hook in `d1/mlmd_run.py` for our trained models | 2 |
 | Harmonic frequencies and intensities from a model, against PAHdb (G5) | 2 |
 | MACE dipole model or EPNN for ions | 2 |
