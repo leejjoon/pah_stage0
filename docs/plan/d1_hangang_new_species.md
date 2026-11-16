@@ -421,3 +421,24 @@ How to read and use it:
   charged species are outside it (charged: positions and widths transfer within a few cm^-1 per
   `charged_tdep_validation.md`; strengths unsettled).
 
+### Closure test: rules on PAHdb harmonic sticks (2026-11-16; `d1/rules_closure.py`, 60 random species of the 549)
+
+PAHdb v4.00 sticks shifted by the family position rules and broadened with Lorentzians, against the MLMD feature
+widths (same windows and measures). Only widths and their growth are compared (PAHdb, B3LYP/6-31G* scaled 0.9794,
+and Mai's model put lines at different absolute positions).
+- **The oop per-line width fails for the other families.** With FWHM 4.5 cm^-1 + 0.67 per 100 K on every line, the
+  3.3 um feature is 9 / 12 / 15 cm^-1 at 300 / 600 / 900 K against 19 / 37 / 60 in MLMD; the 6.2 and 7.7 um complexes do
+  not broaden at all (MLMD +5 and +4 cm^-1 rms). CH-stretch lines broaden much faster than oop lines.
+- **Per-family per-line widths by inversion** (the FWHM for which the broadened sticks reproduce the MLMD feature
+  width; `spectra/perline_width_v1.csv`):
+  - **CH stretch (3.3 um): 9.9 [7.1-15.3] / 24.0 [17.2-28.1] / 44.4 [33.9-53.7] cm^-1 at 300 / 600 / 900 K, +5.8 per
+    100 K, no size dependence (+0.2 per decade), a solution for all 60 species.** Usable as the CH-stretch rule.
+  - 6.2 / 7.7 / 8.6 um: ill-posed. Implausible widths (6.2 um: 45 -> 142 cm^-1) and no solution for many species
+    (7.7 um: 19-34 of 60). The window rms width saturates as Lorentzian wings fill the window, and PAHdb and Mai's
+    model spread the CC lines differently already at 300 K, so the inversion fits that model difference.
+- **Per-line widths, status:** oop lines 4.5 + 0.5-0.75 per 100 K (direct fits); CH stretch 9.9 + 5.8 per 100 K
+  (inversion); CC stretch and in-plane bends not determined. Options: profile-fit the isolated in-plane bands in the
+  MLMD spectra (a minority of bands, as in the first prototype); or invert on band shapes rather than window rms
+  (e.g. match the MLMD complex profile after aligning positions); or, as an interim rule, use the oop growth rate
+  with an uncertainty spanning the CH-stretch value.
+
