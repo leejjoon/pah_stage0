@@ -516,16 +516,26 @@ share above 900 K; model breakdown by T and planarity; PAHdb intensities.
   additions); none has a cation in PAHdb, and 98 % have a normal isomer of the same formula.
 - **Cause: no Kekule structure.** All 239 anomalous pure-C/H closed-shell neutrals have an sp2 framework with no
   perfect matching, sublattice imbalance 2 (one case 4). Such molecules cannot be closed-shell; by Lieb's theorem an
-  imbalance of 2 means a triplet ground state. PAHdb computed them as closed-shell singlets (wrong electronic state),
-  and the B3LYP harmonic intensities blow up. Of the 1,987 normal ones, 1,874 have a Kekule structure.
-- **Extent** (`spectra/pahdb_kekule.csv`; neutral, no Kekule structure, state listed as "1-..."): 560 PAHdb v4.00
-  neutrals (|imbalance| 2: 387), 254 of them with the anomaly. In our libraries: 205 of 917 (300 K), 204 of 810
-  (600 K), 144 of 549 (900 K). Odd-H radicals (doublets) also lack a Kekule structure but are computed correctly as
-  open-shell and are not affected.
+  imbalance of 2 means a triplet ground state. PAHdb lists them as singlets; the intensity pattern is what a
+  closed-shell calculation of a diradical would give (whether restricted or broken-symmetry is not recorded).
+- **Class-level confirmation** (pure C/H neutrals): non-Kekule, |imbalance| 2, listed as triplets: 51 species, median
+  23 km/mol per C, CH share 0.43 (normal, like Kekule species: 23.5, 0.41); the same class listed as singlets: 312
+  species, 117 km/mol per C, CH share 0.11. No molecule is listed in both states (formula + bond-graph hash), so there
+  is no same-molecule comparison.
+- **Extent, pure C/H only** (N changes the electron count, so N-PAH are not tested by this check): 334 PAHdb v4.00
+  neutrals are non-Kekule and listed as singlets (|imbalance| 2: 312, 4: 21, 6: 1); 239 fall below the 15 % CH share,
+  but those above it are still 2.7x the Kekule per-carbon intensity (64 vs 23.5 km/mol), so the Kekule flag, not the
+  CH-share cut, is the exclusion criterion. In our libraries: 184 of 917 (300 K), 183 of 810 (600 K), 137 of 549
+  (900 K); N-PAH (untested): 94, 80, 31. Odd-H radicals (doublets) also lack a Kekule structure but are listed and
+  computed as open-shell and look normal (721 species, 23.9 km/mol per C, CH 0.42).
 - **MD temperature trends are the same for these species** (144 of the 549): e.g. 3.3 um shift -9.04 vs -9.12, width
   +6.66 vs +6.88 cm^-1 per 100 K; 11.2 um -1.56 vs -1.75; all bands within the scatter. So the temperature rules stand;
   the problem is the PAHdb harmonic spectra (and, for MD, that Mai's model treats them closed-shell like the rest).
-- **For D1's harmonic library**, decide: exclude the ~560 non-Kekule singlets of PAHdb v4.00 (and their counterparts in
-  the surrogate's training data, which is PAHdb), or recompute them in the high-spin (triplet) state. Not mentioned in
+- The CH-stretch per-line width redone without non-Kekule singlets (60 of the 405 remaining species): 10.6 cm^-1 at
+  300 K, +5.86 per 100 K (was 9.9, +5.8); the rule stands.
+- **For D1's harmonic library**, decide: exclude the 334 pure C/H non-Kekule "singlets" of PAHdb v4.00 (and their
+  counterparts in the surrogate's training data, which is PAHdb), or recompute them in the high-spin state (container D
+  DFT pipeline). Mai's model presumably saw such species under the same closed-shell assumption, so identical MD
+  temperature trends show consistency, not correct physics; the temperature rules stand either way. Not mentioned in
   the reference corpus; worth reporting to the PAHdb team.
 
