@@ -492,3 +492,18 @@ explain. MLMD minus sticks, at 300 / 600 / 900 K: oop -1.4 / -0.3 / +0.6 %; in-p
   (the region of the observed 5.25 and 5.7 um bands), rising from ~2 % to ~8 % of the total between 300 and 900 K
   (+1 % per 100 K). The emission model needs it as a separate component if the 5-6 um region matters.
 
+### Issue figures and a PAHdb intensity anomaly (2026-11-16; `d1/issue_plots.py`, PNGs in `/appsdata/t641a02/d1/figs/`)
+
+Six figures: spectra MD vs rules for one species; width growth rules vs MD (60 species); background by region; emission
+share above 900 K; model breakdown by T and planarity; PAHdb intensities.
+- **PAHdb anomaly:** 164 of the 917 library species (18 %; 115 of the 549 in all three temperature libraries) have PAHdb
+  v4.00 harmonic spectra dominated by 6-9 um: total intensity up to 1.5e5 km/mol (median of all 1,442), CH-stretch share
+  < 15 % (median 42 %), most recorded as closed-shell singlets. The share falls continuously with total intensity, not
+  as a separate cluster. Mai's dipole model gives these species ordinary neutral spectra (CH-stretch share 40-50 %).
+  Likely low-gap (diradicaloid) structures where B3LYP harmonic intensities are unreliable; this matters for D1's
+  harmonic library itself, not only for the rules. Not investigated further yet.
+- The closure and pedestal comparisons repeated without these species (CH share >= 0.15) give the same conclusions:
+  width growth 3.3 um +42.0 vs +39.3, 8.6 um +2.8 vs +2.4, 6.2 um +1.9 vs +5.2, 7.7 um +0.3 vs +3.6 cm^-1; floor excess
+  in the 1700-2800 cm^-1 gap +2.0 / +4.9 / +8.0 %, in-plane -4.5 / -5.1 / -5.0 % (was -8.5 to -11 % with them). The
+  figures use only these species.
+
