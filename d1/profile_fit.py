@@ -3,6 +3,7 @@
 #   python profile_fit.py fit <library csv> <spectra dir 300> <dir 600> <dir 900> <out csv> [--n N | --start i --stop j]
 #   python profile_fit.py summary <fits csv> [more csv ...]
 #   python profile_fit.py bysize <fits csv> [more csv ...]     per-band trends by Nc bin and per decade of Nc
+#   python profile_fit.py rules <out csv> <fits csv> [more csv ...]   rules table: value at Nc = 50 + per decade of Nc
 # Blended features (3.3 um CH stretch; the 6.2, 7.7 and 8.6 um complexes) are measured as whole complexes in fixed
 # windows (COMPLEXES): intensity-weighted centroid and rms width of the non-negative part, the FWHM read directly from
 # the spectrum (5 cm^-1 boxcar), and the window's share of the total. Multi-component fits of these blends are
@@ -246,5 +247,68 @@ def cmd_bysize(a):
             print(f"  {b:>5s}{cells}  {c[0]:+.3f} +- {se:.3f}")
 
 
+def per_species(files):
+    """{band: [(nC, {quantity: (slope per 100 K, quad - lin at 1200 K, value at 300 K)})]}, as in cmd_bysize."""
+    R = [r for f in files for r in csv.DictReader(open(f))]
+    by = {}
+    for r in R:
+        if r["replica"] != "mean":
+            by.setdefault((r["species"], r["region"], r["band"] if r["region"] == "complex" else r["comp"]), []).append(r)
+    res = {}
+    for (sp, reg, k), v in by.items():
+        b300 = [r for r in v if r["T"] == "300"]
+        if len(b300) < 3 or len(v) < 9 or not b300[0]["band"]:
+            continue
+        band = b300[0]["band"]
+        if reg != "complex" and any(r["overlap"] == "1" for r in v if r["T"] == "900"):
+            continue
+        x = np.array([float(r["T_nve"]) for r in v]) / 100
+        qs = {"position": "peak" if reg == "complex" and band != "3.3" else "center",
+              "width": "rmsw" if reg == "complex" and band != "3.3" else "fwhm",
+              "strength": "win" if reg == "complex" else "area"}
+        out = {}
+        for name, q in qs.items():
+            y = np.array([float(r[q]) for r in v]); y300 = np.mean([float(r[q]) for r in b300])
+            if name == "strength":
+                y = y / y300
+            c1 = np.polyfit(x, y, 1); c2 = np.polyfit(x, y, 2)
+            out[name] = (c1[0], np.polyval(c2, 12) - np.polyval(c1, 12), y300)
+        res.setdefault(band, []).append((int(v[0]["nC"]), out))
+    return res
+
+
+def cmd_rules(a):
+    """Per band and quantity, OLS in log10(Nc/50): value at Nc = 50 and per decade of Nc (+- s.e.), robust scatter
+    between species (1.4826 MAD of the residuals), and the median quad - lin difference at 1200 K."""
+    import warnings; warnings.simplefilter("ignore")
+    out, files = a[0], a[1:]
+    res = per_species(files); rows = []
+    kind = {"3.3": "complex (centroid, FWHM)", "6.2": "complex (peak, rms width)", "7.7": "complex (peak, rms width)",
+            "8.6": "complex (peak, rms width)"}
+    for b in [c[0] for c in COMPLEXES] + ["11.2", "12.0", "12.7", "13.5"]:
+        v = res.get(b, [])
+        if len(v) < 10:
+            continue
+        X = np.log10(np.array([n for n, _ in v]) / 50.0)
+        for name, unit in (("position", "cm-1 per 100 K"), ("width", "cm-1 per 100 K"), ("strength", "fraction of 300 K per 100 K"),
+                           ("width300", "cm-1 at 300 K")):
+            q, i = ("width", 2) if name == "width300" else (name, 0)
+            y = np.array([o[q][i] for _, o in v])
+            A = np.vstack([np.ones_like(X), X]).T; c, *_ = np.linalg.lstsq(A, y, rcond=None)
+            r = y - A @ c; s2 = (r ** 2).sum() / (len(y) - 2); cov = s2 * np.linalg.inv(A.T @ A)
+            ql = np.median([o[q][1] for _, o in v]) if name != "width300" else np.nan
+            rows.append(dict(band=b, kind=kind.get(b, "isolated oop band (truncated-Lorentzian fit)"), quantity=name, unit=unit,
+                             n_species=len(v), at_Nc50=round(c[0], 4), se=round(np.sqrt(cov[0, 0]), 4),
+                             per_decade_Nc=round(c[1], 4), se_decade=round(np.sqrt(cov[1, 1]), 4),
+                             scatter=round(1.4826 * np.median(np.abs(r - np.median(r))), 4),
+                             quad_minus_lin_1200K=round(ql, 4)))
+    with open(out, "w", newline="") as fo:
+        w = csv.DictWriter(fo, fieldnames=list(rows[0])); w.writeheader(); w.writerows(rows)
+    print(f"{len(rows)} rules -> {out}")
+    for r in rows:
+        print(f"{r['band']:>5s} {r['quantity']:9s} {r['at_Nc50']:+9.4f} +- {r['se']:.4f}  per decade {r['per_decade_Nc']:+8.4f} +- "
+              f"{r['se_decade']:.4f}  scatter {r['scatter']:.4f}  q-l {r['quad_minus_lin_1200K']:+.3f}  (n={r['n_species']})")
+
+
 if __name__ == "__main__":
-    {"fit": cmd_fit, "summary": cmd_summary, "bysize": cmd_bysize}[sys.argv[1]](sys.argv[2:])
+    {"fit": cmd_fit, "summary": cmd_summary, "bysize": cmd_bysize, "rules": cmd_rules}[sys.argv[1]](sys.argv[2:])

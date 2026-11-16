@@ -386,3 +386,38 @@ Median per Nc bin (Nc 20-40 / 40-60 / 60-90 / 90-130 / 130-220; 55 / 217 / 168 /
 - For rules: per band a constant temperature slope is adequate except the oop band positions (and the 300 K oop
   widths), which need a log10(Nc) term.
 
+## Temperature rules, version 1 (2026-11-16; `d1/tdep_rules_v1.csv` from `profile_fit.py rules`)
+
+Planar neutral PAHs, Nc 22-216, 300-900 K (replica NVE temperatures), Mai et al.'s model, production spectral
+convention (qm=3, unclipped, replica T), 549 species. Each entry: value at Nc = 50 ± scatter between species
+(1.4826 MAD); a size term (per decade of Nc, i.e. per factor of 10 in Nc) is shown only where it exceeds 2 s.e.
+Strength is relative to the band's own 300 K value. Last column: quadratic minus linear fit at 1200 K (position /
+width), the extrapolation uncertainty.
+
+| Band (um) | Measured as | Position shift (cm^-1 per 100 K) | Broadening (cm^-1 per 100 K) | Strength per 100 K | Width at 300 K (cm^-1) | quad-lin at 1200 K |
+| --- | --- | --- | --- | --- | --- | --- |
+| 3.3 | complex | -9.11 ± 0.24 | +6.66 ± 0.98 (+1.05/dex) | -4.3 % ± 0.3 (-1.1 %/dex) | +21.5 ± 3.4 (-5.3/dex) | +7.1 / +7.9 |
+| 6.2 | complex | -4.01 ± 2.44 | +0.72 ± 0.58 (+1.17/dex) | -0.4 % ± 1.8 (+2.6 %/dex) | +29.1 ± 2.8 (-4.5/dex) | +4.9 / +0.1 |
+| 7.7 | complex | -2.81 ± 3.49 | +0.73 ± 0.51 | -0.9 % ± 1.0 (-1.3 %/dex) | +63.0 ± 4.0 (-3.3/dex) | -4.0 / -0.3 |
+| 8.6 | complex | -0.47 ± 2.12 (-3.43/dex) | +0.39 ± 0.40 | +3.1 % ± 1.8 | +29.2 ± 3.3 | -4.1 / +0.7 |
+| 11.2 | isolated oop band | -1.90 ± 0.61 | +0.67 ± 0.64 | -3.8 % ± 6.8 | +4.6 ± 1.3 (-3.2/dex) | -1.4 / -0.9 |
+| 12.0 | isolated oop band | -1.64 ± 1.35 | +0.64 ± 0.89 (+0.70/dex) | +2.6 % ± 11.0 | +4.5 ± 1.3 (-4.9/dex) | -0.5 / -0.3 |
+| 12.7 | isolated oop band | -0.97 ± 0.89 (+1.39/dex) | +0.52 ± 0.73 | -0.1 % ± 10.3 (+18.7 %/dex) | +5.0 ± 1.5 (-4.1/dex) | -2.9 / -0.6 |
+| 13.5 | isolated oop band | -1.03 ± 0.48 (+2.36/dex) | +0.75 ± 0.46 (-0.66/dex) | -1.0 % ± 7.0 | +4.2 ± 1.1 (-4.9/dex) | -2.7 / +0.2 |
+
+How to read and use it:
+- **Widths are of two kinds.** For the isolated oop bands (11.2-13.5 um) the width is the FWHM of one band, i.e. a
+  per-line width (~4.5 cm^-1 at 300 K, Nc = 50, growing ~0.5-0.75 cm^-1 per 100 K). For 3.3 um it is the FWHM of the
+  blended CH-stretch feature, and for 6.2/7.7/8.6 um the rms width of the complex in its window; these include the
+  spread of the underlying harmonic lines and are not per-line widths.
+- **For the emission model**, which broadens harmonic stick spectra: shift each line by its family's position rule
+  (CH stretch from 3.3; CC stretch from 6.2; CC/CH in-plane from 7.7 and 8.6; oop from 11.2-13.5 by position) and give
+  it the per-line width from the oop rule as a first choice; then check that the broadened sticks reproduce the
+  complex widths in this table (a closure test still to do).
+- **Strengths**: 3.3 um -4.3 % and 11.2 um ~-4 % per 100 K against 6.2 um ~0 and 8.6 um +3 %; per-band oop strengths
+  scatter by ~7-11 % per 100 K between species, so use them as population means.
+- **Validity**: neutral, planar, Nc 22-216, 300-900 K. Extrapolation to 1200 K adds the last column (1-3 cm^-1 for oop
+  positions, 4-7 for the 3.3/6.2/7.7/8.6 positions, up to 8 for the 3.3 um width). Non-planar, superhydrogenated and
+  charged species are outside it (charged: positions and widths transfer within a few cm^-1 per
+  `charged_tdep_validation.md`; strengths unsettled).
+
