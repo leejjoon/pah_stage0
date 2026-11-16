@@ -1,0 +1,7 @@
+family,lo_cm1,hi_cm1,fwhm_300K,fwhm_slope_per_100K,n_bands,source
+CH stretch (3.3 um),2800,3300,9.9,5.8,60,inversion of the 3.3 um feature width on PAHdb sticks (rules_closure.py --invert)
+CC stretch (6.2 um),1540,1700,14.3,3.7,14,isolated in-plane bands (inplane_widths.py; small sample)
+1470-1540,1470,1540,7.4,2.1,37,isolated in-plane bands (inplane_widths.py)
+CC/CH in-plane (7.7 um),1220,1470,5.9,1.75,145,isolated in-plane bands (inplane_widths.py)
+CH in-plane (8.6 um),1100,1220,6.0,2.5,90,isolated in-plane bands (inplane_widths.py)
+CH out-of-plane (11.2-13.5 um),650,1000,4.5,0.67,1798,isolated oop bands (profile_fit.py; tdep_rules_v1.csv 11.2-13.5)

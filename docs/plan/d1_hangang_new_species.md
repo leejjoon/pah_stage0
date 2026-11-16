@@ -442,3 +442,29 @@ and Mai's model put lines at different absolute positions).
   (e.g. match the MLMD complex profile after aligning positions); or, as an interim rule, use the oop growth rate
   with an uncertainty spanning the CH-stretch value.
 
+### Per-line widths by vibration family (2026-11-16; `d1/perline_widths_v1.csv`)
+
+In-plane region (1100-1700 cm^-1) profile-fitted for 200 random species of the 549 (`profile_fit.py fit --regions
+inplane --sample 200`, 2 login-node chunks of ~13 min; `spectra/inplane_fits_v1_c{0,1}.csv`); bands kept if isolated
+at 300, 600 and 900 K (nearest component farther than 0.75 x the sum of the FWHMs, FWHM off the fit bounds, >= 0.3 % of
+the total at 300 K; `d1/inplane_widths.py`). The fits are partly degenerate at 900 K (components collapse or swell),
+so most components are rejected (290 of 2,398 kept).
+
+| Family | Range (cm^-1) | Per-line FWHM at 300 K | Broadening per 100 K | Bands | Source |
+| --- | --- | --- | --- | --- | --- |
+| CH stretch (3.3 um) | 2800-3300 | 9.9 [7.1-15.3] | +5.8 | 60 species | inversion of the 3.3 um feature on PAHdb sticks |
+| CC stretch (6.2 um) | 1540-1700 | 14.3 [10.7-22.1] | +3.7 [+1.6..+4.4] | 14 (small sample) | isolated in-plane bands |
+| 1470-1540 | | 7.4 | +2.1 | 37 | isolated in-plane bands |
+| CC/CH in-plane (7.7 um) | 1220-1470 | 5.9 [3.9-11.0] | +1.75 [+0.5..+2.9] | 145 | isolated in-plane bands |
+| CH in-plane (8.6 um) | 1100-1220 | 6.0 [4.1-10.3] | +2.5 [+1.5..+4.2] | 90 | isolated in-plane bands |
+| CH out-of-plane | 650-1000 | 4.5 | +0.5-0.75 | ~1,800 | isolated oop bands |
+
+- Broadening rises with vibrational frequency (oop +0.6, in-plane +1.7-2.5, CC stretch +3.7, CH stretch +5.8 cm^-1 per
+  100 K), as expected from anharmonicity. No significant size dependence except CH in-plane (+1.4 per decade of Nc).
+- **Closure with these widths** (60 species, PAHdb sticks shifted by the position rules): feature width growth
+  300 -> 900 K, rules vs MLMD: 3.3 um +39.5 vs +40.4 (absolute 20/42/60 vs 19/37/60 cm^-1), 8.6 um +2.9 vs +2.6,
+  6.2 um +2.9 vs +5.3, 7.7 um -0.1 vs +4.2. The remaining 6.2/7.7 um growth in MLMD is likely the broad background that
+  grows with T in the in-plane region (also seen in `charged_tdep_validation.md`), which per-line Lorentzians do not
+  produce: it would need a separate pedestal term in the emission model.
+- Caveat: isolated bands are a minority and may be the less congested ones; the 6.2 um value rests on 14 bands.
+

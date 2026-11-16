@@ -27,6 +27,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from mlmd_spectra import SCALE, FRACTION  # noqa: E402
 
 REGIONS = [("oop", 650, 1000)]
+ALL_REGIONS = {"oop": (650, 1000), "inplane": (1100, 1700)}   # --regions inplane: per-line widths of isolated in-plane bands
 COMPLEXES = [("3.3", 2850, 3250), ("6.2", 1540, 1660), ("7.7", 1220, 1470), ("8.6", 1100, 1220)]
 MAXC = {"oop": 8, "inplane": 12, "CHstr": 4}
 CM = 2 * np.pi * C_LIGHT * 100
@@ -77,7 +78,8 @@ def band_of(x0):
     return next((b for b, lo, hi in BANDS if lo <= x0 < hi), "")
 
 
-def fit_species(sp, dirs):
+def fit_species(sp, dirs, regions=None, complexes=True):
+    regions = regions or REGIONS
     S = {}
     for T, d in dirs.items():
         z = np.load(f"{d}/{sp}_{T}K.npz")
@@ -87,12 +89,12 @@ def fit_species(sp, dirs):
     for T in sorted(S):
         f, sig, Tp, reps = S[T]
         for i, r in enumerate(reps):
-            for b, lo, hi in COMPLEXES:
+            for b, lo, hi in (COMPLEXES if complexes else []):
                 c, rw, fw, pk, sh = complex_metrics(f, sig[i], lo, hi)
                 rows.append(dict(species=sp, nC=nc, region="complex", comp=0, band=b, T=T, replica=int(r),
                                  T_nve=round(float(Tp[i]), 1), center=round(c, 2), fwhm=round(fw, 2), rmsw=round(rw, 2),
                                  peak=round(pk, 1), area=np.nan, win=sh, pedestal=np.nan, overlap=0, rms=np.nan))
-    for name, lo, hi in REGIONS:
+    for name, lo, hi in regions:
         comps = None
         for T in sorted(S):
             f, sig, Tp, reps = S[T]; m = (f >= lo) & (f < hi); x = f[m]
@@ -128,11 +130,14 @@ def cmd_fit(a):
     species = [r["species"] for r in csv.DictReader(open(lib))]
     if n:
         species = species[::max(1, len(species) // n)][:n]
+    if "--sample" in a:                                   # random sample (seed 5), before chunking
+        species = sorted(np.random.default_rng(5).choice(species, int(a[a.index("--sample") + 1]), replace=False))
     if "--start" in a:
         species = species[int(a[a.index("--start") + 1]):int(a[a.index("--stop") + 1])]
+    regions = [(r, *ALL_REGIONS[r]) for r in a[a.index("--regions") + 1].split(",")] if "--regions" in a else None
     rows = []
     for k, sp in enumerate(species):
-        rows += fit_species(sp, {300: d300, 600: d600, 900: d900})
+        rows += fit_species(sp, {300: d300, 600: d600, 900: d900}, regions, complexes=regions is None)
     with open(out, "w", newline="") as fo:
         w = csv.DictWriter(fo, fieldnames=list(rows[0])); w.writeheader(); w.writerows(rows)
     print(f"{len(species)} species, {len(rows)} component fits -> {out}")
