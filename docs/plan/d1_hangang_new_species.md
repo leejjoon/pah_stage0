@@ -507,3 +507,25 @@ share above 900 K; model breakdown by T and planarity; PAHdb intensities.
   in the 1700-2800 cm^-1 gap +2.0 / +4.9 / +8.0 %, in-plane -4.5 / -5.1 / -5.0 % (was -8.5 to -11 % with them). The
   figures use only these species.
 
+## PAHdb intensity anomaly: non-Kekule species computed as singlets (2026-11-16; `d1/pahdb_intensity_survey.py`, `d1/kekule_check.py`)
+
+- **Survey of all 10,718 PAHdb v4.00 species** (`spectra/pahdb_intensity_survey.csv`): among pure C/H neutrals without
+  sp3 C, 245 of 3,028 (8 %) have a CH-stretch share < 15 % and ~6x the per-carbon intensity of normal neutrals (median
+  144 vs 24 km/mol per C; strongest mode median 778 km/mol near 1170 cm^-1). 244 of the 245 are listed as closed-shell
+  singlets; doublets and triplets are normal. They cluster at Nc 50-120 (17-22 % there) and at uid >= ~9,700 (v4.00
+  additions); none has a cation in PAHdb, and 98 % have a normal isomer of the same formula.
+- **Cause: no Kekule structure.** All 239 anomalous pure-C/H closed-shell neutrals have an sp2 framework with no
+  perfect matching, sublattice imbalance 2 (one case 4). Such molecules cannot be closed-shell; by Lieb's theorem an
+  imbalance of 2 means a triplet ground state. PAHdb computed them as closed-shell singlets (wrong electronic state),
+  and the B3LYP harmonic intensities blow up. Of the 1,987 normal ones, 1,874 have a Kekule structure.
+- **Extent** (`spectra/pahdb_kekule.csv`; neutral, no Kekule structure, state listed as "1-..."): 560 PAHdb v4.00
+  neutrals (|imbalance| 2: 387), 254 of them with the anomaly. In our libraries: 205 of 917 (300 K), 204 of 810
+  (600 K), 144 of 549 (900 K). Odd-H radicals (doublets) also lack a Kekule structure but are computed correctly as
+  open-shell and are not affected.
+- **MD temperature trends are the same for these species** (144 of the 549): e.g. 3.3 um shift -9.04 vs -9.12, width
+  +6.66 vs +6.88 cm^-1 per 100 K; 11.2 um -1.56 vs -1.75; all bands within the scatter. So the temperature rules stand;
+  the problem is the PAHdb harmonic spectra (and, for MD, that Mai's model treats them closed-shell like the rest).
+- **For D1's harmonic library**, decide: exclude the ~560 non-Kekule singlets of PAHdb v4.00 (and their counterparts in
+  the surrogate's training data, which is PAHdb), or recompute them in the high-spin (triplet) state. Not mentioned in
+  the reference corpus; worth reporting to the PAHdb team.
+
