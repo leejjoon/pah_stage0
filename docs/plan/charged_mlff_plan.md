@@ -14,7 +14,7 @@ intensities unsettled; the DFT timing pilot) and `docs/plan/cluster_migration.md
 ## Goal
 
 Force fields (and dipole models) for PAH neutrals and cations, later anions and dications, that stay stable and
-accurate from 50 to ~1200 K, to compute temperature-dependent spectra per charge state. Mai et al.'s model is
+accurate from 50 to ~1200 K (1,500 K for 21–40 C, decision 2026-11-16 in the status log), to compute temperature-dependent spectra per charge state. Mai et al.'s model is
 neutral-only, trained on 300 K geometries, and breaks above ~600 K (and for some species at any temperature).
 
 ## Facts this plan rests on
