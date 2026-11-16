@@ -8,10 +8,11 @@
 #   python dft_seed_run.py compare <ref dir> <new dir>
 #       frames present in both: max |dE|, |dF|, |dmu|, d<S^2> and stability verdicts against the G2 targets (1e-7 Ha,
 #       1e-5 Ha/bohr, 1e-3 D, 1e-4); exit status 1 if any frame misses them. Checks a new machine against this one.
-#   python dft_seed_run.py collect <out dir> <parsed.extxyz>
+#   python dft_seed_run.py collect <out dir> <parsed.extxyz> [--bs-label]
 #       all JSONs -> one extxyz in g16_io.py parse's format (dft_energy eV, dft_forces eV/A, dft_dipole e*A about the
 #       centre of mass, s2, stability, scf_cycles, method, every manifest label), ready for mlff_qa.py; prints a QA
-#       summary (unconverged, Newton fallbacks, <S^2>, instabilities, largest forces).
+#       summary (unconverged, Newton fallbacks, <S^2>, instabilities, largest forces). --bs-label: frames with a lower
+#       broken-symmetry solution (run --stab-all --bs) take it as their label (bs_relabel()).
 # Settings (docs/research/pyscf_gpu_jax.md §1.3, matched to Gaussian/PAHdb): b3lypg (VWN3), 6-31G* with 6D d
 # (cart=True), (99, 590) grid, conv_tol 1e-9 Ha, conv_tol_grad 1e-6, max_cycle 200, then second-order SCF if needed.
 # Stability (frames with stability_test=1 in the manifest, as g16_io.py write chose them): open shells Stable=Opt
@@ -22,7 +23,7 @@
 # external test (fallback: Guess=Mix, alpha HOMO/LUMO rotated 45 deg), is re-optimised on internal instabilities
 # (<= 5 rounds), and bs_* keys record its energy, <S^2>, E_RKS - E_BS, max |dF| and dipole. The RKS labels are
 # unchanged; output goes to its own --out, never the production one.
-import argparse, glob, json, os, socket, sys, time
+import argparse, collections, glob, json, os, socket, sys, time
 import numpy as np
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -205,9 +206,28 @@ def cmd_run(a):
                 flush=True)
 
 
+def bs_relabel(r):
+    """--bs-label: a closed-shell frame whose broken-symmetry UKS solution converged below RKS (by > 1e-6 Ha) takes
+    that solution as its label (energy, forces, dipole, <S^2>, method UB3LYP-BS). Every frame gets bs_label: rks
+    (stable or not tested), bs (relabelled), bs_failed (RKS->UKS unstable but no lower converged UKS solution found;
+    the RKS label stays), or uks (open shell, unchanged)."""
+    if int(r["labels"]["mult"]) != 1:
+        return dict(r, bs_label="uks")
+    if r["stability"] != "unstable_rhf_uhf":
+        return dict(r, bs_label="rks")
+    if not (r.get("bs_guess") and r.get("bs_converged") and r["bs_dE_Ha"] > 1e-6):
+        return dict(r, bs_label="bs_failed")
+    return dict(r, bs_label="bs", energy_Ha=r["bs_energy_Ha"], energy_eV=r["bs_energy_Ha"] * HARTREE_EV,
+                forces_eVA=r["bs_forces_eVA"], dipole_eA=r["bs_dipole_eA"], s2=r["bs_s2"], method="UB3LYP-BS",
+                converged=r["bs_converged"], newton=r["bs_newton"], stability="bs_relabel")
+
+
 def cmd_collect(a):
     files = sorted(glob.glob(f"{a.outdir}/*.json"))
     R = [json.load(open(f)) for f in files]
+    if a.bs_label:
+        R = [bs_relabel(r) for r in R]
+        print("bs_label:", dict(sorted(collections.Counter(r["bs_label"] for r in R).items())))
     with open(a.out, "w") as f:
         for r in R:
             info = {"dft_energy": f"{r['energy_eV']:.8f}", "dft_dipole": '"' + " ".join(f"{x:.6f}" for x in r["dipole_eA"]) + '"',
@@ -215,6 +235,7 @@ def cmd_collect(a):
                     "stability": r["stability"], "scf_cycles": r["scf_cycles"], "method": r["method"],
                     "converged": int(r["converged"]), "newton": int(r["newton"]),
                     **{k: v for k, v in r["labels"].items() if k not in ("charge", "mult", "pbc")},
+                    **({"bs_label": r["bs_label"]} if "bs_label" in r else {}),
                     "log": r["name"], "engine": f'"gpu4pyscf {r["gpu4pyscf"]}"', "pbc": '"F F F"'}
             f.write(f"{len(r['symbols'])}\nProperties=species:S:1:pos:R:3:dft_forces:R:3 "
                     + " ".join(f"{k}={v}" for k, v in info.items()) + "\n")
@@ -239,7 +260,7 @@ def cmd_compare(a):
     names = sorted(set(ref) & set(new))
     if not names:
         sys.exit("no frames in common")
-    tol = dict(dE_Ha=1e-7, dF_Ha_bohr=1e-5, dmu_D=1e-3, ds2=1e-4)
+    tol = dict(dE_Ha=1e-7, dF_Ha_bohr=1e-5, dmu_D=1e-3, ds2=1e-4, dE_bs_Ha=1e-6)
     worst = dict.fromkeys(tol, 0.0); bad = []
     for n in names:
         r, x = json.load(open(ref[n])), json.load(open(new[n]))
@@ -247,9 +268,12 @@ def cmd_compare(a):
                  dF_Ha_bohr=float(np.abs(np.subtract(r["forces_eVA"], x["forces_eVA"])).max()) / HB_TO_EVA,
                  dmu_D=float(np.abs(np.subtract(r["dipole_eA"], x["dipole_eA"])).max()) / DEBYE_EA,
                  ds2=abs(r["s2"] - x["s2"]))
-        for k in tol:
+        if r.get("bs_guess") and x.get("bs_guess"):              # run --bs: the broken-symmetry solution as well
+            d["dE_bs_Ha"] = abs(r["bs_energy_Ha"] - x["bs_energy_Ha"])
+        for k in d:
             worst[k] = max(worst[k], d[k])
-        if any(d[k] > tol[k] for k in tol) or r["stability"] != x["stability"]:
+        if (any(d[k] > tol[k] for k in d) or r["stability"] != x["stability"]
+                or bool(r.get("bs_guess")) != bool(x.get("bs_guess"))):
             bad.append((n, {k: f"{v:.1e}" for k, v in d.items()}, r["stability"], x["stability"]))
         print(f"{n} " + " ".join(f"{k}={v:.1e}" for k, v in d.items()) + f" stab {r['stability']}/{x['stability']} "
               f"t {r['t_wall']}/{x['t_wall']} s ({r.get('gpu')} / {x.get('gpu')})")
@@ -270,6 +294,8 @@ def main():
     r.add_argument("--bs", action="store_true", help="broken-symmetry UKS on RKS->UKS unstable frames (needs --stab-all)")
     m = sub.add_parser("compare"); m.add_argument("ref"); m.add_argument("new")
     c = sub.add_parser("collect"); c.add_argument("outdir"); c.add_argument("out")
+    c.add_argument("--bs-label", action="store_true", help="label RKS->UKS unstable frames with their lower "
+                   "broken-symmetry UKS solution (output of run --stab-all --bs); adds bs_label to every frame")
     a = ap.parse_args()
     {"run": cmd_run, "collect": cmd_collect, "compare": cmd_compare}[a.cmd](a)
 

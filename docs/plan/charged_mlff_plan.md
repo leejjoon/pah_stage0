@@ -280,6 +280,14 @@ disagreement stay low on unseen species. Budget at 6-31G\*: of order 100–200k 
     eV/Å (rms ≤ 0.014), dmu ≤ 0.006 e·Å. Using UKS rather than ROKS for the cation labels moves forces by at most
     0.08 eV/Å (no numeric MLFF force target is set yet to compare with).
   - Conclusion: the default SCF finds the lowest state for the kept training labels; no new flags.
+- 2026-11-17: **open-shell labels prepared for Hangang** (with the user; `docs/plan/hangang_open_shell_handoff.md`):
+  `run --stab-all --bs` on the 207 neutral + 207 cation frames of the 9 excluded pairs and the 49 `unstable` frames
+  (463 frames, ~38 GPU-h); new `collect --bs-label` makes a lower converged broken-symmetry solution the label
+  (`method=UB3LYP-BS`); `compare` now also checks the BS energy. Tarball `/var/tmp/jjlee-pah/d1/os_relabel_1117.tgz`
+  (sha256 `5d6b4fca83a0ceeab33c29b02c048bf9d336ccda6d99a46191944ba41b9d1196`): name lists and 4 reference frames run
+  here (C13H10_55_q0_f000 BS −22.79 mHa, ⟨S²⟩ 1.00, as in the 2026-11-15 check; C26H16_814_q0_f008 −0.13 mHa;
+  C22H14_307_q0_hot_f001 −1.23 mHa; C34H20_820_q1_f000 stable); RKS/UKS energies equal the existing labels to 2e-12
+  Ha. Whether these frames enter training is decided after they return.
 
 ## Phase 1 run-book
 
