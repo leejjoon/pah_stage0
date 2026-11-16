@@ -1,7 +1,12 @@
 # Profile fits of the bands in the Hangang neutral MLMD libraries at 300/600/900 K, for band position, width and
 # strength against temperature (docs/plan/d1_hangang_new_species.md, "Band profiles").
-#   python profile_fit.py fit <library csv> <spectra dir 300> <dir 600> <dir 900> <out csv> [--n N]
-#   python profile_fit.py summary <fits csv>
+#   python profile_fit.py fit <library csv> <spectra dir 300> <dir 600> <dir 900> <out csv> [--n N | --start i --stop j]
+#   python profile_fit.py summary <fits csv> [more csv ...]
+# Blended features (3.3 um CH stretch; the 6.2, 7.7 and 8.6 um complexes) are measured as whole complexes in fixed
+# windows (COMPLEXES): intensity-weighted centroid and rms width of the non-negative part, the FWHM read directly from
+# the spectrum (5 cm^-1 boxcar), and the window's share of the total. Multi-component fits of these blends are
+# degenerate (20-species test, 2026-11-16: the 3.3 um components shifted -1.2 and narrowed, against -9.9 and +6.6
+# cm^-1 per 100 K at region level). Profile fits are kept for the out-of-plane region, where bands are isolated.
 # Profile: the exact spectrum of a Lorentzian ACF truncated at the ACF length L the spectra use (7.987 % of the NVE
 # run; profile_calib.py: recovers FWHM down to 0.5 cm^-1, where a plain Drude fails below ~1.5), one component per
 # band plus a linear baseline per region (its integral is the "pedestal", kept apart from the bands). Components:
@@ -19,7 +24,8 @@ from scipy.constants import c as C_LIGHT
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from mlmd_spectra import SCALE, FRACTION  # noqa: E402
 
-REGIONS = [("oop", 650, 1000), ("inplane", 1100, 1700), ("CHstr", 2950, 3150)]
+REGIONS = [("oop", 650, 1000)]
+COMPLEXES = [("3.3", 2850, 3250), ("6.2", 1540, 1660), ("7.7", 1220, 1470), ("8.6", 1100, 1220)]
 MAXC = {"oop": 8, "inplane": 12, "CHstr": 4}
 CM = 2 * np.pi * C_LIGHT * 100
 L = int(200000 * FRACTION) * 1e-15                   # ACF length (s) for 200 ps NVE at 1 fs
@@ -54,6 +60,17 @@ def start_comps(x, y, name):
     return [(y[i], x[i], 3.0) for i in top]
 
 
+def complex_metrics(f, s, lo, hi):
+    m = (f >= lo) & (f < hi); x = f[m]; y = s[m]; w = np.clip(y, 0, None)
+    c = (w * x).sum() / w.sum(); rw = np.sqrt((w * (x - c) ** 2).sum() / w.sum())
+    ys = np.convolve(y, np.ones(5) / 5, mode="same"); k = int(np.argmax(ys)); h = ys[k] / 2
+    i = k
+    while i > 0 and ys[i] > h: i -= 1
+    j = k
+    while j < len(ys) - 1 and ys[j] > h: j += 1
+    return c, rw, x[j] - x[i], x[k], y.sum() / s.sum()
+
+
 def band_of(x0):
     return next((b for b, lo, hi in BANDS if lo <= x0 < hi), "")
 
@@ -64,6 +81,15 @@ def fit_species(sp, dirs):
         z = np.load(f"{d}/{sp}_{T}K.npz")
         S[T] = (z["freq"], z["sigma"], z["prefactor_T"], z["replicas"])
     rows = []
+    nc = int(sp[1:sp.index("H")])
+    for T in sorted(S):
+        f, sig, Tp, reps = S[T]
+        for i, r in enumerate(reps):
+            for b, lo, hi in COMPLEXES:
+                c, rw, fw, pk, sh = complex_metrics(f, sig[i], lo, hi)
+                rows.append(dict(species=sp, nC=nc, region="complex", comp=0, band=b, T=T, replica=int(r),
+                                 T_nve=round(float(Tp[i]), 1), center=round(c, 2), fwhm=round(fw, 2), rmsw=round(rw, 2),
+                                 peak=round(pk, 1), area=np.nan, win=sh, pedestal=np.nan, overlap=0, rms=np.nan))
     for name, lo, hi in REGIONS:
         comps = None
         for T in sorted(S):
@@ -86,8 +112,9 @@ def fit_species(sp, dirs):
                 for j, (A, x0, fw) in enumerate(cs):
                     near = min([abs(x0 - o) for o in cen if o != x0] or [np.inf])
                     w = np.abs(x - x0) <= max(15.0, 1.5 * fw)
-                    rows.append(dict(species=sp, nC=int(sp[1:sp.index("H")]), region=name, comp=j, band=band_of(comps[j][1] if T == 300 else x0),
+                    rows.append(dict(species=sp, nC=nc, region=name, comp=j, band=band_of(comps[j][1] if T == 300 else x0),
                                      T=T, replica=rep, T_nve=round(Tm, 1), center=round(x0, 2), fwhm=round(fw, 3),
+                                     rmsw=np.nan, peak=np.nan,
                                      area=A * np.pi / 2 * fw / tot, win=(s[m][w].sum() / scale) / tot,
                                      pedestal=ped / tot, overlap=int(near < fw), rms=round(rms, 4)))
     return rows
@@ -99,6 +126,8 @@ def cmd_fit(a):
     species = [r["species"] for r in csv.DictReader(open(lib))]
     if n:
         species = species[::max(1, len(species) // n)][:n]
+    if "--start" in a:
+        species = species[int(a[a.index("--start") + 1]):int(a[a.index("--stop") + 1])]
     rows = []
     for k, sp in enumerate(species):
         rows += fit_species(sp, {300: d300, 600: d600, 900: d900})
@@ -108,10 +137,11 @@ def cmd_fit(a):
 
 
 def cmd_summary(a):
-    R = list(csv.DictReader(open(a[0])))
+    R = [r for f in a for r in csv.DictReader(open(f))]
+    complexes_summary([r for r in R if r["region"] == "complex"])
     by = {}
     for r in R:
-        if r["replica"] == "mean":
+        if r["replica"] == "mean" or r["region"] == "complex":
             continue
         by.setdefault((r["species"], r["region"], r["comp"]), []).append(r)
     stats = {}
@@ -142,6 +172,33 @@ def cmd_summary(a):
             line += f" | {q} {np.median(sl):+.3f} [{np.percentile(sl, 10):+.3f}..{np.percentile(sl, 90):+.3f}] q-l {np.median(ql):+.3f}"
         line += f" | FWHM at 300 K {np.median([s[2]['fwhm'][2] for s in v]):.1f}"
         print(line)
+
+
+def complexes_summary(R):
+    by = {}
+    for r in R:
+        by.setdefault((r["species"], r["band"]), []).append(r)
+    print("Complexes (whole-window measures; per 100 K, median [10-90 %] over species; share relative to 300 K; "
+          "quad-lin = quadratic minus linear at 1200 K):")
+    for b, *_ in COMPLEXES:
+        out = {q: [] for q in ("center", "rmsw", "fwhm", "peak", "win")}; f300 = []
+        for (sp, bb), v in by.items():
+            if bb != b:
+                continue
+            x = np.array([float(r["T_nve"]) for r in v]) / 100.0
+            for q in out:
+                y = np.array([float(r[q]) for r in v])
+                if q == "win":
+                    y = y / np.mean([float(r[q]) for r in v if r["T"] == "300"])
+                c1 = np.polyfit(x, y, 1); c2 = np.polyfit(x, y, 2)
+                out[q].append((c1[0], np.polyval(c2, 12) - np.polyval(c1, 12)))
+            f300.append(np.mean([float(r["fwhm"]) for r in v if r["T"] == "300"]))
+        line = f"{b:>5s} um ({len(f300)} species, FWHM at 300 K {np.median(f300):.1f})"
+        for q, v in out.items():
+            v = np.array(v)
+            line += f" | {q} {np.median(v[:, 0]):+.3f} [{np.percentile(v[:, 0], 10):+.3f}..{np.percentile(v[:, 0], 90):+.3f}] q-l {np.median(v[:, 1]):+.2f}"
+        print(line)
+    print()
 
 
 if __name__ == "__main__":

@@ -329,3 +329,44 @@ most of the emission for Nc < 80 at E >= 6 eV.
 - The 300 and 600 K MLMD set nearly all emission for Nc >= 80 at any E, and for all sizes at E <= 6 eV (apart from
   Nc < 30).
 
+## Band profiles and trends, 300-900 K (2026-11-16; `d1/profile_calib.py`, `d1/profile_fit.py`)
+
+549 planar neutral species in all three libraries; production-convention spectra; every replica fitted against its
+own NVE mean T (12 points per band). Fits run on the login node in 3 chunks of 183 species (6-7 min each);
+outputs `spectra/profile_fits_v1_c{0,1,2}.csv`.
+
+- **Calibration (`profile_calib.py`):** synthetic Lorentzian lines through `ir_sigma` at production settings (ACF
+  truncated at 16 ps, an instrumental width of ~2 cm^-1 with ringing). A truncated-Lorentzian profile recovers FWHM
+  from 0.5 to 32 cm^-1 (scatter 10-15 % per band with 4 replicas); a plain Drude fails below ~1.5 cm^-1.
+- **Blends are measured as complexes** (fixed windows 3.3: 2850-3250, 6.2: 1540-1660, 7.7: 1220-1470, 8.6:
+  1100-1220 cm^-1): multi-component fits there are degenerate (20-species test). Validation gate: 3.3 um centroid
+  -9.1 and broadening +5.3 (rms) / +6.8 (FWHM) cm^-1 per 100 K, matching the region-level -9.9 and +6.6.
+- **Isolated out-of-plane bands** are profile-fitted (components overlapping a neighbour within one FWHM at 900 K
+  are left out of the trends).
+
+Per 100 K, median over species [10-90 %]; share = band or window integral relative to its 300 K value:
+
+| Band | Position | Width | Strength | FWHM at 300 K |
+| --- | --- | --- | --- | --- |
+| 3.3 um (complex) | centroid -9.1 [-9.4..-8.8]; peak -5.8 | rms +5.3; FWHM +6.8 [+5.4..+8.0] | -4.4 % | 20.0 |
+| 6.2 um (complex) | peak -4.2 [-7.2..-0.6] | rms +0.85 | -0.4 % | 16.5 |
+| 7.7 um (complex) | peak -3.3 [-9.1..+4.7] | rms +0.70 | -1.1 % | 10.0 |
+| 8.6 um (complex) | peak -1.6 | rms +0.41 | +3.0 % | 9.8 |
+| 11.2 um (421 isolated) | -1.71 [-2.56..-0.67] | FWHM +0.85 [-0.38..+1.50] | area -4.3 %, window -4.7 % | 3.8 |
+| 12.0 um (361) | -1.67 | +0.74 | -1.3 % | 3.6 |
+| 12.7 um (465) | -0.89 | +0.55 | -2.9 % | 3.6 |
+| 13.5 um (551) | -0.84 | +0.67 | -1.6 % | 3.3 |
+
+- Fixed-window centroids of the 6-9 um complexes stay near 0 because broadening and spill-over balance the shift;
+  their peaks carry the shift. Directly read FWHMs of these complexes jump when sub-peaks merge (quadratic-linear at
+  1200 K of 15-28 cm^-1): use rms widths for them.
+- **Linearity for 1200 K:** quadratic minus linear at 1200 K is 1-3 cm^-1 for the oop band positions and widths;
+  for the 3.3 um band +7 (centroid; the shift slows) and -6 to +8 (width) against a total change of ~-80 and +50
+  cm^-1, i.e. ~10-15 %. Band strengths are linear (|q-l| <= 0.1).
+- **For the diagnostics:** the 11.2 um band loses ~4-5 % of its strength per 100 K relative to 300 K while the
+  6.2 um complex stays flat, so 6.2/11.2 in these spectra rises by ~4-5 % per 100 K (~25 % from 300 to 900 K) at
+  fixed charge. Emission spectra weight temperatures by the cascade; this is the input it needs, not the emission
+  ratio itself.
+- Not yet done: comparison with laboratory hot-PAH spectra; size dependence of these trends (all numbers above are
+  medians over Nc 22-216).
+
