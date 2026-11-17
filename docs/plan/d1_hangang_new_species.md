@@ -630,3 +630,23 @@ results in `/appsdata/t641a02/d1/uks_ir_test/`.
   crashed ~50 min into the job).
 Next: the second version of `slurm_triplet_test.sbatch` (4 h; C60 with --opt, C84, C96, C96 with --opt).
 
+### Triplet test, second version: passed (job 1296195, 2026-11-17, 3 h 19 min; `/appsdata/t641a02/d1/triplet_test2/`)
+
+`CUPY_ACCELERATORS=cub`, `triplet_freq.py` at 195069b. All four runs finished; every SCF converged (Newton fallbacks:
+1-11 per run), no imaginary frequencies, <S^2> 2.13-2.30, all spectra normal (CH share 47-50 %).
+
+| Species | nao | Optimisation | Hessian + IR | Total | Spectrum |
+| --- | --- | --- | --- | --- | --- |
+| C60H20 10169 (--opt) | 940 | 19 steps, 46 min, -0.71 kcal/mol | 30.5 min | 81 min | 1,058 km/mol, CH 49.8 % |
+| C84H24 6512 | 1308 | - | 85 min | 91 min | 1,418 km/mol, CH 49.8 % |
+| C96H26 9390 | 1492 | - | 134 min | 141 min | 1,555 km/mol, CH 48.4 % |
+| C96H26 9392 (--opt) | 1492 | 10 steps, 62 min, -0.35 kcal/mol | 130 min | 198 min | 1,587 km/mol, CH 47.3 % |
+
+- Cost fits: Hessian + IR ~ nao^2.8 (326 s at nao 478 to ~7,900 s at 1,492); one optimisation step (SCF + gradient,
+  fallbacks included) ~ nao^1.8 (45 s to 373 s); 10-19 steps.
+- Re-optimising in the triplet state changes the energy by 0.35-0.78 kcal/mol and the spectrum hardly (C30H14: 601 vs 598
+  km/mol; C60H20: 1,064 at the PAHdb geometry in job 1294335 vs 1,058).
+- **Estimate for the 334:** frequencies only ~460 GPU-h (nC < 90: ~120); with a 20-step optimisation ~900 GPU-h (nC < 90:
+  ~290); about 2 days on 5 nodes. The 3 species with >= 130 C need 37-50 h each, beyond Slurm's 24 h limit for one job
+  (the Hessian cannot be checkpointed as written).
+
