@@ -571,3 +571,14 @@ PAHdb v3.20 (4,233 species, 2019-09-12) downloaded on the login node to `/appsda
   intensities from the CPHF response, which GPU4PySCF implements only for closed-shell (`properties/ir.py`); an
   open-shell version is needed and is validated first on the naphthalene cation (uid 359).
 
+### What the v4.00 paper says (checked 2026-11-17)
+
+Ricca et al. 2026, ApJS 282, 7 (doi 10.3847/1538-4365/ae1c38; open access, read in full): **no mention of electronic
+states, spin multiplicity, triplets, open-shell species or Kekule structures**. Section 2.1 gives only the method
+(B3LYP/6-31G*, Gaussian 09/16, three scale factors); Section 2.2 says the 4,651 new pure PAHs have "edge defects such as
+bay regions" and cites Ricca et al. 2024 (ApJ 968, 128) for them. That paper was not accessible here (full text not
+found), so whether it discusses the electronic states of those species is unchecked.
+- The paper's Orion Bar demonstration (Sect. 6, Fig. 7, Table 2) fits with a pool that includes these species (pure
+  PAHs, charge > -1, C > 20) and reports a large improvement at 6.2 um and 10-15 um over v3.20. Whether the anomalous
+  species, with their very strong 6-9 um bands, enter that fit was not checked.
+
