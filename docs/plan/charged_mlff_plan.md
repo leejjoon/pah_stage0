@@ -306,6 +306,27 @@ disagreement stay low on unseen species. Budget at 6-31G\*: of order 100–200k 
   - Next: check whether the gradients are zero or the update is dropped (one `update_fn` step by hand on the tiny
     set), or train with mace-torch in container B and convert (`mace-jax-from-torch`, x64) instead. NeuralIL
     remains the other route.
+- 2026-11-17 (Hangang): **open-shell labels done** (`docs/plan/hangang_open_shell_handoff.md`, `run --stab-all --bs`).
+  Check jobs 1294303/1294304 against the project node's 4 reference frames: worst dE 1.8e-12 Ha, dF 6.8e-9 Ha/bohr,
+  dμ 1.4e-6 D, dE_bs 3.7e-11 Ha, PASS. Production (4 nodes): seed array 1294319 (431 frames, 41.5 GPU-h) and hot job
+  1294320 (32 frames, 3.3 GPU-h); none unconverged. `collect --bs-label`: seed bs 209 / rks 15 / uks 207, hot bs 31 /
+  bs_failed 1.
+  - 9 excluded pairs, neutrals (207): 192 unstable → BS label, 1.3–27.0 mHa below RKS (median 10.8), ⟨S²⟩ 0.57–1.57.
+    15 stable (RKS kept): C13H10_55 f016–f019, f022–f031, exactly its MD frames with a changed bond graph (an H shift
+    to a closed-shell isomer; its intact MD frames are all unstable, 17–27 mHa), and **C36H16_7143_q0_f000**: the
+    2026-11-15 minima check found it unstable with a BS solution 5.6 mHa lower (same RKS energy to 1e-12); this run's
+    external stability test called it stable. So the stability test can miss an instability; its RKS label here is
+    wrong and the frame must not be used as `rks`.
+  - 49 `unstable` frames of kept pairs: 48 → BS label (seed 17: 0.07–4.5 mHa, ⟨S²⟩ 0.13–0.76; hot 31: 0.01–9.8 mHa,
+    ⟨S²⟩ 0.04–1.10). bs_failed: C34H16_7213_q0_hot_f004 (UKS converged 1e-7 Ha below RKS, ⟨S²⟩ 0.005: no real
+    broken-symmetry solution; RKS kept).
+  - Cations of the 9 pairs (207, all stability-tested): 3 re-optimised to a lower doublet, i.e. a state change from the
+    existing labels (C46H20_10574_q1_f002 −1.83 mHa, ⟨S²⟩ 1.54; C58H20_3182_q1_f030 −1.18 mHa, 1.23;
+    C60H20_10225_q1_f003 −0.34 mHa, 1.00); 35 with ⟨S²⟩ > 0.85. Newton fallback: C13H10_55_q1_f025,
+    C58H20_3182_q1_f029, C60H20_10225_q0_f002. Largest force component 23.1 eV/Å (C88H24_9839_q0_f001, disp).
+  Tarball `/appsdata/t641a02/d1/seed_dft_open_shell.tgz` (2.7 MB, sha256
+  `d9eb252b83bfa908633da9d923f6b756257b16a9953580a783ed9ec6a0936c0a`): `dft_seed/`, `dft_seed.extxyz`, `dft_hot/`,
+  `dft_hot.extxyz`.
 
 ## Phase 1 run-book
 
