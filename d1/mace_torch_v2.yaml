@@ -1,0 +1,53 @@
+# mace-torch v2 (dataset v2, docs/plan/charged_mlff_plan.md status log 2026-11-17): the baseline below with fitted cation
+# E0s and a CPU copy of the model for mace-jax-from-torch. Run: CONFIG=d1/mace_torch_v2.yaml d1/mace_torch_baseline.sh
+#
+# mace-torch baseline for the charged-state MLFF (docs/plan/charged_mlff_plan.md, Phase 2): one model, one head per
+# charge state (q0, q1), trained from scratch on a curated dataset (d1/mlff_dataset.py), container B. Run with
+# d1/mace_torch_baseline.sh, which substitutes DATASET. Float32 training without TF32 (NVIDIA_TF32_OVERRIDE=0 in the
+# script); convert for JAX MD with mace-jax-from-torch under JAX_ENABLE_X64=1 (CLAUDE.md, precision parity).
+model: MACE
+r_max: 5.0
+num_channels: 64
+max_L: 1
+max_ell: 3
+correlation: 3
+num_interactions: 2
+MLP_irreps: 16x0e
+default_dtype: float32
+energy_key: dft_energy
+forces_key: dft_forces
+compute_stress: false
+loss: weighted
+energy_weight: 1.0
+forces_weight: 100.0
+optimizer: adam
+amsgrad: true
+lr: 0.01
+scheduler: ReduceLROnPlateau
+scheduler_patience: 10
+batch_size: 10
+valid_batch_size: 20
+max_num_epochs: 300
+patience: 40
+ema: true
+ema_decay: 0.99
+clip_grad: 10.0
+eval_interval: 1
+error_table: PerAtomRMSE
+seed: 7
+device: cuda
+save_cpu: true
+# q0: isolated-atom E0s (UKS b3lypg/6-31G* cart, (99, 590); /var/tmp/jjlee-pah/d1/e0s/e0s_b3lypg_631gs_eV.json).
+# q1: E0s fitted by least squares on the q1 training energies (E0s: average). With the neutral E0s (baseline run1) the
+# q1 energy error plateaued near 52-65 meV/atom: the ionisation energy, roughly constant per molecule, had to be
+# learned as a per-atom interaction energy. The fit moves the size-proportional part into E0s; a constant per
+# molecule still cannot be represented exactly by a sum of atomic terms.
+heads:
+  q0:
+    train_file: DATASET/train_q0.extxyz
+    valid_file: DATASET/validation_q0.extxyz
+    E0s: "{1: -13.613116, 6: -1029.849742}"
+  q1:
+    train_file: DATASET/train_q1.extxyz
+    valid_file: DATASET/validation_q1.extxyz
+    E0s: average
