@@ -374,6 +374,33 @@ disagreement stay low on unseen species. Budget at 6-31G\*: of order 100–200k 
   meV/atom. Even its last epoch (q1 105.6 meV/Å in the training log) is behind v2's best (92.0). With energy weight 1
   against force weight 100 the energy term is a small part of the loss, so the cause is not settled; all three are
   single runs (seed 7) and run-to-run spread is unknown. IP-referenced q1 labels are not adopted for now.
+- 2026-11-18 (project node): **v2 seed repeat (`--seed 8`) and larger model (v2, `--num_channels 128 --max_L 2`)
+  done** (`mace_torch/v2_seed8/`, 2 h 45 min; `mace_torch/v2_large/`, 3 h 36 min, both 300 epochs). Validation
+  energy (meV/atom) / force (meV/Å) from the training log, at the best checkpoint and at the last epoch:
+
+  | run | best epoch | q0 best | q1 best | q0 epoch 299 | q1 epoch 299 |
+  |---|---|---|---|---|---|
+  | run1 (v1) | 295 | 13.4 / 33.1 | 51.3 / 87.3 | 13.3 / 33.2 | 51.4 / 87.7 |
+  | v2 | 291 | 10.0 / 36.0 | 47.4 / 92.0 | 9.8 / 36.0 | 47.6 / 92.2 |
+  | v2 seed 8 | 105 | 19.2 / 41.2 | 48.3 / 94.6 | 7.0 / 38.5 | 49.0 / 95.0 |
+  | v2 IP-ref | 90 | 9.4 / 41.1 | 10.2 / 104.5 | 8.0 / 39.2 | 8.9 / 105.6 |
+  | v2 large | 86 | 14.3 / 34.5 | 45.9 / 92.1 | 7.7 / 30.7 | 47.3 / 92.7 |
+
+  - **Checkpoint selection:** the best checkpoint is chosen by the summed validation loss, which the q1 energy
+    offset dominates and makes noisy. In three of five runs it stopped improving near epoch 90–105, while q0 forces
+    kept improving to the end. mace logs "Stopping optimization after N epochs without improvement" (patience 40)
+    every epoch after that but trains on to max_num_epochs and then loads the early checkpoint. So the error tables
+    of seed 8, IP-ref and large describe undertrained models. Compare the epoch-299 columns.
+  - **Seed spread** (v2 against seed 8, epoch 299): q0 force 36.0 / 38.5, q1 92.2 / 95.0 meV/Å, about 3 meV/Å. The
+    IP-ref q1 deficit (about 12 meV/Å) is larger than that; v1 against v2 (q1 88 against 92–95) is about at the
+    spread.
+  - **Larger model:** q0 forces 36 → 30.7 meV/Å (beyond the spread), q1 unchanged (92.7). The q1 force error is
+    not a capacity limit.
+  - **One validation molecule dominates:** C12H8_385 (a five-membered ring, skeleton not in train) carries 31 % of
+    v2's q1 squared force error (349 meV/Å on its own frames) and 23 % of q0's (118 meV/Å); next is C12H10_202
+    (no fused rings; 13 % of q1). Without C12H8_385, error-table force RMSE q0 / q1: run1 30.3 / 74.4, v2 32.0 /
+    77.2, IP-ref 37.9 / 90.9 meV/Å. Validation error mostly measures transfer to unseen skeletons, as the split
+    intends; the q1 train/validation gap (31 against 92) is that transfer gap.
 
 ## Phase 1 run-book
 
