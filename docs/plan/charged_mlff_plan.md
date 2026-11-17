@@ -365,6 +365,15 @@ disagreement stay low on unseen species. Budget at 6-31G\*: of order 100–200k 
   pair (per-pair mean removed): q0 0.64 → 0.76, q1 1.56 → 1.62 meV/atom; the rest of the q1 energy error is the
   per-molecule IP offset, unchanged by the fitted E0s as expected. Next run (queued, GPU 1): dataset v2 with
   IP-referenced q1 energies (`d1/mlff_ip_ref.py`, `dataset_v2_ipref/`), baseline config, neutral E0s on both heads.
+- 2026-11-17 (project node): **IP-referenced run done** (`/var/tmp/jjlee-pah/d1/mace_torch/v2_ipref/`, 18:00–22:12,
+  300 epochs; best checkpoint by summed validation loss at epoch 90, flat after about epoch 100). Error table: train
+  q0 7.3 / 32.2, q1 12.1 / 47.2; validation q0 9.4 / 41.1, q1 10.2 / 104.5 (meV/atom / meV/Å). The per-molecule
+  offset is gone (rms of per-pair mean q1 energy error 2.07 eV in run1, 2.09 in v2, 0.32 here), but forces got worse,
+  on both heads and in training as well (underfitting, not overfitting). Per-frame validation force RMSE q0 / q1:
+  run1 39.3 / 107.7, v2 44.3 / 117.4, IP-ref 48.9 / 134.0 meV/Å; energy within a pair q1 1.56 / 1.62 / 1.82
+  meV/atom. Even its last epoch (q1 105.6 meV/Å in the training log) is behind v2's best (92.0). With energy weight 1
+  against force weight 100 the energy term is a small part of the loss, so the cause is not settled; all three are
+  single runs (seed 7) and run-to-run spread is unknown. IP-referenced q1 labels are not adopted for now.
 
 ## Phase 1 run-book
 
