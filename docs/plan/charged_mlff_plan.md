@@ -356,6 +356,15 @@ disagreement stay low on unseen species. Budget at 6-31G\*: of order 100–200k 
     atoms. A sum of atomic terms cannot hold a roughly size-independent IP, and fitted q1 E0s (linear in n_C, n_H, as
     in `d1/mace_torch_v2.yaml`) are in the same function class, so they are not expected to remove it. For MD of one
     molecule only the within-pair part matters.
+- 2026-11-17 (project node): **mace-torch v2 (dataset v2, `d1/mace_torch_v2.yaml`, fitted q1 E0s H −15.175, C
+  −1037.284 eV) done**: 300 epochs, best epoch 291, `/var/tmp/jjlee-pah/d1/mace_torch/v2/`. Error table (energy
+  meV/atom / force meV/Å): train q0 7.7 / 24.2, q1 29.7 / 32.6; validation q0 10.0 / 36.1, q1 47.4 / 92.0 (run1:
+  13.4 / 33.1, 51.3 / 87.3). JAX conversion parity PASS (2.4e-7 eV/atom, 1.7e-6 eV/Å). On the validation sets (q0
+  +2 frames against v1), per-frame force RMSE rose for every config_type: q0 39.3 → 44.3, q1 107.7 → 117.4 meV/Å.
+  The extra open-shell (BS-labelled) frames make the force fit harder at this model size. Energy error within a
+  pair (per-pair mean removed): q0 0.64 → 0.76, q1 1.56 → 1.62 meV/atom; the rest of the q1 energy error is the
+  per-molecule IP offset, unchanged by the fitted E0s as expected. Next run (queued, GPU 1): dataset v2 with
+  IP-referenced q1 energies (`d1/mlff_ip_ref.py`, `dataset_v2_ipref/`), baseline config, neutral E0s on both heads.
 
 ## Phase 1 run-book
 
