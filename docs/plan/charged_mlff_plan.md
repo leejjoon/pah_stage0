@@ -343,6 +343,19 @@ disagreement stay low on unseen species. Budget at 6-31G\*: of order 100–200k 
     `unstable`) − 2 (the two frames above); q1 +192; validation q0 +2; final_test q0 +13; transfer_test +16 / +15.
     Labels in v2: 240 `bs` (UB3LYP-BS), 14 `rks` with a stability test, 207 `uks`. With no exclusions, v1's
     solo-H selection bias is gone. Work files in `/var/tmp/jjlee-pah/d1/dataset_v2_work/`.
+- 2026-11-17 (project node): **mace-torch run1 (dataset v1, `d1/mace_torch_baseline.yaml`) done**: 300 epochs on
+  GPU 1 (2 h 35 min), best checkpoint epoch 295, `/var/tmp/jjlee-pah/d1/mace_torch/run1/`. Final error table, RMSE
+  energy (meV/atom) / force (meV/Å): train q0 8.4 / 21.1, q1 28.1 / 33.5; validation q0 13.4 / 33.1, q1 51.3 / 87.3.
+  Model re-saved on CPU and converted (`conv/run1-jax.npz`); `d1/mace_parity.py` on 10 validation frames per head:
+  max |dE| 5.5e-7 eV/atom, max |dF| 2.6e-6 eV/Å, PASS.
+  - Validation errors per config_type: q1 forces 64–126 meV/Å (worst md_900K, md_1200K), q0 25–58. The q1 energy
+    error is almost all a per-molecule offset: mean error per pair −2.9 to +5.9 eV, but its spread within a pair is
+    only 0.02–0.10 eV (q0: offsets −1.0 to +0.8 eV, spread 0.01–0.04 eV). Small cations come out too low and large
+    ones too high. The offset difference (q1 − q0) tracks c·N − IP with c = 0.12 eV/atom (correlation 0.83, 17
+    validation pairs; IP from the min frames, 5.4–7.6 eV): the cation head spreads the ionisation energy over the
+    atoms. A sum of atomic terms cannot hold a roughly size-independent IP, and fitted q1 E0s (linear in n_C, n_H, as
+    in `d1/mace_torch_v2.yaml`) are in the same function class, so they are not expected to remove it. For MD of one
+    molecule only the within-pair part matters.
 
 ## Phase 1 run-book
 
