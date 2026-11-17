@@ -2,7 +2,7 @@
 # one extended XYZ per split and charge (mace-jax reads it directly, keys dft_energy / dft_forces / dft_dipole; a
 # NeuralIL/EPNN loader reads the same files). Frames are copied verbatim (every label and qa_flags kept).
 #   python mlff_dataset.py <qa.extxyz>[,<more>] <species.csv>[,<more>] <out dir>
-#        [--exclude d1/seed_exclusions_open_shell.csv] [--drop-flags unstable,...]
+#        [--exclude d1/seed_exclusions_open_shell.csv | /dev/null] [--drop-flags unstable,...]
 # Steps, with frame counts per split and charge after each (report.md / report.json in <out dir>):
 #   1. exclusions: whole pairs from the exclusion list, in every split (Phase 1 decision 2026-11-15);
 #   2. duplicates: a later dataset's min frame for a (pair, charge) already present is dropped, after checking that
@@ -80,8 +80,9 @@ def main():
             f"{med([p for p in tr if p in excl]):.2f}")
     lines = ["# Curated MLFF training data", "", f"Inputs: {a.extxyz}", f"Species: {a.species}",
              f"Exclusions: {a.exclude} ({len(excl)} pairs)", f"Dropped qa_flags: {sorted(drop) or 'none'}", "",
-             "**Selection bias (state wherever these data are reported):** the open-shell exclusion removes "
-             f"solo-H-rich pairs: {bias}. The cut acts as a solo-H and size selection (the Wang 2026 Fig. 1 bias).", "",
+             ("**Selection bias (state wherever these data are reported):** the open-shell exclusion removes "
+              f"solo-H-rich pairs: {bias}. The cut acts as a solo-H and size selection (the Wang 2026 Fig. 1 bias)."
+              if excl else "No pairs excluded (no open-shell selection bias from exclusions)."), "",
              "## Frames per split and charge after each step", "",
              "| step | " + " | ".join(f"{s} q{q}" for s, q in keys) + " |", "|---|" + "---|" * len(keys)]
     lines += [f"| {st} | " + " | ".join(str(c[k]) for k in keys) + " |" for st, c in stage.items()]

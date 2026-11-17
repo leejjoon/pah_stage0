@@ -1,6 +1,8 @@
 # Data QA for the charged-state MLFF DFT data (committee review M2, gate G1; docs/plan/charged_mlff_plan.md).
 # Nothing is dropped: every frame is written back with a qa_flags label, and a quarantine report lists the reasons.
-#   python mlff_qa.py <parsed.extxyz> <out prefix> [--manifest gjf/manifest.json] [--no-xtb]
+#   python mlff_qa.py <parsed.extxyz> <out prefix> [--manifest gjf/manifest.json] [--no-xtb] [--reuse-xtb]
+# --reuse-xtb re-runs the QA on an already QA'd file (e.g. after relabelling, d1/mlff_relabel.py): the stored
+# xtb_energy / xtb_dipole are used instead of new xTB runs, and the old qa_flags / xtb_* keys are replaced.
 # Checks, per species and charge (the frames of one sampling run, "group"):
 #   missing          manifest entries with no parsed result (failed jobs; listed in <prefix>_missing.txt)
 #   unstable         stability test found an instability that was not re-optimised (closed-shell RKS->UKS, or internal)
@@ -50,8 +52,12 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("parsed"); ap.add_argument("prefix")
     ap.add_argument("--manifest", default=None, help="gjf/manifest.json for the missing-job check ('none' to skip)"); ap.add_argument("--no-xtb", action="store_true")
+    ap.add_argument("--reuse-xtb", action="store_true")
     a = ap.parse_args()
     frames = read(a.parsed)
+    if a.reuse_xtb:
+        for fr in frames:
+            fr["head"] = re.sub(r' (qa_flags|xtb_energy|xtb_dipole)=("[^"]*"|\S+)', "", fr["head"])
     for fr in frames:
         fr["flags"] = []
         i = fr["info"]
@@ -79,7 +85,11 @@ def main():
         if a.no_xtb:
             continue
         for f in fs:
-            f["xtb_E"], f["xtb_mu"] = xtb_values(f)
+            if a.reuse_xtb:
+                f["xtb_E"] = float(f["info"]["xtb_energy"])
+                f["xtb_mu"] = np.array([float(x) for x in f["info"]["xtb_dipole"].split()])
+            else:
+                f["xtb_E"], f["xtb_mu"] = xtb_values(f)
         ref = next((f for f in fs if f["info"].get("config_type") == "min"), None) or min(fs, key=lambda f: float(f["info"]["dft_energy"]))
         res = np.array([(float(f["info"]["dft_energy"]) - float(ref["info"]["dft_energy"])) - (f["xtb_E"] - ref["xtb_E"]) for f in fs])
         dmu = np.array([np.linalg.norm(np.array([float(x) for x in f["info"]["dft_dipole"].split()]) - f["xtb_mu"]) for f in fs])

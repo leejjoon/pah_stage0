@@ -327,6 +327,22 @@ disagreement stay low on unseen species. Budget at 6-31G\*: of order 100–200k 
   Tarball `/appsdata/t641a02/d1/seed_dft_open_shell.tgz` (2.7 MB, sha256
   `d9eb252b83bfa908633da9d923f6b756257b16a9953580a783ed9ec6a0936c0a`): `dft_seed/`, `dft_seed.extxyz`, `dft_hot/`,
   `dft_hot.extxyz`.
+- 2026-11-17 (project node): **dataset v2 built** (decision with the user: take the open-shell labels of the entry
+  above, no pair exclusions). Tarball received by tailcat, hash matches. All 463 frames match exactly one frame of
+  `seed_qa` / `hot_qa` / `t2md_qa` by name, with identical species and positions. Against the existing labels: the 15
+  `rks` frames and 204 of 207 cations are unchanged (to 1e-8); the 3 cation state changes move the largest force
+  component by 0.16–0.49 eV/Å. New `d1/mlff_relabel.py` swaps the labels in; `mlff_qa.py --reuse-xtb` (new: stored
+  xTB values) then recomputes qa_flags, and reproduces the v1 QA files byte for byte when run on them unchanged.
+  - Flags: `unstable` cleared on the 81 BS-relabelled frames that had it; set on C36H16_7143_q0_f000
+    (`--missed-instability`, so it is dropped). C34H16_7213_q0_hot_f004 (`bs_failed`) keeps `unstable` and is dropped
+    as in v1, although its RKS label is within 1e-7 Ha of the UKS solution. New `reoptimized` on the 3 cation state
+    changes; one new `dipole_outlier` (C46H20_10574_q1_f002), kept like the other non-`unstable` flags.
+  - `mlff_dataset.py` (inputs in v1 order, `--exclude /dev/null --drop-flags unstable`) →
+    `/var/tmp/jjlee-pah/d1/dataset_v2/`: train 2610 / 2612 (q0 / q1), validation 580 / 580, final_test 766 / 766,
+    transfer_test 168 / 168. Against v1: train q0 +223 = 192 (6 formerly excluded train pairs) + 33 (formerly
+    `unstable`) − 2 (the two frames above); q1 +192; validation q0 +2; final_test q0 +13; transfer_test +16 / +15.
+    Labels in v2: 240 `bs` (UB3LYP-BS), 14 `rks` with a stability test, 207 `uks`. With no exclusions, v1's
+    solo-H selection bias is gone. Work files in `/var/tmp/jjlee-pah/d1/dataset_v2_work/`.
 
 ## Phase 1 run-book
 
