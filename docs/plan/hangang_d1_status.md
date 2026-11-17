@@ -2,7 +2,42 @@
 
 **Read this first when picking the Hangang D1 work up in a new session.** The plan and its reasons are in
 `d1_hangang_new_species.md`; this file says where things stand. Update it whenever a job is submitted or finishes,
-commit and push (the project node pulls it). Last update: 2026-11-12 KST.
+commit and push (the project node pulls it). Last update: 2026-11-18 KST.
+
+## Current state (2026-11-18): read this section first
+
+No jobs running. All runs and analyses below are done, committed and pushed (branch `gh200-containers`).
+
+**MD libraries of new neutral species** (PAHdb v4.00; Mai et al.'s model; production spectral convention qm=3,
+unclipped, replica NVE T; topology-checked):
+
+| T | Species with 4 intact replicas | List | Spectra |
+| --- | --- | --- | --- |
+| 300 K | 917 | `d1/new300_library_v1.csv` | `spectra/new300_v1`, `new300sp3_v1` |
+| 600 K | 810 | `d1/new600_library_v1.csv` | `spectra/new600_v1` |
+| 900 K | 549 (planar only; all also in 300 and 600 K) | `d1/new900_library_v1.csv` | `spectra/new900_v1` |
+
+(`spectra/` = `/appsdata/t641a02/d1/spectra/`.) 1,200 K: none with this model (user's hot test); plan is linear
+extrapolation with uncertainties, a retrained model later.
+
+**Temperature rules for the emission model:** `d1/tdep_rules_v1.md` (one table; sources `d1/tdep_rules_v1.csv`,
+`d1/perline_widths_v2.csv`). Analysis and caveats: `d1_hangang_new_species.md`, sections from "Band trends" on.
+
+**PAHdb v4.00 problem:** 334 neutral pure C/H PAHs without a Kekule structure are listed as closed-shell singlets and
+have unrealistic intensities (331 new in v4.00). Confirmed on C30H14 uid 10770 (closed-shell reproduces PAHdb; the
+triplet is 18.7 kcal/mol lower and normal). Excluded from D1 (`d1/pahdb_v4_exclude_nonkekule_v1.csv`). Report, email
+draft and explainer: `docs/reports/pahdb_v4_nonkekule/` (interactive page: claude.ai artifact CrGkvwyRmPDD18tYbovxSY,
+private).
+
+**Triplet recomputation:** method validated (`d1/triplet_freq.py`, `d1/uks_ir.py`; run with `CUPY_ACCELERATORS=cub`,
+container D). Cost ~ nao^2.8; all 334 ~460 GPU-h (frequencies) or ~900 (with re-optimisation); nC < 90 ~120 / ~290.
+Production driver not written yet.
+
+**Open decisions (user):** (1) what to recompute (recommended: nC < 90 with re-optimisation, ~24 SRU time); (2) replace
+the T0b slice pair with C52H20 uid 10452; (3) send the PAHdb email; (4) delete `spectra/new300_v1_stale_noxyz` and the
+`_qm0` spectra copies. Other items: hot-frames request (1,200-2,400 K, nC < 50) for the charged-MLFF session; tell that
+session about the `squeue -j $SLURM_JOB_ID` time-limit bug in `d1/slurm_dft_seed.sbatch` (fixed in our sbatch,
+`3a2b7fa`).
 
 ## Scope (decided by the user, 2026-11-11)
 

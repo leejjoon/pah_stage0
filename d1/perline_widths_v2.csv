@@ -1,5 +1,5 @@
 family,lo_cm1,hi_cm1,fwhm_300K,fwhm_slope_per_100K,n_bands,source
-CH stretch (3.3 um),2800,3300,9.9,5.8,60,inversion of the 3.3 um feature width on PAHdb sticks (rules_closure.py --invert)
+CH stretch (3.3 um),2800,3300,10.6,5.9,60 species,"inversion of the 3.3 um feature width on PAHdb sticks, non-Kekule singlets excluded (perline_width_v1_kekule_ok.csv; 9.9 + 5.8 with them)"
 CC stretch (6.2 um),1540,1700,14.3,9.3,14,"isolated bands +3.7, plus an empirical +5.6 fitted so that broadened PAHdb sticks reproduce the MLMD 6.2 um width growth (width_term_fit.py; per-species spread wide)"
 1470-1540,1470,1540,7.4,2.1,37,isolated in-plane bands (inplane_widths.py)
 CC/CH in-plane (7.7 um),1220,1470,5.9,1.75,145,isolated in-plane bands (inplane_widths.py)
