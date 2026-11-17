@@ -288,6 +288,24 @@ disagreement stay low on unseen species. Budget at 6-31G\*: of order 100–200k 
   here (C13H10_55_q0_f000 BS −22.79 mHa, ⟨S²⟩ 1.00, as in the 2026-11-15 check; C26H16_814_q0_f008 −0.13 mHa;
   C22H14_307_q0_hot_f001 −1.23 mHa; C34H20_820_q1_f000 stable); RKS/UKS energies equal the existing labels to 2e-12
   Ha. Whether these frames enter training is decided after they return.
+- 2026-11-17 (project node): **mace-jax baseline blocked: the 0.2.0 trainer does not update the parameters.**
+  Setup committed (`d1/mace_jax_baseline.gin`, `d1/mace_jax_baseline.sh`: preprocess per charge to HDF5, one model
+  with heads q0/q1, `/var/tmp/jjlee-pah/d1/mace_v1/`). The HDF5 data match the extxyz exactly (positions, energy,
+  forces). Findings:
+  - Two-head run (lr 1e-2, 68 epochs, early stop) and lr 1e-3 (8 epochs): force RMSE stays at the RMS force
+    (1.6–1.9 eV/Å, i.e. the model predicts ~0 forces), with blow-ups to 20–30 eV/Å and runs of bit-identical epoch
+    metrics. Single head: the same.
+  - Overfit test, 26 frames of one pair (C11H10_322), `--scaling rms_forces_scaling --clip-grad 10`, 40 epochs: the
+    per-batch losses repeat exactly from epoch to epoch (no parameter change). `--debug` (jax_debug_nans) raises
+    nothing, so it is not the NaN→0 gradient sanitising in `tools/train.py`.
+  - E0s: the model's z_table is built from species indices (0 = H, 1 = C) and E0s are looked up by index, so
+    `--E0s '{1: .., 6: ..}'` leaves C at 0 (685 eV/atom error); the gin file keys them by index. `--statistics-file`
+    re-imposes the Z-keyed E0s and must not be used. With `--scaling rms_forces_scaling` the reported energy error
+    is again ~706 eV/atom, so the E0 handling also interacts with scaling.
+  - `amsgrad` (mace-jax's own) fails with the image's optax (`optax._src.utils.cast_tree` missing); `adam` used.
+  - Next: check whether the gradients are zero or the update is dropped (one `update_fn` step by hand on the tiny
+    set), or train with mace-torch in container B and convert (`mace-jax-from-torch`, x64) instead. NeuralIL
+    remains the other route.
 
 ## Phase 1 run-book
 
