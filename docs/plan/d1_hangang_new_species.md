@@ -617,3 +617,16 @@ results in `/appsdata/t641a02/d1/uks_ir_test/`.
   cost ~ nao^2.2. Estimate for all 334: ~520 GPU-h (frequencies ~290 + 30-step optimisations ~230); nC < 90: ~180 GPU-h;
   largest species ~19 h. Not yet confirmed above C60.
 
+### Interactive probe of the fixes (allocation 1294706, 2026-11-17 14:20-15:15, 55 min)
+
+`CUPY_ACCELERATORS=cub`, new SCF handling (`triplet_freq.py` at 195069b):
+- C60H20 (10169) SCF at the PAHdb geometry: converged in 88 s without fallback (failed in 200 cycles under cub,cutensor).
+- **C30H14 (10770) optimisation + frequencies: done in 17 min.** 15 BFGS steps to fmax 0.02 eV/A (11 min), 18 SCF calls,
+  3 Newton fallbacks (all converged), analytic Hessian + IR 326 s, no imaginary frequencies. Re-optimised geometry 0.78
+  kcal/mol below the PAHdb (singlet) geometry; spectrum almost unchanged (total 598 vs 601 km/mol, CH share 49.9 vs
+  50.2 %).
+- C84H24 (6512): SCF converged after a Newton fallback; the Hessian then ran 49 min without error (job 1294335 crashed
+  20 min in) and was stopped by the 55-min limit. C96H26 (9390): same, 48 min without error (not conclusive: 1294335
+  crashed ~50 min into the job).
+Next: the second version of `slurm_triplet_test.sbatch` (4 h; C60 with --opt, C84, C96, C96 with --opt).
+
