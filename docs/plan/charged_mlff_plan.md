@@ -408,6 +408,27 @@ disagreement stay low on unseen species. Budget at 6-31G\*: of order 100–200k 
     pairs (C16H10_387, C19H14_349, C20H10_159, C48H20_146), 2 of 17 validation (C12H8_385, C20H12_389), 1 of 23
     final_test, 0 of 24 transfer_test. So C12H8_385 is not the only five-ring case; it is the smallest and most
     strained one, and C20H12_389 (also a five-ring) has an ordinary error.
+- 2026-11-18 (project node): **test splits evaluated** (five models on dataset v2's final_test and transfer_test,
+  float32, GPU 1; `mace_torch/conv/<run>_test.npy`). Force RMSE (meV/Å) q0 / q1; seed 8, IP-ref and large at their
+  early checkpoints (epoch 105 / 90 / 86):
+
+  | run | transfer_test all (24 pairs) | transfer, kept v1 pairs (21) | transfer, formerly excluded (3) | final_test w/o bound_* and two hydro-pyrenes |
+  |---|---|---|---|---|
+  | run1 (v1) | 55.4 / 73.6 | 35.5 / 70.0 | 144.6 / 102.4 | 46.0 / 119.0 |
+  | v2 | 41.2 / 69.6 | 36.6 / 68.3 | 72.2 / 80.8 | 54.1 / 114.2 |
+  | v2 seed 8 | 43.5 / 72.9 | 39.3 / 73.0 | 72.8 / 72.3 | 55.5 / 116.5 |
+  | v2 large | 47.4 / 67.0 | 44.1 / 66.6 | 72.3 / 70.8 | 48.3 / 116.0 |
+  | v2 IP-ref | 42.0 / 67.2 | 37.5 / 66.1 | 73.0 / 77.3 | 54.9 / 128.2 |
+
+  - transfer_test (C72–C96 and the other large pairs, the production sizes): energy within a pair 0.35–0.51
+    meV/atom for all. v2's gain over run1 comes from the 3 formerly excluded (open-shell) pairs, whose q0 force
+    error halves (145 → 72); on the other pairs the runs are within the seed spread.
+  - final_test as a whole (q0 80–147, q1 181–446 meV/Å) is dominated by two hydrogenated pyrenes (whole skeleton
+    held out): C16H16_336 (6 sp3 C; train has at most 3) and C16H12_337. On their non-boundary frames the errors
+    are 0.28–0.59 eV/Å (q0) and 0.34–1.66 eV/Å (q1); one C16H16_336 q1 bound_oop frame (DFT max |F| 68 eV/Å) alone
+    gives 30–41 % of the q1 squared error. sp3 census (neutral min frames, C with 4 neighbours): train 10 of 76 pairs
+    (1–3 sp3 C each), validation 2, final_test 6, transfer_test 0. Hydrogenated PAHs beyond about 3 sp3 C are out of
+    the training domain.
 
 ## Phase 1 run-book
 
