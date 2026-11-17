@@ -650,3 +650,19 @@ Next: the second version of `slurm_triplet_test.sbatch` (4 h; C60 with --opt, C8
   ~290); about 2 days on 5 nodes. The 3 species with >= 130 C need 37-50 h each, beyond Slurm's 24 h limit for one job
   (the Hessian cannot be checkpointed as written).
 
+### Empirical width term for 6.2 and 7.7 um (2026-11-18; `d1/width_term_fit.py`, `spectra/width_term_scan_v1.csv`)
+
+60 species of the 900 K library with normal PAHdb spectra. An extra per-line FWHM slope k (zero at 300 K) is added to the
+lines of one family and scanned (0-16 cm^-1 per 100 K); target: zero median difference between the rules' and MLMD's
+feature rms width growth, 300 -> 900 K.
+- **6.2 um (lines 1540-1700 cm^-1): k = 5.6 cm^-1 per 100 K** closes the median gap (from -3.1 at k = 0); per-species
+  16-84 % range at that k is about -4 to +3.5 cm^-1, so the term fixes the population mean, not each species. Total
+  effective slope for these lines 3.7 + 5.6 = 9.3 (larger than the isolated bands' 3.7: the congested CC-stretch lines
+  evidently broaden faster). `d1/perline_widths_v2.csv`.
+- **7.7 um (lines 1220-1470): no k closes it** (gap -4.7 at k = 0, -2.0 at k = 16): the ~63 cm^-1 rms width of the complex
+  is set by the spread of its many lines, which extra line broadening barely changes. Differential shifts do not explain
+  it either: isolated 7.7-family bands within one species shift at similar rates (within-species sd 0.87 cm^-1 per 100 K,
+  32 species; implied rms growth ~0.2 vs the needed ~3.6). **Carried as an uncertainty: the rules under-predict the 7.7 um
+  complex width growth by ~3.6 cm^-1 (about 6 % of its width) between 300 and 900 K.**
+- With the 6.2 um term, the 8.6 um feature stays close (median rules - MD growth +1.1 cm^-1).
+

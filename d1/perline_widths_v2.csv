@@ -1,0 +1,8 @@
+family,lo_cm1,hi_cm1,fwhm_300K,fwhm_slope_per_100K,n_bands,source
+CH stretch (3.3 um),2800,3300,9.9,5.8,60,inversion of the 3.3 um feature width on PAHdb sticks (rules_closure.py --invert)
+CC stretch (6.2 um),1540,1700,14.3,9.3,14,"isolated bands +3.7, plus an empirical +5.6 fitted so that broadened PAHdb sticks reproduce the MLMD 6.2 um width growth (width_term_fit.py; per-species spread wide)"
+1470-1540,1470,1540,7.4,2.1,37,isolated in-plane bands (inplane_widths.py)
+CC/CH in-plane (7.7 um),1220,1470,5.9,1.75,145,isolated in-plane bands (inplane_widths.py)
+CH in-plane (8.6 um),1100,1220,6.0,2.5,90,isolated in-plane bands (inplane_widths.py)
+CH out-of-plane (11.2-13.5 um),650,1000,4.5,0.67,1798,isolated oop bands (profile_fit.py; tdep_rules_v1.csv 11.2-13.5)
+note: 7.7 um complex,1220,1470,,,,per-line rule leaves the MLMD complex rms growth short by ~3.6 cm^-1 (300->900 K); not closable by extra line broadening (k up to 16 leaves -2.0) nor by differential shifts (~0.2); carry as an uncertainty
