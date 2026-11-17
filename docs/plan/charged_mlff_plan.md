@@ -386,9 +386,12 @@ disagreement stay low on unseen species. Budget at 6-31G\*: of order 100–200k 
   | v2 IP-ref | 90 | 9.4 / 41.1 | 10.2 / 104.5 | 8.0 / 39.2 | 8.9 / 105.6 |
   | v2 large | 86 | 14.3 / 34.5 | 45.9 / 92.1 | 7.7 / 30.7 | 47.3 / 92.7 |
 
-  - **Checkpoint selection:** the best checkpoint is chosen by the summed validation loss, which the q1 energy
-    offset dominates and makes noisy. In three of five runs it stopped improving near epoch 90–105, while q0 forces
-    kept improving to the end. mace logs "Stopping optimization after N epochs without improvement" (patience 40)
+  - **Checkpoint selection:** the best checkpoint is chosen by the summed validation loss, which is force-dominated
+    (with weights 1 and 100 the loss tracks F²: IP-ref against v2 seed 8, loss ratio 1.30, (105.6/92.2)² = 1.31;
+    the q1 energy offset is not the cause, IP-ref has none and stalled too). Its largest part, the q1 force term,
+    plateaus and jitters from about epoch 90–120 (minimum q1 force at epoch 119 / 90 / 118 for seed 8, IP-ref,
+    large), so in three of five runs selection stopped near epoch 86–105 while q0 forces kept improving to the end.
+    Only the selected checkpoint is kept (no epoch-299 weights survive). mace logs "Stopping optimization after N epochs without improvement" (patience 40)
     every epoch after that but trains on to max_num_epochs and then loads the early checkpoint. So the error tables
     of seed 8, IP-ref and large describe undertrained models. Compare the epoch-299 columns.
   - **Seed spread** (v2 against seed 8, epoch 299): q0 force 36.0 / 38.5, q1 92.2 / 95.0 meV/Å, about 3 meV/Å. The
@@ -401,6 +404,10 @@ disagreement stay low on unseen species. Budget at 6-31G\*: of order 100–200k 
     (no fused rings; 13 % of q1). Without C12H8_385, error-table force RMSE q0 / q1: run1 30.3 / 74.4, v2 32.0 /
     77.2, IP-ref 37.9 / 90.9 meV/Å. Validation error mostly measures transfer to unseen skeletons, as the split
     intends; the q1 train/validation gap (31 against 92) is that transfer gap.
+  - Ring sizes (C–C < 1.75 Å, minimum cycle basis of the neutral min frames): five-membered rings in 4 of 76 train
+    pairs (C16H10_387, C19H14_349, C20H10_159, C48H20_146), 2 of 17 validation (C12H8_385, C20H12_389), 1 of 23
+    final_test, 0 of 24 transfer_test. So C12H8_385 is not the only five-ring case; it is the smallest and most
+    strained one, and C20H12_389 (also a five-ring) has an ordinary error.
 
 ## Phase 1 run-book
 
