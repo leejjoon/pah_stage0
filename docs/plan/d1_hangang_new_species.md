@@ -582,3 +582,23 @@ found), so whether it discusses the electronic states of those species is unchec
   PAHs, charge > -1, C > 20) and reports a large improvement at 6.2 um and 10-15 um over v3.20. Whether the anomalous
   species, with their very strong 6-9 um bands, enter that fit was not checked.
 
+### Open-shell analytic IR: test passed (job 1294269, 2026-11-17, 10:49 on one node; `d1/uks_ir.py`, `d1/uks_ir_test.py`)
+
+B3LYP/6-31G* (6D, (99,590), conv_tol 1e-11) with GPU4PySCF in container D, at PAHdb v4.00 geometries, one H100 each;
+results in `/appsdata/t641a02/d1/uks_ir_test/`.
+- **Code check, naphthalene (uid 330):** our open-shell routine on a UKS calculation vs GPU4PySCF's closed-shell IR on
+  RKS: frequencies within 0.04 cm^-1, intensities within 0.54 km/mol (strong bands within 2 %); both match PAHdb (total
+  285.1-285.5 vs 285.5 km/mol, frequencies -0.3 cm^-1 after unscaling, strong-band intensities 0.3 %).
+- **Physics check, naphthalene cation (uid 359, doublet):** total 538.7 vs PAHdb 539.1 km/mol, frequencies -0.3 cm^-1,
+  strong-band intensities within 0.2 %, <S^2> 0.763.
+- **One affected molecule, C30H14 uid 10770 (PAHdb: "1-A1", 9,168 km/mol, CH share 5.7 %):**
+  - closed-shell singlet (RKS) reproduces PAHdb's spectrum: 9,333 km/mol, CH share 5.7 %;
+  - the triplet (UKS, <S^2> 2.12) is 18.7 kcal/mol lower in energy and has a normal spectrum: 601 km/mol, CH share
+    50 %, no imaginary frequencies at the PAHdb geometry.
+  This confirms the explanation on a single molecule: the anomaly is the closed-shell singlet treatment.
+- **Cost:** C30H14 triplet: SCF 21 s, analytic Hessian + IR 400 s on one H100 (finite differences: ~264 points x
+  ~29 s = ~2.1 h, i.e. ~18x more). Scaling the Hessian as nC^2.5-3.5 and adding a 30-step triplet re-optimisation:
+  **~700-1,800 GPU-h for all 334** (species with < 90 C: ~210-360 GPU-h), against 3,400-5,500 by finite differences.
+  The exponent is not measured yet; one larger species (C90-C100) would pin it. The geometry re-optimisation needs an
+  optimiser (none in container D: no pyberny; geomeTRIC import did not complete; GPU4PySCF ships an ASE-based one).
+
