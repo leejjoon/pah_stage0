@@ -602,3 +602,18 @@ results in `/appsdata/t641a02/d1/uks_ir_test/`.
   The exponent is not measured yet; one larger species (C90-C100) would pin it. The geometry re-optimisation needs an
   optimiser (none in container D: no pyberny; geomeTRIC import did not complete; GPU4PySCF ships an ASE-based one).
 
+### Triplet scaling test failed (job 1294335, 2026-11-17, 45 min; `d1/triplet_freq.py`, `d1/slurm_triplet_test.sbatch`)
+
+- **C84H24 (6512) and C96H26 (9390):** `CUTENSOR_STATUS_NOT_SUPPORTED` in GPU4PySCF's UHF CPHF (`hessian/uhf.py`
+  `_get_jk_mo`, a plain array addition). Container D sets `CUPY_ACCELERATORS=cub,cutensor`, which sends elementwise
+  CuPy operations through cuTENSOR; that fails for these array sizes. Fix to test: `CUPY_ACCELERATORS=cub` (GPU4PySCF's
+  own tensor contractions keep cuTENSOR).
+- **SCF convergence:** the C30H14 optimisation (ASE BFGS through `gpu4pyscf.tools.ase_interface`) stopped at step 14 when
+  one SCF did not converge (forces had reached 0.029 eV/A); the C60H20 SCF at the PAHdb geometry did not converge in 200
+  cycles, and the driver went on to the Hessian anyway (a bug: it must stop). Fixes to test: start each SCF from the
+  previous density, and fall back to second-order (Newton) SCF from the current orbitals, as `d1/aimd_pyscf.py` does
+  (commit 64b3aba); stop if still unconverged.
+- **Timing that did come through:** C60H20 triplet analytic Hessian + IR 1,761 s (nao 940) vs C30H14 400 s (nao 478):
+  cost ~ nao^2.2. Estimate for all 334: ~520 GPU-h (frequencies ~290 + 30-step optimisations ~230); nC < 90: ~180 GPU-h;
+  largest species ~19 h. Not yet confirmed above C60.
+
