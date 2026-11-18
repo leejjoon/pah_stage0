@@ -12,9 +12,38 @@ with the same conda-forge PySCF the runs started with.
 abandoned part-way, carry its latest checkpoints to the other (`make_bundle.sh` takes any tarball of the same
 layout).
 
-## Current route: gmunu (KASI), since 2026-11-15
+## Where each run is (2026-11-18 17:24)
 
-**The 8 runs are on gmunu (`gmunu.kasi.re.kr`, port 7774 in `~/.ssh/config`), not in the cloud.** Do not run these
+| Runs | Machine | Owner since | How it runs |
+|---|---|---|---|
+| the 4 neutrals | gmunu, Slurm job `aimd-q0` | 2026-11-15 | below |
+| the 4 cations | **wasp12** | 2026-11-18 (from gmunu, steps 19,813–22,747) | systemd user unit, next section |
+
+Each checkpoint lives in one place only. gmunu's cation checkpoints were moved into `~/aimd/run/moved_to_wasp12/`
+(stale, never resume them); wasp12's `~/aimd/run/bundle_original/` holds the stale bundle copies.
+
+## wasp12: the 4 cations, since 2026-11-18
+
+wasp12: 2× EPYC 9965 (Zen 5c), 384 cores and 768 threads, 754 GB RAM, Rocky Linux 9, no Slurm. It is shared with
+another user, so these runs use 128 cores. `ssh wasp12` goes through the ProxyJump in `~/.ssh/config`. Cations ran
+at 9.6–9.9 s/step with 8 runs × 32 cores going at once (gmunu: 15–18), so about 2.6 days to finish, around
+**Nov 21**.
+
+- **Where:** `~/aimd` on wasp12: the same layout as on gmunu. The run logs started on gmunu are in `run/logs/gmunu/`.
+- **Unit:** the systemd user unit `aimd` (`~/.config/systemd/user/aimd.service`), written by
+  `RUNS=naph_q1_300K_r0,naph_q1_300K_r1,naph_q1_900K_r0,naph_q1_900K_r1 AIMD_TAG=wasp12 bash ~/aimd/code/cloud/setup_vm.sh service --user 32 32`.
+  Linger is on (`loginctl enable-linger`), so the unit runs without a login and starts again after a reboot. A
+  restart was tested: the runs saved and resumed at the same step.
+- **Progress:** `~/aimd/code/cloud/launch_aimd.sh status ~/aimd/run`, `tail ~/aimd/run/logs/launcher.log`.
+- **Stop:** `systemctl --user stop aimd` (every run saves). **Start:** `systemctl --user start aimd`.
+- **When a run crashes**, the launcher exits 1 and the unit stays down until it is started again. Read
+  `run/logs/<run>.log` first.
+- **Install notes for hosts with many CPUs:** `setup_vm.sh` now passes `--no-pyc`. micromamba's byte-compile started
+  768 workers and deadlocked. The water check is also capped at 8 threads; uncapped, it fails on 768.
+
+## gmunu (KASI): the neutrals, since 2026-11-15 (all 8 runs until 2026-11-18)
+
+**The 8 runs were on gmunu (`gmunu.kasi.re.kr`, port 7774 in `~/.ssh/config`), not in the cloud.** Do not run these
 checkpoints anywhere else. Why: the GCP project `naph-aimd-2611` (org nais.re.kr, billing `015AF0-546A55-3F1C6E`)
 has 12 vCPUs for all regions, and the request for 72 was denied automatically. gmunu has no time limit and no
 quota, and its queue was empty.
@@ -32,6 +61,9 @@ quota, and its queue was empty.
   Cation 900 K r0 ran 5,000 → 5,456 on a GCP c4a-highcpu-8 Spot VM first (`engines` shows it); the VM is deleted, its
   logs are in `run/logs/gcp/`, and the step-5,000 checkpoint is kept as `run/naph_q1_900K_r0.step5000.npz.bak`.
 - **Expected:** neutrals about 4.5 days, cations 6–7 days (node6 pair faster).
+- **2026-11-18:** the first 3-day resubmit worked for all three jobs (16:03; the neutrals are now job 29751). At 17:23
+  the two cation jobs were cancelled (they saved and did not resubmit), and the 4 cations moved to wasp12 (above).
+  Do not resubmit `aimd-q1z3` or `aimd-q1z2` on gmunu.
 - **Restarts** are automatic; every path was tested on copies before production:
   - Each job has a 3-day limit. Five minutes before it, the runs save and the job resubmits itself (up to 20 times).
   - After a node failure, Slurm requeues the job, and it resumes.
