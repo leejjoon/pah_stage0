@@ -31,9 +31,13 @@ private).
 
 **Triplet recomputation:** method validated (`d1/triplet_freq.py`, `d1/uks_ir.py`; run with `CUPY_ACCELERATORS=cub`,
 container D). Cost ~ nao^2.8; all 334 ~460 GPU-h (frequencies) or ~900 (with re-optimisation); nC < 90 ~120 / ~290.
-Production driver not written yet.
+**User decision 2026-11-18: recompute the 200 species with nC < 90 (with re-optimisation).** Driver
+`d1/triplet_batch.py` + `d1/slurm_triplet_batch.sbatch`, list `d1/triplet_species_v1.csv`, output
+`/appsdata/t641a02/d1/triplet_v1/` (`<uid>.json`, `logs/`, `failed/`). Test job 1301293 passed (4 species, 45 min; run
+times 1.05-1.4x the estimates). **Production: job 1302424, `--array=0-3 --time=24:00:00`** (at most 4 job slots: the user
+keeps one free). If tasks stop at the time limit with species left, resubmit the same command (array size must stay 4).
 
-**Open decisions (user):** (1) what to recompute (recommended: nC < 90 with re-optimisation, ~24 SRU time); (2) replace
+**Open decisions (user):** (2) replace
 the T0b slice pair with C52H20 uid 10452; (3) send the PAHdb email; (4) delete `spectra/new300_v1_stale_noxyz` and the
 `_qm0` spectra copies. Other items: hot-frames request (1,200-2,400 K, nC < 50) for the charged-MLFF session; tell that
 session about the `squeue -j $SLURM_JOB_ID` time-limit bug in `d1/slurm_dft_seed.sbatch` (fixed in our sbatch,
