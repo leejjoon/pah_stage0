@@ -451,6 +451,30 @@ disagreement stay low on unseen species. Budget at 6-31G\*: of order 100–200k 
   a checkpoint every evaluation and its end-of-run `load_latest` takes the highest epoch, so `baseline.model` should
   be epoch 299 (to confirm from the final "Loading checkpoint" line); all epochs stay on disk (~22 MB each) for
   choosing by held-out error instead of the force-dominated validation loss.
+  - Done 17:18; the final model is epoch 299 (log: "Loading checkpoint ... epoch-299.pt"). Force RMSE (meV/Å) train /
+    valid: q0 15.2 / 32.3, q1 19.6 / 94.6 (v2: valid 36.0 / 92.2). The larger model helps q0 a little and q1 not at
+    all; q1 fits its training set nearly as well as q0 but generalises 5x worse, which points to cation data
+    (amount or diversity), not capacity.
+- 2026-11-18 (project node): **G5, frequency half, v2** (`d1/mlff_accept.py freq`, CPU, float64; PAHdb geometry
+  relaxed with the model, analytic model Hessian vs PAHdb v4.00 unscaled harmonic frequencies, sorted-order pairing;
+  `accept/freq_v2*.json`). Strong bands (PAHdb I > 10 % of max), RMS (cm⁻¹), median and pass (≤ 10) per split,
+  without the two pyrenes:
+
+  | split | q0 median, pass | q1 median, pass |
+  |---|---|---|
+  | validation (17) | 5.5, 15/17 | 5.2, 15/17 |
+  | final_test (21) | 5.4, 20/21 | 7.6, 13/21 |
+  | transfer_test (24) | 8.4, 13/24 | 7.1, 18/24 |
+
+  Worst: q0 C96H30_3317 16.3; q1 C10H12_332 33.2, C12H10_202 26.5, C54H18_37 25.8. Pyrenes: C16H16_336 18.6 / 15.2,
+  C16H12_337 26.3 / 94.8. Five relaxed model minima have one imaginary mode (to inspect). Sorted-order pairing can
+  swap near-degenerate modes, so the fail counts are provisional until the per-mode tables are checked. The intensity
+  half of G5 needs a dipole model and is not tested.
+- 2026-11-18 (project node): **G4 subset, v2** (`d1/mlff_accept.py md`, ASE, float32; 4 held-out pairs C12H8_385,
+  C28H14_2226, C72H22_9911, C96H26_9397 × q0/q1 × 300/900/1200 K × 2 replicas; 20 ps Langevin NVT + 20 ps NVE at
+  0.5 fs; `accept/md_v2/`). 8 per GPU, ~1.7 h per batch of 8 small molecules; a second worker on GPU 0 (free after
+  the user's job ended) takes the list from the end, with lock files in `md()` against double runs. First 16:
+  15 intact, NVE drift ≤ 0.5 meV/atom; C12H8_385 q1 1200 K replica 1 lost a C–H bond (C9–H13).
 
 ## Phase 1 run-book
 

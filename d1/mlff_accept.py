@@ -119,6 +119,10 @@ def md(a):
     tag = f"{a.pair}_q{a.charge}_T{a.temp}_s{a.seed}"
     if os.path.exists(f"{a.outdir}/{tag}.json"):
         return
+    try:                # several workers (e.g. one per GPU) may share a job list: first to take the lock runs it
+        os.close(os.open(f"{a.outdir}/{tag}.lock", os.O_CREAT | os.O_EXCL))
+    except FileExistsError:
+        print(f"{tag}: locked by another worker (delete {tag}.lock if that worker died)", flush=True); return
     calc = calculator(a.model, a.charge, a.device, "float32")
     at = atoms_from(f"{a.xyz}/{a.pair}_q{a.charge}.xyz"); at.calc = calc
     relax(at, 1e-3, 2000)
