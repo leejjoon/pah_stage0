@@ -429,6 +429,28 @@ disagreement stay low on unseen species. Budget at 6-31G\*: of order 100–200k 
     gives 30–41 % of the q1 squared error. sp3 census (neutral min frames, C with 4 neighbours): train 10 of 76 pairs
     (1–3 sp3 C each), validation 2, final_test 6, transfer_test 0. Hydrogenated PAHs beyond about 3 sp3 C are out of
     the training domain.
+- 2026-11-18 (project node): **scope decision (user): heavily hydrogenated PAHs are not a science target**; the two
+  hydrogenated pyrenes are reported separately from the final_test headline, no DFT is spent on such species, and the
+  lightly hydrogenated training pairs stay. Basis: the 3.4 µm aliphatic band is "a minor amount of H bonded to sp3 C"
+  (methyl or superhydrogenated), and "the abundance of superhydrogenated PAHs is expected to be very small throughout
+  the Orion Bar as such extra H's are readily lost in the strong FUV radiation field" (Chown et al. 2024, PDRs4All IV,
+  §4.3); in the ISM "the abundance of aliphatic groups is very small" and the 3.4 µm band disappears toward the Orion
+  Bar surface (Tielens 2008, ARA&A, §5.4.3).
+  - Correction to the entry above: the two pyrenes fail for different reasons. C16H16_336 has 6 edge CH2 (more sp3 C
+    than any training pair). C16H12_337 has only 2 sp3 C, but they are interior CH (15,16-dihydropyrene type, H out of
+    the ring plane); every hydrogenated training pair has edge CH2 or CH3 only. 337 is the larger outlier: v2 is off
+    by 0.74 eV/Å even at its DFT minimum (q0; q1 1.0), constant over all its frames, i.e. an unlearned motif, not a
+    label problem (s2 0.77, all frames qa ok). Interior H is not the expected form of interstellar
+    superhydrogenation (H adds at edge carbons, giving CH2), so it falls under the same decision.
+  - final_test force RMSE (meV/Å, q0 / q1, w/o bound_*) with only 336 removed: run1 90 / 145, v2 133 / 202, seed 8
+    136 / 150, large 80 / 132, IP-ref 112 / 144; with both removed as in the table above. The headline final_test
+    number is quoted without both, with this reason.
+- 2026-11-18 (project node): **v2 large retrain keeping every checkpoint** (`mace_torch/v2_large_all`, GPU 1, started
+  13:30, ~45 s/epoch): `GPU=1 CONFIG=d1/mace_torch_v2.yaml d1/mace_torch_baseline.sh dataset_v2 v2_large_all
+  --num_channels 128 --max_L 2 --save_all_checkpoints --keep_checkpoints`. With `--save_all_checkpoints` mace saves
+  a checkpoint every evaluation and its end-of-run `load_latest` takes the highest epoch, so `baseline.model` should
+  be epoch 299 (to confirm from the final "Loading checkpoint" line); all epochs stay on disk (~22 MB each) for
+  choosing by held-out error instead of the force-dominated validation loss.
 
 ## Phase 1 run-book
 
