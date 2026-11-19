@@ -503,7 +503,9 @@ disagreement stay low on unseen species. Budget at 6-31G\*: of order 100–200k 
     some C–H beyond the cut, each excursion lasting ≤ 10 fs (one vibration), max 1.49 Å, never persistent; q0 and q1
     alike. A single-frame check therefore "fails" a few % of 1200 K runs by chance. mlmd_integrity.py should require a
     change to persist (e.g. present in all frames over the last ~100 fs, or a time-averaged distance) before G4 is
-    scored; with that, the v2 G4 subset is 48/48 intact.
+    scored. The flagged original run saved no frames, so its persistence cannot be checked; its final state (1.33 Å,
+    still bound) is consistent with such an excursion. The reruns also show C–C graph changes in 0–3 single frames
+    each (transient, same cause).
 
 ## Phase 1 run-book
 
