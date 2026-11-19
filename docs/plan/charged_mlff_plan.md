@@ -512,6 +512,11 @@ disagreement stay low on unseen species. Budget at 6-31G\*: of order 100–200k 
   `mace.data.utils.config_from_atoms`: q1 forces 3.0, q0 1.0). Validation files unchanged, so validation errors
   compare with v2 directly. Caveat: q1 already fits its training set (19.6 meV/Å in the large run), so up-weighting
   attacks under-fitting, not the generalisation gap; a null result would support more cation data (Phase 3).
+  **Result (done 18:34, epoch 299): null to negative.** Force RMSE train/valid meV/Å (energy meV/atom):
+  q0 33.1/44.4 (19.4/24.4) vs v2 24.2/36.1 (7.7/10.0); q1 35.9/97.3 (33.4/46.4) vs v2 32.6/92.0 (29.7/47.4).
+  Best saved epoch on valid q1 is 55 (96.4), still worse than v2 (92.0). Up-weighting did not even lower the
+  q1 training error and cost the q0 head (shared trunk), so it is dropped. With the large run, this points to cation
+  data, not model capacity or loss balance, as the limit: the next lever is an active-learning round for cations.
 
 ## Phase 1 run-book
 
