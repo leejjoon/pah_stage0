@@ -480,6 +480,30 @@ disagreement stay low on unseen species. Budget at 6-31G\*: of order 100–200k 
     ≥ 95 % at 1200 K, but one event in 16 runs cannot resolve that). C72H22_9911 and C96H26_9397 (the formerly
     excluded open-shell pairs, production size) intact in all 24 runs. NVE drift over 20 ps |ΔE| ≤ 0.9 meV/atom
     (largest C96H26_9397 q0 300/900 K, −0.8/−0.9). Not the full G4 (50 ps NVE, 4 replicas, more species).
+- 2026-11-19 (project node): **follow-ups on the v2 acceptance checks.**
+  - **Symmetry-resolved G5** (`d1/mlff_accept.py symfreq`, GPU, float64): the model Hessian is projected onto the
+    irreps of the abelian point group (D2h, D2, C2v, C2h, Cs, C2, Ci, C1; axis-aligned operations) and paired with
+    PAHdb's mode labels within each irrep. 124/128 entries resolved (4 D6h/D3d/C3 keep sorted pairing); every resolved
+    case selects the PAHdb file's own axes (Gaussian standard orientation), which is then used for the 3 ambiguous D2/C2
+    cases. PAHdb frequencies are now sorted after unscaling. Sorted pairing distorts the strong-band RMS both ways:
+    coronene⁺ 16.8 → 4.7 (its imaginary mode shifted every pair by one), C54H18_37⁺ 25.8 → 7.1, biphenyl⁺ 26.5 → 12.8.
+    Strong-band RMS (cm⁻¹) median and pass (≤ 10), without the two pyrenes: q0 validation 5.8 (15/17), final_test 6.2
+    (19/21), transfer 9.4 (13/24); q1 5.4 (14/17), 7.1 (15/21), 6.3 (17/24); all 124: median 6.2, 93 pass. Worst:
+    C10H12_332⁺ 34.6, C16H12_335⁺ 19.9, C100H26_7494⁺ 18.8, C12H8_385⁺ 17.4, C96H30_3317 16.3. Large neutrals are the
+    weakest group. `accept/symfreq_v2*.json` (per-mode tables with irreps).
+  - **Imaginary modes**: coronene⁺ (C24H12_18 q1) −326 cm⁻¹ (B3g) is a model artifact: along that mode the model has
+    a ~1 meV double well (minimum near 0.01 Å max displacement, then stiff), while DFT (T1 settings, CPU PySCF) rises
+    monotonically (+0.15, +1.7, +17 meV at 0.005, 0.01, 0.02), so PAHdb's D2h structure is a DFT minimum. Harmless for
+    MD, wrong for the harmonic analysis of that mode; coronene⁺ is Jahn–Teller active (open-shell surface again). The
+    analytic model Hessian was checked against finite differences of forces (max deviation 5e-4 eV/Å²). The others
+    (C42H24_3973, C78H26_3529, C90H30_171; −2 to −11 cm⁻¹) are flat modes of large molecules.
+  - **The G4 "bond loss" is a thermal snapshot**: in the final frame C9–H13 is 1.33 Å, still bound (cut 1.284 Å).
+    A DFT C9–H13 stretch scan of C12H8_385 agrees with the model within 7 meV to 1.6 Å (q0 and q1), so the model's C–H
+    is not too soft. Reruns at 1200 K saving every 5 fs (`accept/md_v2_traj/`, q0/q1 × 4 seeds): 3–11 % of frames have
+    some C–H beyond the cut, each excursion lasting ≤ 10 fs (one vibration), max 1.49 Å, never persistent; q0 and q1
+    alike. A single-frame check therefore "fails" a few % of 1200 K runs by chance. mlmd_integrity.py should require a
+    change to persist (e.g. present in all frames over the last ~100 fs, or a time-averaged distance) before G4 is
+    scored; with that, the v2 G4 subset is 48/48 intact.
 
 ## Phase 1 run-book
 
