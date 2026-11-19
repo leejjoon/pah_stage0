@@ -517,6 +517,14 @@ disagreement stay low on unseen species. Budget at 6-31G\*: of order 100–200k 
   Best saved epoch on valid q1 is 55 (96.4), still worse than v2 (92.0). Up-weighting did not even lower the
   q1 training error and cost the q0 head (shared trunk), so it is dropped. With the large run, this points to cation
   data, not model capacity or loss balance, as the limit: the next lever is an active-learning round for cations.
+- 2026-11-20 (project node): **active-learning selector** `d1/mlff_al_select.py` (jobs / explore / score / select;
+  DFT on Hangang per the user). Explore: ASE Langevin NVT with one model, train-split pairs only (exits on a held-out
+  pair), a frame every 50 fs after 1 ps, mlff_sample.py labels plus changed_n, stop at the first persistent graph
+  change. Score: committee force disagreement (max over atoms of the per-atom force std). Select: score window
+  [lo, hi], greedy per trajectory with a time gap, global budget; packaged as `frames_<tag>/` + `gjf_<tag>/manifest.json`
+  (g16_io.py write) with the DFT minimum first, as the hot/t2md batches. Smoke test (`/var/tmp/jjlee-pah/d1/al_smoke`,
+  committee v2 + v2_large_all + v2_q1fw3, 2 cation pairs, 1 ps): explore -> score -> select -> dft_seed_run.py run on 2
+  frames -> collect all work; held-out C10H8_330 refused. Committee scores 0.11-0.34 eV/A; 1 ps took ~60 s per run.
 
 ## Phase 1 run-book
 
@@ -637,5 +645,5 @@ flagged). Mixed-guess singlets for dications come with the dication phase.
 | Model-loading hook in `d1/mlmd_run.py` for our trained models | 2 |
 | Harmonic frequencies and intensities from a model, against PAHdb (G5) | 2 |
 | MACE dipole model or EPNN for ions | 2 |
-| Active-learning selector (ensemble MD, disagreement, de-duplication) | 3 |
+| ~~Active-learning selector~~ written: `d1/mlff_al_select.py` (2026-11-20) | 3 |
 
