@@ -255,3 +255,11 @@ on 1 node `--time=05:00:00` (~3.5 h).
   ~250 s per unit.
 - `/home01/t641a02/work/pah_stage0/core` (an 18 GB sparse core dump from 2026-11-10) is untracked; the user has not
   decided whether to delete it.
+
+### Triplet recomputation finished (2026-11-19, job 1302424)
+All 200 non-Kekule species with nC < 90 (198 triplets, 2 quintets) done in 16.8-18.7 h on 4 nodes, 0 failures. Results in
+/appsdata/t641a02/d1/triplet_v1/<uid>.json; summary `d1/triplet_summary.py` -> `d1/triplet_summary_v1/` (csv, png).
+Checks: no imaginary modes; <S^2> exceeds the exact value by median 0.15 (max 0.33); optimisation lowers E by < 0.8 kcal/mol.
+Total intensity per C: PAHdb listed 136 km/mol (median), recomputed 18, normal PAHdb neutrals 24 -> PAHdb is 7x too
+intense (16-84 %: 4.7-14.8x). C-H stretch share: listed 0.10, recomputed 0.48, normal 0.40. The recomputed spectra fall
+on the normal-PAH trend. Not yet in the D1 libraries (MLMD needs the open-shell state; Mai's model is closed-shell).
