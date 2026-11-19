@@ -263,3 +263,11 @@ Checks: no imaginary modes; <S^2> exceeds the exact value by median 0.15 (max 0.
 Total intensity per C: PAHdb listed 136 km/mol (median), recomputed 18, normal PAHdb neutrals 24 -> PAHdb is 7x too
 intense (16-84 %: 4.7-14.8x). C-H stretch share: listed 0.10, recomputed 0.48, normal 0.40. The recomputed spectra fall
 on the normal-PAH trend. Not yet in the D1 libraries (MLMD needs the open-shell state; Mai's model is closed-shell).
+- 2026-11-19: user decision: use the 200 recomputed spectra as harmonic data, marked as **our own** (not PAHdb):
+  `d1/own_spectra/` (species id `<formula>_v4u<uid>_own`, `source=own`; README), built by `d1/own_spectra.py`;
+  `d1/pahdb_v4_replacements_v1.csv` maps all 334 affected uids to replace (200) / exclude (134, nC >= 90).
+  PAHdb v4.00's B3LYP/6-31G* scale factors are per mode: 0.9794 < 1111, 0.9691 1111-1800, 0.9597 above (earlier
+  scripts used 0.975/0.979/0.964; fixed in triplet_summary.py and the report's singlet_vs_triplet.py, figure redone).
+- MLMD for these needs a high-spin MLFF (Mai's model is closed-shell). Cost basis: one UKS energy+force point took a
+  median 112 / 172 / 236 / 339 s for 30-45 / 45-60 / 60-75 / 75-90 C (optimisation steps, warm start). Same pipeline
+  as the charged-MLFF plan (mlff_sample.py --mult 3, dft_seed_run.py, mlff_qa.py). Not started.

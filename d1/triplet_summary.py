@@ -6,7 +6,7 @@
 For every <uid>.json in the output directory: PAHdb (listed singlet) total intensity and C-H stretch share against the
 recomputed high-spin values, plus checks (imaginary modes, <S^2>, optimisation energy change). For reference, the same
 quantities for the normal (Kekule) neutral pure C/H PAHdb species of the same carbon range. C-H share = intensity above
-2500 cm^-1 / total; computed frequencies are scaled with PAHdb's factors (0.964 / 0.979 / 0.975) first. Needs numpy,
+2500 cm^-1 / total; computed frequencies are scaled with PAHdb v4.00's factors (0.9794 / 0.9691 / 0.9597, as in own_spectra.py) first. Needs numpy,
 matplotlib.
 """
 import csv, glob, gzip, json, os, re, sys
@@ -20,7 +20,7 @@ NS = "{http://www.astrochemistry.org/pahdb/theoretical}"
 
 
 def scale(nu):
-    return nu * np.where(nu > 2500, 0.964, np.where(nu > 1111, 0.979, 0.975))
+    return nu * np.where(nu < 1111.05, 0.9794, np.where(nu < 1800.05, 0.9691, 0.9597))
 
 
 def counts(formula):

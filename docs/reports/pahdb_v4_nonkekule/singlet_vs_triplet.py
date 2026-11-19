@@ -6,8 +6,9 @@ recomputed as a triplet.
 
 triplet.json comes from uks_ir_test.py (test "triplet"): B3LYP/6-31G* (6D, (99,590) grid) with GPU4PySCF at the PAHdb
 geometry; RKS singlet with GPU4PySCF's IR routine, UKS triplet with eval_ir_freq_intensity_uks (uks_ir.py). PAHdb
-frequencies are plotted as listed (scaled); the computed ones are scaled with PAHdb's three factors (0.964 above
-2500 cm^-1, 0.979 for 1111-2500, 0.975 below) so the three curves share an axis. Needs numpy and matplotlib.
+frequencies are plotted as listed (scaled); the computed ones are scaled with PAHdb v4.00's per-mode B3LYP/6-31G*
+factors (0.9794 below 1111 cm^-1, 0.9691 for 1111-1800, 0.9597 above; from the XML's scale attributes) so the three
+curves share an axis. Needs numpy and matplotlib.
 """
 import gzip, json, sys
 import xml.etree.ElementTree as ET
@@ -31,7 +32,7 @@ def pahdb_sticks(xml, uid):
 
 
 def scale(nu):
-    return nu * np.where(nu > 2500, 0.964, np.where(nu > 1111, 0.979, 0.975))
+    return nu * np.where(nu < 1111.05, 0.9794, np.where(nu < 1800.05, 0.9691, 0.9597))
 
 
 def main(xml, js, out):
