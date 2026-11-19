@@ -506,6 +506,12 @@ disagreement stay low on unseen species. Budget at 6-31G\*: of order 100–200k 
     scored. The flagged original run saved no frames, so its persistence cannot be checked; its final state (1.33 Å,
     still bound) is consistent with such an excursion. The reruns also show C–C graph changes in 0–3 single frames
     each (transient, same cause).
+- 2026-11-19 (project node): **q1 force-weight run** (`mace_torch/v2_q1fw3`, GPU 1, started 15:46, ~33 s/epoch):
+  v2 config and size, `--save_all_checkpoints --keep_checkpoints`, on `dataset_v2_q1fw3` = dataset_v2 with
+  `config_forces_weight=3.0` in every train_q1 header (mace's per-frame force weight; checked with
+  `mace.data.utils.config_from_atoms`: q1 forces 3.0, q0 1.0). Validation files unchanged, so validation errors
+  compare with v2 directly. Caveat: q1 already fits its training set (19.6 meV/Å in the large run), so up-weighting
+  attacks under-fitting, not the generalisation gap; a null result would support more cation data (Phase 3).
 
 ## Phase 1 run-book
 
