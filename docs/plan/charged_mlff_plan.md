@@ -475,6 +475,11 @@ disagreement stay low on unseen species. Budget at 6-31G\*: of order 100–200k 
   0.5 fs; `accept/md_v2/`). 8 per GPU, ~1.7 h per batch of 8 small molecules; a second worker on GPU 0 (free after
   the user's job ended) takes the list from the end, with lock files in `md()` against double runs. First 16:
   15 intact, NVE drift ≤ 0.5 meV/atom; C12H8_385 q1 1200 K replica 1 lost a C–H bond (C9–H13).
+  - All 48 done (2026-11-19 ~01:00; ~1.8 h per batch of 8 whatever the size, i.e. ASE/Python overhead-bound; the
+    lock files kept the two workers apart). 47/48 intact: 300 K 16/16, 900 K 16/16, 1200 K 15/16 (94 %; the gate asks
+    ≥ 95 % at 1200 K, but one event in 16 runs cannot resolve that). C72H22_9911 and C96H26_9397 (the formerly
+    excluded open-shell pairs, production size) intact in all 24 runs. NVE drift over 20 ps |ΔE| ≤ 0.9 meV/atom
+    (largest C96H26_9397 q0 300/900 K, −0.8/−0.9). Not the full G4 (50 ps NVE, 4 replicas, more species).
 
 ## Phase 1 run-book
 
