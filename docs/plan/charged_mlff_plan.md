@@ -525,6 +525,17 @@ disagreement stay low on unseen species. Budget at 6-31G\*: of order 100–200k 
   (g16_io.py write) with the DFT minimum first, as the hot/t2md batches. Smoke test (`/var/tmp/jjlee-pah/d1/al_smoke`,
   committee v2 + v2_large_all + v2_q1fw3, 2 cation pairs, 1 ps): explore -> score -> select -> dft_seed_run.py run on 2
   frames -> collect all work; held-out C10H8_330 refused. Committee scores 0.11-0.34 eV/A; 1 ps took ~60 s per run.
+- 2026-11-20 (project node): **AL round 1 explored, selected, packaged** (`/var/tmp/jjlee-pah/d1/al1/`). 228 runs
+  (76 train cations x 300/900/1,200 K, 10 ps, driver v2, 20 workers on both GPUs, 01:20-07:24). 21 stopped at a
+  persistent graph change: ~10 single C-H losses (mostly 1,200 K) and ~9 whole-molecule break-ups, all in
+  CH2-containing cations (C13H10_54/55 incl. 300 K, C15H12_326/328, C19H14_349, C20H14_344/346, C22H16_356): the
+  cation model's weakest region is sp3 sites, as for the hydrogenated pyrenes. Committee score (v2, v2_large_all,
+  v2_q1fw3) median 0.045 / 0.080 / 0.100 eV/A at 300 / 900 / 1,200 K (p98 0.13 / 0.25 / 0.30). Selection: score
+  0.08-2.0, max_stretch <= 1.5 (new `--max-stretch`: a blown-apart C13H10_55 frame, stretch 9375, scored only 0.24
+  because the models agree on near-zero forces, and its SCF ran > 20 min), <= 15 per trajectory 0.3 ps apart:
+  2,347 frames + 76 minima, 386 stability-tested; ~48 process-h estimated from seed timings. Reference frames
+  labelled locally (C60H20_10225 f035 153 s, <S^2> 0.850; C36H16_7143 f001 33 s; C13H10_54 f028 43 s).
+  Tarball `al1_hangang.tgz` (sha256 `7d58f6d7...2836`), handoff `docs/plan/hangang_al1_handoff.md`.
 
 ## Phase 1 run-book
 

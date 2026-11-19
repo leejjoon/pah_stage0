@@ -19,7 +19,11 @@
 #       same model list are skipped.
 #   python mlff_al_select.py select <outdir> <species.csv> <xyz dir> <frames dir> [--lo 0.1] [--hi 2.0]
 #        [--per-traj 10] [--gap-ps 0.5] [--budget 4000] [--stable-frac 0.3]
-#       candidates: lo <= score <= hi (above hi: the model has left the physical surface; reported, not picked);
+#       candidates: lo <= score <= hi and max_stretch <= --max-stretch (default 1.5). Above either the model has left
+#       the physical surface (reported as "> hi", not picked). The stretch cut is needed: once a trajectory has blown
+#       apart, the committee can agree on near-zero forces between far-separated atoms (al1: C13H10_55 at 300 K,
+#       max_stretch 9375, score 0.24), and such a frame is no use as a DFT label (its SCF did not finish in 20 min);
+#       hot C-H excursions stay below ~1.37 (1.49 A);
 #       per trajectory greedy by score, at least --gap-ps apart, at most --per-traj; then the --budget highest overall.
 #       Writes <frames dir>/<pair>_q<q>_<tag>.extxyz (tag = basename of frames dir minus "frames_", e.g. al1): the
 #       DFT minimum from <xyz dir> first (the per-run energy reference of mlff_qa.py; already labelled, drop the
@@ -150,7 +154,7 @@ def cmd_select(a):
             info = {k: v.strip('"') for k, v in info.items() if k != "Properties"}
             pair = info["source"].rsplit("_q", 1)[0]; q = int(info["charge"]); pairs.add(pair)
             dist[(q, info["sample_T"])].append(s)
-            if s > a.hi:
+            if s > a.hi or float(info["max_stretch"]) > a.max_stretch:
                 n_hi[(q, info["sample_T"])] += 1
             elif s >= a.lo:
                 cand[info["traj"]].append((s, float(info["t_ps"]), pair, q, info, sym, pos))
@@ -219,6 +223,7 @@ def main():
     for k in ("outdir", "species", "xyz", "frames_dir"):
         c.add_argument(k)
     c.add_argument("--lo", type=float, default=0.1); c.add_argument("--hi", type=float, default=2.0)
+    c.add_argument("--max-stretch", type=float, default=1.5)
     c.add_argument("--per-traj", type=int, default=10); c.add_argument("--gap-ps", type=float, default=0.5)
     c.add_argument("--budget", type=int, default=4000); c.add_argument("--stable-frac", type=float, default=0.3)
     a = ap.parse_args()
