@@ -673,6 +673,19 @@ flagged). Mixed-guess singlets for dications come with the dication phase.
   The 76 dropped minima agree with the base labels to 1e-8 eV. `/var/tmp/jjlee-pah/d1/dataset_v3/`: train q1 2,612
   -> 4,959 (al1_md 300 K 325, 900 K 988, 1,200 K 1,034), train q0 2,610 and all held-out files byte-identical to v2.
   Training `mace_torch/v3` (v2 config, GPU 1, started 15:34, ~48 s/epoch, ~4 h).
+- 2026-11-21 (project node): **v3 evaluated: cation forces better, neutral head slightly worse.** `d1/mlff_eval.py`
+  on dataset_v3 + the AL batch (`/var/tmp/jjlee-pah/d1/eval/v3_vs_v2.{json,log}`). Force RMSE (meV/Å), v2 /
+  v2_large_all / v3: validation q0 36.1 / 32.3 / 39.4, q1 92.0 / 94.6 / **82.5**; final_test q0 133.8 / 81.5 / 125.4,
+  q1 250.6 / 236.7 / 227.8; transfer q0 41.2 / 43.9 / 40.9, q1 69.6 / 66.1 / 64.8; AL1 frames (now training data
+  for v3) 82.4 / 80.3 / 44.4. Cation gain is across all config types (validation min 80.5 -> 69.2, md_300K 91.8 ->
+  79.9) but the per-species gap remains: C12H8_385 349 -> 257, C12H10_202 213 -> 198, C11H10_320 117 -> 102.
+  final_test q1 is dominated by C16H12_337 (1,022 -> 508) and C16H16_336 (900 -> 1,083). Neutral head regressed
+  (validation q0 forces +3.3, every config type +3-5) with no change in its data: the shared layers moved toward
+  the cations. q0 absolute energies regressed more (validation 10.0 -> 25.5, transfer 9.4 -> 37.6 meV/atom; E0s
+  identical) but after the per-pair offset they are unchanged (0.8 / 0.4): a composition-dependent constant that
+  forces and MD do not see. Conclusion: round 1 (more configurations of train species) gave ~10 % on cation
+  validation forces; the remaining error is per-species (small, CH2-containing / non-planar cations). Round 2
+  should add new small cation species rather than more frames of the same ones.
 
 ## Phase 3 working notes
 
