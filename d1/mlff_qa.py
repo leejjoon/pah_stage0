@@ -14,7 +14,8 @@
 # Informational (not quarantined): reoptimized (Stable=Opt changed the wavefunction, result is stable),
 # persistent_change (MD frame whose bond graph change lasted 100 fs), graph_changed, boundary (bound_* frames).
 # Writes <prefix>.extxyz (all frames, qa_flags added, plus xtb_energy / xtb_dipole), <prefix>_report.csv (one row per
-# flagged frame) and prints a summary. xTB needs the micromamba env /var/tmp/$USER-pah/mamba/xtb (one core).
+# flagged frame) and prints a summary. xTB needs the micromamba env /var/tmp/$USER-pah/mamba/xtb (one core per
+# process; --procs N runs N in parallel, with OMP_NUM_THREADS=1).
 import argparse, collections, csv, json, os, re, sys
 import numpy as np
 
@@ -53,6 +54,7 @@ def main():
     ap.add_argument("parsed"); ap.add_argument("prefix")
     ap.add_argument("--manifest", default=None, help="gjf/manifest.json for the missing-job check ('none' to skip)"); ap.add_argument("--no-xtb", action="store_true")
     ap.add_argument("--reuse-xtb", action="store_true")
+    ap.add_argument("--procs", type=int, default=1, help="xTB processes (one frame each; results are identical)")
     a = ap.parse_args()
     frames = read(a.parsed)
     if a.reuse_xtb:
@@ -76,6 +78,11 @@ def main():
     groups = collections.defaultdict(list)
     for fr in frames:
         groups[fr["group"]].append(fr)
+    if a.procs > 1 and not (a.no_xtb or a.reuse_xtb):        # every frame's xTB is independent: compute up front
+        import multiprocessing as mp
+        with mp.get_context("fork").Pool(a.procs) as pool:
+            for f, v in zip(frames, pool.map(xtb_values, frames, chunksize=4)):
+                f["xtb_pre"] = v
     for g, fs in groups.items():
         if int(fs[0]["info"].get("mult", 1)) > 1:
             s2 = np.array([float(f["info"].get("s2", 0)) for f in fs]); med = np.median(s2)
@@ -89,7 +96,7 @@ def main():
                 f["xtb_E"] = float(f["info"]["xtb_energy"])
                 f["xtb_mu"] = np.array([float(x) for x in f["info"]["xtb_dipole"].split()])
             else:
-                f["xtb_E"], f["xtb_mu"] = xtb_values(f)
+                f["xtb_E"], f["xtb_mu"] = f.pop("xtb_pre") if "xtb_pre" in f else xtb_values(f)
         ref = next((f for f in fs if f["info"].get("config_type") == "min"), None) or min(fs, key=lambda f: float(f["info"]["dft_energy"]))
         res = np.array([(float(f["info"]["dft_energy"]) - float(ref["info"]["dft_energy"])) - (f["xtb_E"] - ref["xtb_E"]) for f in fs])
         dmu = np.array([np.linalg.norm(np.array([float(x) for x in f["info"]["dft_dipole"].split()]) - f["xtb_mu"]) for f in fs])

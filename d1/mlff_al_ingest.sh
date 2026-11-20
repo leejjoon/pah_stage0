@@ -2,7 +2,7 @@
 # Ingest an active-learning DFT batch (docs/plan/hangang_al1_handoff.md, "Hand back") on the project node and build the
 # next dataset (docs/plan/charged_mlff_plan.md, Phase 3):
 #   [BASE=a.extxyz,b.extxyz,...] d1/mlff_al_ingest.sh <al dft.extxyz> <gjf_<tag>/manifest.json> <out dataset dir> [mlff_qa options]
-# 1. mlff_qa.py on the batch (xTB env, GFN2-xTB per frame; flags as for the seed set) -> <out>_work/al_qa.extxyz
+# 1. mlff_qa.py on the batch (xTB env, GFN2-xTB per frame, 64 processes on cores 80-143; flags as for the seed set) -> <out>_work/al_qa.extxyz
 # 2. the batch's min frames (only there as mlff_qa.py's per-run energy reference) are removed: they repeat minima
 #    already in the base data, but their centred positions differ by up to 3.5e-5 A (centring masses), beyond
 #    mlff_dataset.py's 1e-6 A duplicate check. Their DFT energies are compared with the base minima instead
@@ -19,7 +19,7 @@ SPECIES=$D/mlff_seed/species_v2.csv,$D/mlff_seed/transfer2/species_transfer2.csv
 W=${OUT%/}_work; mkdir -p "$W"
 XPY=/var/tmp/jjlee-pah/mamba/xtb/bin/python
 echo "== 1. QA ($(grep -c Properties "$AL") frames)"
-OMP_NUM_THREADS=4 taskset -c 72-79 $XPY -W ignore "$REPO/d1/mlff_qa.py" "$AL" "$W/al_qa" --manifest "$MAN" "$@" | tail -25
+OMP_NUM_THREADS=1 taskset -c 80-143 $XPY -W ignore "$REPO/d1/mlff_qa.py" "$AL" "$W/al_qa" --manifest "$MAN" --procs 64 "$@" | tail -25
 echo "== 2. drop the batch's minima, compare their energies with the base minima"
 $XPY - "$W/al_qa.extxyz" "$W/al_qa_nomin.extxyz" "$BASE" <<'PY'
 import re, sys

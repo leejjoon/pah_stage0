@@ -664,6 +664,15 @@ flagged). Mixed-guess singlets for dications come with the dication phase.
 - Validation scripts: held-out errors per charge and `sample_T`; integrity runs with the MLMD driver
   (`d1/mlmd_run.py` with a charge-state model); harmonic frequencies from the model Hessian against PAHdb.
   *(The MLMD driver loads Mai et al.'s models; a model-loading hook for our models is needed.)*
+- 2026-11-20 (project node): **AL round 1 ingested, dataset v3, v3 training started.** `al1_dft.tgz` received by
+  tailcat (sha256 matches the Hangang entry); the 3 reference frames agree with the project node to 3.6e-12 Ha.
+  `mlff_al_ingest.sh` (mlff_qa.py now has `--procs`; 64 processes on cores 80-143, output byte-identical to serial):
+  2,423 frames, quarantine 200 = s2_review 197 + energy_outlier 2 (C15H12_328 f037, C19H14_349 f034: 1,200 K frames
+  with a changed graph, 1.3 eV from xTB, both stable; xTB is the likelier one to be wrong there) + dipole_outlier 2;
+  informational graph_changed 86, persistent_change 2, reoptimized 4. Kept as in v2 (only `unstable` dropped; none).
+  The 76 dropped minima agree with the base labels to 1e-8 eV. `/var/tmp/jjlee-pah/d1/dataset_v3/`: train q1 2,612
+  -> 4,959 (al1_md 300 K 325, 900 K 988, 1,200 K 1,034), train q0 2,610 and all held-out files byte-identical to v2.
+  Training `mace_torch/v3` (v2 config, GPU 1, started 15:34, ~48 s/epoch, ~4 h).
 
 ## Phase 3 working notes
 
