@@ -271,3 +271,7 @@ on the normal-PAH trend. Not yet in the D1 libraries (MLMD needs the open-shell 
 - MLMD for these needs a high-spin MLFF (Mai's model is closed-shell). Cost basis: one UKS energy+force point took a
   median 112 / 172 / 236 / 339 s for 30-45 / 45-60 / 60-75 / 75-90 C (optimisation steps, warm start). Same pipeline
   as the charged-MLFF plan (mlff_sample.py --mult 3, dft_seed_run.py, mlff_qa.py). Not started.
+- 2026-11-20: user decision: 10 non-Kekule triplets (+ PAHdb cations) go to the charged-MLFF seed set.
+  `d1/highspin_seed_species.py` -> `d1/highspin_seed_v1/`; handoff `docs/plan/handoff_highspin_to_charged_mlff.md`.
+  Found: their seed pairs C60H20_10225 / C72H22_9911 are non-Kekule; the triplet lies 7.2 / 7.4 mHa below their
+  broken-symmetry q0 label at f000 (same PAHdb geometry). Their decision whether to relabel.
