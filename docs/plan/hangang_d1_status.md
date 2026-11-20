@@ -275,3 +275,9 @@ on the normal-PAH trend. Not yet in the D1 libraries (MLMD needs the open-shell 
   `d1/highspin_seed_species.py` -> `d1/highspin_seed_v1/`; handoff `docs/plan/handoff_highspin_to_charged_mlff.md`.
   Found: their seed pairs C60H20_10225 / C72H22_9911 are non-Kekule; the triplet lies 7.2 / 7.4 mHa below their
   broken-symmetry q0 label at f000 (same PAHdb geometry). Their decision whether to relabel.
+- 2026-11-20: high-spin seed DFT run here on one node (user decision): `d1/slurm_highspin_seed.sbatch` (xTB sampling
+  with feat-gpu-gh200's mlff_sample.py from the detached worktree /appsdata/t641a02/pah_stage0_hs at c93e4fc; xTB env
+  /appsdata/t641a02/envs/t641a02-xtb_aarch64.tgz: tblite 0.8.0, ASE 3.29; g16_io.py write; dft_seed_run.py --stab-all).
+  Test 1316132 COMPLETED (12 frames C30H14_10770, all converged/stable, q0 f000 = our E_opt). Production 1316386
+  -> /appsdata/t641a02/d1/highspin_seed_run (~530 frames, est. 6-9 h). After it: `dft_seed_run.py collect`, pack for
+  the project node.
