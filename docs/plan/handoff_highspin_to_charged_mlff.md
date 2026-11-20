@@ -160,3 +160,50 @@ git checkout origin/gh200-containers -- d1/highspin_seed_v1 d1/own_spectra d1/hi
 
 On Hangang the same files are also in `/appsdata/t641a02/pah_stage0` (branch `gh200-containers`). The triplet JSONs
 (Hessian-level results with geometries) are in `/appsdata/t641a02/d1/triplet_v1/<uid>.json`. Don't merge the branches.
+
+## 6. Results: the DFT run on Hangang (2026-11-21, done by the D1 session)
+
+**How it ran:** sampling and labelling ran on Hangang in one job of `d1/slurm_highspin_seed.sbatch`
+(`gh200-containers`), job 1316386, 5.7 h on one node, after test job 1316132.
+- Your code was used unchanged from a detached worktree of `feat-gpu-gh200` at `c93e4fc`: `mlff_sample.py`,
+  `g16_io.py write`, then `dft_seed_run.py run --stab-all` and `collect`.
+- xTB came from a conda env with tblite 0.8.0 and ASE 3.29. Check these against the project node's versions.
+
+**What was produced:**
+- **528 frames:** 8 pairs × 2 charges × 32, plus the 2 transfer pairs × 2 × 4 (min + MD at 300/900/1,500 K, as for
+  transfer2's MD).
+- **Provenance:** every frame has `ref_origin=own_highspin_v1` (q0, mult 3, from our triplet minimum) or
+  `ref_origin=pahdb_v4.00` (q1, mult 2).
+
+**Checks:**
+- **Convergence:** all converged, none needed the Newton fallback, all 528 were stability-tested.
+  - q0: 264 stable.
+  - q1: 262 stable, 2 re-optimised (C44H20_10622_q1_f013, C48H18_10537_q1_f026).
+- **⟨S²⟩, triplets:** 2.119–2.475, median 2.151.
+- **⟨S²⟩, cations:** 0.797–1.082, median 0.816.
+- **C54H20_10440 is the outlier** in both charges: q0 up to 2.475, q1 up to 1.08. Its triplet minimum already sits at
+  2.246. Review it before training.
+- **Bond graph:** 33 frames changed it.
+- **Force scale:** largest |F| component has a median of 5.75 eV/Å (max 22.3, `disp`), against 5.57 in your seed set.
+- **GPU time:** 31.5 GPU-process-h in all.
+- **Energy check:** C30H14_10770 q0 `f000` equals our own triplet E_opt to 1e-6 Ha.
+
+**QA warning:** `collect`'s doublet check (> 0.80) flags 250 of the 264 cation frames. Cations of these species sit
+at 0.80–0.82 even at the minimum (C30H14_10770 q1 `f000`: 0.801). So the `mlff_qa.py` 0.80 rule would quarantine
+nearly all of them, as well as every triplet frame (section 3, item 3). Use per-group (median + 0.05) or per-mult
+limits.
+
+**Not done:**
+- `mlff_qa.py` (it needs your xTB setup to compare against);
+- the quartet check of the cation minima;
+- the relabels of C60H20_10225 and C72H22_9911.
+
+**Package:** `/appsdata/t641a02/d1/highspin_seed_run.tgz` (3.2 MB), sha256
+`ca1de823e248b3b0d0b5a5bb6504f38844f3d5cbaf7e4ab88d1878461591385e`. It holds `highspin_seed_run/` with:
+- `frames/`: 20 extxyz;
+- `gjf/manifest.json`;
+- `dft/`: 528 JSONs;
+- `highspin_seed_dft.extxyz`: the `collect` output;
+- `logs/`.
+
+The user sends it to the project node.

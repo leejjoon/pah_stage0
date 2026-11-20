@@ -281,3 +281,6 @@ on the normal-PAH trend. Not yet in the D1 libraries (MLMD needs the open-shell 
   Test 1316132 COMPLETED (12 frames C30H14_10770, all converged/stable, q0 f000 = our E_opt). Production 1316386
   -> /appsdata/t641a02/d1/highspin_seed_run (~530 frames, est. 6-9 h). After it: `dft_seed_run.py collect`, pack for
   the project node.
+- 2026-11-21: high-spin seed run 1316386 COMPLETED (time limit lowered to 12 h with the user's OK; ran 5.7 h): 528/528
+  frames, 0 failures; packed as /appsdata/t641a02/d1/highspin_seed_run.tgz (sha256 ca1de823...); results in
+  handoff section 6. Next: user sends the tgz to the project node; the charged-MLFF session does QA/training.
