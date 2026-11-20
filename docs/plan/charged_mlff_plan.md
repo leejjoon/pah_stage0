@@ -536,6 +536,17 @@ disagreement stay low on unseen species. Budget at 6-31G\*: of order 100–200k 
   2,347 frames + 76 minima, 386 stability-tested; ~48 process-h estimated from seed timings. Reference frames
   labelled locally (C60H20_10225 f035 153 s, <S^2> 0.850; C36H16_7143 f001 33 s; C13H10_54 f028 43 s).
   Tarball `al1_hangang.tgz` (sha256 `7d58f6d7...2836`), handoff `docs/plan/hangang_al1_handoff.md`.
+- 2026-11-20 (Hangang): **AL round 1 labelled** (`docs/plan/hangang_al1_handoff.md`). Check job 1315953 (3 frames
+  against the project node's `ref/`): worst dE 3.6e-12 Ha, dF 1.7e-12 Ha/bohr, dμ 5.2e-12 D, d⟨S²⟩ 1.1e-13, PASS.
+  Production array 1315973 (4 nodes, the user's limit, instead of the handoff's 5; ~1.8 h): 2,423 frames, 52.8 GPU-h
+  (mean 78 s), none unconverged; Newton fallback 5 (C20H10_159 f024, C34H20_820 f014, C36H18_3994 f011/f025/f040).
+  ⟨S²⟩ > 0.80: 197 (1,200 K 102, 900 K 73, 300 K 20, min 2); > 0.85: 43 (> 0.90: 20, max 1.467), all in the formerly
+  excluded open-shell pairs C58H20_3182 17, C60H20_10225 11, C46H20_10574 9, C34H20_820 6. Stability (386 tested):
+  4 re-optimised to a lower doublet: **C20H10_159_q1_al1_f032 −6.39 mHa** (⟨S²⟩ 0.769, so a different doublet, not
+  spin contamination), C58H20_3182 f024 −0.87 / f025 −0.53 mHa (⟨S²⟩ 1.26/1.25), C34H20_820 f028 −0.09 mHa (0.865).
+  Largest force component 14.3 eV/Å (C40H18_10742_q1_al1_f021, 1,200 K). Nothing dropped. Tarball
+  `/appsdata/t641a02/d1/al1_dft.tgz` (10.4 MB, sha256 `a6f21e39641f862cdf08920ca8071bc07d06092fcc749f25e764d4f0bf6c5a81`):
+  `dft/` (2,423 JSON) and `dft.extxyz`.
 
 ## Phase 1 run-book
 
