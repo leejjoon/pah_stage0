@@ -536,6 +536,20 @@ disagreement stay low on unseen species. Budget at 6-31G\*: of order 100–200k 
   2,347 frames + 76 minima, 386 stability-tested; ~48 process-h estimated from seed timings. Reference frames
   labelled locally (C60H20_10225 f035 153 s, <S^2> 0.850; C36H16_7143 f001 33 s; C13H10_54 f028 43 s).
   Tarball `al1_hangang.tgz` (sha256 `7d58f6d7...2836`), handoff `docs/plan/hangang_al1_handoff.md`.
+- 2026-11-20 (project node): **ingest pipeline ready for the AL labels.** `d1/mlff_al_ingest.sh` (mlff_qa.py on the
+  batch; drop its min frames, which repeat base minima but sit up to 3.5e-5 A off after centring, beyond
+  mlff_dataset.py's 1e-6 A duplicate check, and compare their energies with the base instead; mlff_dataset.py with
+  v2's inputs + the batch; held-out files checked byte-equal to v2; prints the train/eval commands) and
+  `d1/mlff_eval.py` (several models side by side per split/charge: force RMSE, energy RMSE, energy RMSE after a
+  per-pair offset, force RMSE per config_type; `--files` for any labelled batch). Dry run on 4 locally labelled al1
+  frames: QA, min-drop (dE 0), dataset (train q1 2612 -> 2615, held-out unchanged), 1-epoch mace training and eval
+  all work; mlff_eval reproduces mace's own validation table (v2 36.1 / 92.0, large 32.3 / 94.6 meV/A).
+  - Finding from mlff_eval on v2: the q1 validation **energy** error is almost entirely a per-pair offset (47.4 ->
+    1.6 meV/atom after removing each pair's mean; q0 10.0 -> 0.8). The q1 **force** error is concentrated in a few
+    species: C12H8_385 349, C12H10_202 213, C11H10_320 117, C42H22_156 105 meV/A; 70.5 without the top two. It is as
+    large at `min` (81) and md_300K (92) as at 1,200 K (98): a per-species error, not a high-temperature one. Round 1
+    samples configurations of training species; if the gap is chemical (small cations, five-membered rings, biphenyl
+    type), it will narrow little and round 2 should add species (more small cation pairs) rather than frames.
 - 2026-11-20 (Hangang): **AL round 1 labelled** (`docs/plan/hangang_al1_handoff.md`). Check job 1315953 (3 frames
   against the project node's `ref/`): worst dE 3.6e-12 Ha, dF 1.7e-12 Ha/bohr, dμ 5.2e-12 D, d⟨S²⟩ 1.1e-13, PASS.
   Production array 1315973 (4 nodes, the user's limit, instead of the handoff's 5; ~1.8 h): 2,423 frames, 52.8 GPU-h
