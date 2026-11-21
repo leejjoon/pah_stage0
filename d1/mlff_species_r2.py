@@ -18,8 +18,9 @@
 #       solo/duo/trio/quartet shares of the H atoms), starting from the pair nearest the pool mean. The rank is a
 #       priority: a shorter run takes the first k. Writes <out>/species_r3.csv (pool columns + rank) and copies the
 #       pairs' xyz/ and xyz_start/ files.
-#   python mlff_species_r2.py opt <out dir> [--only PAIR,...]       (container D, one GPU)
-#       B3LYP/6-31G* doublet optimisation of each xyz_start/<pair>_q1.xyz with geomeTRIC, SCF settings as in
+#   python mlff_species_r2.py opt <out dir> [--only PAIR,...] [--charge 1]       (container D, one GPU)
+#       B3LYP/6-31G* optimisation of each xyz_start/<pair>_q<charge>.xyz (charge 1: UKS doublet; charge 0: RKS
+#       singlet, for hand-built species without a PAHdb neutral, mlff_species_own.py) with geomeTRIC, SCF settings as in
 #       dft_seed_run.py label() (b3lypg, cart 6D, (99, 590) grid, conv_tol 1e-9); internal UKS stability test with
 #       re-optimisation (Gaussian Stable=Opt) at the start and at the end (if the end point was unstable, the
 #       optimisation is repeated once from the stable solution). Writes xyz/<pair>_q1.xyz and opt/<pair>_q1.json
@@ -146,7 +147,8 @@ def cmd_opt(a):
     from g16_io import HB_TO_EVA
     os.makedirs(f"{a.out}/opt", exist_ok=True)
     only = set(filter(None, a.only.split(",")))
-    files = sorted(glob.glob(f"{a.out}/xyz_start/*_q1.xyz"), key=os.path.getsize)
+    os.makedirs(f"{a.out}/xyz", exist_ok=True)
+    files = sorted(glob.glob(f"{a.out}/xyz_start/*_q{a.charge}.xyz"), key=os.path.getsize)
     for fn in files:
         tag = os.path.basename(fn)[:-4]; pair = tag[:-3]
         if (only and pair not in only) or os.path.exists(f"{a.out}/xyz/{tag}.xyz"):
@@ -156,8 +158,9 @@ def cmd_opt(a):
         t0 = time.time(); log = dict(pair=pair, rounds=[])
 
         def build(p):
-            mol = gto.M(atom=list(zip(sym, p)), basis="6-31g*", cart=True, charge=1, spin=1, unit="Angstrom", verbose=0)
-            mf = dft.UKS(mol, xc="b3lypg"); mf.grids.atom_grid = (99, 590)
+            mol = gto.M(atom=list(zip(sym, p)), basis="6-31g*", cart=True, charge=a.charge, spin=a.charge % 2,
+                        unit="Angstrom", verbose=0)
+            mf = (dft.UKS if a.charge % 2 else dft.RKS)(mol, xc="b3lypg"); mf.grids.atom_grid = (99, 590)
             mf.conv_tol = 1e-9; mf.conv_tol_grad = 1e-6; mf.max_cycle = 200
             return mf
 
@@ -181,7 +184,7 @@ def cmd_opt(a):
             mf3, e1, k1, st1 = stable(build(p), mf2.make_rdm1())
             g = mf3.nuc_grad_method().kernel(); g = np.asarray(g.get() if hasattr(g, "get") else g)
             log["rounds"].append(dict(start_reopt=k0, start_stable=st0, converged=bool(conv), end_reopt=k1, end_stable=st1,
-                                      energy_Ha=e1, s2=float(mf3.spin_square()[0]),
+                                      energy_Ha=e1, s2=float(mf3.spin_square()[0]) if a.charge % 2 else 0.0,
                                       max_force_eVA=float(np.abs(g).max() * HB_TO_EVA)))
             if k1 == 0:
                 break
@@ -193,7 +196,7 @@ def cmd_opt(a):
         if log["ok"]:
             from mlff_species import SYM
             Z = [{v: k for k, v in SYM.items()}[s] for s in sym]
-            write_xyz(f"{a.out}/xyz/{tag}.xyz", Z, p, f"UB3LYP/6-31G* optimised (gpu4pyscf b3lypg + geomeTRIC), "
+            write_xyz(f"{a.out}/xyz/{tag}.xyz", Z, p, f"{'U' if a.charge % 2 else 'R'}B3LYP/6-31G* optimised (gpu4pyscf b3lypg + geomeTRIC), "
                       f"E {r['energy_Ha']:.8f} Ha, <S^2> {r['s2']:.4f}, start {os.path.basename(fn)}")
         print(f"{tag}: {'ok' if log['ok'] else 'NOT OK'} E {r['energy_Ha']:.8f} <S2> {r['s2']:.3f} "
               f"max|F| {r['max_force_eVA']:.4f} eV/A, rounds {len(log['rounds'])}, {log['time_s']:.0f} s", flush=True)
@@ -207,6 +210,7 @@ def main():
     s = sub.add_parser("select"); s.add_argument("pool"); s.add_argument("out")
     s.add_argument("--n", type=int, default=100); s.add_argument("--oop-min", type=float, default=0.2)
     o = sub.add_parser("opt"); o.add_argument("out"); o.add_argument("--only", default="")
+    o.add_argument("--charge", type=int, default=1)
     a = ap.parse_args()
     {"candidates": cmd_candidates, "select": cmd_select, "opt": cmd_opt}[a.cmd](a)
 
