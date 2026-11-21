@@ -702,6 +702,28 @@ flagged). Mixed-guess singlets for dications come with the dication phase.
   optimiser's energy to 1e-9 Ha (max |F| 0.0005 eV/Å). Package `al2_hangang.tgz` (sha256 `17caf2a9…`), handoff
   `docs/plan/hangang_al2_handoff.md`. `mlff_al_ingest.sh`: keeps minima of new species (only repeats of base minima
   are dropped) and takes `SPECIES=` for the extra table.
+- 2026-11-21 (project node): **non-Kekulé PAHs: q0 frames excluded, cations kept, triplet relabels.** PAHdb v4 lists
+  334 non-Kekulé neutrals as RB3LYP; their ground state is a triplet (coordinator handoffs from glogin04 and z2mini:
+  `d1/pahdb_v4_exclude_nonkekule_v1.csv` in gh200-containers, and a high-spin seed run of 10 new pairs, 528 frames).
+  13 pairs in our data are affected (3 seed: C60H20_10225, C72H22_9911, C96H26_9397; the 10 high-spin pairs). MACE
+  heads take no spin, so: (1) their q0 frames leave the q0 head (`d1/exclusions_nonkekule_q0.csv`, per-charge
+  exclusions in `mlff_dataset.py`; v3 rebuilds byte-identically); (2) the 264 high-spin cation frames (doublets) join
+  q1 after QA; `mlff_qa.py` now groups by (source, charge, mult) with ⟨S²⟩ limits per multiplicity (2: 0.80,
+  3: 2.35; AL1 re-QA byte-identical). QA of the 528: no energy/dipole outliers, 2 re-optimised, 33 graph_changed;
+  all 264 kept frames are s2_review (cations 0.80–1.08; the 14 triplets 2.19–2.47, held aside). (3) A q0t (triplet)
+  head is a later experiment; the labels are being made now (`triplet_relabel/`, UKS mult 3, stability-tested,
+  41 frames of the 3 seed pairs + f000).
+  - C96H26_9397 f000 at the seed geometry: triplet −3674.542486 Ha (⟨S²⟩ 2.159, stable) is 7.44 mHa below the
+    broken-symmetry singlet (−3674.535045, ⟨S²⟩ 1.058) and 24.76 mHa below RKS (−3674.517722): the q0 seed labels
+    of these pairs are not the ground state, hence the exclusion.
+  - Quartet check of the 10 high-spin cation minima (f000, UKS mult 4, `quartet_check/`): the doublet is lower in
+    every case, by 9.1 (C54H20_10440) to 32.8 (C30H14_10770) kcal/mol, median 24; quartet ⟨S²⟩ 3.83–3.87, doublet
+    0.80–0.83. The doublet q1 labels stand.
+  - Triplet relabels done (42 frames: C60H20_10225 32, C72H22_9911 5, C96H26_9397 5; frames
+    `triplet_relabel/frames_q0t`, headers `mult=3 ref_origin=triplet_relabel_v1 relabel_of=<pair>_q0_f<k>`): all
+    converged without Newton, all stable, ⟨S²⟩ 2.15–2.38. The triplet is below the seed's closed-shell label at every
+    frame: by 24.6–31.8 mHa (C60), 27.5–31.0 (C72), 15.8–27.5 (C96). ~0.1–0.3 GPU-h each on a shared GPU. Kept for
+    the q0t experiment; not in v4.
 
 ## Phase 3 working notes
 
