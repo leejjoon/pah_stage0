@@ -54,6 +54,20 @@ CH stretch 2700–3300 cm⁻¹; linear in T; the slope is a fraction of the fitt
   every 5 ps block, for example 8 × (2 ps NVT + 5 ps NVE), about 35 h each at 32 cores. Saving frames would allow a
   normal-mode energy check. The alternative is the pilot-model route (b) of `b4_diagnostic_impact.md`.
 
+**Extra cation replicas, running on wasp12 since 2026-11-21 11:51** (commit `8ba78b0`):
+- Runs: `naph_q1_300K_r2`…`r7` and `naph_q1_900K_r2`, `r3`, in a fresh `~/aimd/run` (xyz only, no old checkpoints).
+- Each is 2 ps NVT plus 5 ps NVE (14,000 steps), with NVE positions and velocities every 5 fs (`frames_pos`,
+  `frames_vel`) and seeds T·10 + 2r + 1.
+- They run under the systemd user unit `aimd` with 32 cores each (cores 0–255), `NVE_PS=5`, `FRAMES_FS=5`,
+  `AIMD_TAG=wasp12`.
+- Speed: about 10.6 s/step at 300 K and 9.7 s/step at 900 K, while `yhc` also uses the machine, so they should finish
+  around 2026-11-23 05:00.
+- Status: `RUNS=<the 8 names> ~/aimd/code/cloud/launch_aimd.sh status ~/aimd/run`. Plain `status` lists the
+  default matrix, which is not here.
+- When done: copy back to `/var/tmp/jjlee-pah/d1/aimd_naph_short/`, then rerun `aimd_slopes.py` with the 300 K and
+  900 K cations from both sets (it globs `r*`; the shorter NVE gives coarser spectra but the same band integrals). Then
+  check the mode energies of 300 K r1-like outliers from the frames.
+
 ## Where each run was (last move 2026-11-18 17:24)
 
 | Runs | Machine | Owner since | How it runs |
