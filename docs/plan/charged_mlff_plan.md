@@ -561,6 +561,17 @@ disagreement stay low on unseen species. Budget at 6-31G\*: of order 100–200k 
   Largest force component 14.3 eV/Å (C40H18_10742_q1_al1_f021, 1,200 K). Nothing dropped. Tarball
   `/appsdata/t641a02/d1/al1_dft.tgz` (10.4 MB, sha256 `a6f21e39641f862cdf08920ca8071bc07d06092fcc749f25e764d4f0bf6c5a81`):
   `dft/` (2,423 JSON) and `dft.extxyz`.
+- 2026-11-21 (Hangang): **AL round 2 labelled, 1,701 of 1,728 frames** (`docs/plan/hangang_al2_handoff.md`; pulled
+  from myhub `pah-data/al2_hangang:2026-11-21`). Check job 1327217 (3 `ref/` frames) PASS. Production array 1327330
+  (4 nodes; 34 min to 1.74 h per task, 24.1 GPU-h, mean 51 s): task 1's shards hit their own 1.7 h budget and stopped
+  cleanly with **27 frames unrun** (f008-f011 of C15H10_341 q0/q1, C15H14_354 q0/q1, C18H12_2355 q0/q1, C9H8_495
+  q0/q1; list in `missing_27.txt`), to be labelled on the project node (also running the full set). Of the 1,701: none
+  unconverged, no Newton fallback; doublet ⟨S²⟩ > 0.80: 24 (mostly C19H12_63_q1, max 0.835); stability (304 tested):
+  9 `unstable_rhf_uhf` neutrals (C19H12_63_q0 f007-f011/f027/f029, C24H14_2326_q0 f006/f030). Largest force
+  components 80.7 (C20H14_358_q1_f010) and 74.0 eV/Å (C17H14_342_q1_f011), both `bound_oop` frames; next 25.2.
+  Nothing dropped. Tarball `/appsdata/t641a02/d1/al2_dft.tgz` (4.8 MB, sha256
+  `0efad4568f57b525e9327e089f241692be1c6f707353fa8a99803a5225e9fc1c`; `dft/`, `dft.extxyz`, `missing_27.txt`), also
+  in myhub as `pah-data/al2_dft:2026-11-21`.
 
 ## Phase 1 run-book
 
