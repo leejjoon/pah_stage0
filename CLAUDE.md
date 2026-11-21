@@ -126,3 +126,29 @@ When citing a claim, give the paper and section or page, as the review does (e.g
 - Container A: install CPU torch *before* mace-jax (its `e3nn==0.4.4` dependency pulls CUDA torch). `mace-jax-from-torch --torch-model` fails on PyTorch ≥ 2.6 (`weights_only`); use `--foundation off --model-name small`. mace-jax's cuEquivariance is on only with `"equivariance_config": {"backend": "cueq"}` in the bundle JSON. That alone still runs plain JAX (`method="naive"`, same as the default bundle); the CUDA kernel needs `"conv_fusion": true` as well, and even then only the convolution uses it in mace-jax 0.2.0 (feasibility §J).
 - Use local NVMe (`/`) for scratch; `/home` is NFS.
 - Fast CPU↔GPU NVLink-C2C makes the PyTorch baseline look better here than it will on the production cluster. Note this in the T0 memo.
+
+## Shared notes
+
+Related sessions, on other machines and branches, share information through a notes repository. On Hangang it is
+`~/work/pah-shared-notes`; the README and other machines use `~/projects/pah-shared-notes`. Use whichever path exists
+on the machine you are on.
+
+**At the start of a task:**
+1. Run `git -C ~/work/pah-shared-notes pull --rebase`.
+2. Read its `INDEX.md`.
+3. Run `./handoffs.sh` there. If a handoff is addressed to this machine (`*`), follow "Receiving" in its `README.md`
+   before other work.
+
+**While working and when stopping:**
+- **Handoffs:** when stopping work that another machine will continue, write a handoff ("Sending" in the README). The
+  handoff document goes in the notes repository's `handoffs/`, not in this repo.
+- **Findings:** when you learn something another session would need, append it to this branch's note. The path is
+  printed by `~/work/pah-shared-notes/branch-note.sh .`, run from the project directory.
+- **Summary:** keep the branch's row in the project `SUMMARY.md` current.
+- **Publishing:** run `./sync.sh "message"` from the notes repository.
+
+Follow the rules in its `README.md`: dated entries tagged with the hostname, never rewrite another entry, and no
+secrets or large data (record host and path instead).
+
+This repo has two clones on Hangang: `/appsdata/t641a02/pah_stage0`, where jobs run and commits are made, and
+`/home01/t641a02/work/pah_stage0`, the session's working directory. Both resolve to the same project and branch note.
