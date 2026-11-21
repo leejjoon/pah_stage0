@@ -1,19 +1,30 @@
 # Active-learning round 2 (docs/plan/charged_mlff_plan.md, Phase 3): new training species instead of more frames of
 # the old ones. v3's remaining cation error is per species (small five-ring, CH2/sp3 and non-planar molecules whose
 # skeletons are not in train), so round 2 adds every unused small PAHdb skeleton.
-#   python mlff_species_r2.py candidates <pahdb.xml> <species csv,...> <out dir> [--cmax 25]
-#       closed-shell neutrals (RB3LYP/6-31G*) with <= --cmax C whose carbon skeleton (mlff_splits.skeleton) is in none of
-#       the given species tables (all splits), one per skeleton, Mai et al. uids excluded. All go to train. Writes
+#   python mlff_species_r2.py candidates <pahdb.xml> <species csv,...> <out dir> [--cmax 25] [--cmin 1]
+#        [--exclude-uids d1/pahdb_v4_exclude_nonkekule_v1.csv]
+#       closed-shell neutrals (RB3LYP/6-31G*) with --cmin..--cmax C whose carbon skeleton (mlff_splits.skeleton) is in none of
+#       the given species tables (all splits), one per skeleton, Mai et al. uids excluded. All go to train. Neutral uids listed in --exclude-uids
+#       (column `uid`) are skipped: PAHdb v4 lists its non-Kekule species as closed-shell singlets, but their ground
+#       state is a triplet (the list comes from branch gh200-containers, commit 7de3421; the smallest has 30 C, so it
+#       matters from AL round 3 on). Writes
 #       <out>/species_r2.csv (species_v2 columns + features: rings, five-/seven-rings, sp3 C, out-of-plane RMS),
 #       <out>/xyz/<pair>_q0.xyz (PAHdb geometry) and the cation: <out>/xyz/<pair>_q1.xyz when PAHdb has a UB3LYP/6-31G*
 #       doublet of the same structure, otherwise <out>/xyz_start/<pair>_q1.xyz (the neutral geometry, to optimise).
+#   python mlff_species_r2.py select <pool dir> <out dir> [--n 100] [--oop-min 0.2]
+#       AL round 3, track 1: from a `candidates` pool keep the non-planar pairs (oop_rms > --oop-min A) and take --n of
+#       them, ranked: first every pair with a five- or seven-ring or an sp3 C (the motifs behind v3's cation error;
+#       taken whether planar or not), then farthest-point sampling (standardised nC, oop_rms, n_ring and the
+#       solo/duo/trio/quartet shares of the H atoms), starting from the pair nearest the pool mean. The rank is a
+#       priority: a shorter run takes the first k. Writes <out>/species_r3.csv (pool columns + rank) and copies the
+#       pairs' xyz/ and xyz_start/ files.
 #   python mlff_species_r2.py opt <out dir> [--only PAIR,...]       (container D, one GPU)
 #       B3LYP/6-31G* doublet optimisation of each xyz_start/<pair>_q1.xyz with geomeTRIC, SCF settings as in
 #       dft_seed_run.py label() (b3lypg, cart 6D, (99, 590) grid, conv_tol 1e-9); internal UKS stability test with
 #       re-optimisation (Gaussian Stable=Opt) at the start and at the end (if the end point was unstable, the
 #       optimisation is repeated once from the stable solution). Writes xyz/<pair>_q1.xyz and opt/<pair>_q1.json
 #       (energy, <S^2>, steps, max force, time). Finished pairs are skipped.
-import argparse, csv, glob, json, os, sys, time
+import argparse, csv, glob, json, os, shutil, sys, time
 from collections import defaultdict
 import numpy as np
 
@@ -59,6 +70,7 @@ def cmd_candidates(a):
     from mlff_species import graph_hash, read_pahdb
     from mlff_splits import FIELDS, skeleton
     used = set()
+    bad_uid = {int(r["uid"]) for r in csv.DictReader(open(a.exclude_uids))} if a.exclude_uids else set()
     for f in a.species.split(","):
         used |= {r["skeleton"] for r in csv.DictReader(open(f))}
     by = defaultdict(dict)
@@ -67,7 +79,7 @@ def cmd_candidates(a):
     rows, seen = [], set()
     for d in by.values():
         n, c = d.get(0), d.get(1)
-        if not n or n["nC"] > a.cmax or n["method"] != "RB3LYP" or n["basis"].lower() != "6-31g*" or n["uid"] in MAI_UIDS:
+        if not n or n["nC"] > a.cmax or n["nC"] < a.cmin or int(n["uid"]) in bad_uid or n["method"] != "RB3LYP" or n["basis"].lower() != "6-31g*" or n["uid"] in MAI_UIDS:
             continue
         sk = skeleton(n["Z"], n["P"])
         if sk in used or sk in seen:
@@ -93,8 +105,37 @@ def cmd_candidates(a):
             w.writerow([pair, n["formula"], n["nC"], "train", sk, n["uid"], c["uid"] if c else "", "", "", "",
                         "6-31g*", "6-31g*" if c else "6-31g*(opt)", e["solo"], e["duo"], e["trio"], e["quartet"]]
                        + [ft[k] for k in extra[:-1]] + ["pahdb" if c else "opt"])
-    print(f"{len(rows)} pairs (<= {a.cmax} C, skeletons new); cation from PAHdb {sum(1 for r in rows if r[1])}, "
+    print(f"{len(rows)} pairs ({a.cmin}-{a.cmax} C, skeletons new, {len(bad_uid)} uids excluded); cation from PAHdb {sum(1 for r in rows if r[1])}, "
           f"to optimise {sum(1 for r in rows if not r[1])} -> {a.out}/species_r2.csv")
+
+
+def cmd_select(a):
+    rows = list(csv.DictReader(open(f"{a.pool}/species_r2.csv")))
+    motif = lambda r: int(r["n_ring5"]) + int(r["n_ring7"]) + int(r["n_sp3"]) > 0
+    pool = [r for r in rows if float(r["oop_rms"]) > a.oop_min or motif(r)]
+
+    def feat(r):
+        e = np.array([float(r[f"n_{k}"]) for k in EDGES]); w = e * np.array([1, 2, 3, 4])   # H atoms per edge type
+        return [float(r["nC"]), float(r["oop_rms"]), float(r["n_ring"])] + list(w / max(w.sum(), 1))
+    X = np.array([feat(r) for r in pool]); X = (X - X.mean(0)) / np.where(X.std(0) > 0, X.std(0), 1)
+    order = sorted([i for i, r in enumerate(pool) if motif(r)], key=lambda i: int(pool[i]["nC"]))
+    if not order:
+        order = [int(np.argmin((X ** 2).sum(1)))]
+    d = np.min([((X - X[i]) ** 2).sum(1) for i in order], axis=0)
+    while len(order) < min(a.n, len(pool)):
+        i = int(np.argmax(d)); order.append(i); d = np.minimum(d, ((X - X[i]) ** 2).sum(1))
+    os.makedirs(f"{a.out}/xyz", exist_ok=True); os.makedirs(f"{a.out}/xyz_start", exist_ok=True)
+    with open(f"{a.out}/species_r3.csv", "w", newline="") as f:
+        w = csv.DictWriter(f, list(rows[0]) + ["rank"]); w.writeheader()
+        for k, i in enumerate(order, 1):
+            r = pool[i]; w.writerow({**r, "rank": k})
+            for sub in ("xyz", "xyz_start"):
+                for g in glob.glob(f"{a.pool}/{sub}/{r['pair']}_q*.xyz"):
+                    shutil.copy(g, f"{a.out}/{sub}/")
+    sel = [pool[i] for i in order]
+    print(f"pool {len(rows)}, non-planar or motif {len(pool)}; selected {len(sel)} (motif {sum(map(motif, sel))}), "
+          f"nC {min(int(r['nC']) for r in sel)}-{max(int(r['nC']) for r in sel)}, cation from PAHdb "
+          f"{sum(r['q1_source'] == 'pahdb' for r in sel)} -> {a.out}/species_r3.csv")
 
 
 def cmd_opt(a):
@@ -161,10 +202,13 @@ def cmd_opt(a):
 def main():
     ap = argparse.ArgumentParser(); sub = ap.add_subparsers(dest="cmd", required=True)
     c = sub.add_parser("candidates"); c.add_argument("xml"); c.add_argument("species"); c.add_argument("out")
-    c.add_argument("--cmax", type=int, default=25)
+    c.add_argument("--cmax", type=int, default=25); c.add_argument("--cmin", type=int, default=1)
+    c.add_argument("--exclude-uids", default="")
+    s = sub.add_parser("select"); s.add_argument("pool"); s.add_argument("out")
+    s.add_argument("--n", type=int, default=100); s.add_argument("--oop-min", type=float, default=0.2)
     o = sub.add_parser("opt"); o.add_argument("out"); o.add_argument("--only", default="")
     a = ap.parse_args()
-    {"candidates": cmd_candidates, "opt": cmd_opt}[a.cmd](a)
+    {"candidates": cmd_candidates, "select": cmd_select, "opt": cmd_opt}[a.cmd](a)
 
 
 if __name__ == "__main__":

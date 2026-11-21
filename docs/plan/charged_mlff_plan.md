@@ -783,6 +783,15 @@ flagged). Mixed-guess singlets for dications come with the dication phase.
   only at md_1200K 61.0 / 62.3 and md_1500K 61.6 / 62.8 (300 K already 50). final_test q1 is per-species: C16H12_337
   302 / 476, C16H16_336 295 / 183, C10H12_332 227 / 279, C10H10_331 ~132, C14H12_340 ~117, C16H12_335 121 / 143 meV/Å
   (sp3 / five-ring small cations); without the top two 50 meV/Å. AL2 targets exactly this class; v4 tests it.
+- 2026-11-22 (project node): **AL round 3, track 1 selected and packaged for Hangang** (user decision 2026-11-21
+  23:35, via the coordinator: use Hangang's last allocation hours before the v4 evaluation is in). Pushed 7b11a9f
+  first (sampler fix). `mlff_species_r2.py candidates --cmin 26 --cmax 40 --exclude-uids
+  d1/pahdb_v4_exclude_nonkekule_v1.csv` (the list copied from gh200-containers 7de3421) against all species tables:
+  848 pairs, of which 525 non-planar (oop RMS > 0.2 Å), all at 26–34 C. New `select`: the 2 motif pairs (C27H14_73
+  sp3, C32H14_591 five+seven ring) first, then farthest-point sampling over nC, oop_rms, rings and H-edge shares;
+  100 pairs ranked (26 C 8, 27 C 1, 28 C 16, 30 C 24, 32 C 31, 34 C 20; PAHdb cation for 1, 99 to optimise). Package
+  `al3/al3_track1.tgz` (sha256 `a5ef1567…f27b`, myhub `pah-data/al3_track1:2026-11-22`, pull-back verified).
+  Hangang optimises the cations, samples and labels (~1.2 GPU-h per pair for frames at 30–34 C, measured on AL1/AL2).
 
 ## Phase 3 working notes
 
