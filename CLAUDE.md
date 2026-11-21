@@ -19,6 +19,60 @@ This is the planning stage of the **T0 / T0b** work for the "Interpretable PAH D
 - `corpora/references/`: a papertrail corpus built from the 14 reference papers (see below).
 - `.env`: `DATALAB_API_KEY`, used for the Datalab/marker PDF parsing that built the corpus. Never print it.
 
+## Shared notes
+
+Related sessions share information through `~/projects/pah-shared-notes`.
+At the start of a task, run `git -C ~/projects/pah-shared-notes pull --rebase`
+and read its `INDEX.md`, then run `./handoffs.sh` there: if a handoff is
+addressed to this machine, follow "Receiving" in its `README.md` before other
+work. When stopping work that another machine will continue, write a handoff
+("Sending"). When you learn something another session would need,
+append it to this branch's note (path: `~/projects/pah-shared-notes/branch-note.sh .`),
+keep the branch's row in the project `SUMMARY.md` current, and run
+`./sync.sh "message"` from that repo. Follow the rules in its `README.md`.
+
+## Closing out a compute campaign and archiving
+
+A campaign is a set of runs on remote machines whose results live outside git (e.g. the naphthalene DFT MD,
+`docs/plan/cloud_aimd_handoff.md`). Code and documents reach `main` through branches. Data never goes in git. Git
+holds a **manifest** of the data, and the data goes to a durable store. The project node's `/var/tmp` is local NVMe
+with no backup, so it is a working copy, not an archive. Until a data store is chosen, record `host:path` and keep
+the source copies on the remote machines.
+
+When every run of a campaign is finished, work through this list in order, and record each item in the handoff
+document as it is done:
+
+1. **Verify.** Every run is at its final step (`ALL_DONE` and `status`). Read the logs for crashes, SCF trouble and
+   QA flags.
+2. **Copy back.** Copy the results to the project node as a new directory and tarball; never overwrite earlier data.
+   Write `SHA256SUMS` and check it against hashes computed on the remote machine and again after the copy. Leave out
+   stale copies, lock files and forensic leftovers, and say what was left out.
+3. **Archive.** Push the tarball to the data store and commit a manifest, `data/manifests/<dataset>.yaml`:
+   ```yaml
+   dataset: aimd_naph_done              # tarball name without .tgz
+   sha256: <tarball sha256>
+   size: 3.9 MB
+   files: SHA256SUMS inside the tarball
+   code: <commit that produced it>      # and the tag, once made (step 6)
+   produced: 2026-11-15..2026-11-21 on gmunu (Slurm), wasp12 (systemd); per-run history in each npz `engines`
+   settings: B3LYP(VWN3)/6-31G* 6D, 2 ps NVT + 20 ps NVE, 0.5 fs   # what is needed to reproduce it
+   locations: [gh200:/var/tmp/jjlee-pah/d1/aimd_naph_done.tgz, <archive URI>]
+   record: docs/plan/cloud_aimd_handoff.md
+   ```
+   Small final products (KB-sized analysis JSON or tables behind a decision) may be committed under `results/`.
+4. **Clean up remotes, only after step 3 is confirmed.** Stop and remove services and units, delete run directories
+   and installed environments on shared machines, cancel jobs, and delete cloud VMs, disks and projects. Look at each
+   target before deleting it, and leave alone anything the campaign did not create.
+5. **Turn the handoff into a record.** Replace the live parts ("where each run is", status, how to continue) with a
+   short final account: what ran, where, which commit, the result, and the manifest. Add a dated entry to the plan's
+   change log that points at it. Add an entry to the branch note in the shared notes and update the branch's
+   `SUMMARY.md` row.
+6. **Merge and tag.** Open a pull request to `main`; stacked branches merge oldest first. After the merge, tag the
+   commit (e.g. `aimd-naph-b3p1`) so the dataset's code can be found, and delete the branch once nothing else builds
+   on it.
+
+Pushing, merging, tagging, deleting remote data and deleting cloud resources each need the user's go-ahead.
+
 ## What T0 and T0b are
 
 - **T0, the stack benchmark:** jax-md + mace-jax against ASE + MACE (PyTorch) on a GH200 (aarch64 Grace + H100). The question is whether JAX is more than 5× faster in wall-clock time per ns per molecule at a batch of 100.
