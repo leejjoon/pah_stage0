@@ -126,3 +126,15 @@ When citing a claim, give the paper and section or page, as the review does (e.g
 - Container A: install CPU torch *before* mace-jax (its `e3nn==0.4.4` dependency pulls CUDA torch). `mace-jax-from-torch --torch-model` fails on PyTorch ≥ 2.6 (`weights_only`); use `--foundation off --model-name small`. mace-jax's cuEquivariance is on only with `"equivariance_config": {"backend": "cueq"}` in the bundle JSON. That alone still runs plain JAX (`method="naive"`, same as the default bundle); the CUDA kernel needs `"conv_fusion": true` as well, and even then only the convolution uses it in mace-jax 0.2.0 (feasibility §J).
 - Use local NVMe (`/`) for scratch; `/home` is NFS.
 - Fast CPU↔GPU NVLink-C2C makes the PyTorch baseline look better here than it will on the production cluster. Note this in the T0 memo.
+
+## Shared notes
+
+Related sessions share information through `~/projects/pah-shared-notes`.
+At the start of a task, run `git -C ~/projects/pah-shared-notes pull --rebase`
+and read its `INDEX.md`, then run `./handoffs.sh` there: if a handoff is
+addressed to this machine, follow "Receiving" in its `README.md` before other
+work. When stopping work that another machine will continue, write a handoff
+("Sending"). When you learn something another session would need,
+append it to this branch's note (path: `~/projects/pah-shared-notes/branch-note.sh .`),
+keep the branch's row in the project `SUMMARY.md` current, and run
+`./sync.sh "message"` from that repo. Follow the rules in its `README.md`.
