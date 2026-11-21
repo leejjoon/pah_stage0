@@ -3,11 +3,13 @@
 #   python mlff_qa.py <parsed.extxyz> <out prefix> [--manifest gjf/manifest.json] [--no-xtb] [--reuse-xtb]
 # --reuse-xtb re-runs the QA on an already QA'd file (e.g. after relabelling, d1/mlff_relabel.py): the stored
 # xtb_energy / xtb_dipole are used instead of new xTB runs, and the old qa_flags / xtb_* keys are replaced.
-# Checks, per species and charge (the frames of one sampling run, "group"):
+# Checks, per species, charge and multiplicity (the frames of one sampling run, "group"):
 #   missing          manifest entries with no parsed result (failed jobs; listed in <prefix>_missing.txt)
 #   unstable         stability test found an instability that was not re-optimised (closed-shell RKS->UKS, or internal)
-#   s2_review        open shell with <S^2> before annihilation > 0.80, or > group median + 0.05 (a trigger for review,
-#                    not a certificate either way)
+#   s2_review        open shell with <S^2> before annihilation above the limit for its multiplicity (S2_LIMIT: doublet
+#                    0.80 = 0.75 + 0.05; triplet 2.35 = 2.0 + 0.35, since clean triplet minima of the non-Kekule
+#                    neutrals already reach 2.25-2.28), or > group median + 0.05 (a trigger for review, not a
+#                    certificate either way). Groups are per species, charge and multiplicity.
 #   energy_outlier   E - E(min frame) disagrees with GFN2-xTB's E - E(min frame) on the same geometries by more than
 #                    max(6 robust sigma of the group's residuals, 0.5 eV): the SCF likely landed on another state
 #   dipole_outlier   |mu_DFT - mu_xTB| (about the centre of mass) beyond max(6 robust sigma, 0.3 e*A) of the group
@@ -20,6 +22,7 @@ import argparse, collections, csv, json, os, re, sys
 import numpy as np
 
 QUARANTINE = {"unstable", "s2_review", "energy_outlier", "dipole_outlier"}
+S2_LIMIT = {2: 0.80, 3: 2.35}          # other multiplicities: S(S+1) + 0.35
 MASS = {"H": 1.00782503, "C": 12.0, "N": 14.00307401, "O": 15.99491462}
 
 
@@ -64,7 +67,7 @@ def main():
         fr["flags"] = []
         i = fr["info"]
         fr["name"] = i.get("log", "?").rsplit(".", 1)[0]
-        fr["group"] = (i.get("source", "?"), i.get("charge", "?"))
+        fr["group"] = (i.get("source", "?"), i.get("charge", "?"), i.get("mult", "?"))
         if i.get("stability") in ("unstable_internal", "unstable_rhf_uhf"):
             fr["flags"].append("unstable")
         if i.get("stability") == "reoptimized":
@@ -84,10 +87,12 @@ def main():
             for f, v in zip(frames, pool.map(xtb_values, frames, chunksize=4)):
                 f["xtb_pre"] = v
     for g, fs in groups.items():
-        if int(fs[0]["info"].get("mult", 1)) > 1:
+        m = int(fs[0]["info"].get("mult", 1))
+        if m > 1:
             s2 = np.array([float(f["info"].get("s2", 0)) for f in fs]); med = np.median(s2)
+            lim = S2_LIMIT.get(m, (m - 1) / 2 * ((m - 1) / 2 + 1) + 0.35)
             for f, v in zip(fs, s2):
-                if v > 0.80 or v > med + 0.05:
+                if v > lim or v > med + 0.05:
                     f["flags"].append("s2_review")
         if a.no_xtb:
             continue

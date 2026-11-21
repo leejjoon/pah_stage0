@@ -4,7 +4,9 @@
 #   python mlff_dataset.py <qa.extxyz>[,<more>] <species.csv>[,<more>] <out dir>
 #        [--exclude d1/seed_exclusions_open_shell.csv | /dev/null] [--drop-flags unstable,...]
 # Steps, with frame counts per split and charge after each (report.md / report.json in <out dir>):
-#   1. exclusions: whole pairs from the exclusion list, in every split (Phase 1 decision 2026-11-15);
+#   1. exclusions: pairs from the exclusion list, in every split (Phase 1 decision 2026-11-15). An optional `charges`
+#      column ("0", "1" or "0;1") limits an entry to those charges; without it (or empty) the whole pair goes. Several
+#      lists can be given, comma-separated;
 #   2. duplicates: a later dataset's min frame for a (pair, charge) already present is dropped, after checking that
 #      the centred positions agree to 1e-6 A (otherwise the run stops);
 #   3. --drop-flags: frames carrying any of these qa_flags (default: none; the choice is the user's and the report
@@ -42,7 +44,12 @@ def main():
     sp = {}
     for p in a.species.split(","):
         sp.update({r["pair"]: r for r in csv.DictReader(open(p))})
-    excl = {r["pair"] for r in csv.DictReader(open(a.exclude))}
+    excl_q = collections.defaultdict(set)                    # pair -> excluded charges
+    for path in a.exclude.split(","):
+        for r in csv.DictReader(open(path)):
+            qs = (r.get("charges") or "").strip()
+            excl_q[r["pair"]] |= {int(x) for x in qs.split(";")} if qs else {0, 1}
+    excl = {p for p, qs in excl_q.items() if qs >= {0, 1}}  # whole pairs (for the solo/H bias line)
     stage = collections.OrderedDict((s, collections.Counter()) for s in ("input", "after_exclusions", "after_dedup",
                                                                          "after_flags"))
     by_ct = collections.Counter(); dropped_flags = collections.Counter(); seen_min = {}; kept = collections.defaultdict(list)
@@ -52,7 +59,7 @@ def main():
             if pair not in sp:
                 sys.exit(f"{path}: pair {pair} not in the species tables")
             key = (sp[pair]["split"], q); stage["input"][key] += 1
-            if pair in excl:
+            if q in excl_q.get(pair, ()):
                 continue
             stage["after_exclusions"][key] += 1
             if info.get("config_type") == "min":
