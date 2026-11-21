@@ -12,7 +12,25 @@ with the same conda-forge PySCF the runs started with.
 abandoned part-way, carry its latest checkpoints to the other (`make_bundle.sh` takes any tarball of the same
 layout).
 
-## Where each run is (2026-11-18 17:24)
+## Done: all 8 runs at 44,000 steps (2026-11-21)
+
+The neutrals finished on gmunu on 2026-11-20 at 18:16 (job 29751, launcher exit 0, no resubmit). The cations finished
+on wasp12 on 2026-11-21 at 08:19 (unit `aimd` inactive). Both machines wrote `ALL_DONE`.
+
+**Results on the project node:** `/var/tmp/jjlee-pah/d1/aimd_naph_done/` and `aimd_naph_done.tgz` (3.9 MB, sha256
+`442d9aa55326feab940777b39b12dde1b369d86821ec168e63a39d5ef359a8d6`). The layout follows the Hangang inputs tarball:
+the 8 `naph_q*_*K_r*.npz` and the 2 xyz files, plus `SHA256SUMS`. The logs are in `logs/gmunu/` (with the GCP segment
+in `gcp/`) and `logs/wasp12/` (with the cations' earlier gmunu logs in `gmunu/`). The hashes match the copies on
+gmunu and wasp12. Every npz is at 44,000 of 44,000 steps, with no non-finite values and a full NVE dipole series
+(20,000 × 3, with no empty rows).
+- Highest SCF cycle count over the whole run: 9 for the neutrals, 13–15 for the cations.
+- Highest cation ⟨S²⟩: 0.767–0.772.
+
+These copies were left out: gmunu's `moved_to_wasp12/` and wasp12's `bundle_original/` (both stale), the lock files,
+and gmunu's `naph_q1_900K_r0.step5000.npz.bak` (forensic only). Next: the analysis in step 8 below. The empty GCP
+project `naph-aimd-2611` can be deleted.
+
+## Where each run was (last move 2026-11-18 17:24)
 
 | Runs | Machine | Owner since | How it runs |
 |---|---|---|---|
