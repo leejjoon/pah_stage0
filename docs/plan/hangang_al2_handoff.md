@@ -32,7 +32,15 @@ Report the counts of unconverged frames, Newton fallbacks, ⟨S²⟩ > 0.80 and 
 ## Inputs
 
 `al2_hangang.tgz` (0.8 MB, sha256 `17caf2a9e2c37f1fab739d753e1f49ecd2b857150b3306ca77b414260e2d6ef4`), built on the project node at `/var/tmp/jjlee-pah/d1/al2_hangang.tgz`;
-no Mai et al. geometries. The user sends it (tailcat) to `/appsdata/$USER/d1/`. Contents under `al2_hangang/`:
+no Mai et al. geometries. Also in the private myhub data store as `oras://myhub.ksc.re.kr/pah-data/al2_hangang:2026-11-21`
+(pushed and pull-back verified from gh200; anonymous pull refused). Fetch it with a `pah-data` robot account from
+Hangang's `.env` (`HARBOR_DATA_USER` / `HARBOR_DATA_SECRET`; never print them; a static arm64 `oras` binary from the
+oras-project GitHub releases if none is installed):
+```bash
+cd /appsdata/$USER/d1 && (set -a; . /appsdata/$USER/pah_stage0/.env; set +a
+  printf '%s' "$HARBOR_DATA_SECRET" | oras pull -u "$HARBOR_DATA_USER" --password-stdin myhub.ksc.re.kr/pah-data/al2_hangang:2026-11-21)
+```
+or the user sends it (tailcat) to `/appsdata/$USER/d1/`. Hand back the same way: `oras push ... myhub.ksc.re.kr/pah-data/al2_dft:<date> al2_dft.tgz:application/gzip`. Contents under `al2_hangang/`:
 - `frames_al2/`, `gjf_al2/manifest.json` (no .gjf files), `species_r2.csv`;
 - `ref/`: 3 frames labelled on the project node (GPU4PySCF 1.9.2, GH200): C24H14_2326_q1_f008 (69 s,
   stability-tested, ⟨S²⟩ 0.778), C9H8_495_q0_f020 (11 s, MD 900 K), C15H14_354_q1_f000 (20 s; the optimised cation
