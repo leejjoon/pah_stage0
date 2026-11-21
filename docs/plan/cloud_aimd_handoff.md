@@ -27,8 +27,32 @@ gmunu and wasp12. Every npz is at 44,000 of 44,000 steps, with no non-finite val
 - Highest cation ⟨S²⟩: 0.767–0.772.
 
 These copies were left out: gmunu's `moved_to_wasp12/` and wasp12's `bundle_original/` (both stale), the lock files,
-and gmunu's `naph_q1_900K_r0.step5000.npz.bak` (forensic only). Next: the analysis in step 8 below. The empty GCP
-project `naph-aimd-2611` can be deleted.
+and gmunu's `naph_q1_900K_r0.step5000.npz.bak` (forensic only). wasp12 was cleaned on 2026-11-21: the unit and
+`~/aimd*` were removed (linger left on). The empty GCP project `naph-aimd-2611` still needs deleting, which needs a
+fresh `gcloud auth login`.
+
+**First analysis (2026-11-21, `d1/aimd_slopes.py`; output in `aimd_naph_done/analysis/`):** the convention is that of
+the MLMD/xTB class slopes `b4_impact.py` uses (qm=3, unclipped, replica NVE-mean T; oop 600–1000, in-plane 1000–1700,
+CH stretch 2700–3300 cm⁻¹; linear in T; the slope is a fraction of the fitted 300 K value per 100 K).
+- Cation in-plane slope: −8.2 % per 100 K over all 4 replicas, range −13.0 to +2.0 % over the 4 pairings of one 300 K
+  and one 900 K replica.
+- Neutral in-plane slope: +4.5 % per 100 K (range +0.3 to +7.8 %).
+- **The gate's number is not settled.** It hinges on one replica:
+  - PAHdb harmonic cation in-plane strength (uid 359): 414 km/mol.
+  - Cation 300 K: r0 313, r1 **789** km/mol.
+  - Cation 900 K: 341 and 339 km/mol.
+  - Without 300 K r1, the cation in-plane slope is about +2 % per 100 K, close to the neutral MLMD value (+2.2–2.5 %),
+    so the correction would not matter. With r1 included, the cation-minus-neutral difference is about −13 % per
+    100 K, far past the 2 % threshold.
+- r1's excess is all in the 1000–1300 cm⁻¹ band and is steady across four 5 ps blocks (630–820 against 134–215 km/mol
+  for r0). Either energy is trapped in an IR-active mode (a cold 18-atom molecule exchanges energy slowly), or r1 is
+  on a different SCF solution. Its ⟨S²⟩ and energy look normal. The checkpoints keep no frames, so this cannot be
+  told apart afterwards.
+- Neutral replicas also scatter: NVE T 246/284 K and 725/950 K, oop strengths ±35 % about harmonic. Two replicas per
+  point are too few for slopes at the 1–2 % per 100 K level.
+- What would settle it: more cation 300 K (and 900 K) replicas. Short ones suffice, since r1's excess is visible in
+  every 5 ps block, for example 8 × (2 ps NVT + 5 ps NVE), about 35 h each at 32 cores. Saving frames would allow a
+  normal-mode energy check. The alternative is the pilot-model route (b) of `b4_diagnostic_impact.md`.
 
 ## Where each run was (last move 2026-11-18 17:24)
 
