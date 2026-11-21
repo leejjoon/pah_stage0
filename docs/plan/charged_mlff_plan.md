@@ -685,7 +685,23 @@ flagged). Mixed-guess singlets for dications come with the dication phase.
   identical) but after the per-pair offset they are unchanged (0.8 / 0.4): a composition-dependent constant that
   forces and MD do not see. Conclusion: round 1 (more configurations of train species) gave ~10 % on cation
   validation forces; the remaining error is per-species (small, CH2-containing / non-planar cations). Round 2
-  should add new small cation species rather than more frames of the same ones.
+  should add new species rather than more frames of the same ones (but see the next entry: PAHdb has few left).
+- 2026-11-21 (project node): **AL round 2 prepared: 27 new small species, both charges.** Control first: v3 with
+  seed 8 (`mace_torch/v3_seed8`, GPU 1) to see whether the q0 regression is beyond the seed spread. Pool
+  (`d1/mlff_species_r2.py candidates`): PAHdb pairs with both charges and an unused skeleton are nearly exhausted
+  (75 at <= 40 C, only 4 below 30 C). Taking instead every closed-shell RB3LYP/6-31G* neutral with <= 25 C whose
+  carbon skeleton is in no split (v2 tables + transfer2): 27 pairs, 9–24 C, all train (4 five-ring incl. indene
+  C9H8_495, 6 with sp3 C incl. a seven-ring C15H14_354 and triptycene-like C20H14_358, ~10 helicene-like non-planar).
+  Not covered: biaryls (none in PAHdb at any size), and hydrogenated forms of held-out skeletons (hydrogenation keeps
+  the carbon skeleton, so tetralin, indane-like and hydro-pyrenes stay in their parents' splits). PAHdb has a cation
+  for only 4; the other 23 cation minima optimised here (`opt`: UB3LYP/6-31G*, GPU4PySCF b3lypg + geomeTRIC, SCF as in
+  `dft_seed_run.py`, Stable=Opt at both ends; GPU 0, 3–10 min each): all converged, all stable at the end, ⟨S²⟩
+  0.756–0.802, max |F| <= 0.013 eV/Å, bond graph equal to the neutral's. Frames: the seed recipe (`mlff_sample.py`
+  defaults, `al2/sample_one.sh`), 32 per pair and charge: 1,728 (137 graph_changed), 331 stability-tested (g16_io
+  write defaults). Reference frames labelled here; the optimised minimum C15H14_354_q1_f000 reproduces the
+  optimiser's energy to 1e-9 Ha (max |F| 0.0005 eV/Å). Package `al2_hangang.tgz` (sha256 `17caf2a9…`), handoff
+  `docs/plan/hangang_al2_handoff.md`. `mlff_al_ingest.sh`: keeps minima of new species (only repeats of base minima
+  are dropped) and takes `SPECIES=` for the extra table.
 
 ## Phase 3 working notes
 
