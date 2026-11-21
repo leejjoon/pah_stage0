@@ -36,8 +36,16 @@ keep the branch's row in the project `SUMMARY.md` current, and run
 A campaign is a set of runs on remote machines whose results live outside git (e.g. the naphthalene DFT MD,
 `docs/plan/cloud_aimd_handoff.md`). Code and documents reach `main` through branches. Data never goes in git. Git
 holds a **manifest** of the data, and the data goes to a durable store. The project node's `/var/tmp` is local NVMe
-with no backup, so it is a working copy, not an archive. Until a data store is chosen, record `host:path` and keep
-the source copies on the remote machines.
+with no backup, so it is a working copy, not an archive.
+
+**Data store:** the private myhub project `pah-data`. Each dataset is a tarball pushed as an ORAS artifact,
+`myhub.ksc.re.kr/pah-data/<dataset>:<YYYY-MM-DD>`. Its file digest equals the tarball's sha256. Credentials are a
+`pah-data` robot account in `.env` as `HARBOR_DATA_USER` / `HARBOR_DATA_SECRET` (never print them). Pass them on
+stdin rather than through `oras login`, so no login is saved:
+`printf '%s' "$HARBOR_DATA_SECRET" | oras push -u "$HARBOR_DATA_USER" --password-stdin <ref> <file>:application/gzip`.
+After pushing, pull the dataset back and check its sha256, then confirm an anonymous pull is refused (use
+`--registry-config` with a file containing `{}`). Whether myhub keeps backups has not been checked, so keep one other
+copy until it is known. First dataset: `data/manifests/aimd_naph_done.yaml`.
 
 When every run of a campaign is finished, work through this list in order, and record each item in the handoff
 document as it is done:
