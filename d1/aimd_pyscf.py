@@ -14,6 +14,7 @@
 # continue on the other engine (the npz records which engine ran which steps, field `engines`). For naphthalene a
 # step takes 5.7 s (neutral) / 7.5 s (cation) on an H100 (dipole and <S^2> included), one trajectory per GPU
 # (launch-bound: two per GPU gain nothing), against 8.8 / 13 s on 8 Grace threads with the conda-forge PySCF.
+# --frames-fs F keeps NVE positions and velocities every F fs (for a normal-mode energy check), off by default.
 # --hours H stops cleanly (checkpoint written) after H hours, for Slurm time limits; rerun to continue. SIGTERM
 # (a Spot/preemptible VM shutting down, systemd stop, scancel) does the same after the current step, so nothing is lost.
 # The npz is rewritten every --ckpt-fs (default 100 fs) with positions, velocities and the step; rerunning the same
@@ -86,6 +87,8 @@ def main():
     ap.add_argument("--gpu", action="store_true", help="GPU4PySCF instead of PySCF (container D)")
     ap.add_argument("--hours", type=float, default=0, help="checkpoint and stop after this many hours (0: no limit)")
     ap.add_argument("--tag", default="", help="appended to the engine name in `engines` (e.g. cloud-aarch64)")
+    ap.add_argument("--frames-fs", type=float, default=0,
+                    help="also keep NVE positions and velocities every this many fs (npz frames_pos/frames_vel; 0: off)")
     a = ap.parse_args()
     from pyscf import lib
     from ase import units
@@ -107,9 +110,14 @@ def main():
               f"{__import__('resource').getrusage(0).ru_maxrss / 2**20:.1f} GB")
         return
     step = 0; mu = np.full((n_nve // 2, 3), np.nan); qa = []; engines = ""
+    fr = int(round(a.frames_fs * 2)); nfr = n_nve // fr if fr else 0          # frame k: NVE step (k + 1) * fr
+    fpos = np.full((nfr, len(at), 3), np.nan); fvel = np.full((nfr, len(at), 3), np.nan)
     if os.path.exists(a.out):
         z = np.load(a.out); step = int(z["step"]); at.positions = z["positions"]; at.set_velocities(z["velocities"])
         mu[:len(z["dipole"])] = z["dipole"]; qa = [tuple(r) for r in z["qa"]]
+        if fr:
+            assert "frames_pos" in z.files and int(z["frames_every"]) == fr, "--frames-fs differs from the checkpoint"
+            fpos[:len(z["frames_pos"])] = z["frames_pos"]; fvel[:len(z["frames_vel"])] = z["frames_vel"]
         engines = str(z["engines"]) if "engines" in z.files else ("0:PySCF-CPU;" if step else "")
         print(f"resuming {a.out} at step {step} of {n_tot}", flush=True)
     else:
@@ -122,7 +130,11 @@ def main():
 
     def save():
         k = max(0, (step - n_nvt) // 2)
-        np.savez(a.out + ".tmp.npz", step=step, positions=at.positions, velocities=at.get_velocities(), dipole=mu[:k],
+        extra = {}
+        if fr:
+            kf = max(0, (step - n_nvt) // fr)
+            extra = dict(frames_pos=fpos[:kf], frames_vel=fvel[:kf], frames_every=fr)   # A, ASE velocity units
+        np.savez(a.out + ".tmp.npz", **extra, step=step, positions=at.positions, velocities=at.get_velocities(), dipole=mu[:k],
                  qa=np.array(qa), xyz=a.xyz, charge=a.charge, mult=a.mult, T=a.T, seed=a.seed, nvt_ps=a.nvt_ps,
                  nve_ps=a.nve_ps, dt_fs=1.0, method="B3LYP(VWN3)/6-31G* PySCF " + ("5D" if not calc.cart else "6D"),
                  engines=engines, seconds=time.time() - t0)
@@ -139,6 +151,8 @@ def main():
             md.run(1); step += 1
             if not nvt and (step - n_nvt) % 2 == 0:
                 mu[(step - n_nvt) // 2 - 1] = calc.last[1]["dipole"]
+            if fr and not nvt and (step - n_nvt) % fr == 0:
+                fpos[(step - n_nvt) // fr - 1] = at.positions; fvel[(step - n_nvt) // fr - 1] = at.get_velocities()
             if step % 20 == 0:
                 qa.append((step, at.get_temperature(), at.get_potential_energy() + at.get_kinetic_energy(),
                            calc.last[1]["s2"], calc.cycles))

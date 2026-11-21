@@ -11,6 +11,8 @@
 #              once the neutrals are done the cations can be restarted with more threads (results unaffected)
 #   CKPT_FS    checkpoint interval in fs (default 20: 40 steps, 6-9 min). SIGTERM also saves, after the current step.
 #   AIMD_TAG   engine tag recorded in the npz `engines` field (default cloud-<arch>)
+#   NVT_PS / NVE_PS / FRAMES_FS   passed to aimd_pyscf.py (defaults 2 / 20 / 0); used only for new runs' length,
+#              which then stays in the npz (a resumed run must get the same values)
 #   AIMD_PY    python of the env (default $HOME/aimd/env/bin/python); AIMD_CODE: dir of aimd_pyscf.py (default: ..)
 # Each run gets whole physical cores (one logical CPU per core, from lscpu), whatever the SMT numbering. On x86 VMs
 # still prefer one thread per core (GCP --threads-per-core=1): the idle siblings are otherwise paid for.
@@ -71,7 +73,8 @@ for n in "${runs[@]}"; do
     args+=(- --time-steps 20)
   else
     read -r s tot <<< "$(step_of "$RUN/$n.npz")"
-    args+=("$RUN/$n.npz" --ckpt-fs "$CK" --tag "${AIMD_TAG:-cloud-$(uname -m)}")
+    args+=("$RUN/$n.npz" --ckpt-fs "$CK" --tag "${AIMD_TAG:-cloud-$(uname -m)}" --nvt-ps "${NVT_PS:-2}"
+           --nve-ps "${NVE_PS:-20}" --frames-fs "${FRAMES_FS:-0}")
   fi
   args+=(--charge "$q" --mult $((q + 1)) --T "$T" --seed $((T * 10 + r * 2 + q)) --threads "$th")
   log=$RUN/logs/$n.log; [ "$mode" = timing ] && log=$RUN/logs/timing_$n.log

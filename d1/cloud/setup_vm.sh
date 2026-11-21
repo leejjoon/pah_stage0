@@ -61,7 +61,7 @@ if [ "$cmd" = service ]; then
     unit=/etc/systemd/system/aimd.service
     put() { sudo tee "$unit" >/dev/null; }; sc() { sudo systemctl "$@"; }; who="User=$USER"; target=multi-user.target
   fi
-  # RUNS (optional): only these runs, e.g. the ones this machine owns; AIMD_TAG: engine tag (default cloud-<arch>)
+  # NVT_PS/NVE_PS/FRAMES_FS (optional): see launch_aimd.sh. RUNS (optional): only these runs, e.g. the ones this machine owns; AIMD_TAG: engine tag (default cloud-<arch>)
   put <<EOF
 [Unit]
 Description=Naphthalene DFT MD (resumes from the checkpoints on every boot)
@@ -71,7 +71,7 @@ $poweroff
 [Service]
 Type=simple
 $who
-Environment=THREADS_Q0=$t0 THREADS_Q1=$t1 CKPT_FS=20 AIMD_PY=$A/env/bin/python ${RUNS:+RUNS=$RUNS} ${AIMD_TAG:+AIMD_TAG=$AIMD_TAG}
+Environment=THREADS_Q0=$t0 THREADS_Q1=$t1 CKPT_FS=20 AIMD_PY=$A/env/bin/python ${RUNS:+RUNS=$RUNS} ${AIMD_TAG:+AIMD_TAG=$AIMD_TAG} ${NVT_PS:+NVT_PS=$NVT_PS} ${NVE_PS:+NVE_PS=$NVE_PS} ${FRAMES_FS:+FRAMES_FS=$FRAMES_FS}
 ExecStart=$A/code/cloud/launch_aimd.sh run $A/run
 # stop (shutdown, Spot preemption): SIGTERM to the launcher only, which passes it to the runs; each saves after its
 # current step (at most ~15 s). SIGKILL to whatever is left after 60 s.
