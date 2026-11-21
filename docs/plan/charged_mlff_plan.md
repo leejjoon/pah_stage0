@@ -749,6 +749,14 @@ flagged). Mixed-guess singlets for dications come with the dication phase.
   ingest (BASE = v3's inputs + high-spin QA; SPECIES + species_r2, species_highspin; EXCLUDE non-Kekulé q0;
   DROP unstable,short_ch), train v4 with two seeds (GPU 0/1, waits if other users' GPU jobs appear), evaluate
   v3/v3_seed8/v4/v4_seed8 on dataset_v4, dataset_v3 and dataset_v3_noshortch.
+- 2026-11-21 (project node): **G2 measured as defined (force MAE), v3: neutral passes, cation narrowly fails on a
+  few small species.** `mlff_eval.py` now reports force MAE per set and per charge x config_type (held-out splits
+  pooled), marked against G2 (60 meV/Å); per-frame `aF` in the JSON. v3 / v3_seed8 on `dataset_v3_noshortch`
+  (`eval/v3_mae_noshortch.{json,log}`): MAE q0 validation 22.3 / 20.4, final_test 38.2 / 36.9, transfer 22.9 / 23.2;
+  q1 43.3 / 41.1, 63.4 / 66.3, 39.1 / 39.4 meV/Å. Per config_type (pooled): q0 all <= 42.3 (md_1500K); q1 above 60
+  only at md_1200K 61.0 / 62.3 and md_1500K 61.6 / 62.8 (300 K already 50). final_test q1 is per-species: C16H12_337
+  302 / 476, C16H16_336 295 / 183, C10H12_332 227 / 279, C10H10_331 ~132, C14H12_340 ~117, C16H12_335 121 / 143 meV/Å
+  (sp3 / five-ring small cations); without the top two 50 meV/Å. AL2 targets exactly this class; v4 tests it.
 
 ## Phase 3 working notes
 
