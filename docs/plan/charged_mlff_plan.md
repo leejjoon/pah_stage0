@@ -724,6 +724,15 @@ flagged). Mixed-guess singlets for dications come with the dication phase.
     converged without Newton, all stable, ⟨S²⟩ 2.15–2.38. The triplet is below the seed's closed-shell label at every
     frame: by 24.6–31.8 mHa (C60), 27.5–31.0 (C72), 15.8–27.5 (C96). ~0.1–0.3 GPU-h each on a shared GPU. Kept for
     the q0t experiment; not in v4.
+- 2026-11-21 (project node): **seed control: v3's q0 "regression" is seed noise; the q1 gain is real.**
+  `mace_torch/v3_seed8` vs v2, v2_seed8, v3 (`eval/seed8.{json,log}`, dataset v3 held-out sets + the AL1 frames).
+  Force RMSE (meV/Å) v2 / v2_seed8 / v3 / v3_seed8: validation q0 36.1 / 41.2 / 39.4 / 34.7, q1 92.0 / 94.6 / 82.5 /
+  83.0; final_test q0 133.8 / 147.3 / 125.4 / 126.3, q1 250.6 / 308.2 / 227.8 / 202.3; transfer q0 41.2 / 43.5 /
+  40.9 / 41.8, q1 69.6 / 72.9 / 64.8 / 69.3; AL1 frames (q1) 82.4 / 83.2 / 44.4 / 37.4. The q0 energy RMSE swings
+  with the seed (validation 10.0 / 19.2 / 25.5 / 7.9, transfer 9.5 / 30.2 / 37.5 / 12.0 meV/atom) but is all
+  per-pair offset (0.7–0.8 and 0.3–0.4 after removing it): a constant per molecule that the seed sets, not a loss of
+  physics. So the two-seed spread is ~5 meV/Å on q0 validation forces; q1 improves by ~10 meV/Å on validation and
+  halves on the AL1 frames for both seeds. v4 should again be trained with two seeds.
 
 ## Phase 3 working notes
 
