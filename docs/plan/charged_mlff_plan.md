@@ -801,7 +801,17 @@ flagged). Mixed-guess singlets for dications come with the dication phase.
   unchanged), frames by the seed recipe with the fixed sampler (2,368 frames, shortest C–H 0.836 Å), manifest
   (416 stability-tested), 3 reference frames. Package `al3/own/al3_own.tgz` (sha256 `e618d2f8…072d`, myhub
   `pah-data/al3_own:2026-11-22`, pull-back verified). Hangang only labels (~15–30 GPU-h). At ingest, add
-  `species_own.csv` to SPECIES.
+  `species_own.csv` to SPECIES. Replaced by `al3_own:2026-11-22b` (sha256 `e9b5c544…7b74`): frame headers carry
+  `ref_origin=own_species_v1` (as the high-spin frames carry `own_highspin_v1`), manifest rebuilt, reference frames
+  relabelled (identical energies).
+- 2026-11-22 (project node): **v4 passes G2.** Force MAE (meV/Å), held-out sets of dataset_v4, v3 / v3_seed8 / v4 /
+  v4_seed8: final_test q1 62.6 / 65.4 / 54.4 / 52.0, q0 38.2 / 36.9 / 32.0 / 29.7; validation q1 44.0 / 42.2 / 40.8 /
+  40.1; transfer q1 39.4 / 39.7 / 39.0 / 38.2. Per charge × config_type (held-out pooled) every v4 entry is ≤ 60 for
+  both seeds (worst q1 md_1500K 57.6 / 55.8, md_1200K 55.8 / 54.4; v3 61–63), a thin margin. Per species, the pairs
+  above 60 are small hydrogenated / five-ring / biaryl held-out molecules (C16H12_337 271, C10H12_332 193, C10H10_331
+  122, C16H12_335 121, C12H8_385 162, C12H10_202 99); large species incl. transfer q1 (62–100 C) are ≤ ~61. So the
+  remaining error is where AL3 track 2 aims, not track 1 (non-planar 26–34 C): track 1's Hangang hours are the
+  ones to cut. Next on v4: G4 (MD stability) and G5 (harmonic frequencies). Eval files `eval/v4_on_*`.
 
 ## Phase 3 working notes
 
