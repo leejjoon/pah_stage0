@@ -138,3 +138,6 @@ work. When stopping work that another machine will continue, write a handoff
 append it to this branch's note (path: `~/projects/pah-shared-notes/branch-note.sh .`),
 keep the branch's row in the project `SUMMARY.md` current, and run
 `./sync.sh "message"` from that repo. Follow the rules in its `README.md`.
+On KISTI Hangang (account `t641a02`) the clone is at `~/work/pah-shared-notes`, not `~/projects/`; use that path
+in the commands above. There `hostname` is the login node you are on (e.g. `glogin04`), which can differ between
+sessions; name the machine that way in handoffs and note entries.
