@@ -792,6 +792,16 @@ flagged). Mixed-guess singlets for dications come with the dication phase.
   100 pairs ranked (26 C 8, 27 C 1, 28 C 16, 30 C 24, 32 C 31, 34 C 20; PAHdb cation for 1, 99 to optimise). Package
   `al3/al3_track1.tgz` (sha256 `a5ef1567…f27b`, myhub `pah-data/al3_track1:2026-11-22`, pull-back verified).
   Hangang optimises the cations, samples and labels (~1.2 GPU-h per pair for frames at 30–34 C, measured on AL1/AL2).
+- 2026-11-22 (project node): **AL round 3, track 2: hand-built species outside PAHdb, packaged for Hangang** (user
+  OK for an RDKit env, `/var/tmp/jjlee-pah/mamba/rdkit`, conda-forge). `mlff_species_own.py build`: 49 SMILES
+  (five-ring, CH2/CH3/bridged/spiro sp3, biaryls) → RDKit + MMFF → GFN2-xTB; skeleton checked against all species
+  tables. 37 accepted (33 new skeletons, 4 new H patterns on train skeletons, 9–25 C); rejected 3 held-out skeletons,
+  7 molecules already in PAHdb, 1 duplicate, 1 SMILES that failed to parse. On gh200: B3LYP minima of both charges
+  (`opt --charge 0|1`; 74/74 converged and stable in one round, 4–19 min each beside the v4 training, bond graphs
+  unchanged), frames by the seed recipe with the fixed sampler (2,368 frames, shortest C–H 0.836 Å), manifest
+  (416 stability-tested), 3 reference frames. Package `al3/own/al3_own.tgz` (sha256 `e618d2f8…072d`, myhub
+  `pah-data/al3_own:2026-11-22`, pull-back verified). Hangang only labels (~15–30 GPU-h). At ingest, add
+  `species_own.csv` to SPECIES.
 
 ## Phase 3 working notes
 
