@@ -10,7 +10,7 @@
 #    (a Hangang-vs-project-node check; expected to agree to ~1e-5 eV, the geometry difference).
 # 3. mlff_dataset.py with the base inputs (default: dataset v2's, in v2's order) + the AL batch without the repeats;
 #    species tables $SPECIES (default v2's; a round with new species appends its table), --exclude $EXCLUDE (default
-#    none) --drop-flags unstable, as v2. Held-out files are compared with $REF (default dataset v2).
+#    none) --drop-flags $DROP (default unstable), as v2. Held-out files are compared with $REF (default dataset v2).
 # 4. prints the training and evaluation commands (not run: the user decides when the GPUs are used).
 # A --manifest 'none' passes through to mlff_qa.py (skips the missing-job check, for dry runs on a few frames).
 set -euo pipefail
@@ -20,6 +20,7 @@ BASE=${BASE:-$D/dataset_v2_work/seed_qa_v2.extxyz,$D/mlff_seed/transfer2/transfe
 SPECIES=${SPECIES:-$D/mlff_seed/species_v2.csv,$D/mlff_seed/transfer2/species_transfer2.csv}   # round 2: + species_r2.csv
 EXCLUDE=${EXCLUDE:-/dev/null}   # e.g. d1/exclusions_nonkekule_q0.csv (per-charge exclusions)
 REF=${REF:-$D/dataset_v2}       # dataset whose held-out files must stay the same (expected to differ when EXCLUDE or SPECIES touch held-out pairs)
+DROP=${DROP:-unstable}          # --drop-flags (v4 on: unstable,short_ch)
 W=${OUT%/}_work; mkdir -p "$W"
 XPY=/var/tmp/jjlee-pah/mamba/xtb/bin/python
 echo "== 1. QA ($(grep -c Properties "$AL") frames)"
@@ -53,7 +54,7 @@ print(f"{n} frames kept ({new_min} minima of new species); {len(dE)} repeated mi
       + (f"; max |E - E_base| = {dE[0][0]:.2e} eV ({dE[0][1]})" if dE else ""))
 PY
 echo "== 3. dataset"
-$XPY "$REPO/d1/mlff_dataset.py" "$BASE,$W/al_qa_nomin.extxyz" "$SPECIES" "$OUT" --exclude "$EXCLUDE" --drop-flags unstable | tail -5
+$XPY "$REPO/d1/mlff_dataset.py" "$BASE,$W/al_qa_nomin.extxyz" "$SPECIES" "$OUT" --exclude "$EXCLUDE" --drop-flags "$DROP" | tail -5
 sed -n '/after each step/,/^## Frames dropped/p' "$OUT/report.md"
 for f in validation final_test transfer_test; do for q in 0 1; do
   cmp -s "$OUT/${f}_q$q.extxyz" "$REF/${f}_q$q.extxyz" || echo "WARNING: ${f}_q$q differs from $(basename "$REF")"

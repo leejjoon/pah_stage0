@@ -733,6 +733,22 @@ flagged). Mixed-guess singlets for dications come with the dication phase.
   per-pair offset (0.7–0.8 and 0.3–0.4 after removing it): a constant per molecule that the seed sets, not a loss of
   physics. So the two-seed spread is ~5 meV/Å on q0 validation forces; q1 improves by ~10 meV/Å on validation and
   halves on the AL1 frames for both seeds. v4 should again be trained with two seeds.
+- 2026-11-21 (project node): **AL2 labels from Hangang; bound_oop artefact; v4 build started.** Hangang labelled
+  1,701/1,728 (handoff `glogin04-to-gh200-al2`, myhub `pah-data/al2_dft:2026-11-21`); the 27 frames its shards did
+  not reach come from the local backup run. Overlap (1,577 frames): worst dE 2.3e-12 Ha, dF 1.3e-12 Ha/bohr, PASS.
+  Hangang's two extreme-force frames (C20H14_358_q1_f010 80.7, C17H14_342_q1_f011 74.0 eV/Å) have C–H 0.65 / 0.63 Å:
+  `mlff_sample.py` `bound_oop` pushes along the global plane normal, which in sp3 / non-planar molecules can drive an
+  H into its carbon. Also in dataset v3: train q0 2, train q1 1, final_test q1 2 (C16H16_336, 0.62 / 0.69 Å). One of
+  the final_test frames dominates final_test q1 force RMSE (v2 250.6 → 209.3, v3 227.8 → 168.9, v3_seed8 202.3 →
+  178.3 meV/Å without the two), i.e. most of C16H16_336's apparent v3 regression. User decision: drop everywhere.
+  `mlff_dataset.py` computes a `short_ch` flag (C–H < 0.75 Å) for `--drop-flags` (v3 rebuild without it
+  byte-identical; with it exactly those 5 frames go; `dataset_v3_noshortch/` kept for comparisons). Sampler fixed: a
+  push that shortens any distance (< 3 A) to the pushed atom below 0.8 x its value is redrawn; planar molecules never
+  redraw (C20H12_395_q0 resampled byte-identical), the two bad pushes are replaced (shortest C–H now 0.96 Å).
+  `mlff_al_ingest.sh` takes `EXCLUDE`, `REF`, `DROP`. v4 driver `al2/build_v4.sh` (unattended): merge, collect,
+  ingest (BASE = v3's inputs + high-spin QA; SPECIES + species_r2, species_highspin; EXCLUDE non-Kekulé q0;
+  DROP unstable,short_ch), train v4 with two seeds (GPU 0/1, waits if other users' GPU jobs appear), evaluate
+  v3/v3_seed8/v4/v4_seed8 on dataset_v4, dataset_v3 and dataset_v3_noshortch.
 
 ## Phase 3 working notes
 

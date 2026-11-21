@@ -10,7 +10,9 @@
 #   2. duplicates: a later dataset's min frame for a (pair, charge) already present is dropped, after checking that
 #      the centred positions agree to 1e-6 A (otherwise the run stops);
 #   3. --drop-flags: frames carrying any of these qa_flags (default: none; the choice is the user's and the report
-#      states it).
+#      states it). One flag is computed here from the geometry rather than read from qa_flags: `short_ch`, a C-H
+#      distance below SHORT_CH (0.75 A). mlff_sample.py's bound_oop push follows the molecular-plane normal, which in
+#      sp3 / non-planar molecules can drive an H into its carbon (0.62-0.74 A seen; 2026-11-21, dropped by decision).
 # The input order of the extxyz files decides which copy of a duplicate is kept (the first).
 import argparse, collections, csv, json, os, re, sys
 import numpy as np
@@ -20,6 +22,7 @@ from mlff_coverage import SOLO_FRAC  # noqa: E402
 
 KV = re.compile(r'(\w+)=("[^"]*"|\S+)')
 SPLITS = ["train", "validation", "final_test", "transfer_test"]
+SHORT_CH = 0.75   # A
 
 
 def read_frames(path):
@@ -30,7 +33,13 @@ def read_frames(path):
                 return
             n = int(line); comment = f.readline(); atoms = [f.readline() for _ in range(n)]
             info = {k: v.strip('"') for k, v in KV.findall(comment)}
-            yield info, line + comment + "".join(atoms), np.array([[float(x) for x in a.split()[1:4]] for a in atoms])
+            yield (info, line + comment + "".join(atoms), np.array([[float(x) for x in a.split()[1:4]] for a in atoms]),
+                   np.array([a.split()[0] for a in atoms]))
+
+
+def min_ch(sym, pos):
+    c, h = pos[sym == "C"], pos[sym == "H"]
+    return float(np.linalg.norm(c[:, None] - h[None], axis=-1).min()) if len(c) and len(h) else np.inf
 
 
 def main():
@@ -54,7 +63,7 @@ def main():
                                                                          "after_flags"))
     by_ct = collections.Counter(); dropped_flags = collections.Counter(); seen_min = {}; kept = collections.defaultdict(list)
     for path in a.extxyz.split(","):
-        for info, text, pos in read_frames(path):
+        for info, text, pos, sym in read_frames(path):
             pair = info["source"].rsplit("_q", 1)[0]; q = int(info["charge"])
             if pair not in sp:
                 sys.exit(f"{path}: pair {pair} not in the species tables")
@@ -70,6 +79,8 @@ def main():
                 seen_min[(pair, q)] = pos - pos.mean(0)          # centred: samplers may centre differently (~1e-5 A)
             stage["after_dedup"][key] += 1
             flags = set(info.get("qa_flags", "ok").split(","))
+            if "short_ch" in drop and min_ch(sym, pos) < SHORT_CH:
+                flags.add("short_ch")
             if flags & drop:
                 for fl in flags & drop:
                     dropped_flags[(key, fl)] += 1
