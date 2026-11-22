@@ -833,7 +833,10 @@ flagged). Mixed-guess singlets for dications come with the dication phase.
   every held-out file byte-identical to v4's. **One bad frame kept by the current rules**: C10H10_x02_q1_f007
   (2-methylindene⁺, nms_1000K): one H 2.19 Å from the nearest C (the other 31 frames ≤ 1.4 Å), E 12.75 eV above the
   minimum (next highest 4.1 eV), ⟨S²⟩ 1.265 — a dissociated H with a spin-contaminated UKS label, in train_q1 because
-  `s2_review` is flagged, not dropped. To decide before training v5.
+  `s2_review` is flagged, not dropped. **Dropped by user decision** (same day): `mlff_dataset.py --drop-frames`
+  (CSV of single frames with reasons, flag `dropped_frame`, stops if a listed frame is missing), list
+  `d1/drop_frames_v5.csv`, `DROP_FRAMES` in `mlff_al_ingest.sh`; dataset_v5 rebuilt: train q1 7,195, every other file
+  byte-identical to the first build. The milder `s2_review` frames stay (rule unchanged).
 
 ## Phase 3 working notes
 
