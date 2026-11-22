@@ -837,6 +837,20 @@ flagged). Mixed-guess singlets for dications come with the dication phase.
   (CSV of single frames with reasons, flag `dropped_frame`, stops if a listed frame is missing), list
   `d1/drop_frames_v5.csv`, `DROP_FRAMES` in `mlff_al_ingest.sh`; dataset_v5 rebuilt: train q1 7,195, every other file
   byte-identical to the first build. The milder `s2_review` frames stay (rule unchanged).
+- 2026-11-22 (project node): **G4 on v4, local seed-0 subset (900 / 1200 K, 16 held-out pairs × 2 charges, 32 runs,
+  20 ps NVT + 50 ps NVE).** Scored with `d1/g4_score.py` (new: bond graph of every saved frame, 10 fs apart, against the
+  relaxed start; a bond change counts only if it holds in every frame of the last 100 fs, per bond, since C-H bonds
+  flicker over the 1.2 × covalent cutoff at 1200 K; also blow-up time T > 3 × target and NVE drift); output
+  `accept/g4_v4_local_score.json`. Intact: 900 K 15/16 (93.8 %, G4 ≥ 99 % FAIL), 1200 K 14/16 (87.5 %, ≥ 95 % FAIL).
+  **All three failures are C16H12_337** (trans-15,16-dihydropyrene, final_test): its two interior methine H atoms
+  (C0-H1, C6-H7) leave and the core becomes pyrene (C0-C6 1.57 → 1.43 Å). q1 900 K: T blows up at 15 ps (NVT), the
+  whole molecule flies apart; q1 1200 K: both H ejected at ~10.8 ps with a T spike > 3,600 K, flying off to hundreds of
+  Å (an unphysical energy release, not thermal loss); q0 1200 K: both H leave within 5-20 ps, one re-binds at rim C13,
+  NVE drift 5.9 meV/atom (all other runs |drift| median 0.14, max 0.6). The other 15 species, both charges, stay
+  intact at both temperatures. The same species has v4's worst held-out force MAE (271 meV/Å) and the G5 CH stretch
+  outlier: the model fails on sp3 C-H inside a PAH core. dataset_v5 adds hand-built sp3 species but no interior-H
+  ones; whether v5 fixes it is an MD question (rerun this species after v5). Hangang's 192 runs will give the 4-seed
+  picture and the 50/300 K rows.
 
 ## Phase 3 working notes
 
