@@ -851,6 +851,20 @@ flagged). Mixed-guess singlets for dications come with the dication phase.
   outlier: the model fails on sp3 C-H inside a PAH core. dataset_v5 adds hand-built sp3 species but no interior-H
   ones; whether v5 fixes it is an MD question (rerun this species after v5). Hangang's 192 runs will give the 4-seed
   picture and the 50/300 K rows.
+- 2026-11-22 (project node): **Dipole feasibility test: AtomicDipolesMACE per charge on dataset_v4 fails the G2 dipole
+  limits.** `d1/mace_torch_dipole.yaml` (v2-sized: 64x0e+64x1o, 2 interactions, lr 0.01, 300 epochs, EMA), label
+  μ − q·R_COM; trained 19:13–21:16 beside two root GPU jobs (user request); eval `eval/dip_v4.{json,log}` (`d1/mlff_dipole_eval.py`).
+  Component MAE (D), model / zero-model: q0 validation 0.159 / 0.331, final_test 0.161 / 0.298, transfer 0.158 / 0.313,
+  train (first 600) 0.098 / 0.321 (G2 ≤ 0.06: only `min` frames pass, 0.036); q1 validation 0.517 / 0.673, final_test
+  0.444 / 0.576, transfer 0.584 / 0.719, train 0.302 / 0.542 (G2 ≤ 0.1: every config_type fails, 0.27–0.63).
+  Translation invariance holds (3 Å shift ≤ 1e-5 D). **q1 error grows with size** (held-out MAE 0.15 D under 20
+  atoms, 0.34 at 20–39, 0.44–0.80 above 40, i.e. 65–80 % of the zero model for large cations; worst C60H30_3608 1.61,
+  C72H22_9911 1.37): the expected failure of a sum of bounded local atomic dipoles for a +1 charge spread over the
+  molecule, whose Σ qᵢ(rᵢ − R_COM) term grows with size. q0 halves the zero-model error at every size but stays 2.5×
+  over the limit. Both models underfit (train error close to held-out; q1's best validation at epoch 53 of 300, then
+  drifting up), so the size of the gap is not final, but the q1 size trend is structural. Next options: (a) a
+  charge model with the total-charge constraint (atomic charges summing to q, plus atomic dipoles: μ = Σ qᵢ(rᵢ − R_COM)
+  + Σ pᵢ), e.g. EPNN as planned or a MACE charge head; (b) retune the local model (lr 1e-3, larger) only as a q0 check.
 
 ## Phase 3 working notes
 
