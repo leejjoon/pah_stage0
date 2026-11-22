@@ -882,8 +882,8 @@ flagged). Mixed-guess singlets for dications come with the dication phase.
   failures.** Not continued: G4 on v4 seed 3 / the 6 cut-off reruns (cannot change v4's verdict) and AL3 track 1 ranks
   33–100 (~75 GPU-h; v4 says large non-planar species are already fine). (1) **dataset_v6** = v5 inputs + track 1
   ranks 1–32 (`al3/ingest_track1.sh`; species_r3, REF dataset_v5): QA 83 quarantined (48 `s2_review` cations ≤ 0.875,
-  32 `unstable`, 3 `dipole_outlier`); the 32 `unstable_rhf_uhf` neutrals (+ 11 more `unstable` q0 frames in the batch,
-  43 in all) are dropped by `DROP=unstable`, the standing 2026-11-17 decision (also what happened to AL2's). Train q0
+  32 `unstable`, 3 `dipole_outlier`); the 32 `unstable_rhf_uhf` neutrals are dropped by `DROP=unstable`
+  (43 `unstable` q0 frames dropped in v6: these 32 + 11 from earlier batches), the standing 2026-11-17 decision (also what happened to AL2's). Train q0
   4,615 → 5,607, q1 7,195 → 8,219; held-out files byte-identical to v5's. (2) **Targeted species** (`d1/species_g4_targets_smiles.csv`,
   built with `mlff_species_own.py build --prefix y` into `/var/tmp/jjlee-pah/d1/al4t`): both failing species are
   hydrogenated held-out skeletons (pyrene, naphthalene; final_test), so only new or train skeletons qualify. 13 of 19
