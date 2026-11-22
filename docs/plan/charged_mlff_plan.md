@@ -865,6 +865,19 @@ flagged). Mixed-guess singlets for dications come with the dication phase.
   drifting up), so the size of the gap is not final, but the q1 size trend is structural. Next options: (a) a
   charge model with the total-charge constraint (atomic charges summing to q, plus atomic dipoles: μ = Σ qᵢ(rᵢ − R_COM)
   + Σ pᵢ), e.g. EPNN as planned or a MACE charge head; (b) retune the local model (lr 1e-3, larger) only as a q0 check.
+- 2026-11-22 (project node): **G4 on v4, Hangang + local, 160 of 192 runs: v4 fails G4, on two species only.**
+  Hangang (KISTI PyTorch 25.03 + mace-torch 0.3.17, `pah-data/g4_v4_out:2026-11-22`; 4 array tasks, queue waits
+  3 h 25 m – 3 h 54 m, each hit the 6 h limit) finished 122 runs, 6 were cut off, 32 (seed 3 at 300/900 K) never started
+  (Slurm deadline); gh200 ran 32 (seed 0, 900/1200 K). Scored with `d1/g4_score.py` (per-bond persistence over the last
+  100 fs; this clears 6 runs whose only change was one C-H past the cutoff in the last frame); the 6 cut-off runs all
+  show persistent breakup in their partial .traj and count as failures. Intact: 300 K 48/48, **900 K 44/48 (91.7 %,
+  ≥ 99 % FAIL), 1200 K 54/64 (84.4 %, ≥ 95 % FAIL)**. Without C16H12_337 (trans-15,16-dihydropyrene): 42/42, 42/42,
+  54/56 (96.4 %, passes); without it and C10H10_331: all intact. C16H12_337 fails 12 of its 16 runs at 900/1200 K:
+  interior H ejection and blow-ups (q1), and in q0 a lone C0-C6 cleavage (the central C15-C16 bond; 900 K s2, 1200 K
+  s2/s3, NVE drift ≤ 1.3 meV/atom), which may be the real thermal ring opening to the cyclophanediene and needs a DFT
+  barrier check before it is called a model failure. C10H10_331⁺ blows up at 1200 K in 2 of 4 seeds (all bonds lost at
+  12 ps in s1). NVE drift median 0.18 meV/atom (max 100.9 in a C16H12_337⁺ run). Score files
+  `accept/g4_v4_{hangang,local}_score.json`.
 
 ## Phase 3 working notes
 
