@@ -579,6 +579,14 @@ disagreement stay low on unseen species. Budget at 6-31G\*: of order 100–200k 
   (C10H10_x02_q1_f007 1.265, others ≤ 0.827); stability (416 tested): 1 re-optimised (C18H14_x40_q1_f030). Largest force
   component 29.8 eV/Å (C16H10_x27_q0_f003, disp). Nothing dropped. Tarball `/appsdata/t641a02/d1/al3_own_dft.tgz`
   (5.7 MB, sha256 `565f17295bff5d90f8af9c19ac10eea370ac3a6c38903752d7728bb0a8e98e62`), myhub `pah-data/al3_own_dft:2026-11-22`.
+- 2026-11-22 (Hangang): **AL round 3 track 1 labelled, ranks 1–32 of `al3_track1:2026-11-22`, 2,048/2,048 frames.**
+  One node, array 1335774 (`d1/slurm_al3.sbatch`, `MAXRANK=32`), 12:14–19:06; DFT 34.7 GPU-h (mean 61.0 s). Cations
+  sampled with `--mult q+1` (the package README's `2q+1` would make them triplets). None unconverged; Newton fallback 2
+  (C27H14_73_q1 f003/f023); doublet ⟨S²⟩ > 0.80: 48 (≤ 0.875; C27H14_73_q1 14); stability (421 tested): 32
+  `unstable_rhf_uhf` neutrals in 7 species (C32H18_1515_q0 and C32H18_1742_q0 9 each), 2 re-optimised. Largest force
+  component 26.1 eV/Å (C28H16_2185_q1_f002, disp). Nothing dropped. Ranks 33–100 not run. Tarball
+  `/appsdata/t641a02/d1/al3_hangang_dft.tgz` (9.2 MB, sha256 `419122aa9b46a18fbe45620226119cbc2b9781974ab2550d5f69555d4817a36d`;
+  `dft/`, `dft.extxyz`, `frames/`, `gjf/manifest.json`, `minima/`), myhub `pah-data/al3_hangang_dft:2026-11-22`.
 
 ## Phase 1 run-book
 
