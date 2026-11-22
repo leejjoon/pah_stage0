@@ -6,7 +6,9 @@
 # the scaled axis oop 600-1000, inplane 1000-1700, CHstr 2700-3300 cm^-1; strength = integral in km/mol; a straight
 # line in T (replica NVE mean) through all replicas; slope reported as a fraction of the fitted 300 K value per 100 K.
 # Here qa also holds the NVT steps, so the replica temperature is the mean over NVE records only (step > NVT steps).
-# Spread: the slope from each of the 4 pairings of one 300 K and one 900 K replica (min..max).
+# Spread: the slope from each pairing of one 300 K and one 900 K replica (min..max; all replicas found in <dir>).
+# Replicas may differ in NVE length (main runs 20 ps, extra cation replicas r2-r7 5 ps); band strengths are integrals,
+# so they compare directly.
 # Also: the 6.2/11.2-type windows of b4_impact.py (narrow and broad), NVE energy drift, max SCF cycles and <S^2>.
 import argparse, glob, itertools, json, os, re, sys
 import numpy as np
@@ -60,16 +62,17 @@ def main():
         print(f"q{q}_{T}K_r{r}      {x['T']:6.1f} {x['drift_meV_ps']:+6.2f}m/ps {x['e_std_meV']:6.1f} {x['scf_max']:3d} "
               f"{x['s2_max']:5.3f}  " + "  ".join(f"{x['strength'][c]:9.2f}" for c in CL))
     out = {}
-    print("\nslope, fraction of the fitted 300 K strength per 100 K (all replicas; [min, max] over the 4 replica pairings)"
+    print("\nslope, fraction of the fitted 300 K strength per 100 K (all replicas; [min, max] over the 300/900 K pairings)"
           "; centroid shift cm^-1 per 100 K")
     for q in (0, 1):
         print(f"--- {'neutral' if q == 0 else 'cation'} (q={q})")
         for c in CL:
             pts = [(x["T"], x["strength"][c]) for (qq, T, r), x in R.items() if qq == q]
             frac, s300, _ = fit(pts)
+            r3 = [r for (qq, T, r) in R if qq == q and T == 300]; r9 = [r for (qq, T, r) in R if qq == q and T == 900]
             pair = [fit([(R[(q, 300, i)]["T"], R[(q, 300, i)]["strength"][c]),
                          (R[(q, 900, j)]["T"], R[(q, 900, j)]["strength"][c])])[0]
-                    for i, j in itertools.product((0, 1), (0, 1))]
+                    for i, j in itertools.product(r3, r9)]
             cs = np.polyfit([x["T"] / 100 for (qq, T, r), x in R.items() if qq == q],
                             [x["centroid"][c] for (qq, T, r), x in R.items() if qq == q], 1)[0]
             out[f"q{q}|{c}"] = dict(frac_per_100K=frac, pair_min=min(pair), pair_max=max(pair), s300_km_mol=s300,
