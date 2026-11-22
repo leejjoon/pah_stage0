@@ -572,6 +572,13 @@ disagreement stay low on unseen species. Budget at 6-31G\*: of order 100–200k 
   Nothing dropped. Tarball `/appsdata/t641a02/d1/al2_dft.tgz` (4.8 MB, sha256
   `0efad4568f57b525e9327e089f241692be1c6f707353fa8a99803a5225e9fc1c`; `dft/`, `dft.extxyz`, `missing_27.txt`), also
   in myhub as `pah-data/al2_dft:2026-11-21`.
+- 2026-11-22 (Hangang): **AL round 3 track 2 labelled, 2,368/2,368 frames** (`pah-data/al3_own:2026-11-22b`, 37
+  hand-built pairs, 9–25 C, frames and manifest from the project node). Array 1335773 (4 nodes, `slurm_dft_seed.sbatch`,
+  `FRAME_DIRS=frames_own`), 29.3 GPU-h (mean 44.6 s). The 3 `ref/` frames, labelled in production: worst dE 1.8e-12 Ha,
+  dF 5.2e-13 Ha/bohr, PASS. None unconverged; Newton fallback 1 (C18H10_x30_q1_f013); doublet ⟨S²⟩ > 0.80: 6
+  (C10H10_x02_q1_f007 1.265, others ≤ 0.827); stability (416 tested): 1 re-optimised (C18H14_x40_q1_f030). Largest force
+  component 29.8 eV/Å (C16H10_x27_q0_f003, disp). Nothing dropped. Tarball `/appsdata/t641a02/d1/al3_own_dft.tgz`
+  (5.7 MB, sha256 `565f17295bff5d90f8af9c19ac10eea370ac3a6c38903752d7728bb0a8e98e62`), myhub `pah-data/al3_own_dft:2026-11-22`.
 
 ## Phase 1 run-book
 
