@@ -2,7 +2,7 @@
 # Ingest an active-learning DFT batch (docs/plan/hangang_al1_handoff.md, "Hand back") on the project node and build the
 # next dataset (docs/plan/charged_mlff_plan.md, Phase 3):
 #   [BASE=a.extxyz,b.extxyz,...] d1/mlff_al_ingest.sh <al dft.extxyz> <gjf_<tag>/manifest.json> <out dataset dir> [mlff_qa options]
-# 1. mlff_qa.py on the batch (xTB env, GFN2-xTB per frame, 64 processes on cores 80-143; flags as for the seed set) -> <out>_work/al_qa.extxyz
+# 1. mlff_qa.py on the batch (xTB env, GFN2-xTB per frame, $PROCS processes on cores $CORES, default 64 on 80-143; flags as for the seed set) -> <out>_work/al_qa.extxyz
 # 2. the batch's min frames that repeat a minimum already in the base data (same source and charge; AL round 1: they
 #    are only there as mlff_qa.py's per-run energy reference) are removed; minima of new species (round 2) are kept.
 #    The repeats' centred positions differ from the base ones by up to 3.5e-5 A (centring masses), beyond
@@ -21,10 +21,11 @@ SPECIES=${SPECIES:-$D/mlff_seed/species_v2.csv,$D/mlff_seed/transfer2/species_tr
 EXCLUDE=${EXCLUDE:-/dev/null}   # e.g. d1/exclusions_nonkekule_q0.csv (per-charge exclusions)
 REF=${REF:-$D/dataset_v2}       # dataset whose held-out files must stay the same (expected to differ when EXCLUDE or SPECIES touch held-out pairs)
 DROP=${DROP:-unstable}          # --drop-flags (v4 on: unstable,short_ch)
+CORES=${CORES:-80-143}; PROCS=${PROCS:-64}   # QA cores (taskset list) and processes, e.g. to stay off cores busy with MD
 W=${OUT%/}_work; mkdir -p "$W"
 XPY=/var/tmp/jjlee-pah/mamba/xtb/bin/python
 echo "== 1. QA ($(grep -c Properties "$AL") frames)"
-OMP_NUM_THREADS=1 taskset -c 80-143 $XPY -W ignore "$REPO/d1/mlff_qa.py" "$AL" "$W/al_qa" --manifest "$MAN" --procs 64 "$@" | tail -25
+OMP_NUM_THREADS=1 taskset -c "$CORES" $XPY -W ignore "$REPO/d1/mlff_qa.py" "$AL" "$W/al_qa" --manifest "$MAN" --procs "$PROCS" "$@" | tail -25
 echo "== 2. drop the batch's minima that repeat base minima, compare their energies"
 $XPY - "$W/al_qa.extxyz" "$W/al_qa_nomin.extxyz" "$BASE" <<'PY'
 import re, sys

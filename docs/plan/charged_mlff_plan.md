@@ -823,6 +823,17 @@ flagged). Mixed-guess singlets for dications come with the dication phase.
   Outlier C16H12_337 (dihydropyrene, held out): q0 29 → 64 / 92, driven by the aliphatic CH2 stretch at 2,883 cm⁻¹
   (+186 / +290) — the sp3 CH2 environment that also gives it the worst force MAE (271); AL3 track 2 adds CH2 species.
   C10H12_332⁺ 34.6 → 29.5 / 31.7. Intensities (the other half of G5) still need a dipole model.
+- 2026-11-22 (project node): **AL3 track 2 labelled on Hangang, ingested: dataset_v5.** `al3_own_dft:2026-11-22`
+  (2,368/2,368 frames, array 1335773, 29.3 GPU-h; Hangang's labels of the 3 `ref/` frames match gh200's to 1.8e-12 Ha)
+  received 12:05 (handoff `2026-11-22-pah_stage0-glogin04-to-gh200-al3own`). Ingest driver `al3/ingest_own.sh`: v4's
+  inputs + v4's AL2 QA file as BASE, SPECIES + `al3/own/species_own_ok.csv`, same EXCLUDE / DROP (unstable,short_ch),
+  REF dataset_v4; `mlff_al_ingest.sh` now takes `CORES`/`PROCS` (QA on 64-95,128-143, off the local G4 runs). QA: 12
+  quarantined (6 `s2_review`, 6 `dipole_outlier`, all cations), 174 graph_changed, 296 boundary, 5 persistent_change,
+  1 re-optimised; 74 new minima, nothing dropped by flags. Train q0 3,431 → 4,615, q1 6,012 → 7,196 (+1,184 each);
+  every held-out file byte-identical to v4's. **One bad frame kept by the current rules**: C10H10_x02_q1_f007
+  (2-methylindene⁺, nms_1000K): one H 2.19 Å from the nearest C (the other 31 frames ≤ 1.4 Å), E 12.75 eV above the
+  minimum (next highest 4.1 eV), ⟨S²⟩ 1.265 — a dissociated H with a spin-contaminated UKS label, in train_q1 because
+  `s2_review` is flagged, not dropped. To decide before training v5.
 
 ## Phase 3 working notes
 
