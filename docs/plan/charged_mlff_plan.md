@@ -812,6 +812,17 @@ flagged). Mixed-guess singlets for dications come with the dication phase.
   122, C16H12_335 121, C12H8_385 162, C12H10_202 99); large species incl. transfer q1 (62–100 C) are ≤ ~61. So the
   remaining error is where AL3 track 2 aims, not track 1 (non-planar 26–34 C): track 1's Hangang hours are the
   ones to cut. Next on v4: G4 (MD stability) and G5 (harmonic frequencies). Eval files `eval/v4_on_*`.
+- 2026-11-22 (project node): **G5 frequency half on v4** (`mlff_accept.py symfreq`, as for v2, all 128 entries;
+  `accept/symfreq_v4*.json`, `symfreq_v4_seed8*.json`). Strong-band RMS (cm⁻¹) median and pass (≤ 10), without the two
+  pyrenes, v2 / v4 / v4_seed8: validation q0 5.8 (15/17) / 6.1 (15/17) / 5.8 (16/17), q1 5.4 (14/17) / 4.5 (14/17) /
+  4.5 (16/17); final_test q0 6.2 (19/21) / 7.5 (15/21) / 5.4 (20/21), q1 7.1 (15/21) / 5.9 (15/21) / 6.2 (16/21);
+  transfer q0 9.4 (13/24) / 10.7 (12/24) / 9.9 (12/24), q1 6.3 (17/24) / 6.8 (17/24) / 6.1 (17/24). All 128: median
+  6.5 / 6.8 / 6.1, pass 93 / 89 / 97. **No change beyond seed noise**: the AL2 data did not move the harmonic
+  frequencies; large neutrals stay the weakest group (C96H30_3317 16.5, C70H26_6628 16.8). Coronene⁺'s spurious
+  −326 cm⁻¹ B3g mode is gone in both v4 seeds (only flat −3 … −11 cm⁻¹ modes of large molecules remain).
+  Outlier C16H12_337 (dihydropyrene, held out): q0 29 → 64 / 92, driven by the aliphatic CH2 stretch at 2,883 cm⁻¹
+  (+186 / +290) — the sp3 CH2 environment that also gives it the worst force MAE (271); AL3 track 2 adds CH2 species.
+  C10H12_332⁺ 34.6 → 29.5 / 31.7. Intensities (the other half of G5) still need a dipole model.
 
 ## Phase 3 working notes
 
