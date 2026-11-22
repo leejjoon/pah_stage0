@@ -872,7 +872,7 @@ flagged). Mixed-guess singlets for dications come with the dication phase.
   100 fs; this clears 6 runs whose only change was one C-H past the cutoff in the last frame); the 6 cut-off runs all
   show persistent breakup in their partial .traj and count as failures. Intact: 300 K 48/48, **900 K 44/48 (91.7 %,
   ≥ 99 % FAIL), 1200 K 54/64 (84.4 %, ≥ 95 % FAIL)**. Without C16H12_337 (trans-15,16-dihydropyrene): 42/42, 42/42,
-  54/56 (96.4 %, passes); without it and C10H10_331: all intact. C16H12_337 fails 12 of its 16 runs at 900/1200 K:
+  54/56 (96.4 %, passes); without it and C10H10_331: all intact. C16H12_337 fails 12 of its 14 runs at 900/1200 K:
   interior H ejection and blow-ups (q1), and in q0 a lone C0-C6 cleavage (the central C15-C16 bond; 900 K s2, 1200 K
   s2/s3, NVE drift ≤ 1.3 meV/atom), which may be the real thermal ring opening to the cyclophanediene and needs a DFT
   barrier check before it is called a model failure. C10H10_331⁺ blows up at 1200 K in 2 of 4 seeds (all bonds lost at
