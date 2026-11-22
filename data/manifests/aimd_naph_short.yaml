@@ -1,0 +1,26 @@
+# Data manifest (CLAUDE.md, "Closing out a compute campaign and archiving")
+dataset: aimd_naph_short
+description: >
+  Naphthalene cation DFT MD, extra short replicas for committee review B3 part one: 300 K r2-r7 and 900 K r2, r3
+  (8 runs), each 2 ps Langevin NVT + 5 ps NVE at 0.5 fs (14,000 steps), dipole every 1 fs, NVE positions and
+  velocities every 5 fs (frames_pos/frames_vel, 1,000 frames). Final checkpoints, the two PAHdb input geometries, and
+  all run logs. Complements aimd_naph_done (r0, r1).
+sha256: 571c10a0fb47a850a70d6b728b5fff8ff1921be1ea1daed9f386e27a12d7ea23   # aimd_naph_short.tgz
+size: 7.4 MB
+files: aimd_naph_short/SHA256SUMS inside the tarball (8 npz + 2 xyz + logs/)
+left_out: lock files, ALL_DONE marker
+code: 8ba78b0 (branch cloud-aimd); MD code d1/aimd_pyscf.py --frames-fs 5, launcher d1/cloud/launch_aimd.sh
+produced: 2026-11-21 11:51..2026-11-23 02:50 on wasp12 (systemd user unit, 32 cores per run); `engines` in each npz
+settings: B3LYP (VWN3, PySCF b3lypg)/6-31G* with 6D d functions; PySCF 2.15.0 (conda-forge); seeds T*10 + 2r + 1
+checks: all runs at 14,000 of 14,000 steps; frames and dipoles finite; 5,000 x 3 NVE dipoles each; max SCF cycles
+  15; <S^2> <= 0.776; NVE drift -1.4..+0.8 meV/ps
+locations:
+  - oras://myhub.ksc.re.kr/pah-data/aimd_naph_short:2026-11-23   # private; manifest digest sha256:8e4900f17eeab3a62087cce07401035a5b2a42dee0594db4203d50fa85ef56bf
+  - gh200:/var/tmp/jjlee-pah/d1/aimd_naph_short.tgz (and unpacked aimd_naph_short/; working copy, no backup)
+  - wasp12:~/aimd/run (originals; kept until myhub backups are known)
+retrieve: >
+  oras pull -u "$HARBOR_DATA_USER" --password-stdin myhub.ksc.re.kr/pah-data/aimd_naph_short:2026-11-23
+  (credentials of a pah-data robot account, from .env), then sha256sum the tarball against `sha256` above
+record: docs/plan/cloud_aimd_handoff.md ("Extra cation replicas")
+analysis: d1/aimd_slopes.py (commit fc6522c) over both datasets; output in the gh200 copy under
+  aimd_naph_short/analysis/aimd_slopes_all.{txt,json} (not in the tarball)

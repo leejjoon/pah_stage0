@@ -55,19 +55,26 @@ CH stretch 2700–3300 cm⁻¹; linear in T; the slope is a fraction of the fitt
   every 5 ps block, for example 8 × (2 ps NVT + 5 ps NVE), about 35 h each at 32 cores. Saving frames would allow a
   normal-mode energy check. The alternative is the pilot-model route (b) of `b4_diagnostic_impact.md`.
 
-**Extra cation replicas, running on wasp12 since 2026-11-21 11:51** (commit `8ba78b0`):
-- Runs: `naph_q1_300K_r2`…`r7` and `naph_q1_900K_r2`, `r3`, in a fresh `~/aimd/run` (xyz only, no old checkpoints).
-- Each is 2 ps NVT plus 5 ps NVE (14,000 steps), with NVE positions and velocities every 5 fs (`frames_pos`,
-  `frames_vel`) and seeds T·10 + 2r + 1.
-- They run under the systemd user unit `aimd` with 32 cores each (cores 0–255), `NVE_PS=5`, `FRAMES_FS=5`,
-  `AIMD_TAG=wasp12`.
-- Speed: about 10.6 s/step at 300 K and 9.7 s/step at 900 K, while `yhc` also uses the machine, so they should finish
-  around 2026-11-23 05:00.
-- Status: `RUNS=<the 8 names> ~/aimd/code/cloud/launch_aimd.sh status ~/aimd/run`. Plain `status` lists the
-  default matrix, which is not here.
-- When done: copy back to `/var/tmp/jjlee-pah/d1/aimd_naph_short/`, then rerun `aimd_slopes.py` with the 300 K and
-  900 K cations from both sets (it globs `r*`; the shorter NVE gives coarser spectra but the same band integrals). Then
-  check the mode energies of 300 K r1-like outliers from the frames.
+**Extra cation replicas: done 2026-11-23 02:50, archived** (commit `8ba78b0`):
+- Runs: `naph_q1_300K_r2`…`r7` and `naph_q1_900K_r2`, `r3` on wasp12 (systemd user unit `aimd`, 32 cores each),
+  2 ps NVT plus 5 ps NVE (14,000 steps), NVE positions and velocities every 5 fs (`frames_pos`, `frames_vel`), seeds
+  T·10 + 2r + 1. Started 2026-11-21 11:51; all at 14,000 steps by 2026-11-23 02:50 (`ALL_DONE`). Logs clean (only an
+  ASE deprecation warning); max SCF 15, ⟨S²⟩ ≤ 0.776, NVE drift −1.4 to +0.8 meV/ps.
+- Results: `gh200:/var/tmp/jjlee-pah/d1/aimd_naph_short/` and `aimd_naph_short.tgz` (7.4 MB, sha256 `571c10a0…`),
+  hashes checked on wasp12, z2mini and gh200. Archived to `oras://myhub.ksc.re.kr/pah-data/aimd_naph_short:2026-11-23`
+  (pull-back hash matches; anonymous pull refused); manifest `data/manifests/aimd_naph_short.yaml`. wasp12
+  `~/aimd/run` kept as the second copy.
+- Slopes over all 16 runs (`aimd_slopes.py`, commit `fc6522c`; `analysis/aimd_slopes_all.{txt,json}` in the gh200
+  copy), fraction of the 300 K value per 100 K: cation in-plane −2.6 % (pairings −13 to +17 %, rough 1σ ±3.5 %),
+  neutral in-plane +4.5 % (+0.3 to +7.8 %), cation minus neutral −7 %. **The B4 gate is still not decided.**
+- Why: the 300 K cation in-plane strength varies 206–789 km/mol between replicas (900 K: 259–346). Nearly all of it is
+  in 1000–1300 cm⁻¹ (56–659 km/mol; 1300–1700 is 55–185) and each replica keeps its level through every 2 ps block
+  (r1 ≈ 800, r6 ≈ 600), so it is a persistent per-replica state, not noise. Untested guess: a different degree of
+  charge (hole) localisation, i.e. symmetry breaking, frozen in at 300 K and averaged at 900 K; the high-strength
+  runs tend to have a larger mean dipole (zero for D2h). Next check: single points on the r2–r7 frames, charge
+  asymmetry against the 1000–1300 cm⁻¹ strength.
+- The narrow 11.2-type windows go negative in the 5 ps runs (unclipped truncated-ACF estimator around sharp lines);
+  use only the broad bands for them.
 
 ## Where each run was (last move 2026-11-18 17:24)
 
