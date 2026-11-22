@@ -878,6 +878,22 @@ flagged). Mixed-guess singlets for dications come with the dication phase.
   barrier check before it is called a model failure. C10H10_331⁺ blows up at 1200 K in 2 of 4 seeds (all bonds lost at
   12 ps in s1). NVE drift median 0.18 meV/atom (max 100.9 in a C16H12_337⁺ run). Score files
   `accept/g4_v4_{hangang,local}_score.json`.
+- 2026-11-22 (project node): **Hangang work taken over by gh200 (user); dataset_v6; targeted species for the G4
+  failures.** Not continued: G4 on v4 seed 3 / the 6 cut-off reruns (cannot change v4's verdict) and AL3 track 1 ranks
+  33–100 (~75 GPU-h; v4 says large non-planar species are already fine). (1) **dataset_v6** = v5 inputs + track 1
+  ranks 1–32 (`al3/ingest_track1.sh`; species_r3, REF dataset_v5): QA 83 quarantined (48 `s2_review` cations ≤ 0.875,
+  32 `unstable`, 3 `dipole_outlier`); the 32 `unstable_rhf_uhf` neutrals (+ 11 more `unstable` q0 frames in the batch,
+  43 in all) are dropped by `DROP=unstable`, the standing 2026-11-17 decision (also what happened to AL2's). Train q0
+  4,615 → 5,607, q1 7,195 → 8,219; held-out files byte-identical to v5's. (2) **Targeted species** (`d1/species_g4_targets_smiles.csv`,
+  built with `mlff_species_own.py build --prefix y` into `/var/tmp/jjlee-pah/d1/al4t`): both failing species are
+  hydrogenated held-out skeletons (pyrene, naphthalene; final_test), so only new or train skeletons qualify. 13 of 19
+  accepted: interior ring-fusion H — 2-methyl-, 2,7-dimethyl-, 4-methyl-, 2-tert-butyl-trans-15,16-dihydropyrene,
+  2-methyl-4a,8a-dihydronaphthalene, 2-methyl-4a,10a-dihydrophenanthrene; bis-allylic/benzylic CH2 (the C10H10_331
+  1,4-dihydronaphthalene motif) — 2-methyl-, 6-methyl-, 2,3-dimethyl-1,4-dihydronaphthalene, 2-methyl- and
+  9-methyl-9,10-dihydroanthracene, 2-methyl-1,4-dihydroanthracene, 3-methyl-1,4-dihydrophenanthrene. Rejected:
+  held-out anthracene/phenanthrene skeletons (5), 4H-cyclopenta[def]phenanthrene (in PAHdb). Driver `al4t/run_al4t.sh`
+  (track 2 recipe: B3LYP minima of both charges, graph check, 32 frames per pair and charge, manifest, labels here in
+  8 shards over both GPUs, collect), started 22:02.
 
 ## Phase 3 working notes
 

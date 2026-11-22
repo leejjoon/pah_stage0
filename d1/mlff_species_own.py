@@ -10,7 +10,8 @@
 # against the other rows (duplicates). Accepted rows all go to train. Writes <out>/species_own.csv (species_v2
 # columns + feature columns as species_r2, smiles, motif, species_own=1, status of every row in <out>/build_log.csv)
 # and <out>/xyz_start/<pair>_q0.xyz and _q1.xyz (the xTB geometry; B3LYP minima of both charges are optimised next
-# with `mlff_species_r2.py opt --charge 0|1`). Pair names: <formula>_x<NN>, NN the row number (no PAHdb uid).
+# with `mlff_species_r2.py opt --charge 0|1`). Pair names: <formula>_<prefix><NN>, NN the row number (no PAHdb uid),
+# prefix x by default (track 2), --prefix for later batches so names never collide.
 import argparse, csv, os, sys
 import numpy as np
 
@@ -86,7 +87,7 @@ def cmd_build(a):
             elif full in seen_full:
                 st = f"rejected: duplicate of {seen_full[full]}"
             else:
-                nC = int((Z == 6).sum()); nH = int((Z == 1).sum()); formula = f"C{nC}H{nH}"; pair = f"{formula}_x{k:02d}"
+                nC = int((Z == 6).sum()); nH = int((Z == 1).sum()); formula = f"C{nC}H{nH}"; pair = f"{formula}_{a.prefix}{k:02d}"
                 seen_full[full] = r["name"]
                 st = "accepted: " + ("train skeleton" if sk in split_of else
                                      f"new skeleton{' (shared with ' + claimed[sk] + ')' if sk in claimed else ''}")
@@ -111,6 +112,7 @@ def cmd_build(a):
 def main():
     ap = argparse.ArgumentParser(); sub = ap.add_subparsers(dest="cmd", required=True)
     b = sub.add_parser("build"); b.add_argument("smiles"); b.add_argument("xml"); b.add_argument("species"); b.add_argument("out")
+    b.add_argument("--prefix", default="x", help="pair-name prefix (track 2: x; targeted G4 species 2026-11-22: y)")
     a = ap.parse_args()
     {"build": cmd_build}[a.cmd](a)
 
