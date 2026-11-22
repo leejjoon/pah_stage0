@@ -22,6 +22,7 @@ EXCLUDE=${EXCLUDE:-/dev/null}   # e.g. d1/exclusions_nonkekule_q0.csv (per-charg
 REF=${REF:-$D/dataset_v2}       # dataset whose held-out files must stay the same (expected to differ when EXCLUDE or SPECIES touch held-out pairs)
 DROP=${DROP:-unstable}          # --drop-flags (v4 on: unstable,short_ch)
 DROP_FRAMES=${DROP_FRAMES:-}    # --drop-frames: CSV of single frames dropped by decision (v5: d1/drop_frames_v5.csv)
+KEEP_FRAMES=${KEEP_FRAMES:-}    # --keep-frames: CSV of frame,flag exceptions to DROP (v6: d1/keep_frames_v6.csv)
 CORES=${CORES:-80-143}; PROCS=${PROCS:-64}   # QA cores (taskset list) and processes, e.g. to stay off cores busy with MD
 W=${OUT%/}_work; mkdir -p "$W"
 XPY=/var/tmp/jjlee-pah/mamba/xtb/bin/python
@@ -56,7 +57,7 @@ print(f"{n} frames kept ({new_min} minima of new species); {len(dE)} repeated mi
       + (f"; max |E - E_base| = {dE[0][0]:.2e} eV ({dE[0][1]})" if dE else ""))
 PY
 echo "== 3. dataset"
-$XPY "$REPO/d1/mlff_dataset.py" "$BASE,$W/al_qa_nomin.extxyz" "$SPECIES" "$OUT" --exclude "$EXCLUDE" --drop-flags "$DROP" --drop-frames "$DROP_FRAMES" | tail -5
+$XPY "$REPO/d1/mlff_dataset.py" "$BASE,$W/al_qa_nomin.extxyz" "$SPECIES" "$OUT" --exclude "$EXCLUDE" --drop-flags "$DROP" --drop-frames "$DROP_FRAMES" --keep-frames "$KEEP_FRAMES" | tail -5
 sed -n '/after each step/,/^## Frames dropped/p' "$OUT/report.md"
 for f in validation final_test transfer_test; do for q in 0 1; do
   cmp -s "$OUT/${f}_q$q.extxyz" "$REF/${f}_q$q.extxyz" || echo "WARNING: ${f}_q$q differs from $(basename "$REF")"

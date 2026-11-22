@@ -2,7 +2,7 @@
 # one extended XYZ per split and charge (mace-jax reads it directly, keys dft_energy / dft_forces / dft_dipole; a
 # NeuralIL/EPNN loader reads the same files). Frames are copied verbatim (every label and qa_flags kept).
 #   python mlff_dataset.py <qa.extxyz>[,<more>] <species.csv>[,<more>] <out dir>
-#        [--exclude d1/seed_exclusions_open_shell.csv | /dev/null] [--drop-flags unstable,...] [--drop-frames <csv>,...]
+#        [--exclude d1/seed_exclusions_open_shell.csv | /dev/null] [--drop-flags unstable,...] [--drop-frames <csv>,...] [--keep-frames <csv>,...]
 # Steps, with frame counts per split and charge after each (report.md / report.json in <out dir>):
 #   1. exclusions: pairs from the exclusion list, in every split (Phase 1 decision 2026-11-15). An optional `charges`
 #      column ("0", "1" or "0;1") limits an entry to those charges; without it (or empty) the whole pair goes. Several
@@ -15,6 +15,8 @@
 #      sp3 / non-planar molecules can drive an H into its carbon (0.62-0.74 A seen; 2026-11-21, dropped by decision).
 #      --drop-frames: single frames dropped by decision, CSV with columns frame (the frame's `log` key, e.g.
 #      C10H10_x02_q1_f007), reason; counted as flag `dropped_frame`. Every listed frame must be found (else the run stops).
+#      --keep-frames: exceptions to --drop-flags by decision, CSV with columns frame, flag, reason: that frame is not
+#      dropped for that flag (other flags still apply). Every listed frame must be found.
 # The input order of the extxyz files decides which copy of a duplicate is kept (the first).
 import argparse, collections, csv, json, os, re, sys
 import numpy as np
@@ -51,12 +53,18 @@ def main():
                                                       "seed_exclusions_open_shell.csv"))
     ap.add_argument("--drop-flags", default="")
     ap.add_argument("--drop-frames", default="")
+    ap.add_argument("--keep-frames", default="")
     a = ap.parse_args()
     drop = {x for x in a.drop_flags.split(",") if x}
     drop_frames = {r["frame"] for p in a.drop_frames.split(",") if p for r in csv.DictReader(open(p))}
     if drop_frames:
         drop.add("dropped_frame")
     found = set()
+    keep = collections.defaultdict(set)
+    for p in (x for x in a.keep_frames.split(",") if x):
+        for r in csv.DictReader(open(p)):
+            keep[r["frame"]].add(r["flag"])
+    kept_found = set()
     sp = {}
     for p in a.species.split(","):
         sp.update({r["pair"]: r for r in csv.DictReader(open(p))})
@@ -90,12 +98,16 @@ def main():
                 flags.add("dropped_frame"); found.add(info["log"])
             if "short_ch" in drop and min_ch(sym, pos) < SHORT_CH:
                 flags.add("short_ch")
+            if info.get("log") in keep:
+                kept_found.add(info["log"]); flags -= keep[info["log"]]
             if flags & drop:
                 for fl in flags & drop:
                     dropped_flags[(key, fl)] += 1
                 continue
             stage["after_flags"][key] += 1; by_ct[key + (info.get("config_type", "?"),)] += 1
             kept[key].append(text)
+    if set(keep) - kept_found:
+        sys.exit(f"--keep-frames: not found: {sorted(set(keep) - kept_found)}")
     if drop_frames - found:
         sys.exit(f"--drop-frames: not found: {sorted(drop_frames - found)}")
     os.makedirs(a.out, exist_ok=True)
