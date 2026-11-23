@@ -103,6 +103,14 @@ model. Ensembles of 3–4 for uncertainty. Gates before scaling: force error on 
 at 50–1200 K (`d1/mlmd_integrity.py`); 50 K band positions against PAHdb harmonic; 300 K neutral spectra against
 Mai's; cation positions against lab spectra where available; xTB-style temperature trends per charge.
 
+**G2 energy criterion (decided 2026-11-23, user via the coordinator note, z2mini 21:06).** The proposal's G2
+(§5.7) gates forces (MAE ≤ 60 meV/Å) and dipoles; energies are now gated as well, on the **per-pair offset-removed
+energy RMSE** of the held-out sets (`mlff_eval.py`, "energy RMSE after per-pair offset"): **≤ 2 meV/atom per charge
+and held-out split.** That error governs MD and vibrational spectra (only energy differences within one species and
+charge enter). The raw energy RMSE (each species' absolute energy, i.e. the cross-species ionisation-potential-like
+offset of the cation head, ~45–49 meV/atom from v2 to v7) is reported but not gated: an absolute IP is a global
+property outside a 2 × 5 Å receptive field. Status: v4 0.3–2.0, v7 0.4–1.2 meV/atom (all splits, both seeds): pass.
+
 **Phase 3: active learning (~3–5 rounds).** Ensemble MD over many species and temperatures; frames with the largest
 force disagreement go to Gaussian; retrain. Widen to 60–100 C, then anions and dications. Stop when integrity and
 disagreement stay low on unseen species. Budget at 6-31G\*: of order 100–200k core-h for 50–80k points.
@@ -919,6 +927,22 @@ flagged). Mixed-guess singlets for dications come with the dication phase.
   BS-UKS up to 1.2 eV lower, ⟨S²⟩ up to 1.1 (biradical); under the standing drop rule such frames need the BS label
   (`collect --bs-label`) to enter training. These frames are of held-out (final_test) species, so they are a diagnosis,
   not training data. Output `/var/tmp/jjlee-pah/d1/al5g4/` (`dft.extxyz`, `dft_bs.extxyz`, `path_energy.{json,log}`).
+- 2026-11-23 (project node): **Course corrections (user, via the coordinator note z2mini 2026-11-23 21:06).**
+  (1) Reactive sp3 bond-breaking AL stops after v8 (the running `al5/chain_v8.sh`); no v9 reactive round. If v8
+  passes the 48-run 1200 K G4 check, v8 is frozen as the D1 force model. If the labile sp3/dihydro species
+  (C16H12_337, C10H10_331, C10H12_332) still rearrange at 1200 K while sp2 aromatic PAHs stay 100 % intact and blind
+  transfer_test stays ~39–40 meV/Å, D1 production scope is stratified: sp2 aromatic PAHs up to 900–1200 K,
+  labile sp3/hydroaromatic PAHs capped at ≤ 600–900 K. (2) q0 surface consistency: dataset_v6 keeps 32
+  `unstable_rhf_uhf` neutral frames with RKS labels (`d1/keep_frames_v6.csv`) while v8 adds stretched neutral
+  frames with BS-UKS labels to the same spin-blind q0 head; compare v8 with v7 on q0 held-out forces and neutral G4,
+  and look for Coulson–Fischer kinks; if q0 degrades, drop `keep_frames_v6.csv` (or keep v7 for sp2 production).
+  (3) G2 energy criterion on offset-removed energy RMSE (Phases, above). (4) Before D1 production MLMD, the MACE MD
+  runner batches 16–32 independent NVE replicas of 25–50 ps per GPU (seeded from decorrelated Langevin snapshots,
+  frames every 25–50 fs, cuEquivariance on) instead of serial 4 × 200 ps single-molecule runs (~95 steps/s/GPU).
+  (5) Datasets and final models archived to myhub `pah-data`: `dataset_v7:2026-11-23` (dataset_v7 + _work; tgz sha256
+  `f9f61515…bc65f`, manifest digest `sha256:99382642…aefab`), `mace_v7:2026-11-23` (v7, v7_seed8: model, compiled model,
+  config, logs, results, training logs, eval/v7_on_v7; tgz sha256 `d5a73b90…48336`, digest `sha256:7b2680fe…0d48b`);
+  pull-back verified. dataset_v8 and v8 follow when the chain ends.
 
 ## Phase 3 working notes
 
