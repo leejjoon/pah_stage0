@@ -916,7 +916,7 @@ flagged). Mixed-guess singlets for dications come with the dication phase.
   v7_seed8: C10H10_331 q1 −0.70/−0.60/−0.52; C10H10_331 q0 −1.04/−1.19/−1.14; C10H12_332 q1 −0.70/−0.76/−0.54;
   C16H12_337 q0 −1.37/−0.98/−1.16; force MAE there 170–700 meV/Å. All models put the broken region 0.5–1.4 eV too
   low, so v4's intact runs on these jobs were luck, not a better surface. Neutral broken frames: RKS unstable (19),
-  BS-UKS 0.1–1.2 eV lower, ⟨S²⟩ up to 1.1 (biradical); under the standing drop rule such frames need the BS label
+  BS-UKS up to 1.2 eV lower, ⟨S²⟩ up to 1.1 (biradical); under the standing drop rule such frames need the BS label
   (`collect --bs-label`) to enter training. These frames are of held-out (final_test) species, so they are a diagnosis,
   not training data. Output `/var/tmp/jjlee-pah/d1/al5g4/` (`dft.extxyz`, `dft_bs.extxyz`, `path_energy.{json,log}`).
 
