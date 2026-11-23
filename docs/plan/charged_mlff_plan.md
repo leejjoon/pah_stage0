@@ -943,6 +943,22 @@ flagged). Mixed-guess singlets for dications come with the dication phase.
   `f9f61515…bc65f`, manifest digest `sha256:99382642…aefab`), `mace_v7:2026-11-23` (v7, v7_seed8: model, compiled model,
   config, logs, results, training logs, eval/v7_on_v7; tgz sha256 `d5a73b90…48336`, digest `sha256:7b2680fe…0d48b`);
   pull-back verified. dataset_v8 and v8 follow when the chain ends.
+- 2026-11-24 (project node): **v8 round, steps 1–4.** v7 hot MD (1500 K, 5 + 20 ps, 41 trained ring-sp3 pairs ×
+  2 charges): intact q0 34/41, q1 19/41 (an AL probe, not a gate); 29 runs with a persistent change → 406 frames along
+  the break paths (`g4_fail_frames.py --al-tag al5`, 14 per path); 73 stretched/broken neutrals labelled with
+  broken-symmetry UKS (32 took the BS energy, 41 stayed RKS), 333 with the normal labelling (31 GPU-h; 40 doublets with
+  ⟨S²⟩ > 0.80 quarantined by QA as usual). **Label-consistency stop:** the ingest's repeated-minimum check showed
+  C13H10_55 q0 frame 0 0.67 eV above its dataset_v7 minimum at the same geometry: that species' minimum is
+  RKS-unstable and dataset_v7 labels its near-minimum frames with BS-UKS (⟨S²⟩ ≈ 1.0), but the al5 split sent only
+  q0 frames that are broken or stretched (s ≥ 0.95) to the BS run, so its three early thermal frames got RKS labels.
+  Also C27H14_73 q1 frame 0 converged 0.10 eV above the v7 minimum at the same geometry (another UKS solution); its one
+  untested near-start frame is suspect. v8 training (started 03:02) was stopped after 4 min, those 4 frames dropped
+  (`d1/drop_frames_v8.csv`), dataset_v8 rebuilt (train q0 6,142, q1 8,920; held-out files = v7's) and training
+  restarted (`al5/chain_v8b.sh`, steps 5–7 of chain_v8.sh). `mlff_al_ingest.sh` now prints WARNING when a repeated
+  minimum differs from the base one by > 0.05 eV (the other two cases, C15H14_y19 and C11H12_y05 q1, 0.08 eV, are
+  other conformers: 1.3 and 0.6 Å). Rule for any later q0 labelling: for a species whose minimum is `bs_relabel`, every
+  q0 frame goes to the BS run. C13H10_55 q0 already spans two regimes in v7 (its 600 K MD frames, RKS-stable, lie
+  below the BS minimum: another isomer), so it joins C10H10_331 on the Coulson–Fischer kink-scan list (item 2).
 
 ## Phase 3 working notes
 

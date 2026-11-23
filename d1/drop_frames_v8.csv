@@ -1,0 +1,6 @@
+frame,reason
+C10H10_x02_q1_f007,"dissociated H (2.19 A from the nearest C), E 12.75 eV above the minimum, <S2> 1.265: spin-contaminated UKS label of a broken molecule (user decision 2026-11-22)"
+C13H10_55_q0_al5_f001,"RKS label (not stability-tested; early thermal frame of the al5 path) where this species' minimum is RKS-unstable: dataset_v7 labels its near-minimum frames with BS-UKS (<S2> ~1.0) 0.67 eV below RKS; mixing the two surfaces in the q0 head (2026-11-24)"
+C13H10_55_q0_al5_f002,"RKS label (not stability-tested; early thermal frame of the al5 path) where this species' minimum is RKS-unstable: dataset_v7 labels its near-minimum frames with BS-UKS (<S2> ~1.0) 0.67 eV below RKS; mixing the two surfaces in the q0 head (2026-11-24)"
+C13H10_55_q0_al5_f003,"RKS label (not stability-tested; early thermal frame of the al5 path) where this species' minimum is RKS-unstable: dataset_v7 labels its near-minimum frames with BS-UKS (<S2> ~1.0) 0.67 eV below RKS; mixing the two surfaces in the q0 head (2026-11-24)"
+C27H14_73_q1_al5_f003,"UKS doublet label not stability-tested; the path's frame 0 converged 0.10 eV above the dataset_v7 minimum at the same geometry (<S2> 0.808 vs 0.794: a higher SCF solution), so this untested near-start frame may sit on it too (2026-11-24)"

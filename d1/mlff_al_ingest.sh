@@ -55,6 +55,9 @@ with open(sys.argv[2], "w") as out:
 dE.sort(reverse=True)
 print(f"{n} frames kept ({new_min} minima of new species); {len(dE)} repeated minima dropped"
       + (f"; max |E - E_base| = {dE[0][0]:.2e} eV ({dE[0][1]})" if dE else ""))
+big = [(round(e, 3), s) for e, s in dE if e > 0.05]   # same source and charge: > 0.05 eV is another conformer or another SCF state
+if big:
+    print(f"WARNING: {len(big)} repeated minima differ from the base minimum by > 0.05 eV (another conformer, or another SCF state: check s2/stability): {big}")
 PY
 echo "== 3. dataset"
 $XPY "$REPO/d1/mlff_dataset.py" "$BASE,$W/al_qa_nomin.extxyz" "$SPECIES" "$OUT" --exclude "$EXCLUDE" --drop-flags "$DROP" --drop-frames "$DROP_FRAMES" --keep-frames "$KEEP_FRAMES" | tail -5
