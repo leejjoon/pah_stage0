@@ -81,12 +81,20 @@ CH stretch 2700–3300 cm⁻¹; linear in T; the slope is a fraction of the fitt
   on the stable ground-state solution and the replicas do not differ in electronic state. Across the six 300 K
   replicas the 1000–1300 cm⁻¹ strength tracks the rms long-axis dipole (r = 0.94; ring A − B spin asymmetry 0.71),
   which only restates that this band is charge moving between the rings.
-- New working explanation (untested): frozen vibrational energy. At 300 K the modes that carry the 1000–1300 cm⁻¹
-  intensity keep whatever energy they had at the end of NVT through the whole NVE (r1 is steady over 20 ps). A single
-  mode's canonical energy is exponentially distributed (coefficient of variation 1); the 300 K replicas' 1000–1300
-  cm⁻¹ strengths have CV 0.73 (8 runs). At 900 K energy flows between modes within a run, so replicas agree. Test:
-  harmonic normal modes of the cation, mode energies per replica from `frames_pos`/`frames_vel`, against the band
-  strength. If confirmed, the replica average needs normalising by the mode energies (or many more replicas).
+- **Frozen mode energies: confirmed (2026-11-23).** `d1/mode_energy.py`: geometry at the MD level (the PAHdb
+  geometry moves 1e-4 Å), analytic Hessian, IR intensity per mode by finite differences (harmonic in-plane/oop:
+  cation 410/95 km/mol, PAHdb 414; neutral 33.5/97.9, PAHdb 34/98); then each run's energy in every mode from the
+  frames, and the predicted strength = Σ I_k·E_k/kT over the band. For the six 300 K replicas with frames the
+  prediction matches the measured strength in every band (in-plane measured/predicted 0.93–1.03; 1000–1300 cm⁻¹
+  0.99–1.08; e.g. r3 56/57, r6 521/481 km/mol). Single modes sit at 0.14–2.8 kT and stay there through the NVE: the
+  300 K spread is the canonical spread of a few mode energies, not noise or electronic state. Runs without frames
+  (r0, r1) can only be estimated from their final snapshot, which works poorly. Output in the gh200 copy under
+  `aimd_naph_short/analysis/modes/`.
+- **Normalised slope (cation):** in-plane strength per unit mode energy (measured/predicted) is 0.989 ± 0.016 at
+  297 K (6 runs) and 0.884 ± 0.014 at 909 K (2 runs): **−1.7 ± 0.4 % per 100 K**, about ten times tighter than the raw
+  replica fit. 1000–1300 cm⁻¹ alone: −2.3 %/100 K. The neutral needs the same treatment before the gate can be read:
+  its main runs saved no frames and its raw +4.5 % has the same problem. Proposed: short neutral replicas with
+  frames (300 K ×4, 900 K ×2; 2 ps NVT + 5 ps NVE, `FRAMES_FS=5`) on wasp12.
 - The narrow 11.2-type windows go negative in the 5 ps runs (unclipped truncated-ACF estimator around sharp lines);
   use only the broad bands for them.
 
