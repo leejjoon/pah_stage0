@@ -6,10 +6,14 @@
 # Neutral/cation pairs are selected first (cations are scarce at the small end).
 # Solo/duo/trio/quartet H counts come from the suite's boundary-edge code (Geometry.bec(); Ricca+2025 2.4, 3.2)
 # and are cross-checked against (a) PAHdb's stored n_solo... fields and (b) an independent count from the geometry.
-import sys, io, contextlib, collections, json
+# Optional third argument: d1/pahdb_v4_screen_spin_v1.csv (d1/screen_spin.py). Species whose listed multiplicity is
+# not the one their bonding requires are then left out; without it the 2026-11-10 selection held C52H20 uid 10452,
+# a non-Kekule molecule that PAHdb lists as a closed-shell singlet (intensities about 7x too high).
+import sys, io, contextlib, collections, json, csv
 import numpy as np
 
 xml, outdir = sys.argv[1], sys.argv[2]
+SCREEN = {int(r["uid"]): r["verdict"] for r in csv.DictReader(open(sys.argv[3]))} if len(sys.argv) > 3 else None
 with contextlib.redirect_stdout(io.StringIO()):
     from amespahdbpythonsuite.amespahdb import AmesPAHdb
     db = AmesPAHdb(filename=xml, check=False, cache=True)
@@ -71,6 +75,7 @@ ok, reject = {}, collections.Counter()
 mism_fields, mism_geom = [], []
 for u in uids:
     s = base[u]; r = rings[u]
+    if SCREEN is not None and SCREEN.get(u) != "ok": reject["listed multiplicity inconsistent with bonding (screen_spin)"] += 1; continue
     if r["six"] == 0 or any(r[k] for k in ("three", "four", "five", "seven", "eight")): reject["non-hexagon ring"] += 1; continue
     if s["n_h"] != s["n_c"] - 2 * r["six"] + 2: reject["not fully hydrogenated / holes"] += 1; continue
     if s["charge"] == 0 and (s["n_h"] % 2 or not s["symmetry"].startswith("1-")): reject["neutral not closed-shell"] += 1; continue
@@ -154,6 +159,7 @@ for i, (lo, hi) in enumerate(BINS):
 json.dump({"pahdb_version": dbref["version"], "pahdb_date": dbref["date"], "bins": BINS, "quota": QUOTA,
            "compact_definition": "no trio and no quartet CH (plan 5.1); bay-free species preferred among compact; n_bay = count of '1' segments in the boundary-edge code",
            "pairs_available": len(pairs),
+           "spin_screen": (sys.argv[3].split("/")[-1] + ": species with verdict other than ok left out") if SCREEN is not None else "not applied",
            "achieved": {c: sum(ok[u]["cls"] == c for u in sel) for c in ("compact", "irregular")},
            "note": "plan 5.1 asks for about 18 compact / 7 irregular; the 20-30 C bin has a single compact neutral/cation pair "
                    "(coronene), so its other slots are irregular, and 30-45 C needs a bay-bearing compact species (C44H18)"}, open(f"{outdir}/species_meta.json", "w"), indent=1)

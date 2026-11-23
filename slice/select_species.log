@@ -1,9 +1,17 @@
 PAHdb 4.00 (2024-06-27), 10749 species
-filters: {'not fully hydrogenated / holes': 32, 'neutral not closed-shell': 755, 'non-hexagon ring': 34} -> 3334 pure hexagon-only PAHs (neutral closed-shell or cation), 20-110 C
-bec counts vs stored n_solo/n_duo/n_trio/n_quartet: 3334/3334 agree; vs geometric count: 3334/3334 agree
-21-30 C after filters: 286 neutral, 24 cation (Ricca+2025 Table 1, pure PAHs before our filters: 786 / 30)
-neutral/cation pairs: 1218
-pairs per bin (compact/irregular): [('20-30', 1, 16), ('30-45', 6, 164), ('45-60', 25, 281), ('60-80', 38, 311), ('80-110', 104, 272)]
+=========================================================
+BEC ERROR: SEARCH FOUND TOO FEW NEAREST-NEIGHBOR POINTS
+=========================================================
+
+=========================================================
+BEC ERROR: SEARCH FOUND TOO FEW NEAREST-NEIGHBOR POINTS
+=========================================================
+
+filters: {'listed multiplicity inconsistent with bonding (screen_spin)': 373, 'neutral not closed-shell': 749, 'non-hexagon ring': 32, 'not fully hydrogenated / holes': 19} -> 2982 pure hexagon-only PAHs (neutral closed-shell or cation), 20-110 C
+bec counts vs stored n_solo/n_duo/n_trio/n_quartet: 2982/2982 agree; vs geometric count: 2982/2982 agree
+21-30 C after filters: 285 neutral, 24 cation (Ricca+2025 Table 1, pure PAHs before our filters: 786 / 30)
+neutral/cation pairs: 890
+pairs per bin (compact/irregular): [('20-30', 1, 16), ('30-45', 6, 139), ('45-60', 24, 204), ('60-80', 35, 228), ('80-110', 74, 163)]
   bin 20-30 compact: only 1 pairs for 4 slots; the rest go to irregular
 pair,uid,formula,n_c,n_h,charge,class,n_solo,n_duo,n_trio,n_quartet,n_bay,bec,symmetry,method
 0,18,C24H12,24,12,0,compact,0,12,0,0,0,333333,1-A1G,RB3LYP
@@ -34,8 +42,8 @@ pair,uid,formula,n_c,n_h,charge,class,n_solo,n_duo,n_trio,n_quartet,n_bay,bec,sy
 12,38,C54H18,54,18,1,compact,6,12,0,0,0,323232323232,2-B2G,UB3LYP
 13,3179,C56H20,56,20,0,compact,8,12,0,0,0,33322223332222,1-AG,RB3LYP
 13,3180,C56H20,56,20,1,compact,8,12,0,0,0,33322223332222,2-AU,UB3LYP
-14,10452,C52H20,52,20,0,irregular,8,6,6,0,1,43122242322322,1-A',RB3LYP
-14,10480,C52H20,52,20,1,irregular,8,6,6,0,1,43122242322322,2-A",UB3LYP
+14,10455,C52H20,52,20,0,irregular,5,12,3,0,2,43213233233122,1-A',RB3LYP
+14,10445,C52H20,52,20,1,irregular,5,12,3,0,2,43213233233122,2-A",UB3LYP
 15,115,C66H20,66,20,0,compact,8,12,0,0,0,32323223232322,1-AG,RB3LYP
 15,117,C66H20,66,20,1,compact,8,12,0,0,0,32323223232322,2-AU,UB3LYP
 16,3194,C72H22,72,22,0,compact,10,12,0,0,0,3323222233232222,1-AG,RB3LYP

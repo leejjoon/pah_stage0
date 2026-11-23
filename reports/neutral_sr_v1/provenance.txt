@@ -1,0 +1,7 @@
+date: 2026-11-23T23:13:06+09:00
+host: gh200
+repo commit: unknown
+container C sha256: 5a0fd1b3048749ddd6a558835ebd132fb1585ebb8cd763b6ea12b01c398b268d
+PAHdb: e1c2efd3468558c934d7d49c9417e18580baf63f8af980ae5941009230f0d319  pahdb-complete-theoretical-v4.00.xml.gz
+pahfit 2.6.dev93+gca599f9a1 | pysr 2.7.2 | scikit-learn 1.9.1
+wall time: 1282 s

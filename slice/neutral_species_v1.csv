@@ -1,0 +1,1118 @@
+species,source,uid,structure_id,formula,charge,mult,nC,nH,nN,cls,solo,duo,trio,quartet,lib300,lib600,lib900,status
+C100H26_v4u10772,pahdb,10772,10772,C100H26,0,1,100,26,0,benzenoid,12,14,0,0,1,1,1,use
+C100H26_v4u10783,pahdb,10783,10783,C100H26,0,1,100,26,0,benzenoid,12,14,0,0,1,1,1,use
+C100H26_v4u7492,pahdb,7492,7492,C100H26,0,1,100,26,0,benzenoid,10,10,6,0,1,1,1,use
+C100H26_v4u7493,pahdb,7493,7493,C100H26,0,1,100,26,0,benzenoid,6,14,6,0,1,1,0,use
+C100H26_v4u7494,pahdb,7494,7494,C100H26,0,1,100,26,0,benzenoid,12,10,0,4,1,1,0,use
+C100H26_v4u7495,pahdb,7495,7495,C100H26,0,1,100,26,0,benzenoid,10,16,0,0,1,1,1,use
+C100H30_v4u7499,pahdb,7499,7499,C100H30,0,1,100,30,0,benzenoid,5,6,15,4,1,1,0,use
+C102H26_v4u3214,pahdb,3214,3214,C102H26,0,1,102,26,0,benzenoid,14,12,0,0,1,1,1,use
+C102H26_v4u7473,pahdb,7473,7473,C102H26,0,1,102,26,0,benzenoid,12,8,6,0,1,1,1,use
+C102H26_v4u7474,pahdb,7474,7474,C102H26,0,1,102,26,0,benzenoid,12,14,0,0,1,1,1,use
+C102H26_v4u7475,pahdb,7475,7475,C102H26,0,1,102,26,0,benzenoid,13,10,3,0,1,1,1,use
+C102H26_v4u7476,pahdb,7476,7476,C102H26,0,1,102,26,0,benzenoid,13,10,3,0,1,1,1,use
+C102H26_v4u7477,pahdb,7477,7477,C102H26,0,1,102,26,0,benzenoid,12,8,6,0,1,1,0,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C102H28_v4u7484,pahdb,7484,7484,C102H28,0,1,102,28,0,benzenoid,4,12,12,0,1,1,0,use
+C102H28_v4u7485,pahdb,7485,7485,C102H28,0,1,102,28,0,benzenoid,8,8,12,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C102H30_v4u7443,pahdb,7443,7443,C102H30,0,1,102,30,0,benzenoid,7,4,15,4,1,1,0,use
+C103H27_v4u7447,pahdb,7447,7447,C103H27,0,2,103,27,0,benzenoid,12,8,3,4,1,1,1,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C104H28_v4u6456,pahdb,6456,6456,C104H28,0,1,104,28,0,benzenoid,8,8,12,0,1,1,1,use
+C106H26_v4u10776,pahdb,10776,10776,C106H26,0,1,106,26,0,benzenoid,12,14,0,0,1,1,1,use
+C106H26_v4u10777,pahdb,10777,10777,C106H26,0,1,106,26,0,benzenoid,12,14,0,0,1,1,0,use
+C106H26_v4u10778,pahdb,10778,10778,C106H26,0,1,106,26,0,benzenoid,12,14,0,0,1,1,1,use
+C108H28_v4u7422,pahdb,7422,7422,C108H28,0,1,108,28,0,benzenoid,8,8,12,0,1,1,1,use
+C108H28_v4u7455,pahdb,7455,7455,C108H28,0,1,108,28,0,benzenoid,12,4,12,0,1,1,1,use
+C108H28_v4u7456,pahdb,7456,7456,C108H28,0,1,108,28,0,benzenoid,8,8,12,0,1,1,0,use
+C108H28_v4u7463,pahdb,7463,7463,C108H28,0,1,108,28,0,benzenoid,12,4,12,0,1,1,0,use
+C109H27_v4u7426,pahdb,7426,7426,C109H27,0,2,109,27,0,benzenoid,3,24,0,0,1,1,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C111H29_v4u7430,pahdb,7430,7430,C111H29,0,2,111,29,0,benzenoid,13,6,6,4,1,1,1,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C114H30_v4u4248,pahdb,4248,4248,C114H30,0,1,114,30,0,benzenoid,0,12,18,0,1,1,0,use
+C114H30_v4u7402,pahdb,7402,7402,C114H30,0,1,114,30,0,benzenoid,12,0,18,0,1,1,1,use
+C114H30_v4u7440,pahdb,7440,7440,C114H30,0,1,114,30,0,benzenoid,6,6,18,0,1,1,1,use
+C116H28_v4u7381,pahdb,7381,7381,C116H28,0,1,116,28,0,benzenoid,12,10,6,0,1,1,1,use
+C116H28_v4u7382,pahdb,7382,7382,C116H28,0,1,116,28,0,benzenoid,14,8,6,0,1,1,1,use
+C116H28_v4u7384,pahdb,7384,7384,C116H28,0,1,116,28,0,benzenoid,10,12,6,0,1,1,1,use
+C116H28_v4u7420,pahdb,7420,7420,C116H28,0,1,116,28,0,benzenoid,10,12,6,0,1,1,1,use
+C116H28_v4u7421,pahdb,7421,7421,C116H28,0,1,116,28,0,benzenoid,4,24,0,0,1,1,1,use
+C116H32_v4u7389,pahdb,7389,7389,C116H32,0,1,116,32,0,benzenoid,12,0,12,8,1,1,1,use
+C118H28_v4u7385,pahdb,7385,7385,C118H28,0,1,118,28,0,benzenoid,11,14,3,0,1,1,1,use
+C118H28_v4u7396,pahdb,7396,7396,C118H28,0,1,118,28,0,benzenoid,6,22,0,0,1,1,1,use
+C118H28_v4u7397,pahdb,7397,7397,C118H28,0,1,118,28,0,benzenoid,6,22,0,0,1,1,0,use
+C120H32_v4u4255,pahdb,4255,4255,C120H32,0,1,120,32,0,benzenoid,0,14,18,0,1,1,0,use
+C120H32_v4u4256,pahdb,4256,4256,C120H32,0,1,120,32,0,benzenoid,1,10,21,0,1,1,0,use
+C122H28_v4u7371,pahdb,7371,7371,C122H28,0,1,122,28,0,benzenoid,10,18,0,0,1,1,0,use
+C122H28_v4u7372,pahdb,7372,7372,C122H28,0,1,122,28,0,benzenoid,10,18,0,0,1,1,1,use
+C122H28_v4u7373,pahdb,7373,7373,C122H28,0,1,122,28,0,benzenoid,10,18,0,0,1,1,1,use
+C122H28_v4u7374,pahdb,7374,7374,C122H28,0,1,122,28,0,benzenoid,10,18,0,0,1,1,1,use
+C124H28_v4u7352,pahdb,7352,7352,C124H28,0,1,124,28,0,benzenoid,12,16,0,0,1,1,1,use
+C124H28_v4u7353,pahdb,7353,7353,C124H28,0,1,124,28,0,benzenoid,12,16,0,0,1,1,0,use
+C124H28_v4u7354,pahdb,7354,7354,C124H28,0,1,124,28,0,benzenoid,12,16,0,0,1,1,1,use
+C124H28_v4u7355,pahdb,7355,7355,C124H28,0,1,124,28,0,benzenoid,12,16,0,0,1,1,0,use
+C124H28_v4u7356,pahdb,7356,7356,C124H28,0,1,124,28,0,benzenoid,12,16,0,0,1,1,0,use
+C124H28_v4u7357,pahdb,7357,7357,C124H28,0,1,124,28,0,benzenoid,12,16,0,0,1,1,1,use
+C126H28_v4u7328,pahdb,7328,7328,C126H28,0,1,126,28,0,benzenoid,14,14,0,0,1,1,0,use
+C126H28_v4u7329,pahdb,7329,7329,C126H28,0,1,126,28,0,benzenoid,14,14,0,0,1,1,1,use
+C126H34_v4u4234,pahdb,4234,4234,C126H34,0,1,126,34,0,benzenoid,2,8,24,0,1,1,0,use
+C127H31_v4u6436,pahdb,6436,6436,C127H31,0,2,127,31,0,benzenoid,8,20,3,0,1,1,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C132H30_v4u7333,pahdb,7333,7333,C132H30,0,1,132,30,0,benzenoid,14,16,0,0,1,1,0,use
+C132H34_v4u4186,pahdb,4186,4186,C132H34,0,1,132,34,0,benzenoid,2,8,24,0,1,1,0,use
+C132H34_v4u4187,pahdb,4187,4187,C132H34,0,1,132,34,0,benzenoid,0,16,18,0,1,1,0,use
+C132H34_v4u4189,pahdb,4189,4189,C132H34,0,1,132,34,0,benzenoid,0,18,12,4,1,1,0,use
+C132H34_v4u4193,pahdb,4193,4193,C132H34,0,1,132,34,0,benzenoid,1,14,15,4,1,1,0,use
+C132H34_v4u4194,pahdb,4194,4194,C132H34,0,1,132,34,0,benzenoid,1,14,15,4,1,1,0,use
+C132H34_v4u4199,pahdb,4199,4199,C132H34,0,1,132,34,0,benzenoid,1,12,21,0,1,1,0,use
+C134H30_v4u7305,pahdb,7305,7305,C134H30,0,1,134,30,0,benzenoid,10,20,0,0,1,1,1,use
+C134H30_v4u7306,pahdb,7306,7306,C134H30,0,1,134,30,0,benzenoid,14,16,0,0,1,1,1,use
+C134H30_v4u7307,pahdb,7307,7307,C134H30,0,1,134,30,0,benzenoid,10,14,6,0,1,1,0,use
+C138H30_v4u7311,pahdb,7311,7311,C138H30,0,1,138,30,0,benzenoid,14,16,0,0,1,1,1,use
+C138H34_v4u4182,pahdb,4182,4182,C138H34,0,1,138,34,0,benzenoid,0,16,18,0,1,1,0,use
+C138H34_v4u4183,pahdb,4183,4183,C138H34,0,1,138,34,0,benzenoid,0,16,18,0,1,1,0,use
+C140H30_v4u769,pahdb,769,769,C140H30,0,1,140,30,0,benzenoid,8,22,0,0,1,1,1,use
+C142H30_v4u766,pahdb,766,766,C142H30,0,1,142,30,0,benzenoid,10,20,0,0,1,1,1,use
+C144H30_v4u756,pahdb,756,756,C144H30,0,1,144,30,0,benzenoid,12,18,0,0,1,1,0,use
+C144H30_v4u759,pahdb,759,759,C144H30,0,1,144,30,0,benzenoid,12,18,0,0,1,1,1,use
+C144H36_v4u4058,pahdb,4058,4058,C144H36,0,1,144,36,0,benzenoid,2,12,18,4,1,1,0,use
+C144H36_v4u4063,pahdb,4063,4063,C144H36,0,1,144,36,0,benzenoid,1,16,15,4,1,1,0,use
+C144H36_v4u4073,pahdb,4073,4073,C144H36,0,1,144,36,0,benzenoid,2,12,18,4,1,1,0,use
+C144H36_v4u4074,pahdb,4074,4074,C144H36,0,1,144,36,0,benzenoid,1,16,15,4,1,1,0,use
+C144H36_v4u4079,pahdb,4079,4079,C144H36,0,1,144,36,0,benzenoid,2,12,18,4,1,1,0,use
+C144H36_v4u4086,pahdb,4086,4086,C144H36,0,1,144,36,0,benzenoid,0,18,18,0,1,0,0,use
+C145H37_v4u6448,pahdb,6448,6448,C145H37,0,2,145,37,0,benzenoid,12,16,9,0,1,1,0,"excluded: screen below_bound (listed multiplicity 2, bound 4)"
+C148H30_v4u3223,pahdb,3223,3223,C148H30,0,1,148,30,0,benzenoid,18,12,0,0,1,1,1,use
+C148H30_v4u743,pahdb,743,743,C148H30,0,1,148,30,0,benzenoid,16,14,0,0,1,1,1,use
+C150H36_v4u4011,pahdb,4011,4011,C150H36,0,1,150,36,0,benzenoid,2,10,24,0,1,1,0,use
+C150H36_v4u4012,pahdb,4012,4012,C150H36,0,1,150,36,0,benzenoid,1,14,21,0,1,1,0,use
+C150H36_v4u4030,pahdb,4030,4030,C150H36,0,1,150,36,0,benzenoid,1,16,15,4,1,1,0,use
+C168H36_v4u6422,pahdb,6422,6422,C168H36,0,1,168,36,0,benzenoid,11,16,9,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C168H36_v4u7315,pahdb,7315,7315,C168H36,0,1,168,36,0,benzenoid,12,6,18,0,1,1,1,use
+C172H38_v4u6426,pahdb,6426,6426,C172H38,0,1,172,38,0,benzenoid,14,18,6,0,1,1,0,use
+C185H37_v4u6440,pahdb,6440,6440,C185H37,0,2,185,37,0,benzenoid,11,26,0,0,1,1,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C196H38_v4u6418,pahdb,6418,6418,C196H38,0,1,196,38,0,benzenoid,11,24,3,0,1,1,0,use
+C212H44_v4u6452,pahdb,6452,6452,C212H44,0,1,212,44,0,benzenoid,18,20,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C23H12N_v4u9377,pahdb,9377,9377,C23H12N,0,2,23,12,1,npah,1,10,0,0,1,0,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C25H13_v4u2324,pahdb,2324,2324,C25H13,0,2,25,13,0,benzenoid,2,2,9,0,1,1,1,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C25H15_v4u2314,pahdb,2314,2314,C25H15,0,2,25,15,0,benzenoid,4,0,3,8,1,0,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C25H15_v4u2316,pahdb,2316,2316,C25H15,0,2,25,15,0,benzenoid,2,2,3,8,1,0,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C26H14_v4u2300,pahdb,2300,2300,C26H14,0,1,26,14,0,benzenoid,1,6,3,4,1,1,1,use
+C26H16_v4u2265,pahdb,2265,2265,C26H16,0,1,26,16,0,benzenoid,4,4,0,8,1,0,0,use
+C26H16_v4u2268,pahdb,2268,2268,C26H16,0,1,26,16,0,benzenoid,4,4,0,8,1,0,0,use
+C27H14_v4u69,pahdb,69,69,C27H14,0,1,27,14,0,superH,3,6,3,0,1,1,0,"excluded: screen below_bound (listed multiplicity 1, bound 3)"
+C27H15_v4u2239,pahdb,2239,2239,C27H15,0,2,27,15,0,benzenoid,1,4,6,4,1,0,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C28H16_v4u2179,pahdb,2179,2179,C28H16,0,1,28,16,0,benzenoid,1,2,9,4,1,0,0,use
+C28H16_v4u2180,pahdb,2180,2180,C28H16,0,1,28,16,0,benzenoid,2,0,6,8,1,0,0,use
+C28H16_v4u2189,pahdb,2189,2189,C28H16,0,1,28,16,0,benzenoid,2,0,6,8,1,0,0,use
+C28H16_v4u2198,pahdb,2198,2198,C28H16,0,1,28,16,0,benzenoid,3,6,3,4,1,0,0,use
+C28H16_v4u2214,pahdb,2214,2214,C28H16,0,1,28,16,0,benzenoid,1,4,3,8,1,0,0,use
+C29H17_v4u2074,pahdb,2074,2074,C29H17,0,2,29,17,0,benzenoid,1,6,6,4,1,0,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C29H17_v4u2077,pahdb,2077,2077,C29H17,0,2,29,17,0,benzenoid,3,4,6,4,1,0,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C29H17_v4u2080,pahdb,2080,2080,C29H17,0,2,29,17,0,benzenoid,3,0,6,8,1,0,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C29H17_v4u2082,pahdb,2082,2082,C29H17,0,2,29,17,0,benzenoid,1,2,6,8,1,0,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C29H17_v4u2083,pahdb,2083,2083,C29H17,0,2,29,17,0,benzenoid,1,2,6,8,1,0,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C29H17_v4u2098,pahdb,2098,2098,C29H17,0,2,29,17,0,benzenoid,2,4,3,8,1,0,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C29H17_v4u2102,pahdb,2102,2102,C29H17,0,2,29,17,0,benzenoid,2,4,3,8,1,0,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C29H17_v4u2103,pahdb,2103,2103,C29H17,0,2,29,17,0,benzenoid,2,4,3,8,1,0,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C29H17_v4u2104,pahdb,2104,2104,C29H17,0,2,29,17,0,benzenoid,4,2,3,8,1,0,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C29H17_v4u2108,pahdb,2108,2108,C29H17,0,2,29,17,0,benzenoid,4,2,3,8,1,0,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C29H17_v4u2120,pahdb,2120,2120,C29H17,0,2,29,17,0,benzenoid,2,4,3,8,1,0,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C29H17_v4u2122,pahdb,2122,2122,C29H17,0,2,29,17,0,benzenoid,2,4,3,8,1,0,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C29H17_v4u2130,pahdb,2130,2130,C29H17,0,2,29,17,0,benzenoid,2,4,3,8,1,0,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C29H17_v4u2135,pahdb,2135,2135,C29H17,0,2,29,17,0,benzenoid,2,0,3,12,1,0,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C29H17_v4u2139,pahdb,2139,2139,C29H17,0,2,29,17,0,benzenoid,3,2,0,12,1,0,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C29H17_v4u2140,pahdb,2140,2140,C29H17,0,2,29,17,0,benzenoid,5,0,0,12,1,0,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C29H17_v4u2143,pahdb,2143,2143,C29H17,0,2,29,17,0,benzenoid,3,2,0,12,1,0,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C29H17_v4u2145,pahdb,2145,2145,C29H17,0,2,29,17,0,benzenoid,3,2,0,12,1,0,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C30H14_v4u10770,pahdb,10770,10770,C30H14,0,1,30,14,0,benzenoid,4,4,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C30H14_v4u7277,pahdb,7277,7277,C30H14,0,1,30,14,0,benzenoid,1,10,3,0,1,1,0,use
+C30H14_v4u7278,pahdb,7278,7278,C30H14,0,1,30,14,0,benzenoid,2,6,6,0,1,1,1,use
+C30H16_v4u2002,pahdb,2002,2002,C30H16,0,1,30,16,0,benzenoid,2,4,6,4,1,0,0,use
+C30H16_v4u2028,pahdb,2028,2028,C30H16,0,1,30,16,0,benzenoid,3,2,3,8,1,1,0,use
+C30H16_v4u2036,pahdb,2036,2036,C30H16,0,1,30,16,0,benzenoid,1,8,3,4,1,1,1,use
+C30H16_v4u2051,pahdb,2051,2051,C30H16,0,1,30,16,0,benzenoid,0,2,6,8,1,0,0,use
+C30H18_v4u1898,pahdb,1898,1898,C30H18,0,1,30,18,0,benzenoid,0,10,0,8,1,0,0,use
+C30H18_v4u1899,pahdb,1899,1899,C30H18,0,1,30,18,0,benzenoid,0,10,0,8,1,0,0,use
+C30H18_v4u1903,pahdb,1903,1903,C30H18,0,1,30,18,0,benzenoid,2,8,0,8,1,0,0,use
+C30H18_v4u1934,pahdb,1934,1934,C30H18,0,1,30,18,0,benzenoid,2,8,0,8,1,0,0,use
+C30H18_v4u1937,pahdb,1937,1937,C30H18,0,1,30,18,0,benzenoid,2,8,0,8,1,0,0,use
+C30H18_v4u1941,pahdb,1941,1941,C30H18,0,1,30,18,0,benzenoid,4,6,0,8,1,0,0,use
+C30H18_v4u1949,pahdb,1949,1949,C30H18,0,1,30,18,0,benzenoid,6,4,0,8,1,0,0,use
+C31H13N_v4u9364,pahdb,9364,9364,C31H13N,0,1,31,13,1,npah,1,12,0,0,1,1,1,use
+C31H13N_v4u9366,pahdb,9366,9366,C31H13N,0,1,31,13,1,npah,3,10,0,0,1,1,1,use
+C31H13N_v4u9369,pahdb,9369,9369,C31H13N,0,1,31,13,1,npah,3,10,0,0,1,1,0,use
+C31H13N_v4u9374,pahdb,9374,9374,C31H13N,0,1,31,13,1,npah,3,10,0,0,1,1,1,use
+C31H14N_v4u9353,pahdb,9353,9353,C31H14N,0,2,31,14,1,npah,2,12,0,0,1,1,1,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C31H14N_v4u9356,pahdb,9356,9356,C31H14N,0,2,31,14,1,npah,2,12,0,0,1,1,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C31H14N_v4u9357,pahdb,9357,9357,C31H14N,0,2,31,14,1,npah,2,12,0,0,1,1,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C31H14N_v4u9360,pahdb,9360,9360,C31H14N,0,2,31,14,1,npah,2,12,0,0,1,0,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C31H14N_v4u9361,pahdb,9361,9361,C31H14N,0,2,31,14,1,npah,2,12,0,0,1,0,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C31H17_v4u1774,pahdb,1774,1774,C31H17,0,2,31,17,0,benzenoid,1,0,12,4,1,0,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C31H17_v4u1775,pahdb,1775,1775,C31H17,0,2,31,17,0,benzenoid,1,0,12,4,1,0,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C31H17_v4u1787,pahdb,1787,1787,C31H17,0,2,31,17,0,benzenoid,3,4,6,4,1,0,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C31H17_v4u1815,pahdb,1815,1815,C31H17,0,2,31,17,0,benzenoid,2,2,9,4,1,0,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C31H17_v4u1816,pahdb,1816,1816,C31H17,0,2,31,17,0,benzenoid,2,2,9,4,1,0,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C31H17_v4u1825,pahdb,1825,1825,C31H17,0,2,31,17,0,benzenoid,1,0,12,4,1,0,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C31H17_v4u1826,pahdb,1826,1826,C31H17,0,2,31,17,0,benzenoid,0,0,9,8,1,0,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C31H17_v4u1839,pahdb,1839,1839,C31H17,0,2,31,17,0,benzenoid,2,8,3,4,1,0,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C31H17_v4u1846,pahdb,1846,1846,C31H17,0,2,31,17,0,benzenoid,4,6,3,4,1,0,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C31H17_v4u1857,pahdb,1857,1857,C31H17,0,2,31,17,0,benzenoid,3,4,6,4,1,0,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C32H18_v4u1526,pahdb,1526,1526,C32H18,0,3,32,18,0,benzenoid,3,2,9,4,1,0,0,excluded: open-shell neutral (multiplicity 3); outside the closed-shell MLMD model
+C32H18_v4u1531,pahdb,1531,1531,C32H18,0,3,32,18,0,benzenoid,3,2,9,4,1,0,0,excluded: open-shell neutral (multiplicity 3); outside the closed-shell MLMD model
+C32H18_v4u1532,pahdb,1532,1532,C32H18,0,3,32,18,0,benzenoid,5,0,9,4,1,0,0,excluded: open-shell neutral (multiplicity 3); outside the closed-shell MLMD model
+C32H18_v4u1540,pahdb,1540,1540,C32H18,0,1,32,18,0,benzenoid,5,0,9,4,1,0,0,use
+C32H18_v4u1543,pahdb,1543,1543,C32H18,0,1,32,18,0,benzenoid,1,4,9,4,1,0,0,use
+C32H18_v4u1587,pahdb,1587,1587,C32H18,0,1,32,18,0,benzenoid,3,8,3,4,1,0,0,use
+C32H18_v4u1600,pahdb,1600,1600,C32H18,0,1,32,18,0,benzenoid,7,4,3,4,1,1,0,use
+C32H18_v4u1606,pahdb,1606,1606,C32H18,0,1,32,18,0,benzenoid,1,10,3,4,1,0,0,use
+C32H18_v4u1608,pahdb,1608,1608,C32H18,0,1,32,18,0,benzenoid,1,10,3,4,1,0,0,use
+C32H18_v4u1610,pahdb,1610,1610,C32H18,0,1,32,18,0,benzenoid,3,8,3,4,1,0,0,use
+C32H18_v4u1611,pahdb,1611,1611,C32H18,0,1,32,18,0,benzenoid,5,6,3,4,1,0,0,use
+C32H18_v4u1628,pahdb,1628,1628,C32H18,0,1,32,18,0,benzenoid,2,8,0,8,1,0,0,use
+C32H18_v4u1649,pahdb,1649,1649,C32H18,0,1,32,18,0,benzenoid,2,6,6,4,1,1,1,use
+C32H18_v4u1656,pahdb,1656,1656,C32H18,0,1,32,18,0,benzenoid,2,6,6,4,1,0,0,use
+C32H18_v4u1657,pahdb,1657,1657,C32H18,0,1,32,18,0,benzenoid,4,4,6,4,1,0,0,use
+C32H18_v4u1734,pahdb,1734,1734,C32H18,0,3,32,18,0,benzenoid,2,4,12,0,1,0,0,excluded: open-shell neutral (multiplicity 3); outside the closed-shell MLMD model
+C32H18_v4u1739,pahdb,1739,1739,C32H18,0,1,32,18,0,benzenoid,2,4,12,0,1,0,0,use
+C32H18_v4u1741,pahdb,1741,1741,C32H18,0,1,32,18,0,benzenoid,4,2,12,0,1,0,0,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C32H18_v4u1744,pahdb,1744,1744,C32H18,0,3,32,18,0,benzenoid,2,0,12,4,1,0,0,excluded: open-shell neutral (multiplicity 3); outside the closed-shell MLMD model
+C32H18_v4u1746,pahdb,1746,1746,C32H18,0,3,32,18,0,benzenoid,3,2,9,4,1,0,0,excluded: open-shell neutral (multiplicity 3); outside the closed-shell MLMD model
+C32H18_v4u1757,pahdb,1757,1757,C32H18,0,3,32,18,0,benzenoid,3,2,9,4,1,0,0,excluded: open-shell neutral (multiplicity 3); outside the closed-shell MLMD model
+C32H18_v4u1768,pahdb,1768,1768,C32H18,0,3,32,18,0,benzenoid,3,2,9,4,1,0,0,excluded: open-shell neutral (multiplicity 3); outside the closed-shell MLMD model
+C33H19_v4u1145,pahdb,1145,1145,C33H19,0,2,33,19,0,benzenoid,2,2,3,12,1,0,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C33H19_v4u1315,pahdb,1315,1315,C33H19,0,2,33,19,0,benzenoid,1,8,6,4,1,0,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C33H19_v4u1370,pahdb,1370,1370,C33H19,0,2,33,19,0,benzenoid,3,6,6,4,1,0,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C33H19_v4u1372,pahdb,1372,1372,C33H19,0,2,33,19,0,benzenoid,7,2,6,4,1,0,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C33H19_v4u1469,pahdb,1469,1469,C33H19,0,2,33,19,0,benzenoid,8,0,3,8,1,0,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C34H16_v4u6415,pahdb,6415,6415,C34H16,0,1,34,16,0,benzenoid,4,2,6,4,1,1,0,use
+C34H16_v4u6459,pahdb,6459,6459,C34H16,0,1,34,16,0,benzenoid,2,10,0,4,1,1,1,use
+C34H16_v4u7202,pahdb,7202,7202,C34H16,0,1,34,16,0,benzenoid,1,8,3,4,1,1,1,use
+C34H16_v4u7203,pahdb,7203,7203,C34H16,0,1,34,16,0,benzenoid,1,6,9,0,1,1,0,use
+C34H16_v4u7204,pahdb,7204,7204,C34H16,0,1,34,16,0,benzenoid,0,4,12,0,1,1,0,use
+C34H16_v4u7205,pahdb,7205,7205,C34H16,0,1,34,16,0,benzenoid,1,6,9,0,1,1,0,use
+C34H16_v4u7206,pahdb,7206,7206,C34H16,0,1,34,16,0,benzenoid,2,8,6,0,1,1,1,use
+C34H16_v4u7207,pahdb,7207,7207,C34H16,0,1,34,16,0,benzenoid,2,8,6,0,1,1,1,use
+C34H16_v4u7208,pahdb,7208,7208,C34H16,0,1,34,16,0,benzenoid,1,6,9,0,1,1,1,use
+C34H16_v4u7209,pahdb,7209,7209,C34H16,0,1,34,16,0,benzenoid,2,8,6,0,1,1,1,use
+C34H16_v4u7210,pahdb,7210,7210,C34H16,0,1,34,16,0,benzenoid,3,4,9,0,1,1,1,use
+C34H16_v4u7211,pahdb,7211,7211,C34H16,0,1,34,16,0,benzenoid,4,0,12,0,1,1,0,use
+C34H16_v4u7212,pahdb,7212,7212,C34H16,0,1,34,16,0,benzenoid,0,4,12,0,1,1,1,use
+C34H16_v4u7213,pahdb,7213,7213,C34H16,0,1,34,16,0,benzenoid,2,2,12,0,1,1,1,use
+C34H16_v4u7214,pahdb,7214,7214,C34H16,0,1,34,16,0,benzenoid,2,8,6,0,1,1,0,use
+C34H16_v4u7215,pahdb,7215,7215,C34H16,0,1,34,16,0,benzenoid,3,4,9,0,1,1,1,use
+C34H16_v4u7216,pahdb,7216,7216,C34H16,0,1,34,16,0,benzenoid,1,8,3,4,1,1,1,use
+C34H16_v4u7217,pahdb,7217,7217,C34H16,0,1,34,16,0,benzenoid,1,8,3,4,1,1,1,use
+C34H16_v4u7218,pahdb,7218,7218,C34H16,0,1,34,16,0,benzenoid,4,6,6,0,1,1,1,use
+C34H16_v4u7219,pahdb,7219,7219,C34H16,0,1,34,16,0,benzenoid,4,6,6,0,1,1,1,use
+C34H16_v4u7220,pahdb,7220,7220,C34H16,0,1,34,16,0,benzenoid,4,6,6,0,1,1,1,use
+C34H16_v4u7260,pahdb,7260,7260,C34H16,0,1,34,16,0,benzenoid,1,8,3,4,1,1,1,use
+C34H16_v4u7261,pahdb,7261,7261,C34H16,0,1,34,16,0,benzenoid,2,4,6,4,1,1,0,use
+C34H16_v4u7262,pahdb,7262,7262,C34H16,0,1,34,16,0,benzenoid,2,4,6,4,1,1,0,use
+C34H20_v4u840,pahdb,840,840,C34H20,0,1,34,20,0,benzenoid,0,12,0,8,1,0,0,use
+C34H20_v4u850,pahdb,850,850,C34H20,0,1,34,20,0,benzenoid,2,10,0,8,1,0,0,use
+C34H20_v4u851,pahdb,851,851,C34H20,0,1,34,20,0,benzenoid,2,10,0,8,1,0,0,use
+C34H20_v4u853,pahdb,853,853,C34H20,0,1,34,20,0,benzenoid,2,10,0,8,1,0,0,use
+C34H20_v4u858,pahdb,858,858,C34H20,0,1,34,20,0,benzenoid,2,10,0,8,1,0,0,use
+C34H20_v4u862,pahdb,862,862,C34H20,0,1,34,20,0,benzenoid,2,10,0,8,1,0,0,use
+C34H20_v4u878,pahdb,878,878,C34H20,0,1,34,20,0,benzenoid,8,4,0,8,1,1,0,use
+C34H20_v4u899,pahdb,899,899,C34H20,0,1,34,20,0,benzenoid,4,8,0,8,1,0,0,use
+C34H20_v4u915,pahdb,915,915,C34H20,0,1,34,20,0,benzenoid,8,4,0,8,1,1,1,use
+C34H20_v4u927,pahdb,927,927,C34H20,0,1,34,20,0,benzenoid,8,4,0,8,1,1,1,use
+C34H20_v4u933,pahdb,933,933,C34H20,0,1,34,20,0,benzenoid,2,10,0,8,1,0,0,use
+C34H20_v4u935,pahdb,935,935,C34H20,0,1,34,20,0,benzenoid,2,10,0,8,1,0,0,use
+C34H20_v4u936,pahdb,936,936,C34H20,0,1,34,20,0,benzenoid,4,8,0,8,1,0,0,use
+C34H20_v4u938,pahdb,938,938,C34H20,0,1,34,20,0,benzenoid,4,8,0,8,1,0,0,use
+C34H20_v4u939,pahdb,939,939,C34H20,0,1,34,20,0,benzenoid,2,10,0,8,1,0,0,use
+C34H20_v4u943,pahdb,943,943,C34H20,0,1,34,20,0,benzenoid,4,8,0,8,1,0,0,use
+C34H20_v4u944,pahdb,944,944,C34H20,0,1,34,20,0,benzenoid,2,10,0,8,1,0,0,use
+C34H20_v4u949,pahdb,949,949,C34H20,0,1,34,20,0,benzenoid,4,8,0,8,1,0,0,use
+C34H20_v4u970,pahdb,970,970,C34H20,0,1,34,20,0,benzenoid,4,8,0,8,1,0,0,use
+C34H20_v4u973,pahdb,973,973,C34H20,0,1,34,20,0,benzenoid,4,8,0,8,1,0,0,use
+C34H20_v4u976,pahdb,976,976,C34H20,0,1,34,20,0,benzenoid,8,4,0,8,1,0,0,use
+C34H20_v4u981,pahdb,981,981,C34H20,0,1,34,20,0,benzenoid,4,8,0,8,1,0,0,use
+C36H16_v4u10762,pahdb,10762,10762,C36H16,0,1,36,16,0,benzenoid,4,6,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C36H16_v4u10763,pahdb,10763,10763,C36H16,0,1,36,16,0,benzenoid,4,6,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C36H16_v4u10764,pahdb,10764,10764,C36H16,0,1,36,16,0,benzenoid,4,6,6,0,1,1,1,use
+C36H16_v4u7136,pahdb,7136,7136,C36H16,0,1,36,16,0,benzenoid,3,4,9,0,1,1,1,use
+C36H16_v4u7137,pahdb,7137,7137,C36H16,0,1,36,16,0,benzenoid,3,4,9,0,1,1,0,use
+C36H16_v4u7138,pahdb,7138,7138,C36H16,0,1,36,16,0,benzenoid,1,6,9,0,1,1,1,use
+C36H16_v4u7139,pahdb,7139,7139,C36H16,0,1,36,16,0,benzenoid,3,4,9,0,1,1,1,use
+C36H16_v4u7140,pahdb,7140,7140,C36H16,0,1,36,16,0,benzenoid,2,2,12,0,1,1,1,use
+C36H16_v4u7141,pahdb,7141,7141,C36H16,0,1,36,16,0,benzenoid,2,10,0,4,1,1,1,use
+C36H16_v4u7142,pahdb,7142,7142,C36H16,0,1,36,16,0,benzenoid,2,10,0,4,1,1,1,use
+C36H16_v4u7143,pahdb,7143,7143,C36H16,0,1,36,16,0,benzenoid,4,0,12,0,1,1,1,use
+C36H16_v4u7144,pahdb,7144,7144,C36H16,0,1,36,16,0,benzenoid,3,4,9,0,1,1,1,use
+C36H16_v4u7145,pahdb,7145,7145,C36H16,0,1,36,16,0,benzenoid,1,12,3,0,1,1,1,use
+C36H16_v4u7146,pahdb,7146,7146,C36H16,0,1,36,16,0,benzenoid,0,10,6,0,1,1,1,use
+C36H16_v4u7147,pahdb,7147,7147,C36H16,0,1,36,16,0,benzenoid,2,8,6,0,1,1,1,use
+C36H16_v4u7148,pahdb,7148,7148,C36H16,0,1,36,16,0,benzenoid,2,8,6,0,1,1,1,use
+C36H16_v4u7149,pahdb,7149,7149,C36H16,0,1,36,16,0,benzenoid,2,8,6,0,1,1,1,use
+C36H16_v4u7150,pahdb,7150,7150,C36H16,0,1,36,16,0,benzenoid,0,10,6,0,1,1,0,use
+C36H16_v4u7152,pahdb,7152,7152,C36H16,0,1,36,16,0,benzenoid,3,10,3,0,1,1,1,use
+C38H16_v4u10753,pahdb,10753,10753,C38H16,0,1,38,16,0,benzenoid,4,6,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C38H16_v4u10754,pahdb,10754,10754,C38H16,0,1,38,16,0,benzenoid,6,4,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C38H16_v4u10768,pahdb,10768,10768,C38H16,0,1,38,16,0,benzenoid,4,6,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C38H16_v4u7099,pahdb,7099,7099,C38H16,0,1,38,16,0,benzenoid,2,8,6,0,1,1,0,use
+C38H16_v4u7100,pahdb,7100,7100,C38H16,0,1,38,16,0,benzenoid,4,6,6,0,1,1,1,use
+C38H16_v4u7101,pahdb,7101,7101,C38H16,0,1,38,16,0,benzenoid,3,10,3,0,1,1,1,use
+C38H16_v4u7102,pahdb,7102,7102,C38H16,0,1,38,16,0,benzenoid,3,10,3,0,1,1,0,use
+C38H16_v4u7128,pahdb,7128,7128,C38H16,0,1,38,16,0,benzenoid,4,6,6,0,1,1,1,use
+C38H16_v4u7129,pahdb,7129,7129,C38H16,0,1,38,16,0,benzenoid,0,16,0,0,1,1,1,use
+C38H16_v4u7130,pahdb,7130,7130,C38H16,0,1,38,16,0,benzenoid,1,12,3,0,1,1,1,use
+C38H16_v4u7131,pahdb,7131,7131,C38H16,0,1,38,16,0,benzenoid,2,8,6,0,1,1,1,use
+C38H16_v4u7132,pahdb,7132,7132,C38H16,0,1,38,16,0,benzenoid,2,8,6,0,1,1,1,use
+C40H16_v4u7069,pahdb,7069,7069,C40H16,0,1,40,16,0,benzenoid,3,10,3,0,1,1,1,use
+C40H16_v4u7109,pahdb,7109,7109,C40H16,0,1,40,16,0,benzenoid,2,14,0,0,1,1,1,use
+C40H18_v4u10710,pahdb,10710,10710,C40H18,0,1,40,18,0,benzenoid,4,8,6,0,1,1,1,use
+C40H18_v4u10711,pahdb,10711,10711,C40H18,0,1,40,18,0,benzenoid,4,8,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C40H18_v4u10712,pahdb,10712,10712,C40H18,0,1,40,18,0,benzenoid,4,8,6,0,1,1,1,use
+C40H18_v4u10713,pahdb,10713,10713,C40H18,0,1,40,18,0,benzenoid,8,4,6,0,1,1,1,use
+C40H18_v4u10741,pahdb,10741,10741,C40H18,0,1,40,18,0,benzenoid,4,8,6,0,1,1,1,use
+C40H18_v4u10742,pahdb,10742,10742,C40H18,0,1,40,18,0,benzenoid,6,6,6,0,1,1,1,use
+C40H18_v4u10743,pahdb,10743,10743,C40H18,0,1,40,18,0,benzenoid,6,6,6,0,1,1,1,use
+C40H18_v4u10744,pahdb,10744,10744,C40H18,0,1,40,18,0,benzenoid,6,6,6,0,1,1,1,use
+C40H18_v4u10745,pahdb,10745,10745,C40H18,0,1,40,18,0,benzenoid,6,6,6,0,1,1,1,use
+C40H18_v4u10746,pahdb,10746,10746,C40H18,0,1,40,18,0,benzenoid,3,12,3,0,1,1,1,use
+C40H18_v4u10747,pahdb,10747,10747,C40H18,0,1,40,18,0,benzenoid,4,8,6,0,1,1,1,use
+C40H18_v4u10748,pahdb,10748,10748,C40H18,0,1,40,18,0,benzenoid,4,8,6,0,1,1,1,use
+C40H18_v4u10749,pahdb,10749,10749,C40H18,0,1,40,18,0,benzenoid,4,8,6,0,1,1,1,use
+C40H18_v4u10750,pahdb,10750,10750,C40H18,0,1,40,18,0,benzenoid,4,8,6,0,1,1,1,use
+C40H18_v4u10751,pahdb,10751,10751,C40H18,0,1,40,18,0,benzenoid,4,8,6,0,1,1,1,use
+C42H18_v4u10688,pahdb,10688,10688,C42H18,0,1,42,18,0,benzenoid,5,10,3,0,1,1,1,use
+C42H18_v4u10689,pahdb,10689,10689,C42H18,0,1,42,18,0,benzenoid,6,6,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C42H18_v4u10690,pahdb,10690,10690,C42H18,0,1,42,18,0,benzenoid,3,12,3,0,1,1,1,use
+C42H18_v4u10691,pahdb,10691,10691,C42H18,0,1,42,18,0,benzenoid,4,8,6,0,1,1,1,use
+C42H18_v4u10692,pahdb,10692,10692,C42H18,0,1,42,18,0,benzenoid,6,6,6,0,1,1,1,use
+C42H18_v4u10693,pahdb,10693,10693,C42H18,0,1,42,18,0,benzenoid,4,8,6,0,1,1,0,use
+C42H18_v4u10694,pahdb,10694,10694,C42H18,0,1,42,18,0,benzenoid,4,8,6,0,1,1,1,use
+C42H18_v4u10695,pahdb,10695,10695,C42H18,0,1,42,18,0,benzenoid,4,8,6,0,1,1,1,use
+C42H18_v4u10696,pahdb,10696,10696,C42H18,0,1,42,18,0,benzenoid,4,8,6,0,1,1,1,use
+C42H18_v4u10697,pahdb,10697,10697,C42H18,0,1,42,18,0,benzenoid,4,8,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C42H18_v4u10698,pahdb,10698,10698,C42H18,0,1,42,18,0,benzenoid,4,8,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C42H18_v4u10699,pahdb,10699,10699,C42H18,0,1,42,18,0,benzenoid,4,8,6,0,1,1,0,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C42H18_v4u10723,pahdb,10723,10723,C42H18,0,1,42,18,0,benzenoid,4,8,6,0,1,1,1,use
+C42H18_v4u10724,pahdb,10724,10724,C42H18,0,1,42,18,0,benzenoid,4,8,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C42H18_v4u10725,pahdb,10725,10725,C42H18,0,1,42,18,0,benzenoid,4,8,6,0,1,1,1,use
+C42H18_v4u10726,pahdb,10726,10726,C42H18,0,1,42,18,0,benzenoid,4,8,6,0,1,1,0,use
+C42H18_v4u10727,pahdb,10727,10727,C42H18,0,1,42,18,0,benzenoid,4,8,6,0,1,1,1,use
+C42H18_v4u10728,pahdb,10728,10728,C42H18,0,1,42,18,0,benzenoid,6,6,6,0,1,1,0,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C42H18_v4u10729,pahdb,10729,10729,C42H18,0,1,42,18,0,benzenoid,3,12,3,0,1,1,0,use
+C42H18_v4u10730,pahdb,10730,10730,C42H18,0,1,42,18,0,benzenoid,4,8,6,0,1,1,1,use
+C42H22_v4u137,pahdb,137,137,C42H22,0,1,42,22,0,benzenoid,2,2,6,12,1,0,0,use
+C44H18_v4u10641,pahdb,10641,10641,C44H18,0,1,44,18,0,benzenoid,6,6,6,0,1,1,1,use
+C44H18_v4u10642,pahdb,10642,10642,C44H18,0,1,44,18,0,benzenoid,3,12,3,0,1,1,1,use
+C44H18_v4u10643,pahdb,10643,10643,C44H18,0,1,44,18,0,benzenoid,4,8,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C44H18_v4u10644,pahdb,10644,10644,C44H18,0,1,44,18,0,benzenoid,2,16,0,0,1,1,1,use
+C44H18_v4u10645,pahdb,10645,10645,C44H18,0,1,44,18,0,benzenoid,6,6,6,0,1,1,0,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C44H18_v4u10646,pahdb,10646,10646,C44H18,0,1,44,18,0,benzenoid,3,12,3,0,1,1,1,use
+C44H18_v4u10647,pahdb,10647,10647,C44H18,0,1,44,18,0,benzenoid,4,8,6,0,1,1,1,use
+C44H18_v4u10648,pahdb,10648,10648,C44H18,0,1,44,18,0,benzenoid,6,6,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C44H18_v4u10649,pahdb,10649,10649,C44H18,0,1,44,18,0,benzenoid,4,8,6,0,1,1,1,use
+C44H18_v4u10650,pahdb,10650,10650,C44H18,0,1,44,18,0,benzenoid,4,8,6,0,1,1,0,use
+C44H18_v4u10651,pahdb,10651,10651,C44H18,0,1,44,18,0,benzenoid,4,8,6,0,1,1,1,use
+C44H18_v4u10652,pahdb,10652,10652,C44H18,0,1,44,18,0,benzenoid,4,8,6,0,1,1,1,use
+C44H18_v4u10653,pahdb,10653,10653,C44H18,0,1,44,18,0,benzenoid,4,8,6,0,1,1,1,use
+C44H18_v4u10654,pahdb,10654,10654,C44H18,0,1,44,18,0,benzenoid,4,8,6,0,1,1,0,use
+C44H18_v4u10666,pahdb,10666,10666,C44H18,0,1,44,18,0,benzenoid,4,8,6,0,1,1,1,use
+C44H18_v4u10667,pahdb,10667,10667,C44H18,0,1,44,18,0,benzenoid,4,8,6,0,1,1,1,use
+C44H18_v4u10668,pahdb,10668,10668,C44H18,0,1,44,18,0,benzenoid,4,8,6,0,1,1,0,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C44H18_v4u10669,pahdb,10669,10669,C44H18,0,1,44,18,0,benzenoid,4,8,6,0,1,1,1,use
+C44H18_v4u10670,pahdb,10670,10670,C44H18,0,1,44,18,0,benzenoid,4,8,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C44H18_v4u10671,pahdb,10671,10671,C44H18,0,1,44,18,0,benzenoid,4,8,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C44H18_v4u10672,pahdb,10672,10672,C44H18,0,1,44,18,0,benzenoid,4,8,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C44H18_v4u10673,pahdb,10673,10673,C44H18,0,1,44,18,0,benzenoid,3,12,3,0,1,1,1,use
+C44H18_v4u10674,pahdb,10674,10674,C44H18,0,1,44,18,0,benzenoid,4,8,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C44H18_v4u10675,pahdb,10675,10675,C44H18,0,1,44,18,0,benzenoid,4,8,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C44H18_v4u10676,pahdb,10676,10676,C44H18,0,1,44,18,0,benzenoid,5,10,3,0,1,1,1,use
+C44H18_v4u10703,pahdb,10703,10703,C44H18,0,1,44,18,0,benzenoid,4,8,6,0,1,1,1,use
+C44H18_v4u10704,pahdb,10704,10704,C44H18,0,1,44,18,0,benzenoid,4,8,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C44H18_v4u10705,pahdb,10705,10705,C44H18,0,1,44,18,0,benzenoid,5,10,3,0,1,1,1,use
+C44H18_v4u7076,pahdb,7076,7076,C44H18,0,1,44,18,0,benzenoid,6,6,6,0,1,1,0,use
+C44H18_v4u7077,pahdb,7077,7077,C44H18,0,1,44,18,0,benzenoid,0,6,12,0,1,1,1,use
+C44H20_v4u10614,pahdb,10614,10614,C44H20,0,1,44,20,0,benzenoid,6,8,6,0,1,1,1,use
+C44H20_v4u10615,pahdb,10615,10615,C44H20,0,1,44,20,0,benzenoid,5,12,3,0,1,1,0,use
+C44H20_v4u10616,pahdb,10616,10616,C44H20,0,1,44,20,0,benzenoid,6,8,6,0,1,1,0,use
+C44H20_v4u10617,pahdb,10617,10617,C44H20,0,1,44,20,0,benzenoid,5,12,3,0,1,1,0,use
+C44H20_v4u10618,pahdb,10618,10618,C44H20,0,1,44,20,0,benzenoid,6,8,6,0,1,1,1,use
+C44H20_v4u10619,pahdb,10619,10619,C44H20,0,1,44,20,0,benzenoid,6,8,6,0,1,1,0,use
+C44H20_v4u10620,pahdb,10620,10620,C44H20,0,1,44,20,0,benzenoid,6,8,6,0,1,1,1,use
+C44H20_v4u10621,pahdb,10621,10621,C44H20,0,1,44,20,0,benzenoid,6,8,6,0,1,1,1,use
+C44H20_v4u10622,pahdb,10622,10622,C44H20,0,1,44,20,0,benzenoid,6,8,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C44H20_v4u10623,pahdb,10623,10623,C44H20,0,1,44,20,0,benzenoid,6,8,6,0,1,1,0,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C44H20_v4u10624,pahdb,10624,10624,C44H20,0,1,44,20,0,benzenoid,6,8,6,0,1,1,1,use
+C44H20_v4u10625,pahdb,10625,10625,C44H20,0,1,44,20,0,benzenoid,6,8,6,0,1,1,1,use
+C46H18_v4u10562,pahdb,10562,10562,C46H18,0,1,46,18,0,benzenoid,6,6,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C46H18_v4u10564,pahdb,10564,10564,C46H18,0,1,46,18,0,benzenoid,6,6,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C46H18_v4u10566,pahdb,10566,10566,C46H18,0,1,46,18,0,benzenoid,6,6,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C46H18_v4u10585,pahdb,10585,10585,C46H18,0,1,46,18,0,benzenoid,6,6,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C46H18_v4u10600,pahdb,10600,10600,C46H18,0,1,46,18,0,benzenoid,6,6,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C46H18_v4u6880,pahdb,6880,6880,C46H18,0,1,46,18,0,benzenoid,0,12,6,0,1,1,1,use
+C46H18_v4u6881,pahdb,6881,6881,C46H18,0,1,46,18,0,benzenoid,4,8,6,0,1,1,1,use
+C46H18_v4u6882,pahdb,6882,6882,C46H18,0,1,46,18,0,benzenoid,4,8,6,0,1,1,1,use
+C46H18_v4u6883,pahdb,6883,6883,C46H18,0,1,46,18,0,benzenoid,2,10,6,0,1,1,1,use
+C46H18_v4u6884,pahdb,6884,6884,C46H18,0,1,46,18,0,benzenoid,6,6,6,0,1,1,0,use
+C46H18_v4u6885,pahdb,6885,6885,C46H18,0,1,46,18,0,benzenoid,6,6,6,0,1,1,1,use
+C46H18_v4u6886,pahdb,6886,6886,C46H18,0,1,46,18,0,benzenoid,6,6,6,0,1,1,1,use
+C46H18_v4u6913,pahdb,6913,6913,C46H18,0,1,46,18,0,benzenoid,3,12,3,0,1,1,1,use
+C46H18_v4u6914,pahdb,6914,6914,C46H18,0,1,46,18,0,benzenoid,1,14,3,0,1,1,0,use
+C46H18_v4u6915,pahdb,6915,6915,C46H18,0,1,46,18,0,benzenoid,1,14,3,0,1,1,1,use
+C46H18_v4u6916,pahdb,6916,6916,C46H18,0,1,46,18,0,benzenoid,3,12,3,0,1,1,1,use
+C46H18_v4u6917,pahdb,6917,6917,C46H18,0,1,46,18,0,benzenoid,2,10,6,0,1,1,1,use
+C46H18_v4u6918,pahdb,6918,6918,C46H18,0,1,46,18,0,benzenoid,0,12,6,0,1,1,1,use
+C46H18_v4u6919,pahdb,6919,6919,C46H18,0,1,46,18,0,benzenoid,4,8,6,0,1,1,1,use
+C46H18_v4u6920,pahdb,6920,6920,C46H18,0,1,46,18,0,benzenoid,4,8,6,0,1,1,0,use
+C46H18_v4u6921,pahdb,6921,6921,C46H18,0,1,46,18,0,benzenoid,2,10,6,0,1,1,0,use
+C46H18_v4u6922,pahdb,6922,6922,C46H18,0,1,46,18,0,benzenoid,4,8,6,0,1,1,1,use
+C46H18_v4u6923,pahdb,6923,6923,C46H18,0,1,46,18,0,benzenoid,2,10,6,0,1,1,1,use
+C46H18_v4u6924,pahdb,6924,6924,C46H18,0,1,46,18,0,benzenoid,4,8,6,0,1,1,0,use
+C46H18_v4u6925,pahdb,6925,6925,C46H18,0,1,46,18,0,benzenoid,3,12,3,0,1,1,0,use
+C46H18_v4u6926,pahdb,6926,6926,C46H18,0,1,46,18,0,benzenoid,2,10,6,0,1,1,1,use
+C46H18_v4u6927,pahdb,6927,6927,C46H18,0,1,46,18,0,benzenoid,2,10,6,0,1,1,0,use
+C46H18_v4u6928,pahdb,6928,6928,C46H18,0,1,46,18,0,benzenoid,2,10,6,0,1,1,0,use
+C46H18_v4u6929,pahdb,6929,6929,C46H18,0,1,46,18,0,benzenoid,2,10,6,0,1,1,1,use
+C46H18_v4u6930,pahdb,6930,6930,C46H18,0,1,46,18,0,benzenoid,2,10,6,0,1,1,1,use
+C46H18_v4u6931,pahdb,6931,6931,C46H18,0,1,46,18,0,benzenoid,4,8,6,0,1,1,1,use
+C46H18_v4u6932,pahdb,6932,6932,C46H18,0,1,46,18,0,benzenoid,4,8,6,0,1,1,1,use
+C46H18_v4u6934,pahdb,6934,6934,C46H18,0,1,46,18,0,benzenoid,1,8,9,0,1,1,1,use
+C46H18_v4u6935,pahdb,6935,6935,C46H18,0,1,46,18,0,benzenoid,5,4,9,0,1,1,1,use
+C46H18_v4u6936,pahdb,6936,6936,C46H18,0,1,46,18,0,benzenoid,3,6,9,0,1,1,1,use
+C46H18_v4u6937,pahdb,6937,6937,C46H18,0,1,46,18,0,benzenoid,3,6,9,0,1,1,1,use
+C46H18_v4u6938,pahdb,6938,6938,C46H18,0,1,46,18,0,benzenoid,3,6,9,0,1,1,1,use
+C46H18_v4u6939,pahdb,6939,6939,C46H18,0,1,46,18,0,benzenoid,5,4,9,0,1,1,1,use
+C46H18_v4u6944,pahdb,6944,6944,C46H18,0,1,46,18,0,benzenoid,5,4,9,0,1,1,1,use
+C46H18_v4u6974,pahdb,6974,6974,C46H18,0,1,46,18,0,benzenoid,6,6,6,0,1,1,1,use
+C46H20_v4u10547,pahdb,10547,10547,C46H20,0,1,46,20,0,benzenoid,8,6,6,0,1,1,1,use
+C46H20_v4u10548,pahdb,10548,10548,C46H20,0,1,46,20,0,benzenoid,8,6,6,0,1,1,0,use
+C46H20_v4u10574,pahdb,10574,10574,C46H20,0,1,46,20,0,benzenoid,10,4,6,0,1,1,1,use
+C46H20_v4u10575,pahdb,10575,10575,C46H20,0,1,46,20,0,benzenoid,8,6,6,0,1,1,1,use
+C46H20_v4u10576,pahdb,10576,10576,C46H20,0,1,46,20,0,benzenoid,8,6,6,0,1,1,0,use
+C46H20_v4u10577,pahdb,10577,10577,C46H20,0,1,46,20,0,benzenoid,5,12,3,0,1,1,1,use
+C46H20_v4u10578,pahdb,10578,10578,C46H20,0,1,46,20,0,benzenoid,8,6,6,0,1,1,1,use
+C48H18_v4u10537,pahdb,10537,10537,C48H18,0,1,48,18,0,benzenoid,5,10,3,0,1,1,0,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C48H18_v4u10538,pahdb,10538,10538,C48H18,0,1,48,18,0,benzenoid,6,6,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C48H18_v4u10539,pahdb,10539,10539,C48H18,0,1,48,18,0,benzenoid,4,8,6,0,1,1,1,use
+C48H18_v4u10540,pahdb,10540,10540,C48H18,0,1,48,18,0,benzenoid,5,10,3,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C48H18_v4u10542,pahdb,10542,10542,C48H18,0,1,48,18,0,benzenoid,4,8,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C48H18_v4u10543,pahdb,10543,10543,C48H18,0,1,48,18,0,benzenoid,4,8,6,0,1,1,0,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C48H18_v4u10554,pahdb,10554,10554,C48H18,0,1,48,18,0,benzenoid,4,14,0,0,1,1,1,use
+C48H18_v4u10555,pahdb,10555,10555,C48H18,0,1,48,18,0,benzenoid,5,10,3,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C48H18_v4u10556,pahdb,10556,10556,C48H18,0,1,48,18,0,benzenoid,6,6,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C48H18_v4u6823,pahdb,6823,6823,C48H18,0,1,48,18,0,benzenoid,5,10,3,0,1,1,1,use
+C48H18_v4u6825,pahdb,6825,6825,C48H18,0,1,48,18,0,benzenoid,4,8,6,0,1,1,1,use
+C48H18_v4u6826,pahdb,6826,6826,C48H18,0,1,48,18,0,benzenoid,3,12,3,0,1,1,0,use
+C48H18_v4u6827,pahdb,6827,6827,C48H18,0,1,48,18,0,benzenoid,3,12,3,0,1,1,1,use
+C48H18_v4u6828,pahdb,6828,6828,C48H18,0,1,48,18,0,benzenoid,3,12,3,0,1,1,1,use
+C48H18_v4u6829,pahdb,6829,6829,C48H18,0,1,48,18,0,benzenoid,1,14,3,0,1,1,1,use
+C48H18_v4u6830,pahdb,6830,6830,C48H18,0,1,48,18,0,benzenoid,3,12,3,0,1,1,1,use
+C48H18_v4u6831,pahdb,6831,6831,C48H18,0,1,48,18,0,benzenoid,2,16,0,0,1,1,1,use
+C48H18_v4u6832,pahdb,6832,6832,C48H18,0,1,48,18,0,benzenoid,0,18,0,0,1,1,1,use
+C48H18_v4u6833,pahdb,6833,6833,C48H18,0,1,48,18,0,benzenoid,3,12,3,0,1,1,0,use
+C48H18_v4u6834,pahdb,6834,6834,C48H18,0,1,48,18,0,benzenoid,3,12,3,0,1,1,1,use
+C48H18_v4u6835,pahdb,6835,6835,C48H18,0,1,48,18,0,benzenoid,4,8,6,0,1,1,0,use
+C48H18_v4u6836,pahdb,6836,6836,C48H18,0,1,48,18,0,benzenoid,4,8,6,0,1,1,1,use
+C48H18_v4u6837,pahdb,6837,6837,C48H18,0,1,48,18,0,benzenoid,2,10,6,0,1,1,1,use
+C48H18_v4u6838,pahdb,6838,6838,C48H18,0,1,48,18,0,benzenoid,4,8,6,0,1,1,1,use
+C48H18_v4u6839,pahdb,6839,6839,C48H18,0,1,48,18,0,benzenoid,4,8,6,0,1,1,0,use
+C48H18_v4u6843,pahdb,6843,6843,C48H18,0,1,48,18,0,benzenoid,6,6,6,0,1,1,1,use
+C48H18_v4u6847,pahdb,6847,6847,C48H18,0,1,48,18,0,benzenoid,5,10,3,0,1,1,0,use
+C50H18_v4u10527,pahdb,10527,10527,C50H18,0,1,50,18,0,benzenoid,7,8,3,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C50H18_v4u10528,pahdb,10528,10528,C50H18,0,1,50,18,0,benzenoid,5,10,3,0,1,1,0,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C50H18_v4u6804,pahdb,6804,6804,C50H18,0,1,50,18,0,benzenoid,4,14,0,0,1,1,0,use
+C50H18_v4u6805,pahdb,6805,6805,C50H18,0,1,50,18,0,benzenoid,3,12,3,0,1,1,1,use
+C50H18_v4u6806,pahdb,6806,6806,C50H18,0,1,50,18,0,benzenoid,2,16,0,0,1,1,1,use
+C50H18_v4u6807,pahdb,6807,6807,C50H18,0,1,50,18,0,benzenoid,2,16,0,0,1,1,0,use
+C50H18_v4u6808,pahdb,6808,6808,C50H18,0,1,50,18,0,benzenoid,5,10,3,0,1,1,1,use
+C50H18_v4u6810,pahdb,6810,6810,C50H18,0,1,50,18,0,benzenoid,5,10,3,0,1,1,1,use
+C50H18_v4u6812,pahdb,6812,6812,C50H18,0,1,50,18,0,benzenoid,5,10,3,0,1,1,0,use
+C50H20_v4u10502,pahdb,10502,10502,C50H20,0,1,50,20,0,benzenoid,7,10,3,0,1,1,1,use
+C50H20_v4u10503,pahdb,10503,10503,C50H20,0,1,50,20,0,benzenoid,8,6,6,0,1,1,1,use
+C50H20_v4u10504,pahdb,10504,10504,C50H20,0,1,50,20,0,benzenoid,5,12,3,0,1,1,0,use
+C50H20_v4u10505,pahdb,10505,10505,C50H20,0,1,50,20,0,benzenoid,7,10,3,0,1,1,1,use
+C50H20_v4u10506,pahdb,10506,10506,C50H20,0,1,50,20,0,benzenoid,8,6,6,0,1,1,0,use
+C50H20_v4u10507,pahdb,10507,10507,C50H20,0,1,50,20,0,benzenoid,5,12,3,0,1,1,1,use
+C50H20_v4u10508,pahdb,10508,10508,C50H20,0,1,50,20,0,benzenoid,4,16,0,0,1,1,0,use
+C50H20_v4u10509,pahdb,10509,10509,C50H20,0,1,50,20,0,benzenoid,8,6,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C50H20_v4u10510,pahdb,10510,10510,C50H20,0,1,50,20,0,benzenoid,5,12,3,0,1,1,0,use
+C50H20_v4u10511,pahdb,10511,10511,C50H20,0,1,50,20,0,benzenoid,8,6,6,0,1,1,0,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C50H20_v4u10512,pahdb,10512,10512,C50H20,0,1,50,20,0,benzenoid,5,12,3,0,1,1,1,use
+C50H20_v4u10513,pahdb,10513,10513,C50H20,0,1,50,20,0,benzenoid,5,12,3,0,1,1,0,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C50H20_v4u10514,pahdb,10514,10514,C50H20,0,1,50,20,0,benzenoid,5,12,3,0,1,1,1,use
+C52H16N2_v4u9294,pahdb,9294,9294,C52H16N2,0,1,52,16,2,npah,8,8,0,0,1,1,0,use
+C52H16N2_v4u9298,pahdb,9298,9298,C52H16N2,0,1,52,16,2,npah,8,8,0,0,1,1,0,use
+C52H16N2_v4u9301,pahdb,9301,9301,C52H16N2,0,1,52,16,2,npah,6,10,0,0,1,1,0,use
+C52H16N2_v4u9304,pahdb,9304,9304,C52H16N2,0,1,52,16,2,npah,8,8,0,0,1,1,0,use
+C52H16N2_v4u9308,pahdb,9308,9308,C52H16N2,0,1,52,16,2,npah,8,8,0,0,1,1,1,use
+C52H16N2_v4u9310,pahdb,9310,9310,C52H16N2,0,1,52,16,2,npah,6,10,0,0,1,1,0,use
+C52H16N2_v4u9317,pahdb,9317,9317,C52H16N2,0,1,52,16,2,npah,8,8,0,0,1,1,0,use
+C52H16N2_v4u9322,pahdb,9322,9322,C52H16N2,0,1,52,16,2,npah,8,8,0,0,1,1,0,use
+C52H16N2_v4u9334,pahdb,9334,9334,C52H16N2,0,1,52,16,2,npah,8,8,0,0,1,1,0,use
+C52H16N2_v4u9340,pahdb,9340,9340,C52H16N2,0,1,52,16,2,npah,8,8,0,0,1,1,1,use
+C52H17N2_v4u9234,pahdb,9234,9234,C52H17N2,0,2,52,17,2,npah,7,10,0,0,1,1,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C52H17N2_v4u9278,pahdb,9278,9278,C52H17N2,0,2,52,17,2,npah,7,10,0,0,1,1,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C52H17N2_v4u9290,pahdb,9290,9290,C52H17N2,0,2,52,17,2,npah,7,10,0,0,1,1,1,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C52H18N2_v4u9227,pahdb,9227,9227,C52H18N2,0,1,52,18,2,npah,6,12,0,0,1,1,0,"excluded: screen below_bound (listed multiplicity 1, bound 3)"
+C52H18N2_v4u9230,pahdb,9230,9230,C52H18N2,0,1,52,18,2,npah,6,12,0,0,1,1,0,"excluded: screen below_bound (listed multiplicity 1, bound 3)"
+C52H18N2_v4u9238,pahdb,9238,9238,C52H18N2,0,1,52,18,2,npah,6,12,0,0,1,0,0,"excluded: screen below_bound (listed multiplicity 1, bound 3)"
+C52H18N2_v4u9240,pahdb,9240,9240,C52H18N2,0,1,52,18,2,npah,6,12,0,0,1,1,0,use
+C52H18N2_v4u9245,pahdb,9245,9245,C52H18N2,0,1,52,18,2,npah,6,12,0,0,1,1,1,"excluded: screen below_bound (listed multiplicity 1, bound 3)"
+C52H18N2_v4u9247,pahdb,9247,9247,C52H18N2,0,1,52,18,2,npah,6,12,0,0,1,1,1,use
+C52H18N2_v4u9249,pahdb,9249,9249,C52H18N2,0,1,52,18,2,npah,6,12,0,0,1,0,0,"excluded: screen below_bound (listed multiplicity 1, bound 3)"
+C52H18N2_v4u9251,pahdb,9251,9251,C52H18N2,0,1,52,18,2,npah,6,12,0,0,1,1,0,use
+C52H18N2_v4u9253,pahdb,9253,9253,C52H18N2,0,1,52,18,2,npah,6,12,0,0,1,0,0,use
+C52H18N2_v4u9257,pahdb,9257,9257,C52H18N2,0,1,52,18,2,npah,6,12,0,0,1,0,0,use
+C52H18N2_v4u9262,pahdb,9262,9262,C52H18N2,0,1,52,18,2,npah,6,12,0,0,1,1,0,"excluded: screen below_bound (listed multiplicity 1, bound 3)"
+C52H18N2_v4u9266,pahdb,9266,9266,C52H18N2,0,1,52,18,2,npah,6,12,0,0,1,1,0,use
+C52H18_v4u10470,pahdb,10470,10470,C52H18,0,1,52,18,0,benzenoid,6,12,0,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C52H20_v4u10452,pahdb,10452,10452,C52H20,0,1,52,20,0,benzenoid,8,6,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C52H20_v4u10453,pahdb,10453,10453,C52H20,0,1,52,20,0,benzenoid,5,12,3,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C52H20_v4u10454,pahdb,10454,10454,C52H20,0,1,52,20,0,benzenoid,8,6,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C52H20_v4u10455,pahdb,10455,10455,C52H20,0,1,52,20,0,benzenoid,5,12,3,0,1,1,1,use
+C52H20_v4u10456,pahdb,10456,10456,C52H20,0,1,52,20,0,benzenoid,8,6,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C52H20_v4u10457,pahdb,10457,10457,C52H20,0,1,52,20,0,benzenoid,5,12,3,0,1,1,0,use
+C52H20_v4u10458,pahdb,10458,10458,C52H20,0,1,52,20,0,benzenoid,8,6,6,0,1,1,1,use
+C52H20_v4u10459,pahdb,10459,10459,C52H20,0,1,52,20,0,benzenoid,5,12,3,0,1,1,1,use
+C52H20_v4u10460,pahdb,10460,10460,C52H20,0,1,52,20,0,benzenoid,5,12,3,0,1,1,1,use
+C52H20_v4u10461,pahdb,10461,10461,C52H20,0,1,52,20,0,benzenoid,5,12,3,0,1,1,1,use
+C52H20_v4u10481,pahdb,10481,10481,C52H20,0,1,52,20,0,benzenoid,7,10,3,0,1,1,1,use
+C52H20_v4u10482,pahdb,10482,10482,C52H20,0,1,52,20,0,benzenoid,8,6,6,0,1,1,0,use
+C52H20_v4u10483,pahdb,10483,10483,C52H20,0,1,52,20,0,benzenoid,4,16,0,0,1,1,1,use
+C52H20_v4u10484,pahdb,10484,10484,C52H20,0,1,52,20,0,benzenoid,5,12,3,0,1,1,0,use
+C52H20_v4u10485,pahdb,10485,10485,C52H20,0,1,52,20,0,benzenoid,7,10,3,0,1,1,1,use
+C52H20_v4u10486,pahdb,10486,10486,C52H20,0,1,52,20,0,benzenoid,8,6,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C52H20_v4u10487,pahdb,10487,10487,C52H20,0,1,52,20,0,benzenoid,4,16,0,0,1,1,0,use
+C52H20_v4u10488,pahdb,10488,10488,C52H20,0,1,52,20,0,benzenoid,5,12,3,0,1,1,1,use
+C52H20_v4u10489,pahdb,10489,10489,C52H20,0,1,52,20,0,benzenoid,7,10,3,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C53H17N_v4u9218,pahdb,9218,9218,C53H17N,0,1,53,17,1,npah,5,12,0,0,1,1,0,use
+C53H17N_v4u9219,pahdb,9219,9219,C53H17N,0,1,53,17,1,npah,7,10,0,0,1,1,1,use
+C53H18N_v4u9209,pahdb,9209,9209,C53H18N,0,2,53,18,1,npah,6,12,0,0,1,1,1,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C53H18N_v4u9213,pahdb,9213,9213,C53H18N,0,2,53,18,1,npah,6,12,0,0,1,1,1,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C53H18N_v4u9214,pahdb,9214,9214,C53H18N,0,2,53,18,1,npah,6,12,0,0,1,1,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C53H18N_v4u9216,pahdb,9216,9216,C53H18N,0,2,53,18,1,npah,6,12,0,0,1,0,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C53H18N_v4u9224,pahdb,9224,9224,C53H18N,0,2,53,18,1,npah,7,10,0,0,1,0,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C53H18N_v4u9225,pahdb,9225,9225,C53H18N,0,2,53,18,1,npah,5,12,0,0,1,0,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C54H20_v4u10368,pahdb,10368,10368,C54H20,0,1,54,20,0,benzenoid,8,6,6,0,1,1,1,use
+C54H20_v4u10369,pahdb,10369,10369,C54H20,0,1,54,20,0,benzenoid,5,12,3,0,1,1,1,use
+C54H20_v4u10370,pahdb,10370,10370,C54H20,0,1,54,20,0,benzenoid,8,6,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C54H20_v4u10371,pahdb,10371,10371,C54H20,0,1,54,20,0,benzenoid,5,12,3,0,1,1,1,use
+C54H20_v4u10372,pahdb,10372,10372,C54H20,0,1,54,20,0,benzenoid,8,6,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C54H20_v4u10373,pahdb,10373,10373,C54H20,0,1,54,20,0,benzenoid,5,12,3,0,1,1,0,use
+C54H20_v4u10402,pahdb,10402,10402,C54H20,0,1,54,20,0,benzenoid,4,16,0,0,1,1,1,use
+C54H20_v4u10403,pahdb,10403,10403,C54H20,0,1,54,20,0,benzenoid,5,12,3,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C54H20_v4u10404,pahdb,10404,10404,C54H20,0,1,54,20,0,benzenoid,7,10,3,0,1,1,1,use
+C54H20_v4u10405,pahdb,10405,10405,C54H20,0,1,54,20,0,benzenoid,8,6,6,0,1,1,1,use
+C54H20_v4u10406,pahdb,10406,10406,C54H20,0,1,54,20,0,benzenoid,4,16,0,0,1,1,0,use
+C54H20_v4u10407,pahdb,10407,10407,C54H20,0,1,54,20,0,benzenoid,5,12,3,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C54H20_v4u10408,pahdb,10408,10408,C54H20,0,1,54,20,0,benzenoid,8,6,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C54H20_v4u10409,pahdb,10409,10409,C54H20,0,1,54,20,0,benzenoid,5,12,3,0,1,1,1,use
+C54H20_v4u10410,pahdb,10410,10410,C54H20,0,1,54,20,0,benzenoid,8,6,6,0,1,1,1,use
+C54H20_v4u10411,pahdb,10411,10411,C54H20,0,1,54,20,0,benzenoid,5,12,3,0,1,1,1,use
+C54H20_v4u10412,pahdb,10412,10412,C54H20,0,1,54,20,0,benzenoid,8,6,6,0,1,1,1,use
+C54H20_v4u10413,pahdb,10413,10413,C54H20,0,1,54,20,0,benzenoid,5,12,3,0,1,1,1,use
+C54H20_v4u10428,pahdb,10428,10428,C54H20,0,1,54,20,0,benzenoid,5,12,3,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C54H20_v4u10429,pahdb,10429,10429,C54H20,0,1,54,20,0,benzenoid,5,12,3,0,1,1,1,use
+C54H20_v4u10430,pahdb,10430,10430,C54H20,0,1,54,20,0,benzenoid,5,12,3,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C54H20_v4u10431,pahdb,10431,10431,C54H20,0,1,54,20,0,benzenoid,5,12,3,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C54H20_v4u10432,pahdb,10432,10432,C54H20,0,1,54,20,0,benzenoid,5,12,3,0,1,1,1,use
+C54H20_v4u10433,pahdb,10433,10433,C54H20,0,1,54,20,0,benzenoid,5,12,3,0,1,1,1,use
+C54H20_v4u10434,pahdb,10434,10434,C54H20,0,1,54,20,0,benzenoid,5,12,3,0,1,1,0,use
+C54H20_v4u10435,pahdb,10435,10435,C54H20,0,1,54,20,0,benzenoid,5,12,3,0,1,1,0,use
+C54H20_v4u10436,pahdb,10436,10436,C54H20,0,1,54,20,0,benzenoid,8,6,6,0,1,1,1,use
+C54H20_v4u10437,pahdb,10437,10437,C54H20,0,1,54,20,0,benzenoid,4,16,0,0,1,1,1,use
+C54H20_v4u10438,pahdb,10438,10438,C54H20,0,1,54,20,0,benzenoid,5,12,3,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C54H20_v4u10439,pahdb,10439,10439,C54H20,0,1,54,20,0,benzenoid,5,12,3,0,1,1,1,use
+C54H20_v4u10440,pahdb,10440,10440,C54H20,0,1,54,20,0,benzenoid,10,4,6,0,1,1,0,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C54H20_v4u10441,pahdb,10441,10441,C54H20,0,1,54,20,0,benzenoid,7,10,3,0,1,1,0,use
+C54H20_v4u10442,pahdb,10442,10442,C54H20,0,1,54,20,0,benzenoid,8,6,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C54H20_v4u10466,pahdb,10466,10466,C54H20,0,1,54,20,0,benzenoid,5,12,3,0,1,1,1,use
+C54H20_v4u10467,pahdb,10467,10467,C54H20,0,1,54,20,0,benzenoid,5,12,3,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C54H20_v4u10468,pahdb,10468,10468,C54H20,0,1,54,20,0,benzenoid,7,10,3,0,1,1,1,use
+C54H26_v4u3847,pahdb,3847,3847,C54H26,0,1,54,26,0,benzenoid,3,2,9,12,1,1,0,use
+C54H26_v4u3848,pahdb,3848,3848,C54H26,0,1,54,26,0,benzenoid,2,4,12,8,1,1,0,use
+C54H26_v4u3855,pahdb,3855,3855,C54H26,0,1,54,26,0,benzenoid,3,2,9,12,1,1,0,use
+C56H20_v4u10216,pahdb,10216,10216,C56H20,0,1,56,20,0,benzenoid,6,8,6,0,1,1,1,use
+C56H20_v4u10217,pahdb,10217,10217,C56H20,0,1,56,20,0,benzenoid,5,12,3,0,1,1,1,use
+C56H20_v4u10218,pahdb,10218,10218,C56H20,0,1,56,20,0,benzenoid,6,8,6,0,1,1,1,use
+C56H20_v4u10245,pahdb,10245,10245,C56H20,0,1,56,20,0,benzenoid,6,8,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C56H20_v4u10246,pahdb,10246,10246,C56H20,0,1,56,20,0,benzenoid,7,10,3,0,1,1,0,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C56H20_v4u10247,pahdb,10247,10247,C56H20,0,1,56,20,0,benzenoid,8,6,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C56H20_v4u10248,pahdb,10248,10248,C56H20,0,1,56,20,0,benzenoid,6,8,6,0,1,1,0,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C56H20_v4u10249,pahdb,10249,10249,C56H20,0,1,56,20,0,benzenoid,7,10,3,0,1,1,1,use
+C56H20_v4u10250,pahdb,10250,10250,C56H20,0,1,56,20,0,benzenoid,5,12,3,0,1,1,1,use
+C56H20_v4u10251,pahdb,10251,10251,C56H20,0,1,56,20,0,benzenoid,6,8,6,0,1,1,0,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C56H20_v4u10252,pahdb,10252,10252,C56H20,0,1,56,20,0,benzenoid,7,10,3,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C56H20_v4u10253,pahdb,10253,10253,C56H20,0,1,56,20,0,benzenoid,5,12,3,0,1,1,1,use
+C56H20_v4u10254,pahdb,10254,10254,C56H20,0,1,56,20,0,benzenoid,6,8,6,0,1,1,1,use
+C56H20_v4u10255,pahdb,10255,10255,C56H20,0,1,56,20,0,benzenoid,5,12,3,0,1,1,1,use
+C56H20_v4u10256,pahdb,10256,10256,C56H20,0,1,56,20,0,benzenoid,6,8,6,0,1,1,0,use
+C56H20_v4u10257,pahdb,10257,10257,C56H20,0,1,56,20,0,benzenoid,5,12,3,0,1,1,1,use
+C56H20_v4u10271,pahdb,10271,10271,C56H20,0,1,56,20,0,benzenoid,6,8,6,0,1,1,1,use
+C56H20_v4u10272,pahdb,10272,10272,C56H20,0,1,56,20,0,benzenoid,6,8,6,0,1,1,1,use
+C56H20_v4u10273,pahdb,10273,10273,C56H20,0,1,56,20,0,benzenoid,6,8,6,0,1,1,1,use
+C56H20_v4u10274,pahdb,10274,10274,C56H20,0,1,56,20,0,benzenoid,6,8,6,0,1,1,1,use
+C56H20_v4u10275,pahdb,10275,10275,C56H20,0,1,56,20,0,benzenoid,6,8,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C56H20_v4u10276,pahdb,10276,10276,C56H20,0,1,56,20,0,benzenoid,6,8,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C56H20_v4u10277,pahdb,10277,10277,C56H20,0,1,56,20,0,benzenoid,6,8,6,0,1,1,0,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C56H20_v4u10278,pahdb,10278,10278,C56H20,0,1,56,20,0,benzenoid,6,8,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C56H20_v4u10279,pahdb,10279,10279,C56H20,0,1,56,20,0,benzenoid,6,8,6,0,1,1,1,use
+C56H20_v4u10280,pahdb,10280,10280,C56H20,0,1,56,20,0,benzenoid,7,10,3,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C56H20_v4u10281,pahdb,10281,10281,C56H20,0,1,56,20,0,benzenoid,8,6,6,0,1,1,1,use
+C56H20_v4u10282,pahdb,10282,10282,C56H20,0,1,56,20,0,benzenoid,4,16,0,0,1,1,0,use
+C56H20_v4u10283,pahdb,10283,10283,C56H20,0,1,56,20,0,benzenoid,5,12,3,0,1,1,1,use
+C56H20_v4u10284,pahdb,10284,10284,C56H20,0,1,56,20,0,benzenoid,6,8,6,0,1,1,0,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C56H20_v4u10299,pahdb,10299,10299,C56H20,0,1,56,20,0,benzenoid,5,12,3,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C56H20_v4u10300,pahdb,10300,10300,C56H20,0,1,56,20,0,benzenoid,6,8,6,0,1,1,0,use
+C56H20_v4u10301,pahdb,10301,10301,C56H20,0,1,56,20,0,benzenoid,5,12,3,0,1,1,0,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C56H20_v4u10302,pahdb,10302,10302,C56H20,0,1,56,20,0,benzenoid,6,8,6,0,1,1,1,use
+C56H20_v4u10303,pahdb,10303,10303,C56H20,0,1,56,20,0,benzenoid,5,12,3,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C56H20_v4u10304,pahdb,10304,10304,C56H20,0,1,56,20,0,benzenoid,6,8,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C56H20_v4u10305,pahdb,10305,10305,C56H20,0,1,56,20,0,benzenoid,6,8,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C56H20_v4u10306,pahdb,10306,10306,C56H20,0,1,56,20,0,benzenoid,6,8,6,0,1,1,0,use
+C56H20_v4u10334,pahdb,10334,10334,C56H20,0,1,56,20,0,benzenoid,8,6,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C56H20_v4u10388,pahdb,10388,10388,C56H20,0,1,56,20,0,benzenoid,8,6,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C58H20_v4u6816,pahdb,6816,6816,C58H20,0,1,58,20,0,benzenoid,6,10,0,4,1,1,0,use
+C60H20_v4u10169,pahdb,10169,10169,C60H20,0,1,60,20,0,benzenoid,7,10,3,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C60H20_v4u10171,pahdb,10171,10171,C60H20,0,1,60,20,0,benzenoid,7,10,3,0,1,1,1,use
+C60H20_v4u10188,pahdb,10188,10188,C60H20,0,1,60,20,0,benzenoid,4,16,0,0,1,1,1,use
+C60H20_v4u10189,pahdb,10189,10189,C60H20,0,1,60,20,0,benzenoid,5,12,3,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C60H20_v4u10190,pahdb,10190,10190,C60H20,0,1,60,20,0,benzenoid,6,8,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C60H20_v4u10191,pahdb,10191,10191,C60H20,0,1,60,20,0,benzenoid,4,16,0,0,1,1,0,use
+C60H20_v4u10192,pahdb,10192,10192,C60H20,0,1,60,20,0,benzenoid,6,8,6,0,1,1,0,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C60H20_v4u10193,pahdb,10193,10193,C60H20,0,1,60,20,0,benzenoid,7,10,3,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C60H20_v4u10194,pahdb,10194,10194,C60H20,0,1,60,20,0,benzenoid,7,10,3,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C60H20_v4u10205,pahdb,10205,10205,C60H20,0,1,60,20,0,benzenoid,5,12,3,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C60H20_v4u10206,pahdb,10206,10206,C60H20,0,1,60,20,0,benzenoid,5,12,3,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C60H20_v4u10207,pahdb,10207,10207,C60H20,0,1,60,20,0,benzenoid,5,12,3,0,1,1,1,use
+C60H20_v4u10208,pahdb,10208,10208,C60H20,0,1,60,20,0,benzenoid,6,14,0,0,1,1,1,use
+C60H20_v4u10209,pahdb,10209,10209,C60H20,0,1,60,20,0,benzenoid,7,10,3,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C60H20_v4u10210,pahdb,10210,10210,C60H20,0,1,60,20,0,benzenoid,4,16,0,0,1,1,0,use
+C60H20_v4u10211,pahdb,10211,10211,C60H20,0,1,60,20,0,benzenoid,6,14,0,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C60H20_v4u10212,pahdb,10212,10212,C60H20,0,1,60,20,0,benzenoid,7,10,3,0,1,1,1,use
+C60H20_v4u10225,pahdb,10225,10225,C60H20,0,1,60,20,0,benzenoid,9,8,3,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C60H20_v4u10226,pahdb,10226,10226,C60H20,0,1,60,20,0,benzenoid,5,12,3,0,1,1,0,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C60H20_v4u10227,pahdb,10227,10227,C60H20,0,1,60,20,0,benzenoid,5,12,3,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C60H20_v4u6711,pahdb,6711,6711,C60H20,0,1,60,20,0,benzenoid,5,12,3,0,1,1,1,use
+C60H20_v4u6712,pahdb,6712,6712,C60H20,0,1,60,20,0,benzenoid,3,14,3,0,1,1,1,use
+C60H20_v4u6713,pahdb,6713,6713,C60H20,0,1,60,20,0,benzenoid,6,8,6,0,1,1,1,use
+C60H20_v4u6714,pahdb,6714,6714,C60H20,0,1,60,20,0,benzenoid,3,14,3,0,1,1,1,use
+C60H20_v4u6715,pahdb,6715,6715,C60H20,0,1,60,20,0,benzenoid,6,8,6,0,1,1,1,use
+C60H20_v4u6716,pahdb,6716,6716,C60H20,0,1,60,20,0,benzenoid,4,10,6,0,1,1,1,use
+C60H20_v4u6717,pahdb,6717,6717,C60H20,0,1,60,20,0,benzenoid,6,8,6,0,1,1,1,use
+C60H20_v4u6718,pahdb,6718,6718,C60H20,0,1,60,20,0,benzenoid,6,8,6,0,1,1,1,use
+C60H20_v4u6719,pahdb,6719,6719,C60H20,0,1,60,20,0,benzenoid,5,12,3,0,1,1,1,use
+C60H20_v4u6720,pahdb,6720,6720,C60H20,0,1,60,20,0,benzenoid,5,12,3,0,1,1,0,use
+C60H20_v4u6721,pahdb,6721,6721,C60H20,0,1,60,20,0,benzenoid,5,12,3,0,1,1,0,use
+C60H20_v4u6722,pahdb,6722,6722,C60H20,0,1,60,20,0,benzenoid,5,12,3,0,1,1,1,use
+C60H20_v4u6735,pahdb,6735,6735,C60H20,0,1,60,20,0,benzenoid,7,10,3,0,1,1,1,use
+C60H20_v4u6736,pahdb,6736,6736,C60H20,0,1,60,20,0,benzenoid,5,12,3,0,1,1,0,use
+C60H20_v4u6737,pahdb,6737,6737,C60H20,0,1,60,20,0,benzenoid,5,12,3,0,1,1,0,use
+C60H20_v4u6738,pahdb,6738,6738,C60H20,0,1,60,20,0,benzenoid,5,12,3,0,1,1,1,use
+C60H20_v4u6739,pahdb,6739,6739,C60H20,0,1,60,20,0,benzenoid,5,12,3,0,1,1,1,use
+C60H20_v4u6740,pahdb,6740,6740,C60H20,0,1,60,20,0,benzenoid,5,12,3,0,1,1,1,use
+C60H20_v4u6741,pahdb,6741,6741,C60H20,0,1,60,20,0,benzenoid,5,12,3,0,1,1,1,use
+C60H20_v4u6742,pahdb,6742,6742,C60H20,0,1,60,20,0,benzenoid,3,14,3,0,1,1,0,use
+C60H28_v4u3631,pahdb,3631,3631,C60H28,0,1,60,28,0,benzenoid,4,2,6,16,1,1,0,use
+C60H28_v4u3648,pahdb,3648,3648,C60H28,0,1,60,28,0,benzenoid,4,0,12,12,1,1,0,use
+C60H28_v4u3650,pahdb,3650,3650,C60H28,0,1,60,28,0,benzenoid,3,4,9,12,1,1,0,use
+C60H28_v4u3660,pahdb,3660,3660,C60H28,0,1,60,28,0,benzenoid,4,2,6,16,1,1,0,use
+C60H28_v4u3663,pahdb,3663,3663,C60H28,0,1,60,28,0,benzenoid,4,2,6,16,1,1,0,use
+C60H30_v4u3597,pahdb,3597,3597,C60H30,0,1,60,30,0,benzenoid,4,4,6,16,1,1,0,use
+C60H30_v4u3598,pahdb,3598,3598,C60H30,0,1,60,30,0,benzenoid,5,0,9,16,1,1,0,use
+C61H21_v4u6726,pahdb,6726,6726,C61H21,0,2,61,21,0,benzenoid,5,10,6,0,1,1,1,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C62H20_v4u10176,pahdb,10176,10176,C62H20,0,1,62,20,0,benzenoid,6,14,0,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C62H20_v4u10177,pahdb,10177,10177,C62H20,0,1,62,20,0,benzenoid,7,10,3,0,1,1,0,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C62H20_v4u6669,pahdb,6669,6669,C62H20,0,1,62,20,0,benzenoid,7,10,3,0,1,1,1,use
+C62H20_v4u6670,pahdb,6670,6670,C62H20,0,1,62,20,0,benzenoid,5,12,3,0,1,1,1,use
+C62H20_v4u6671,pahdb,6671,6671,C62H20,0,1,62,20,0,benzenoid,4,16,0,0,1,1,1,use
+C62H20_v4u6672,pahdb,6672,6672,C62H20,0,1,62,20,0,benzenoid,4,16,0,0,1,1,0,use
+C62H20_v4u6673,pahdb,6673,6673,C62H20,0,1,62,20,0,benzenoid,4,16,0,0,1,1,1,use
+C62H20_v4u6674,pahdb,6674,6674,C62H20,0,1,62,20,0,benzenoid,4,16,0,0,1,1,1,use
+C62H20_v4u6675,pahdb,6675,6675,C62H20,0,1,62,20,0,benzenoid,4,16,0,0,1,1,1,use
+C62H20_v4u6676,pahdb,6676,6676,C62H20,0,1,62,20,0,benzenoid,7,10,3,0,1,1,1,use
+C62H20_v4u6683,pahdb,6683,6683,C62H20,0,1,62,20,0,benzenoid,6,14,0,0,1,1,1,use
+C62H20_v4u6684,pahdb,6684,6684,C62H20,0,1,62,20,0,benzenoid,7,10,3,0,1,1,1,use
+C62H20_v4u6688,pahdb,6688,6688,C62H20,0,1,62,20,0,benzenoid,6,14,0,0,1,1,1,use
+C62H22_v4u6648,pahdb,6648,6648,C62H22,0,1,62,22,0,benzenoid,6,8,0,8,1,1,1,use
+C62H22_v4u6649,pahdb,6649,6649,C62H22,0,1,62,22,0,benzenoid,2,8,12,0,1,1,0,use
+C62H22_v4u6651,pahdb,6651,6651,C62H22,0,1,62,22,0,benzenoid,6,8,0,8,1,1,1,use
+C62H22_v4u6653,pahdb,6653,6653,C62H22,0,1,62,22,0,benzenoid,6,8,0,8,1,1,0,use
+C64H20_v4u6657,pahdb,6657,6657,C64H20,0,1,64,20,0,benzenoid,6,14,0,0,1,1,0,use
+C64H20_v4u6661,pahdb,6661,6661,C64H20,0,1,64,20,0,benzenoid,6,14,0,0,1,1,1,use
+C64H22_v4u10013,pahdb,10013,10013,C64H22,0,1,64,22,0,benzenoid,8,8,6,0,1,1,0,use
+C64H22_v4u10042,pahdb,10042,10042,C64H22,0,1,64,22,0,benzenoid,8,8,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C64H22_v4u10043,pahdb,10043,10043,C64H22,0,1,64,22,0,benzenoid,8,8,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C64H22_v4u10044,pahdb,10044,10044,C64H22,0,1,64,22,0,benzenoid,8,8,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C64H22_v4u10045,pahdb,10045,10045,C64H22,0,1,64,22,0,benzenoid,8,8,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C64H22_v4u10046,pahdb,10046,10046,C64H22,0,1,64,22,0,benzenoid,8,8,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C64H22_v4u10047,pahdb,10047,10047,C64H22,0,1,64,22,0,benzenoid,8,8,6,0,1,1,1,use
+C64H22_v4u10048,pahdb,10048,10048,C64H22,0,1,64,22,0,benzenoid,8,8,6,0,1,1,1,use
+C64H22_v4u10049,pahdb,10049,10049,C64H22,0,1,64,22,0,benzenoid,8,8,6,0,1,1,0,use
+C64H22_v4u10050,pahdb,10050,10050,C64H22,0,1,64,22,0,benzenoid,8,8,6,0,1,1,0,use
+C64H22_v4u10051,pahdb,10051,10051,C64H22,0,1,64,22,0,benzenoid,8,8,6,0,1,1,0,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C64H22_v4u10061,pahdb,10061,10061,C64H22,0,1,64,22,0,benzenoid,8,8,6,0,1,1,1,use
+C64H22_v4u10062,pahdb,10062,10062,C64H22,0,1,64,22,0,benzenoid,8,8,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C64H22_v4u10063,pahdb,10063,10063,C64H22,0,1,64,22,0,benzenoid,8,8,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C64H22_v4u10064,pahdb,10064,10064,C64H22,0,1,64,22,0,benzenoid,8,8,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C64H22_v4u10065,pahdb,10065,10065,C64H22,0,1,64,22,0,benzenoid,8,8,6,0,1,1,0,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C64H22_v4u10066,pahdb,10066,10066,C64H22,0,1,64,22,0,benzenoid,8,8,6,0,1,1,1,use
+C64H22_v4u10067,pahdb,10067,10067,C64H22,0,1,64,22,0,benzenoid,8,8,6,0,1,1,1,use
+C64H22_v4u10068,pahdb,10068,10068,C64H22,0,1,64,22,0,benzenoid,8,8,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C64H22_v4u10069,pahdb,10069,10069,C64H22,0,1,64,22,0,benzenoid,8,8,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C64H22_v4u10079,pahdb,10079,10079,C64H22,0,1,64,22,0,benzenoid,8,8,6,0,1,1,1,use
+C64H22_v4u10080,pahdb,10080,10080,C64H22,0,1,64,22,0,benzenoid,8,8,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C64H22_v4u10081,pahdb,10081,10081,C64H22,0,1,64,22,0,benzenoid,8,8,6,0,1,1,0,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C64H22_v4u10082,pahdb,10082,10082,C64H22,0,1,64,22,0,benzenoid,8,8,6,0,1,1,0,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C64H22_v4u10083,pahdb,10083,10083,C64H22,0,1,64,22,0,benzenoid,8,8,6,0,1,1,1,use
+C64H22_v4u10084,pahdb,10084,10084,C64H22,0,1,64,22,0,benzenoid,8,8,6,0,1,1,1,use
+C64H22_v4u10085,pahdb,10085,10085,C64H22,0,1,64,22,0,benzenoid,8,8,6,0,1,1,1,use
+C64H22_v4u10086,pahdb,10086,10086,C64H22,0,1,64,22,0,benzenoid,8,8,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C64H22_v4u10087,pahdb,10087,10087,C64H22,0,1,64,22,0,benzenoid,8,8,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C64H22_v4u10100,pahdb,10100,10100,C64H22,0,1,64,22,0,benzenoid,8,8,6,0,1,1,0,use
+C64H22_v4u10101,pahdb,10101,10101,C64H22,0,1,64,22,0,benzenoid,8,8,6,0,1,1,1,use
+C64H22_v4u10102,pahdb,10102,10102,C64H22,0,1,64,22,0,benzenoid,8,8,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C64H22_v4u10103,pahdb,10103,10103,C64H22,0,1,64,22,0,benzenoid,8,8,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C64H22_v4u10104,pahdb,10104,10104,C64H22,0,1,64,22,0,benzenoid,8,8,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C64H22_v4u10105,pahdb,10105,10105,C64H22,0,1,64,22,0,benzenoid,8,8,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C64H22_v4u10106,pahdb,10106,10106,C64H22,0,1,64,22,0,benzenoid,8,8,6,0,1,1,1,use
+C64H22_v4u10107,pahdb,10107,10107,C64H22,0,1,64,22,0,benzenoid,8,8,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C64H22_v4u10108,pahdb,10108,10108,C64H22,0,1,64,22,0,benzenoid,8,8,6,0,1,1,1,use
+C64H22_v4u10109,pahdb,10109,10109,C64H22,0,1,64,22,0,benzenoid,8,8,6,0,1,1,1,use
+C64H22_v4u10110,pahdb,10110,10110,C64H22,0,1,64,22,0,benzenoid,8,8,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C66H22_v4u6468,pahdb,6468,6468,C66H22,0,1,66,22,0,benzenoid,6,4,12,0,1,1,1,use
+C66H24_v4u3594,pahdb,3594,3594,C66H24,0,1,66,24,0,benzenoid,1,4,15,4,1,1,0,use
+C68H22_v4u10018,pahdb,10018,10018,C68H22,0,1,68,22,0,benzenoid,6,16,0,0,1,1,1,use
+C68H22_v4u10019,pahdb,10019,10019,C68H22,0,1,68,22,0,benzenoid,8,8,6,0,1,1,1,use
+C68H22_v4u10020,pahdb,10020,10020,C68H22,0,1,68,22,0,benzenoid,8,8,6,0,1,1,1,use
+C68H22_v4u10021,pahdb,10021,10021,C68H22,0,1,68,22,0,benzenoid,8,8,6,0,1,1,1,use
+C68H22_v4u6665,pahdb,6665,6665,C68H22,0,1,68,22,0,benzenoid,10,6,6,0,1,1,1,use
+C70H22_v4u10003,pahdb,10003,10003,C70H22,0,1,70,22,0,benzenoid,8,8,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C70H22_v4u10004,pahdb,10004,10004,C70H22,0,1,70,22,0,benzenoid,8,8,6,0,1,1,1,use
+C70H22_v4u10005,pahdb,10005,10005,C70H22,0,1,70,22,0,benzenoid,8,8,6,0,1,1,1,use
+C70H22_v4u10006,pahdb,10006,10006,C70H22,0,1,70,22,0,benzenoid,8,8,6,0,1,1,0,use
+C70H22_v4u10007,pahdb,10007,10007,C70H22,0,1,70,22,0,benzenoid,8,8,6,0,1,1,0,use
+C70H22_v4u10008,pahdb,10008,10008,C70H22,0,1,70,22,0,benzenoid,8,8,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C70H22_v4u10009,pahdb,10009,10009,C70H22,0,1,70,22,0,benzenoid,8,8,6,0,1,1,1,use
+C70H22_v4u10010,pahdb,10010,10010,C70H22,0,1,70,22,0,benzenoid,8,8,6,0,1,1,1,use
+C70H22_v4u9931,pahdb,9931,9931,C70H22,0,1,70,22,0,benzenoid,8,8,6,0,1,1,1,use
+C70H22_v4u9932,pahdb,9932,9932,C70H22,0,1,70,22,0,benzenoid,8,8,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C70H22_v4u9933,pahdb,9933,9933,C70H22,0,1,70,22,0,benzenoid,8,8,6,0,1,1,0,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C70H22_v4u9934,pahdb,9934,9934,C70H22,0,1,70,22,0,benzenoid,8,8,6,0,1,1,1,use
+C70H22_v4u9935,pahdb,9935,9935,C70H22,0,1,70,22,0,benzenoid,8,8,6,0,1,1,0,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C70H22_v4u9936,pahdb,9936,9936,C70H22,0,1,70,22,0,benzenoid,8,8,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C70H22_v4u9937,pahdb,9937,9937,C70H22,0,1,70,22,0,benzenoid,8,8,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C70H22_v4u9938,pahdb,9938,9938,C70H22,0,1,70,22,0,benzenoid,8,8,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C70H22_v4u9939,pahdb,9939,9939,C70H22,0,1,70,22,0,benzenoid,8,8,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C70H22_v4u9960,pahdb,9960,9960,C70H22,0,1,70,22,0,benzenoid,8,8,6,0,1,1,1,use
+C70H22_v4u9961,pahdb,9961,9961,C70H22,0,1,70,22,0,benzenoid,8,8,6,0,1,1,1,use
+C70H22_v4u9962,pahdb,9962,9962,C70H22,0,1,70,22,0,benzenoid,8,8,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C70H22_v4u9963,pahdb,9963,9963,C70H22,0,1,70,22,0,benzenoid,8,8,6,0,1,1,1,use
+C70H22_v4u9964,pahdb,9964,9964,C70H22,0,1,70,22,0,benzenoid,8,8,6,0,1,1,1,use
+C70H22_v4u9965,pahdb,9965,9965,C70H22,0,1,70,22,0,benzenoid,8,8,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C70H22_v4u9966,pahdb,9966,9966,C70H22,0,1,70,22,0,benzenoid,8,8,6,0,1,1,0,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C70H22_v4u9967,pahdb,9967,9967,C70H22,0,1,70,22,0,benzenoid,8,8,6,0,1,1,0,use
+C70H22_v4u9968,pahdb,9968,9968,C70H22,0,1,70,22,0,benzenoid,8,8,6,0,1,1,1,use
+C70H22_v4u9969,pahdb,9969,9969,C70H22,0,1,70,22,0,benzenoid,8,8,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C70H22_v4u9970,pahdb,9970,9970,C70H22,0,1,70,22,0,benzenoid,8,8,6,0,1,1,0,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C70H22_v4u9971,pahdb,9971,9971,C70H22,0,1,70,22,0,benzenoid,8,8,6,0,1,1,1,use
+C70H22_v4u9983,pahdb,9983,9983,C70H22,0,1,70,22,0,benzenoid,8,8,6,0,1,1,1,use
+C70H22_v4u9984,pahdb,9984,9984,C70H22,0,1,70,22,0,benzenoid,8,8,6,0,1,1,0,use
+C70H22_v4u9985,pahdb,9985,9985,C70H22,0,1,70,22,0,benzenoid,8,8,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C70H22_v4u9986,pahdb,9986,9986,C70H22,0,1,70,22,0,benzenoid,8,8,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C70H22_v4u9987,pahdb,9987,9987,C70H22,0,1,70,22,0,benzenoid,8,8,6,0,1,1,0,use
+C70H22_v4u9988,pahdb,9988,9988,C70H22,0,1,70,22,0,benzenoid,8,8,6,0,1,1,1,use
+C70H22_v4u9989,pahdb,9989,9989,C70H22,0,1,70,22,0,benzenoid,8,8,6,0,1,1,1,use
+C70H22_v4u9990,pahdb,9990,9990,C70H22,0,1,70,22,0,benzenoid,8,8,6,0,1,1,1,use
+C70H22_v4u9991,pahdb,9991,9991,C70H22,0,1,70,22,0,benzenoid,8,8,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C70H22_v4u9992,pahdb,9992,9992,C70H22,0,1,70,22,0,benzenoid,8,8,6,0,1,1,0,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C70H22_v4u9993,pahdb,9993,9993,C70H22,0,1,70,22,0,benzenoid,8,8,6,0,1,1,1,use
+C70H26_v4u6624,pahdb,6624,6624,C70H26,0,1,70,26,0,benzenoid,6,4,0,16,1,1,1,use
+C70H26_v4u6628,pahdb,6628,6628,C70H26,0,1,70,26,0,benzenoid,6,4,0,16,1,1,1,use
+C72H22_v4u9909,pahdb,9909,9909,C72H22,0,1,72,22,0,benzenoid,9,10,3,0,1,1,0,use
+C72H22_v4u9910,pahdb,9910,9910,C72H22,0,1,72,22,0,benzenoid,9,10,3,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C72H22_v4u9911,pahdb,9911,9911,C72H22,0,1,72,22,0,benzenoid,9,10,3,0,1,1,0,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C72H22_v4u9912,pahdb,9912,9912,C72H22,0,1,72,22,0,benzenoid,9,10,3,0,1,1,0,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C72H22_v4u9913,pahdb,9913,9913,C72H22,0,1,72,22,0,benzenoid,9,10,3,0,1,1,1,use
+C72H22_v4u9944,pahdb,9944,9944,C72H22,0,1,72,22,0,benzenoid,9,10,3,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C72H22_v4u9945,pahdb,9945,9945,C72H22,0,1,72,22,0,benzenoid,9,10,3,0,1,1,1,use
+C72H22_v4u9946,pahdb,9946,9946,C72H22,0,1,72,22,0,benzenoid,9,10,3,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C72H22_v4u9947,pahdb,9947,9947,C72H22,0,1,72,22,0,benzenoid,9,10,3,0,1,1,0,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C73H23_v4u6633,pahdb,6633,6633,C73H23,0,2,73,23,0,benzenoid,7,10,6,0,1,1,1,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C73H23_v4u6636,pahdb,6636,6636,C73H23,0,2,73,23,0,benzenoid,7,10,6,0,1,1,1,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C74H22_v4u6600,pahdb,6600,6600,C74H22,0,1,74,22,0,benzenoid,9,10,3,0,1,1,1,use
+C74H22_v4u6601,pahdb,6601,6601,C74H22,0,1,74,22,0,benzenoid,9,10,3,0,1,1,1,use
+C74H22_v4u6602,pahdb,6602,6602,C74H22,0,1,74,22,0,benzenoid,4,18,0,0,1,1,0,use
+C74H22_v4u9884,pahdb,9884,9884,C74H22,0,1,74,22,0,benzenoid,6,16,0,0,1,1,1,use
+C74H22_v4u9885,pahdb,9885,9885,C74H22,0,1,74,22,0,benzenoid,6,16,0,0,1,1,1,use
+C74H22_v4u9886,pahdb,9886,9886,C74H22,0,1,74,22,0,benzenoid,6,16,0,0,1,1,1,use
+C74H22_v4u9919,pahdb,9919,9919,C74H22,0,1,74,22,0,benzenoid,6,16,0,0,1,1,1,use
+C74H22_v4u9920,pahdb,9920,9920,C74H22,0,1,74,22,0,benzenoid,7,12,3,0,1,1,0,use
+C74H22_v4u9921,pahdb,9921,9921,C74H22,0,1,74,22,0,benzenoid,8,14,0,0,1,1,0,use
+C74H22_v4u9922,pahdb,9922,9922,C74H22,0,1,74,22,0,benzenoid,6,16,0,0,1,1,1,use
+C74H28_v4u6606,pahdb,6606,6606,C74H28,0,1,74,28,0,benzenoid,6,2,0,20,1,1,1,use
+C76H22_v4u6613,pahdb,6613,6613,C76H22,0,1,76,22,0,benzenoid,9,10,3,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C76H22_v4u6614,pahdb,6614,6614,C76H22,0,1,76,22,0,benzenoid,8,14,0,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C76H22_v4u9889,pahdb,9889,9889,C76H22,0,1,76,22,0,benzenoid,8,14,0,0,1,1,1,use
+C76H22_v4u9890,pahdb,9890,9890,C76H22,0,1,76,22,0,benzenoid,8,14,0,0,1,1,1,use
+C78H22_v4u6581,pahdb,6581,6581,C78H22,0,1,78,22,0,benzenoid,8,14,0,0,1,1,1,use
+C78H22_v4u9892,pahdb,9892,9892,C78H22,0,1,78,22,0,benzenoid,8,14,0,0,1,1,1,use
+C78H28_v4u3445,pahdb,3445,3445,C78H28,0,1,78,28,0,benzenoid,2,4,18,4,1,1,0,use
+C78H28_v4u3446,pahdb,3446,3446,C78H28,0,1,78,28,0,benzenoid,1,10,9,8,1,1,0,use
+C78H28_v4u3448,pahdb,3448,3448,C78H28,0,1,78,28,0,benzenoid,2,8,6,12,1,1,0,use
+C78H30_v4u6585,pahdb,6585,6585,C78H30,0,1,78,30,0,benzenoid,6,0,0,24,1,1,0,use
+C80H24_v4u6556,pahdb,6556,6556,C80H24,0,1,80,24,0,benzenoid,10,14,0,0,1,1,1,use
+C80H24_v4u6557,pahdb,6557,6557,C80H24,0,1,80,24,0,benzenoid,11,10,3,0,1,1,1,use
+C80H24_v4u6558,pahdb,6558,6558,C80H24,0,1,80,24,0,benzenoid,11,10,3,0,1,1,1,use
+C81H23_v4u6561,pahdb,6561,6561,C81H23,0,2,81,23,0,benzenoid,8,12,3,0,1,1,1,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C82H24_v4u561,pahdb,561,561,C82H24,0,1,82,24,0,benzenoid,14,4,6,0,1,1,0,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C82H24_v4u9860,pahdb,9860,9860,C82H24,0,1,82,24,0,benzenoid,10,8,6,0,1,1,0,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C82H24_v4u9861,pahdb,9861,9861,C82H24,0,1,82,24,0,benzenoid,10,8,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C82H24_v4u9862,pahdb,9862,9862,C82H24,0,1,82,24,0,benzenoid,10,8,6,0,1,1,1,use
+C82H24_v4u9863,pahdb,9863,9863,C82H24,0,1,82,24,0,benzenoid,10,8,6,0,1,1,0,use
+C82H24_v4u9864,pahdb,9864,9864,C82H24,0,1,82,24,0,benzenoid,10,8,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C82H24_v4u9899,pahdb,9899,9899,C82H24,0,1,82,24,0,benzenoid,10,8,6,0,1,1,1,use
+C82H24_v4u9900,pahdb,9900,9900,C82H24,0,1,82,24,0,benzenoid,10,8,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C82H24_v4u9901,pahdb,9901,9901,C82H24,0,1,82,24,0,benzenoid,10,8,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C82H24_v4u9902,pahdb,9902,9902,C82H24,0,1,82,24,0,benzenoid,10,8,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C82H24_v4u9903,pahdb,9903,9903,C82H24,0,1,82,24,0,benzenoid,10,8,6,0,1,1,1,use
+C84H24_v4u6508,pahdb,6508,6508,C84H24,0,1,84,24,0,benzenoid,8,10,6,0,1,1,1,use
+C84H24_v4u6509,pahdb,6509,6509,C84H24,0,1,84,24,0,benzenoid,9,12,3,0,1,1,1,use
+C84H24_v4u6510,pahdb,6510,6510,C84H24,0,1,84,24,0,benzenoid,10,8,6,0,1,1,1,use
+C84H24_v4u6511,pahdb,6511,6511,C84H24,0,1,84,24,0,benzenoid,10,8,6,0,1,1,1,use
+C84H24_v4u6512,pahdb,6512,6512,C84H24,0,1,84,24,0,benzenoid,10,8,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C84H24_v4u6513,pahdb,6513,6513,C84H24,0,1,84,24,0,benzenoid,10,8,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C84H24_v4u6514,pahdb,6514,6514,C84H24,0,1,84,24,0,benzenoid,10,8,6,0,1,1,1,use
+C84H24_v4u6515,pahdb,6515,6515,C84H24,0,1,84,24,0,benzenoid,8,10,6,0,1,1,1,use
+C84H24_v4u6516,pahdb,6516,6516,C84H24,0,1,84,24,0,benzenoid,8,10,6,0,1,1,0,use
+C84H24_v4u6517,pahdb,6517,6517,C84H24,0,1,84,24,0,benzenoid,10,8,6,0,1,1,1,use
+C84H24_v4u6554,pahdb,6554,6554,C84H24,0,1,84,24,0,benzenoid,10,8,6,0,1,1,0,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C84H24_v4u6555,pahdb,6555,6555,C84H24,0,1,84,24,0,benzenoid,10,8,6,0,1,1,1,use
+C84H24_v4u9870,pahdb,9870,9870,C84H24,0,1,84,24,0,benzenoid,8,16,0,0,1,1,1,use
+C84H24_v4u9871,pahdb,9871,9871,C84H24,0,1,84,24,0,benzenoid,9,12,3,0,1,1,1,use
+C84H24_v4u9872,pahdb,9872,9872,C84H24,0,1,84,24,0,benzenoid,10,8,6,0,1,1,1,use
+C84H24_v4u9873,pahdb,9873,9873,C84H24,0,1,84,24,0,benzenoid,9,12,3,0,1,1,1,use
+C84H24_v4u9874,pahdb,9874,9874,C84H24,0,1,84,24,0,benzenoid,10,8,6,0,1,1,1,use
+C85H23_v4u3268,pahdb,3268,3268,C85H23,0,2,85,23,0,benzenoid,11,12,0,0,1,1,1,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C86H24_v4u6521,pahdb,6521,6521,C86H24,0,1,86,24,0,benzenoid,2,22,0,0,1,1,0,use
+C86H24_v4u9878,pahdb,9878,9878,C86H24,0,1,86,24,0,benzenoid,10,14,0,0,1,1,0,use
+C86H24_v4u9879,pahdb,9879,9879,C86H24,0,1,86,24,0,benzenoid,11,10,3,0,1,1,1,use
+C86H24_v4u9880,pahdb,9880,9880,C86H24,0,1,86,24,0,benzenoid,11,10,3,0,1,1,0,use
+C88H24_v4u9839,pahdb,9839,9839,C88H24,0,1,88,24,0,benzenoid,10,14,0,0,1,1,0,use
+C88H24_v4u9840,pahdb,9840,9840,C88H24,0,1,88,24,0,benzenoid,11,10,3,0,1,1,0,use
+C88H24_v4u9843,pahdb,9843,9843,C88H24,0,1,88,24,0,benzenoid,10,14,0,0,1,1,1,use
+C88H24_v4u9844,pahdb,9844,9844,C88H24,0,1,88,24,0,benzenoid,10,14,0,0,1,1,0,use
+C89H27_v4u6525,pahdb,6525,6525,C89H27,0,2,89,27,0,benzenoid,12,6,9,0,1,1,1,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C90H24_v4u6499,pahdb,6499,6499,C90H24,0,1,90,24,0,benzenoid,11,10,3,0,1,1,1,use
+C90H24_v4u6500,pahdb,6500,6500,C90H24,0,1,90,24,0,benzenoid,11,10,3,0,1,1,1,use
+C90H24_v4u6501,pahdb,6501,6501,C90H24,0,1,90,24,0,benzenoid,11,10,3,0,1,1,1,use
+C90H24_v4u6502,pahdb,6502,6502,C90H24,0,1,90,24,0,benzenoid,6,18,0,0,1,1,1,use
+C90H24_v4u6503,pahdb,6503,6503,C90H24,0,1,90,24,0,benzenoid,9,12,3,0,1,1,1,use
+C92H24_v4u6476,pahdb,6476,6476,C92H24,0,1,92,24,0,benzenoid,8,16,0,0,1,1,1,use
+C92H24_v4u6477,pahdb,6477,6477,C92H24,0,1,92,24,0,benzenoid,8,16,0,0,1,1,1,use
+C92H24_v4u6478,pahdb,6478,6478,C92H24,0,1,92,24,0,benzenoid,10,14,0,0,1,1,1,use
+C92H24_v4u6479,pahdb,6479,6479,C92H24,0,1,92,24,0,benzenoid,8,16,0,0,1,1,0,use
+C92H24_v4u9848,pahdb,9848,9848,C92H24,0,1,92,24,0,benzenoid,10,14,0,0,1,1,0,use
+C92H24_v4u9849,pahdb,9849,9849,C92H24,0,1,92,24,0,benzenoid,10,14,0,0,1,1,1,use
+C92H24_v4u9850,pahdb,9850,9850,C92H24,0,1,92,24,0,benzenoid,10,14,0,0,1,1,1,use
+C93H21N3_v4u8871,pahdb,8871,8871,C93H21N3,0,1,93,21,3,npah,13,8,0,0,1,1,0,use
+C93H21N3_v4u8879,pahdb,8879,8879,C93H21N3,0,1,93,21,3,npah,13,8,0,0,1,1,0,use
+C93H21N3_v4u8887,pahdb,8887,8887,C93H21N3,0,1,93,21,3,npah,11,10,0,0,1,1,0,use
+C93H21N3_v4u8890,pahdb,8890,8890,C93H21N3,0,1,93,21,3,npah,11,10,0,0,1,1,0,use
+C93H24N3_v4u8415,pahdb,8415,8415,C93H24N3,0,2,93,24,3,npah,12,12,0,0,1,1,0,"excluded: screen below_bound (listed multiplicity 2, bound 4)"
+C93H24N3_v4u8420,pahdb,8420,8420,C93H24N3,0,2,93,24,3,npah,12,12,0,0,1,1,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C93H24N3_v4u8425,pahdb,8425,8425,C93H24N3,0,2,93,24,3,npah,12,12,0,0,1,1,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C93H24N3_v4u8430,pahdb,8430,8430,C93H24N3,0,2,93,24,3,npah,12,12,0,0,1,1,1,"excluded: screen below_bound (listed multiplicity 2, bound 4)"
+C93H24N3_v4u8434,pahdb,8434,8434,C93H24N3,0,2,93,24,3,npah,12,12,0,0,1,1,1,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C93H24N3_v4u8438,pahdb,8438,8438,C93H24N3,0,2,93,24,3,npah,12,12,0,0,1,1,1,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C93H24N3_v4u8442,pahdb,8442,8442,C93H24N3,0,2,93,24,3,npah,12,12,0,0,1,1,1,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C93H25_v4u6483,pahdb,6483,6483,C93H25,0,2,93,25,0,benzenoid,11,8,6,0,1,1,1,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C94H22N2_v4u8291,pahdb,8291,8291,C94H22N2,0,1,94,22,2,npah,10,12,0,0,1,1,0,use
+C94H22N2_v4u8296,pahdb,8296,8296,C94H22N2,0,1,94,22,2,npah,10,12,0,0,1,1,0,use
+C94H22N2_v4u8298,pahdb,8298,8298,C94H22N2,0,1,94,22,2,npah,10,12,0,0,1,1,0,use
+C94H22N2_v4u8310,pahdb,8310,8310,C94H22N2,0,1,94,22,2,npah,10,12,0,0,1,1,0,use
+C94H22N2_v4u8316,pahdb,8316,8316,C94H22N2,0,1,94,22,2,npah,10,12,0,0,1,1,1,use
+C94H22N2_v4u8326,pahdb,8326,8326,C94H22N2,0,1,94,22,2,npah,10,12,0,0,1,1,0,use
+C94H22N2_v4u8332,pahdb,8332,8332,C94H22N2,0,1,94,22,2,npah,10,12,0,0,1,1,1,use
+C94H22N2_v4u8337,pahdb,8337,8337,C94H22N2,0,1,94,22,2,npah,10,12,0,0,1,1,0,use
+C94H23N2_v4u7749,pahdb,7749,7749,C94H23N2,0,2,94,23,2,npah,11,12,0,0,1,1,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C94H23N2_v4u7751,pahdb,7751,7751,C94H23N2,0,2,94,23,2,npah,11,12,0,0,1,1,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C94H23N2_v4u7754,pahdb,7754,7754,C94H23N2,0,2,94,23,2,npah,11,12,0,0,1,1,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C94H23N2_v4u7762,pahdb,7762,7762,C94H23N2,0,2,94,23,2,npah,11,12,0,0,1,1,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C94H23N2_v4u7763,pahdb,7763,7763,C94H23N2,0,2,94,23,2,npah,11,12,0,0,1,1,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C94H23N2_v4u7765,pahdb,7765,7765,C94H23N2,0,2,94,23,2,npah,11,12,0,0,1,1,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C94H23N2_v4u7772,pahdb,7772,7772,C94H23N2,0,2,94,23,2,npah,11,12,0,0,1,1,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C94H23N2_v4u7773,pahdb,7773,7773,C94H23N2,0,2,94,23,2,npah,11,12,0,0,1,0,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C94H23N2_v4u7781,pahdb,7781,7781,C94H23N2,0,2,94,23,2,npah,11,12,0,0,1,1,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C94H23N2_v4u7782,pahdb,7782,7782,C94H23N2,0,2,94,23,2,npah,11,12,0,0,1,1,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C94H23N2_v4u7789,pahdb,7789,7789,C94H23N2,0,2,94,23,2,npah,11,12,0,0,1,1,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C94H23N2_v4u7790,pahdb,7790,7790,C94H23N2,0,2,94,23,2,npah,11,12,0,0,1,1,1,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C94H23N2_v4u7795,pahdb,7795,7795,C94H23N2,0,2,94,23,2,npah,11,12,0,0,1,0,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C94H23N2_v4u7800,pahdb,7800,7800,C94H23N2,0,2,94,23,2,npah,11,12,0,0,1,0,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C94H23N2_v4u7803,pahdb,7803,7803,C94H23N2,0,2,94,23,2,npah,11,12,0,0,1,1,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C94H23N2_v4u7805,pahdb,7805,7805,C94H23N2,0,2,94,23,2,npah,11,12,0,0,1,1,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C94H24N2_v4u7536,pahdb,7536,7536,C94H24N2,0,1,94,24,2,npah,12,12,0,0,1,1,0,use
+C94H24N2_v4u7539,pahdb,7539,7539,C94H24N2,0,1,94,24,2,npah,12,12,0,0,1,1,1,"excluded: screen below_bound (listed multiplicity 1, bound 3)"
+C94H24N2_v4u7544,pahdb,7544,7544,C94H24N2,0,1,94,24,2,npah,12,12,0,0,1,1,1,use
+C94H24N2_v4u7548,pahdb,7548,7548,C94H24N2,0,1,94,24,2,npah,12,12,0,0,1,1,1,use
+C94H24N2_v4u7554,pahdb,7554,7554,C94H24N2,0,1,94,24,2,npah,12,12,0,0,1,1,1,"excluded: screen below_bound (listed multiplicity 1, bound 3)"
+C94H24N2_v4u7556,pahdb,7556,7556,C94H24N2,0,1,94,24,2,npah,12,12,0,0,1,1,1,use
+C94H24N2_v4u7562,pahdb,7562,7562,C94H24N2,0,1,94,24,2,npah,12,12,0,0,1,1,1,use
+C94H24_v4u6487,pahdb,6487,6487,C94H24,0,1,94,24,0,benzenoid,10,14,0,0,1,1,0,use
+C94H26_v4u563,pahdb,563,563,C94H26,0,1,94,26,0,benzenoid,16,4,6,0,1,1,1,use
+C94H26_v4u9408,pahdb,9408,9408,C94H26,0,1,94,26,0,benzenoid,12,8,6,0,1,1,1,use
+C94H26_v4u9409,pahdb,9409,9409,C94H26,0,1,94,26,0,benzenoid,11,6,9,0,1,1,1,use
+C94H26_v4u9410,pahdb,9410,9410,C94H26,0,1,94,26,0,benzenoid,7,10,9,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C94H26_v4u9411,pahdb,9411,9411,C94H26,0,1,94,26,0,benzenoid,7,10,9,0,1,1,0,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C94H26_v4u9412,pahdb,9412,9412,C94H26,0,1,94,26,0,benzenoid,13,10,3,0,1,1,1,use
+C94H26_v4u9413,pahdb,9413,9413,C94H26,0,1,94,26,0,benzenoid,14,6,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C94H26_v4u9414,pahdb,9414,9414,C94H26,0,1,94,26,0,benzenoid,10,16,0,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C94H26_v4u9415,pahdb,9415,9415,C94H26,0,1,94,26,0,benzenoid,13,4,9,0,1,1,0,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C94H26_v4u9416,pahdb,9416,9416,C94H26,0,1,94,26,0,benzenoid,11,6,9,0,1,1,0,use
+C94H26_v4u9417,pahdb,9417,9417,C94H26,0,1,94,26,0,benzenoid,7,10,9,0,1,1,1,use
+C94H26_v4u9431,pahdb,9431,9431,C94H26,0,1,94,26,0,benzenoid,7,10,9,0,1,1,0,use
+C94H26_v4u9432,pahdb,9432,9432,C94H26,0,1,94,26,0,benzenoid,7,10,9,0,1,1,1,use
+C94H26_v4u9433,pahdb,9433,9433,C94H26,0,1,94,26,0,benzenoid,13,4,9,0,1,1,1,use
+C94H26_v4u9434,pahdb,9434,9434,C94H26,0,1,94,26,0,benzenoid,11,6,9,0,1,1,0,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C94H26_v4u9435,pahdb,9435,9435,C94H26,0,1,94,26,0,benzenoid,7,10,9,0,1,1,0,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C94H26_v4u9436,pahdb,9436,9436,C94H26,0,1,94,26,0,benzenoid,12,8,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C94H26_v4u9437,pahdb,9437,9437,C94H26,0,1,94,26,0,benzenoid,13,10,3,0,1,1,1,use
+C94H26_v4u9439,pahdb,9439,9439,C94H26,0,1,94,26,0,benzenoid,10,16,0,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C94H26_v4u9454,pahdb,9454,9454,C94H26,0,1,94,26,0,benzenoid,10,16,0,0,1,1,1,use
+C94H26_v4u9455,pahdb,9455,9455,C94H26,0,1,94,26,0,benzenoid,10,16,0,0,1,1,1,use
+C94H26_v4u9456,pahdb,9456,9456,C94H26,0,1,94,26,0,benzenoid,10,16,0,0,1,1,0,use
+C94H26_v4u9458,pahdb,9458,9458,C94H26,0,1,94,26,0,benzenoid,7,10,9,0,1,1,0,use
+C94H26_v4u9459,pahdb,9459,9459,C94H26,0,1,94,26,0,benzenoid,7,10,9,0,1,1,1,use
+C94H26_v4u9463,pahdb,9463,9463,C94H26,0,1,94,26,0,benzenoid,10,16,0,0,1,1,1,use
+C94H26_v4u9476,pahdb,9476,9476,C94H26,0,1,94,26,0,benzenoid,10,16,0,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C94H26_v4u9477,pahdb,9477,9477,C94H26,0,1,94,26,0,benzenoid,10,16,0,0,1,1,1,use
+C94H26_v4u9478,pahdb,9478,9478,C94H26,0,1,94,26,0,benzenoid,10,16,0,0,1,1,1,use
+C94H26_v4u9479,pahdb,9479,9479,C94H26,0,1,94,26,0,benzenoid,10,16,0,0,1,1,0,use
+C94H26_v4u9480,pahdb,9480,9480,C94H26,0,1,94,26,0,benzenoid,12,14,0,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C94H26_v4u9482,pahdb,9482,9482,C94H26,0,1,94,26,0,benzenoid,10,16,0,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C94H26_v4u9497,pahdb,9497,9497,C94H26,0,1,94,26,0,benzenoid,10,16,0,0,1,1,1,use
+C94H26_v4u9499,pahdb,9499,9499,C94H26,0,1,94,26,0,benzenoid,10,16,0,0,1,1,0,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C94H26_v4u9501,pahdb,9501,9501,C94H26,0,1,94,26,0,benzenoid,10,16,0,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C94H26_v4u9503,pahdb,9503,9503,C94H26,0,1,94,26,0,benzenoid,10,16,0,0,1,1,0,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C94H26_v4u9505,pahdb,9505,9505,C94H26,0,1,94,26,0,benzenoid,10,16,0,0,1,1,0,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C94H26_v4u9506,pahdb,9506,9506,C94H26,0,1,94,26,0,benzenoid,10,16,0,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C94H26_v4u9520,pahdb,9520,9520,C94H26,0,1,94,26,0,benzenoid,10,16,0,0,1,1,0,use
+C94H26_v4u9522,pahdb,9522,9522,C94H26,0,1,94,26,0,benzenoid,10,16,0,0,1,1,0,use
+C94H26_v4u9524,pahdb,9524,9524,C94H26,0,1,94,26,0,benzenoid,10,16,0,0,1,1,0,use
+C95H23N_v4u7529,pahdb,7529,7529,C95H23N,0,1,95,23,1,npah,11,12,0,0,1,1,1,use
+C95H23N_v4u7531,pahdb,7531,7531,C95H23N,0,1,95,23,1,npah,13,10,0,0,1,1,1,use
+C95H24N_v4u7513,pahdb,7513,7513,C95H24N,0,2,95,24,1,npah,12,12,0,0,1,1,1,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C95H24N_v4u7515,pahdb,7515,7515,C95H24N,0,2,95,24,1,npah,12,12,0,0,1,1,1,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C95H24N_v4u7516,pahdb,7516,7516,C95H24N,0,2,95,24,1,npah,12,12,0,0,1,1,1,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C95H24N_v4u7518,pahdb,7518,7518,C95H24N,0,2,95,24,1,npah,12,12,0,0,1,1,1,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C95H24N_v4u7522,pahdb,7522,7522,C95H24N,0,2,95,24,1,npah,12,12,0,0,1,1,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C95H24N_v4u7524,pahdb,7524,7524,C95H24N,0,2,95,24,1,npah,12,12,0,0,1,1,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C95H24N_v4u7534,pahdb,7534,7534,C95H24N,0,2,95,24,1,npah,11,12,0,0,1,0,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C96H26_v4u9388,pahdb,9388,9388,C96H26,0,1,96,26,0,benzenoid,11,12,3,0,1,1,1,use
+C96H26_v4u9389,pahdb,9389,9389,C96H26,0,1,96,26,0,benzenoid,10,10,6,0,1,1,1,use
+C96H26_v4u9390,pahdb,9390,9390,C96H26,0,1,96,26,0,benzenoid,9,8,9,0,1,1,0,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C96H26_v4u9391,pahdb,9391,9391,C96H26,0,1,96,26,0,benzenoid,12,8,6,0,1,1,1,use
+C96H26_v4u9392,pahdb,9392,9392,C96H26,0,1,96,26,0,benzenoid,10,10,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C96H26_v4u9393,pahdb,9393,9393,C96H26,0,1,96,26,0,benzenoid,9,8,9,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C96H26_v4u9394,pahdb,9394,9394,C96H26,0,1,96,26,0,benzenoid,12,8,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C96H26_v4u9395,pahdb,9395,9395,C96H26,0,1,96,26,0,benzenoid,12,8,6,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C96H26_v4u9396,pahdb,9396,9396,C96H26,0,1,96,26,0,benzenoid,12,8,6,0,1,1,0,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C96H26_v4u9397,pahdb,9397,9397,C96H26,0,1,96,26,0,benzenoid,10,10,6,0,1,1,0,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C96H26_v4u9420,pahdb,9420,9420,C96H26,0,1,96,26,0,benzenoid,11,12,3,0,1,1,1,"excluded: non-Kekule, listed as singlet (exclude list v1)"
+C96H30_v4u3309,pahdb,3309,3309,C96H30,0,1,96,30,0,benzenoid,2,8,12,8,1,1,0,use
+C97H25_v4u6491,pahdb,6491,6491,C97H25,0,2,97,25,0,benzenoid,10,12,3,0,1,1,0,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C99H25_v4u6464,pahdb,6464,6464,C99H25,0,2,99,25,0,benzenoid,10,12,3,0,1,1,1,excluded: open-shell neutral (multiplicity 2); outside the closed-shell MLMD model
+C30H14_v4u10770_own,own,10770,10770,C30H14,0,3,30,14,0,benzenoid,4,4,6,0,0,0,0,use
+C32H18_v4u1741_own,own,1741,1741,C32H18,0,3,32,18,0,benzenoid,4,2,12,0,0,0,0,use
+C36H16_v4u10762_own,own,10762,10762,C36H16,0,3,36,16,0,benzenoid,4,6,6,0,0,0,0,use
+C36H16_v4u10763_own,own,10763,10763,C36H16,0,3,36,16,0,benzenoid,4,6,6,0,0,0,0,use
+C38H16_v4u10753_own,own,10753,10753,C38H16,0,3,38,16,0,benzenoid,4,6,6,0,0,0,0,use
+C38H16_v4u10754_own,own,10754,10754,C38H16,0,3,38,16,0,benzenoid,6,4,6,0,0,0,0,use
+C38H16_v4u10768_own,own,10768,10768,C38H16,0,3,38,16,0,benzenoid,4,6,6,0,0,0,0,use
+C40H18_v4u10711_own,own,10711,10711,C40H18,0,3,40,18,0,benzenoid,4,8,6,0,0,0,0,use
+C42H18_v4u10689_own,own,10689,10689,C42H18,0,3,42,18,0,benzenoid,6,6,6,0,0,0,0,use
+C42H18_v4u10697_own,own,10697,10697,C42H18,0,3,42,18,0,benzenoid,4,8,6,0,0,0,0,use
+C42H18_v4u10698_own,own,10698,10698,C42H18,0,3,42,18,0,benzenoid,4,8,6,0,0,0,0,use
+C42H18_v4u10699_own,own,10699,10699,C42H18,0,3,42,18,0,benzenoid,4,8,6,0,0,0,0,use
+C42H18_v4u10724_own,own,10724,10724,C42H18,0,3,42,18,0,benzenoid,4,8,6,0,0,0,0,use
+C42H18_v4u10728_own,own,10728,10728,C42H18,0,3,42,18,0,benzenoid,6,6,6,0,0,0,0,use
+C44H20_v4u10622_own,own,10622,10622,C44H20,0,3,44,20,0,benzenoid,6,8,6,0,0,0,0,use
+C44H20_v4u10623_own,own,10623,10623,C44H20,0,3,44,20,0,benzenoid,6,8,6,0,0,0,0,use
+C44H18_v4u10643_own,own,10643,10643,C44H18,0,3,44,18,0,benzenoid,4,8,6,0,0,0,0,use
+C44H18_v4u10645_own,own,10645,10645,C44H18,0,3,44,18,0,benzenoid,6,6,6,0,0,0,0,use
+C44H18_v4u10648_own,own,10648,10648,C44H18,0,3,44,18,0,benzenoid,6,6,6,0,0,0,0,use
+C44H18_v4u10668_own,own,10668,10668,C44H18,0,3,44,18,0,benzenoid,4,8,6,0,0,0,0,use
+C44H18_v4u10670_own,own,10670,10670,C44H18,0,3,44,18,0,benzenoid,4,8,6,0,0,0,0,use
+C44H18_v4u10671_own,own,10671,10671,C44H18,0,3,44,18,0,benzenoid,4,8,6,0,0,0,0,use
+C44H18_v4u10672_own,own,10672,10672,C44H18,0,3,44,18,0,benzenoid,4,8,6,0,0,0,0,use
+C44H18_v4u10674_own,own,10674,10674,C44H18,0,3,44,18,0,benzenoid,4,8,6,0,0,0,0,use
+C44H18_v4u10675_own,own,10675,10675,C44H18,0,3,44,18,0,benzenoid,4,8,6,0,0,0,0,use
+C44H18_v4u10704_own,own,10704,10704,C44H18,0,3,44,18,0,benzenoid,4,8,6,0,0,0,0,use
+C46H18_v4u10562_own,own,10562,10562,C46H18,0,3,46,18,0,benzenoid,6,6,6,0,0,0,0,use
+C46H18_v4u10563_own,own,10563,10563,C46H18,0,3,46,18,0,benzenoid,4,8,6,0,0,0,0,use
+C46H18_v4u10564_own,own,10564,10564,C46H18,0,3,46,18,0,benzenoid,6,6,6,0,0,0,0,use
+C46H18_v4u10566_own,own,10566,10566,C46H18,0,3,46,18,0,benzenoid,6,6,6,0,0,0,0,use
+C46H18_v4u10567_own,own,10567,10567,C46H18,0,3,46,18,0,benzenoid,4,8,6,0,0,0,0,use
+C46H18_v4u10568_own,own,10568,10568,C46H18,0,3,46,18,0,benzenoid,4,8,6,0,0,0,0,use
+C46H18_v4u10585_own,own,10585,10585,C46H18,0,3,46,18,0,benzenoid,6,6,6,0,0,0,0,use
+C46H18_v4u10586_own,own,10586,10586,C46H18,0,3,46,18,0,benzenoid,5,10,3,0,0,0,0,use
+C46H18_v4u10589_own,own,10589,10589,C46H18,0,3,46,18,0,benzenoid,4,8,6,0,0,0,0,use
+C46H18_v4u10596_own,own,10596,10596,C46H18,0,3,46,18,0,benzenoid,4,8,6,0,0,0,0,use
+C46H18_v4u10597_own,own,10597,10597,C46H18,0,3,46,18,0,benzenoid,4,8,6,0,0,0,0,use
+C46H18_v4u10600_own,own,10600,10600,C46H18,0,3,46,18,0,benzenoid,6,6,6,0,0,0,0,use
+C46H18_v4u10601_own,own,10601,10601,C46H18,0,3,46,18,0,benzenoid,4,8,6,0,0,0,0,use
+C48H18_v4u10537_own,own,10537,10537,C48H18,0,3,48,18,0,benzenoid,5,10,3,0,0,0,0,use
+C48H18_v4u10538_own,own,10538,10538,C48H18,0,3,48,18,0,benzenoid,6,6,6,0,0,0,0,use
+C48H18_v4u10540_own,own,10540,10540,C48H18,0,3,48,18,0,benzenoid,5,10,3,0,0,0,0,use
+C48H18_v4u10542_own,own,10542,10542,C48H18,0,3,48,18,0,benzenoid,4,8,6,0,0,0,0,use
+C48H18_v4u10543_own,own,10543,10543,C48H18,0,3,48,18,0,benzenoid,4,8,6,0,0,0,0,use
+C48H18_v4u10555_own,own,10555,10555,C48H18,0,3,48,18,0,benzenoid,5,10,3,0,0,0,0,use
+C48H18_v4u10556_own,own,10556,10556,C48H18,0,3,48,18,0,benzenoid,6,6,6,0,0,0,0,use
+C50H20_v4u10509_own,own,10509,10509,C50H20,0,3,50,20,0,benzenoid,8,6,6,0,0,0,0,use
+C50H20_v4u10511_own,own,10511,10511,C50H20,0,3,50,20,0,benzenoid,8,6,6,0,0,0,0,use
+C50H20_v4u10513_own,own,10513,10513,C50H20,0,3,50,20,0,benzenoid,5,12,3,0,0,0,0,use
+C50H18_v4u10527_own,own,10527,10527,C50H18,0,3,50,18,0,benzenoid,7,8,3,0,0,0,0,use
+C50H18_v4u10528_own,own,10528,10528,C50H18,0,3,50,18,0,benzenoid,5,10,3,0,0,0,0,use
+C52H20_v4u10452_own,own,10452,10452,C52H20,0,3,52,20,0,benzenoid,8,6,6,0,0,0,0,use
+C52H20_v4u10453_own,own,10453,10453,C52H20,0,3,52,20,0,benzenoid,5,12,3,0,0,0,0,use
+C52H20_v4u10454_own,own,10454,10454,C52H20,0,3,52,20,0,benzenoid,8,6,6,0,0,0,0,use
+C52H20_v4u10456_own,own,10456,10456,C52H20,0,3,52,20,0,benzenoid,8,6,6,0,0,0,0,use
+C52H18_v4u10470_own,own,10470,10470,C52H18,0,3,52,18,0,benzenoid,6,12,0,0,0,0,0,use
+C52H20_v4u10486_own,own,10486,10486,C52H20,0,3,52,20,0,benzenoid,8,6,6,0,0,0,0,use
+C52H20_v4u10489_own,own,10489,10489,C52H20,0,3,52,20,0,benzenoid,7,10,3,0,0,0,0,use
+C54H20_v4u10370_own,own,10370,10370,C54H20,0,3,54,20,0,benzenoid,8,6,6,0,0,0,0,use
+C54H20_v4u10372_own,own,10372,10372,C54H20,0,3,54,20,0,benzenoid,8,6,6,0,0,0,0,use
+C54H20_v4u10403_own,own,10403,10403,C54H20,0,3,54,20,0,benzenoid,5,12,3,0,0,0,0,use
+C54H20_v4u10407_own,own,10407,10407,C54H20,0,3,54,20,0,benzenoid,5,12,3,0,0,0,0,use
+C54H20_v4u10408_own,own,10408,10408,C54H20,0,3,54,20,0,benzenoid,8,6,6,0,0,0,0,use
+C54H20_v4u10428_own,own,10428,10428,C54H20,0,3,54,20,0,benzenoid,5,12,3,0,0,0,0,use
+C54H20_v4u10430_own,own,10430,10430,C54H20,0,3,54,20,0,benzenoid,5,12,3,0,0,0,0,use
+C54H20_v4u10431_own,own,10431,10431,C54H20,0,3,54,20,0,benzenoid,5,12,3,0,0,0,0,use
+C54H20_v4u10438_own,own,10438,10438,C54H20,0,3,54,20,0,benzenoid,5,12,3,0,0,0,0,use
+C54H20_v4u10440_own,own,10440,10440,C54H20,0,3,54,20,0,benzenoid,10,4,6,0,0,0,0,use
+C54H20_v4u10442_own,own,10442,10442,C54H20,0,3,54,20,0,benzenoid,8,6,6,0,0,0,0,use
+C54H20_v4u10467_own,own,10467,10467,C54H20,0,3,54,20,0,benzenoid,5,12,3,0,0,0,0,use
+C56H20_v4u10245_own,own,10245,10245,C56H20,0,3,56,20,0,benzenoid,6,8,6,0,0,0,0,use
+C56H20_v4u10246_own,own,10246,10246,C56H20,0,3,56,20,0,benzenoid,7,10,3,0,0,0,0,use
+C56H20_v4u10247_own,own,10247,10247,C56H20,0,3,56,20,0,benzenoid,8,6,6,0,0,0,0,use
+C56H20_v4u10248_own,own,10248,10248,C56H20,0,3,56,20,0,benzenoid,6,8,6,0,0,0,0,use
+C56H20_v4u10251_own,own,10251,10251,C56H20,0,3,56,20,0,benzenoid,6,8,6,0,0,0,0,use
+C56H20_v4u10252_own,own,10252,10252,C56H20,0,3,56,20,0,benzenoid,7,10,3,0,0,0,0,use
+C56H20_v4u10275_own,own,10275,10275,C56H20,0,3,56,20,0,benzenoid,6,8,6,0,0,0,0,use
+C56H20_v4u10276_own,own,10276,10276,C56H20,0,3,56,20,0,benzenoid,6,8,6,0,0,0,0,use
+C56H20_v4u10277_own,own,10277,10277,C56H20,0,3,56,20,0,benzenoid,6,8,6,0,0,0,0,use
+C56H20_v4u10278_own,own,10278,10278,C56H20,0,3,56,20,0,benzenoid,6,8,6,0,0,0,0,use
+C56H20_v4u10280_own,own,10280,10280,C56H20,0,3,56,20,0,benzenoid,7,10,3,0,0,0,0,use
+C56H20_v4u10284_own,own,10284,10284,C56H20,0,3,56,20,0,benzenoid,6,8,6,0,0,0,0,use
+C56H20_v4u10299_own,own,10299,10299,C56H20,0,3,56,20,0,benzenoid,5,12,3,0,0,0,0,use
+C56H20_v4u10301_own,own,10301,10301,C56H20,0,3,56,20,0,benzenoid,5,12,3,0,0,0,0,use
+C56H20_v4u10303_own,own,10303,10303,C56H20,0,3,56,20,0,benzenoid,5,12,3,0,0,0,0,use
+C56H20_v4u10304_own,own,10304,10304,C56H20,0,3,56,20,0,benzenoid,6,8,6,0,0,0,0,use
+C56H20_v4u10305_own,own,10305,10305,C56H20,0,3,56,20,0,benzenoid,6,8,6,0,0,0,0,use
+C56H20_v4u10307_own,own,10307,10307,C56H20,0,3,56,20,0,benzenoid,6,8,6,0,0,0,0,use
+C56H20_v4u10308_own,own,10308,10308,C56H20,0,3,56,20,0,benzenoid,6,8,6,0,0,0,0,use
+C56H20_v4u10310_own,own,10310,10310,C56H20,0,3,56,20,0,benzenoid,6,8,6,0,0,0,0,use
+C56H20_v4u10328_own,own,10328,10328,C56H20,0,3,56,20,0,benzenoid,5,12,3,0,0,0,0,use
+C56H20_v4u10330_own,own,10330,10330,C56H20,0,3,56,20,0,benzenoid,5,12,3,0,0,0,0,use
+C56H20_v4u10333_own,own,10333,10333,C56H20,0,3,56,20,0,benzenoid,7,10,3,0,0,0,0,use
+C56H20_v4u10334_own,own,10334,10334,C56H20,0,3,56,20,0,benzenoid,8,6,6,0,0,0,0,use
+C56H20_v4u10349_own,own,10349,10349,C56H20,0,3,56,20,0,benzenoid,6,8,6,0,0,0,0,use
+C56H20_v4u10351_own,own,10351,10351,C56H20,0,3,56,20,0,benzenoid,6,8,6,0,0,0,0,use
+C56H20_v4u10352_own,own,10352,10352,C56H20,0,3,56,20,0,benzenoid,5,12,3,0,0,0,0,use
+C56H20_v4u10353_own,own,10353,10353,C56H20,0,3,56,20,0,benzenoid,6,8,6,0,0,0,0,use
+C56H20_v4u10354_own,own,10354,10354,C56H20,0,3,56,20,0,benzenoid,5,12,3,0,0,0,0,use
+C56H20_v4u10355_own,own,10355,10355,C56H20,0,3,56,20,0,benzenoid,6,8,6,0,0,0,0,use
+C56H20_v4u10382_own,own,10382,10382,C56H20,0,3,56,20,0,benzenoid,6,8,6,0,0,0,0,use
+C56H20_v4u10384_own,own,10384,10384,C56H20,0,3,56,20,0,benzenoid,6,8,6,0,0,0,0,use
+C56H20_v4u10387_own,own,10387,10387,C56H20,0,3,56,20,0,benzenoid,7,10,3,0,0,0,0,use
+C56H20_v4u10388_own,own,10388,10388,C56H20,0,3,56,20,0,benzenoid,8,6,6,0,0,0,0,use
+C60H20_v4u10169_own,own,10169,10169,C60H20,0,3,60,20,0,benzenoid,7,10,3,0,0,0,0,use
+C60H20_v4u10189_own,own,10189,10189,C60H20,0,3,60,20,0,benzenoid,5,12,3,0,0,0,0,use
+C60H20_v4u10190_own,own,10190,10190,C60H20,0,3,60,20,0,benzenoid,6,8,6,0,0,0,0,use
+C60H20_v4u10192_own,own,10192,10192,C60H20,0,3,60,20,0,benzenoid,6,8,6,0,0,0,0,use
+C60H20_v4u10193_own,own,10193,10193,C60H20,0,3,60,20,0,benzenoid,7,10,3,0,0,0,0,use
+C60H20_v4u10194_own,own,10194,10194,C60H20,0,3,60,20,0,benzenoid,7,10,3,0,0,0,0,use
+C60H20_v4u10205_own,own,10205,10205,C60H20,0,3,60,20,0,benzenoid,5,12,3,0,0,0,0,use
+C60H20_v4u10206_own,own,10206,10206,C60H20,0,3,60,20,0,benzenoid,5,12,3,0,0,0,0,use
+C60H20_v4u10209_own,own,10209,10209,C60H20,0,3,60,20,0,benzenoid,7,10,3,0,0,0,0,use
+C60H20_v4u10211_own,own,10211,10211,C60H20,0,3,60,20,0,benzenoid,6,14,0,0,0,0,0,use
+C60H20_v4u10225_own,own,10225,10225,C60H20,0,3,60,20,0,benzenoid,9,8,3,0,0,0,0,use
+C60H20_v4u10226_own,own,10226,10226,C60H20,0,3,60,20,0,benzenoid,5,12,3,0,0,0,0,use
+C60H20_v4u10227_own,own,10227,10227,C60H20,0,3,60,20,0,benzenoid,5,12,3,0,0,0,0,use
+C60H20_v4u10230_own,own,10230,10230,C60H20,0,3,60,20,0,benzenoid,7,10,3,0,0,0,0,use
+C62H20_v4u10176_own,own,10176,10176,C62H20,0,3,62,20,0,benzenoid,6,14,0,0,0,0,0,use
+C62H20_v4u10177_own,own,10177,10177,C62H20,0,3,62,20,0,benzenoid,7,10,3,0,0,0,0,use
+C64H22_v4u10042_own,own,10042,10042,C64H22,0,3,64,22,0,benzenoid,8,8,6,0,0,0,0,use
+C64H22_v4u10043_own,own,10043,10043,C64H22,0,3,64,22,0,benzenoid,8,8,6,0,0,0,0,use
+C64H22_v4u10044_own,own,10044,10044,C64H22,0,3,64,22,0,benzenoid,8,8,6,0,0,0,0,use
+C64H22_v4u10045_own,own,10045,10045,C64H22,0,3,64,22,0,benzenoid,8,8,6,0,0,0,0,use
+C64H22_v4u10046_own,own,10046,10046,C64H22,0,3,64,22,0,benzenoid,8,8,6,0,0,0,0,use
+C64H22_v4u10051_own,own,10051,10051,C64H22,0,3,64,22,0,benzenoid,8,8,6,0,0,0,0,use
+C64H22_v4u10062_own,own,10062,10062,C64H22,0,3,64,22,0,benzenoid,8,8,6,0,0,0,0,use
+C64H22_v4u10063_own,own,10063,10063,C64H22,0,3,64,22,0,benzenoid,8,8,6,0,0,0,0,use
+C64H22_v4u10064_own,own,10064,10064,C64H22,0,3,64,22,0,benzenoid,8,8,6,0,0,0,0,use
+C64H22_v4u10065_own,own,10065,10065,C64H22,0,3,64,22,0,benzenoid,8,8,6,0,0,0,0,use
+C64H22_v4u10068_own,own,10068,10068,C64H22,0,3,64,22,0,benzenoid,8,8,6,0,0,0,0,use
+C64H22_v4u10069_own,own,10069,10069,C64H22,0,3,64,22,0,benzenoid,8,8,6,0,0,0,0,use
+C64H22_v4u10080_own,own,10080,10080,C64H22,0,3,64,22,0,benzenoid,8,8,6,0,0,0,0,use
+C64H22_v4u10081_own,own,10081,10081,C64H22,0,3,64,22,0,benzenoid,8,8,6,0,0,0,0,use
+C64H22_v4u10082_own,own,10082,10082,C64H22,0,3,64,22,0,benzenoid,8,8,6,0,0,0,0,use
+C64H22_v4u10086_own,own,10086,10086,C64H22,0,3,64,22,0,benzenoid,8,8,6,0,0,0,0,use
+C64H22_v4u10087_own,own,10087,10087,C64H22,0,3,64,22,0,benzenoid,8,8,6,0,0,0,0,use
+C64H22_v4u10102_own,own,10102,10102,C64H22,0,3,64,22,0,benzenoid,8,8,6,0,0,0,0,use
+C64H22_v4u10103_own,own,10103,10103,C64H22,0,3,64,22,0,benzenoid,8,8,6,0,0,0,0,use
+C64H22_v4u10104_own,own,10104,10104,C64H22,0,3,64,22,0,benzenoid,8,8,6,0,0,0,0,use
+C64H22_v4u10105_own,own,10105,10105,C64H22,0,3,64,22,0,benzenoid,8,8,6,0,0,0,0,use
+C64H22_v4u10107_own,own,10107,10107,C64H22,0,3,64,22,0,benzenoid,8,8,6,0,0,0,0,use
+C64H22_v4u10110_own,own,10110,10110,C64H22,0,3,64,22,0,benzenoid,8,8,6,0,0,0,0,use
+C64H22_v4u10111_own,own,10111,10111,C64H22,0,3,64,22,0,benzenoid,8,8,6,0,0,0,0,use
+C64H22_v4u10123_own,own,10123,10123,C64H22,0,3,64,22,0,benzenoid,8,8,6,0,0,0,0,use
+C64H22_v4u10124_own,own,10124,10124,C64H22,0,3,64,22,0,benzenoid,8,8,6,0,0,0,0,use
+C64H22_v4u10125_own,own,10125,10125,C64H22,0,3,64,22,0,benzenoid,8,8,6,0,0,0,0,use
+C64H22_v4u10126_own,own,10126,10126,C64H22,0,3,64,22,0,benzenoid,8,8,6,0,0,0,0,use
+C64H22_v4u10127_own,own,10127,10127,C64H22,0,3,64,22,0,benzenoid,8,8,6,0,0,0,0,use
+C64H22_v4u10128_own,own,10128,10128,C64H22,0,3,64,22,0,benzenoid,8,8,6,0,0,0,0,use
+C64H22_v4u10129_own,own,10129,10129,C64H22,0,3,64,22,0,benzenoid,8,8,6,0,0,0,0,use
+C64H22_v4u10130_own,own,10130,10130,C64H22,0,3,64,22,0,benzenoid,8,8,6,0,0,0,0,use
+C64H22_v4u10131_own,own,10131,10131,C64H22,0,3,64,22,0,benzenoid,8,8,6,0,0,0,0,use
+C64H22_v4u10134_own,own,10134,10134,C64H22,0,3,64,22,0,benzenoid,8,8,6,0,0,0,0,use
+C64H22_v4u10150_own,own,10150,10150,C64H22,0,3,64,22,0,benzenoid,8,8,6,0,0,0,0,use
+C64H22_v4u10151_own,own,10151,10151,C64H22,0,3,64,22,0,benzenoid,8,8,6,0,0,0,0,use
+C64H22_v4u10152_own,own,10152,10152,C64H22,0,3,64,22,0,benzenoid,8,8,6,0,0,0,0,use
+C64H22_v4u10153_own,own,10153,10153,C64H22,0,3,64,22,0,benzenoid,8,8,6,0,0,0,0,use
+C64H22_v4u10155_own,own,10155,10155,C64H22,0,3,64,22,0,benzenoid,8,8,6,0,0,0,0,use
+C64H22_v4u10158_own,own,10158,10158,C64H22,0,3,64,22,0,benzenoid,8,8,6,0,0,0,0,use
+C64H22_v4u10166_own,own,10166,10166,C64H22,0,3,64,22,0,benzenoid,8,8,6,0,0,0,0,use
+C70H22_v4u9932_own,own,9932,9932,C70H22,0,3,70,22,0,benzenoid,8,8,6,0,0,0,0,use
+C70H22_v4u9933_own,own,9933,9933,C70H22,0,3,70,22,0,benzenoid,8,8,6,0,0,0,0,use
+C70H22_v4u9935_own,own,9935,9935,C70H22,0,3,70,22,0,benzenoid,8,8,6,0,0,0,0,use
+C70H22_v4u9936_own,own,9936,9936,C70H22,0,3,70,22,0,benzenoid,8,8,6,0,0,0,0,use
+C70H22_v4u9937_own,own,9937,9937,C70H22,0,3,70,22,0,benzenoid,8,8,6,0,0,0,0,use
+C70H22_v4u9938_own,own,9938,9938,C70H22,0,3,70,22,0,benzenoid,8,8,6,0,0,0,0,use
+C70H22_v4u9939_own,own,9939,9939,C70H22,0,3,70,22,0,benzenoid,8,8,6,0,0,0,0,use
+C70H22_v4u9962_own,own,9962,9962,C70H22,0,3,70,22,0,benzenoid,8,8,6,0,0,0,0,use
+C70H22_v4u9965_own,own,9965,9965,C70H22,0,3,70,22,0,benzenoid,8,8,6,0,0,0,0,use
+C70H22_v4u9966_own,own,9966,9966,C70H22,0,3,70,22,0,benzenoid,8,8,6,0,0,0,0,use
+C70H22_v4u9969_own,own,9969,9969,C70H22,0,3,70,22,0,benzenoid,8,8,6,0,0,0,0,use
+C70H22_v4u9970_own,own,9970,9970,C70H22,0,3,70,22,0,benzenoid,8,8,6,0,0,0,0,use
+C70H22_v4u9985_own,own,9985,9985,C70H22,0,3,70,22,0,benzenoid,8,8,6,0,0,0,0,use
+C70H22_v4u9986_own,own,9986,9986,C70H22,0,3,70,22,0,benzenoid,8,8,6,0,0,0,0,use
+C70H22_v4u9991_own,own,9991,9991,C70H22,0,3,70,22,0,benzenoid,8,8,6,0,0,0,0,use
+C70H22_v4u9992_own,own,9992,9992,C70H22,0,3,70,22,0,benzenoid,8,8,6,0,0,0,0,use
+C70H22_v4u10003_own,own,10003,10003,C70H22,0,3,70,22,0,benzenoid,8,8,6,0,0,0,0,use
+C70H22_v4u10008_own,own,10008,10008,C70H22,0,3,70,22,0,benzenoid,8,8,6,0,0,0,0,use
+C70H22_v4u10027_own,own,10027,10027,C70H22,0,3,70,22,0,benzenoid,8,8,6,0,0,0,0,use
+C70H22_v4u10029_own,own,10029,10029,C70H22,0,3,70,22,0,benzenoid,8,8,6,0,0,0,0,use
+C70H22_v4u10030_own,own,10030,10030,C70H22,0,3,70,22,0,benzenoid,8,8,6,0,0,0,0,use
+C72H22_v4u9910_own,own,9910,9910,C72H22,0,3,72,22,0,benzenoid,9,10,3,0,0,0,0,use
+C72H22_v4u9911_own,own,9911,9911,C72H22,0,3,72,22,0,benzenoid,9,10,3,0,0,0,0,use
+C72H22_v4u9912_own,own,9912,9912,C72H22,0,3,72,22,0,benzenoid,9,10,3,0,0,0,0,use
+C72H22_v4u9944_own,own,9944,9944,C72H22,0,3,72,22,0,benzenoid,9,10,3,0,0,0,0,use
+C72H22_v4u9946_own,own,9946,9946,C72H22,0,3,72,22,0,benzenoid,9,10,3,0,0,0,0,use
+C72H22_v4u9947_own,own,9947,9947,C72H22,0,3,72,22,0,benzenoid,9,10,3,0,0,0,0,use
+C76H22_v4u6613_own,own,6613,6613,C76H22,0,3,76,22,0,benzenoid,9,10,3,0,0,0,0,use
+C76H22_v4u6614_own,own,6614,6614,C76H22,0,3,76,22,0,benzenoid,8,14,0,0,0,0,0,use
+C82H24_v4u561_own,own,561,561,C82H24,0,5,82,24,0,benzenoid,14,4,6,0,0,0,0,use
+C82H24_v4u9860_own,own,9860,9860,C82H24,0,3,82,24,0,benzenoid,10,8,6,0,0,0,0,use
+C82H24_v4u9861_own,own,9861,9861,C82H24,0,3,82,24,0,benzenoid,10,8,6,0,0,0,0,use
+C82H24_v4u9864_own,own,9864,9864,C82H24,0,3,82,24,0,benzenoid,10,8,6,0,0,0,0,use
+C82H24_v4u9900_own,own,9900,9900,C82H24,0,3,82,24,0,benzenoid,10,8,6,0,0,0,0,use
+C82H24_v4u9901_own,own,9901,9901,C82H24,0,3,82,24,0,benzenoid,10,8,6,0,0,0,0,use
+C82H24_v4u9902_own,own,9902,9902,C82H24,0,5,82,24,0,benzenoid,10,8,6,0,0,0,0,use
+C84H24_v4u6512_own,own,6512,6512,C84H24,0,3,84,24,0,benzenoid,10,8,6,0,0,0,0,use
+C84H24_v4u6513_own,own,6513,6513,C84H24,0,3,84,24,0,benzenoid,10,8,6,0,0,0,0,use
+C84H24_v4u6554_own,own,6554,6554,C84H24,0,3,84,24,0,benzenoid,10,8,6,0,0,0,0,use
