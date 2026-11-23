@@ -1,3 +1,5 @@
 neutral:
 	./run_neutral.sh
-.PHONY: neutral
+neutral2:
+	./run_neutral_v2.sh
+.PHONY: neutral neutral2

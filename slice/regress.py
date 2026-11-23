@@ -69,6 +69,8 @@ def mat(F, cols, idx):
 
 def _pysr_child(q, Xtr, y, names, common, kw, tag):
     os.environ["PAH_PYSR_TAG"] = tag                    # inherited by Julia's worker processes, so they can be found
+    os.environ["JULIA_NUM_THREADS"] = "1"; os.environ["OPENBLAS_NUM_THREADS"] = "1"   # before Julia starts (2026-11-24)
+    os.environ["PYTHON_JULIACALL_THREADS"] = "1"; os.environ["PYTHON_JULIACALL_HANDLE_SIGNALS"] = "yes"
     from pysr import PySRRegressor
     m = PySRRegressor(**common, **kw); m.fit(Xtr, y, variable_names=names)                # unweighted (plan 5.8)
     eq = m.equations_
@@ -103,6 +105,7 @@ def pysr_runs(Xtr, ytr, names, outdir, tag, niter, procs, seeds=(1, 2, 3), tries
     common = dict(binary_operators=["+", "-", "*", "/"], unary_operators=["log", "sqrt", "square"], maxsize=12, niterations=niter,
                   populations=32, population_size=50, model_selection="best", constraints={"/": (-1, 4)},
                   nested_constraints={"log": {"log": 0, "sqrt": 0}, "sqrt": {"sqrt": 0}}, progress=False, verbosity=0,
+                  turbo=False, bumper=False,              # process-only parallelism (`parallelism` below), no LoopVectorization/Bumper
                   output_directory=os.path.join(outdir, "pysr_runs"))
     runs, log = {}, {}
 

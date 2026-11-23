@@ -13,6 +13,18 @@
 #   oob    as main, but the continuum is a power law in wavelength (index 1.5-3.5), which PAHFIT's basis lacks
 #   orion  the five templates themselves, block-averaged 4x; 1 % relative uncertainty assumed (the table has none),
 #          plus --nmc Monte Carlo refits with that noise
+# Version 2 (2026-11-24), used when the labels file next to <pop h5> has a cont_type column (populations.py v2):
+#   continuum  taken from the labels: cont_type orion (as above), pl (power law in wavelength, index 1.5 + 2 par) or
+#              mbb (one modified blackbody, nu^1.5 emissivity, T = 150-500 K log-uniform in par); level 0.3 x the
+#              11.2 um peak at 11.25 um times cont_level. PAHFIT's basis holds the first exactly, not the others.
+#   NIRSpec    a second segment, 2.95-3.85 um at R = 2700, with the same continuum law and the same noise per pixel
+#              as MIRI (no cross-calibration error between the instruments)
+#   local      band integrals above a local continuum, next to PAHFIT, on the same noisy spectrum: the continuum is
+#              drawn through the medians of anchor windows where the library emits least (LANCH; 3.3 um: NANCH),
+#              as straight segments (Llin_<band>) and as a natural cubic spline (Lspl_<band>), and the excess is
+#              integrated over the band window (LBANDS)
+#   --pick heldout   only the validation + test populations of regress (seeded permutation, last 30 %)
+#   --no-pahfit      local integration only
 # PAHFIT: classic.yaml, maxiter 10000, fitter message recorded. Output per spectrum: P_<feature> (PAHFIT power of
 # every dust feature), Win_<band> / Wfit_<band> (integrals of F_nu d nu of the input PAH-only spectrum and of
 # PAHFIT's PAH-only model over the same windows, same units), reduced chi-square, convergence flag.
@@ -21,7 +33,12 @@ import numpy as np
 
 SEG = [f"jwst.miri.mrs.ch{c}.{b}" for c in (1, 2, 3) for b in "ABC"] + ["jwst.miri.mrs.ch4.A"]
 WINDOWS = {"6.2": (6.0, 6.6), "7.7": (7.0, 8.15), "8.6": (8.4, 8.9), "11.2": (10.9, 11.7), "12.0": (11.75, 12.25),
-           "12.7": (12.3, 13.1), "13.5": (13.2, 13.9)}
+           "12.7": (12.3, 13.1), "13.5": (13.2, 13.9), "17": (16.0, 17.9)}
+LBANDS = WINDOWS
+# anchor windows of the local continuum: where the neutral library emits least (2-5 % of the 11.2 um peak; the
+# 6.6-7.0 and 8.2 um gaps hold 10 %, so they are not anchors)
+LANCH = [(5.45, 5.55), (5.88, 5.95), (9.55, 9.9), (9.9, 10.1), (14.6, 14.9), (15.0, 15.4), (18.5, 19.2), (19.2, 20.0)]
+NIRS = np.arange(2.95, 3.85, 0.0006); NIR_R = 2700.0; NBAND = (3.18, 3.40); NANCH = [(3.05, 3.13), (3.60, 3.72)]
 ANCHORS = [(5.45, 5.55), (5.88, 5.95), (9.3, 9.55), (10.1, 10.4), (14.6, 14.9), (15.0, 15.4), (18.0, 18.5), (19.2, 20.0)]
 HC_K = 1.438776877
 TEMPLATES = ["HII", "APDR", "DF3", "DF2", "DF1"]
@@ -54,6 +71,33 @@ def continuum_shape(wav, apdr, temps):
     return c / np.interp(11.25, wav, c), w
 
 
+def cont_at(wav, ctype, par, cw, temps):
+    """Continuum shape, 1 at 11.25 um."""
+    if ctype == "orion":
+        return sum(wi * mbb(wav, T) / mbb(11.25, T) for wi, T in zip(cw, temps)) / sum(cw)
+    if ctype == "pl":
+        return (wav / 11.25) ** (1.5 + 2.0 * par)
+    T = 150.0 * (500.0 / 150.0) ** par; f = lambda w: (1e4 / w) ** 4.5 / np.expm1(HC_K * (1e4 / w) / T)
+    return f(wav) / f(11.25)
+
+
+def to_nirspec(grid, spec):
+    from scipy.ndimage import gaussian_filter1d
+    sg = (1e4 / 3.3) / NIR_R / 2.3548 / (grid[1] - grid[0])
+    return np.interp(1e4 / NIRS, grid, gaussian_filter1d(spec, sg))
+
+
+def local_bands(wav, flux, anchors, bands):
+    """Band integrals above a continuum through the anchor medians: straight segments (Llin) and natural spline (Lspl)."""
+    from scipy.interpolate import CubicSpline
+    x = np.array([0.5 * (lo + hi) for lo, hi in anchors]); y = np.array([np.median(flux[(wav >= lo) & (wav <= hi)]) for lo, hi in anchors])
+    lin = np.interp(wav, x, y); spl = CubicSpline(x, y, bc_type="natural")(wav) if len(x) > 2 else lin
+    out = {}
+    for b, (lo, hi) in bands.items():
+        out[f"Llin_{b}"] = win(wav, flux - lin, lo, hi); out[f"Lspl_{b}"] = win(wav, flux - spl, lo, hi)
+    return out
+
+
 def segment_of(wav):
     from pahfit import instrument
     r = [instrument.wave_range(s) for s in SEG]
@@ -82,7 +126,8 @@ def win(wav, f, lo, hi):
 
 
 def fit(job):
-    key, wav, flux, sig, pah, extra = job
+    key, wav, flux, sig, pah, extra = job[:6]
+    nir, do_pahfit = (job[6], job[7]) if len(job) > 6 else (None, True)
     import astropy.units as u
     from astropy.nddata import StdDevUncertainty
     from specutils import Spectrum1D
@@ -91,6 +136,13 @@ def fit(job):
     s = Spectrum1D(spectral_axis=wav * u.um, flux=flux * u.MJy / u.sr, uncertainty=StdDevUncertainty(sig * np.ones_like(flux)))
     s.meta["instrument"] = SEG
     row = dict(key=key, **extra)
+    row.update(local_bands(wav, flux, LANCH, LBANDS))
+    if pah is not None:
+        row.update({f"Win_{b}": win(wav, pah, lo, hi) for b, (lo, hi) in WINDOWS.items()})
+    if nir is not None:
+        fn, pn = nir; row.update(local_bands(NIRS, fn, NANCH, {"3.3": NBAND})); row["Win_3.3"] = win(NIRS, pn, *NBAND)
+    if not do_pahfit:
+        return row
     try:
         m = Model.from_yaml("classic.yaml"); m.guess(s); t = time.time()
         m.fit(s, verbose=False, maxiter=10000); row["fit_s"] = round(time.time() - t, 2)
@@ -104,8 +156,6 @@ def fit(job):
         pm = m.tabulate(instrumentname=SEG, wavelengths=wav, feature_mask=dust).flux.value
         for b, (lo, hi) in WINDOWS.items():
             row[f"Wfit_{b}"] = win(wav, pm, lo, hi)
-            if pah is not None:
-                row[f"Win_{b}"] = win(wav, pah, lo, hi)
     except Exception as e:                                                            # a failed fit is recorded, not dropped
         row.update(message=f"EXCEPTION {type(e).__name__}: {e}"[:80].replace(",", ";"), converged=0)
     return row
@@ -117,6 +167,7 @@ def main():
     ap.add_argument("--variant", default="tdep"); ap.add_argument("--mode", default="main"); ap.add_argument("--n", default="all")
     ap.add_argument("--jobs", type=int, default=48); ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--template", default="/data/pdrs4all/J_A+A_685_A75/sptemp.tsv"); ap.add_argument("--nmc", type=int, default=30)
+    ap.add_argument("--pick", default="all"); ap.add_argument("--no-pahfit", action="store_true")
     a = ap.parse_args()
     from joblib import Parallel, delayed
     from pahfit.model import Model
@@ -134,15 +185,30 @@ def main():
         import h5py
         h = h5py.File(a.pop, "r"); grid = h["grid"][:]; S = h[a.variant]
         n = S.shape[0] if a.n == "all" else int(a.n)
+        lp = a.pop.replace(".h5", "_labels.csv"); lab = list(csv.DictReader(open(lp))) if os.path.exists(lp) else []
+        v2 = bool(lab) and "cont_type" in lab[0]
+        pops = range(n) if a.pick == "all" else sorted(np.random.default_rng(0).permutation(S.shape[0])[int(0.7 * S.shape[0]):].tolist())
         seg = segment_of(wav)
         ft = Model.from_yaml("classic.yaml").features
         temps = sorted(float(t) for t in ft["temperature"]["val"][np.asarray(ft["kind"]) == "dust_continuum"])
         cshape, cw = continuum_shape(wav, tmpl["APDR"], temps)
         print("continuum: modified blackbodies at", temps, "K; weights at 11.25 um", np.round(cw / cw.sum(), 3), flush=True)
-        for k in range(n):
+        for k in pops:
             rng = np.random.default_rng([a.seed, k])
             pah = to_mrs(grid, S[k], wav, seg)
             pk = pah[(wav > 11.0) & (wav < 11.6)].max(); pah = pah * (100.0 / pk)   # 11.2 um peak = 100 MJy/sr
+            if v2:
+                L = lab[k]; ct, par, lev = L["cont_type"], float(L["cont_par"]), float(L["cont_level"])
+                pn = to_nirspec(grid, S[k]) * (100.0 / pk); noise = rng.normal(0, 1, wav.size); nn = rng.normal(0, 1, NIRS.size)
+                extra = dict(pop=k, variant=a.variant, mode=a.mode, scale=100.0 / pk)
+                if a.mode == "clean":
+                    flux, sig, fn = pah, 0.1, pn
+                else:
+                    tot = pah + 30.0 * lev * cont_at(wav, ct, par, cw, temps)
+                    sig = float(np.interp(11.25, wav, tot) / 50.0); flux = tot + sig * noise
+                    fn = pn + 30.0 * lev * cont_at(NIRS, ct, par, cw, temps) + sig * nn
+                jobs.append((k, wav, flux, sig, pah, dict(extra, sigma=round(sig, 4)), (fn, pn), not a.no_pahfit))
+                continue
             cf = float(np.exp(rng.uniform(np.log(0.5), np.log(2.0)))); idx = float(rng.uniform(1.5, 3.5))
             noise = rng.normal(0, 1, wav.size)
             if a.mode == "clean":
@@ -154,7 +220,7 @@ def main():
                 flux, extra = tot + sig * noise, dict(cont_factor=round(cf, 4))
                 if a.mode == "oob":
                     extra["pl_index"] = round(idx, 3)
-            jobs.append((k, wav, flux, sig, pah, dict(pop=k, variant=a.variant, mode=a.mode, sigma=round(sig, 4), **extra)))
+            jobs.append((k, wav, flux, sig, pah, dict(pop=k, variant=a.variant, mode=a.mode, sigma=round(sig, 4), scale=100.0 / pk, **extra)))
     print(f"{len(jobs)} fits, {wav.size} points each, {a.jobs} workers", flush=True)
     t0 = time.time()
     rows = Parallel(n_jobs=a.jobs, batch_size=1, verbose=0)(delayed(fit)(j) for j in jobs)
@@ -166,6 +232,8 @@ def main():
         w = csv.DictWriter(fo, fieldnames=cols, restval=""); w.writeheader(); w.writerows(rows)
     ok = [r for r in rows if r.get("converged")]
     ts = [r["fit_s"] for r in rows if "fit_s" in r]
+    if not ts:
+        print(f"done in {time.time() - t0:.0f} s wall; {len(rows)} spectra, local integration only"); return
     print(f"done in {time.time() - t0:.0f} s wall; converged {len(ok)}/{len(rows)}; fit time median {np.median(ts):.1f} s, max {max(ts):.1f} s; "
           f"reduced chi2 median {np.median([r['chi2_red'] for r in rows if 'chi2_red' in r]):.2f}")
     from collections import Counter
