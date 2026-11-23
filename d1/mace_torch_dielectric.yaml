@@ -1,0 +1,46 @@
+# mace-torch charge-constrained dipole model (AtomicDielectricMACE, mace-torch 0.3.17) for the charged-state MLFF, one
+# model per charge state (no heads). Successor to d1/mace_torch_dipole.yaml (AtomicDipolesMACE, failed G2 2026-11-22:
+# local atomic dipoles cannot carry a delocalised +1 charge). Here mu = sum_i q_i r_i + sum_i p_i, with per-atom charges
+# q_i shifted so that sum_i q_i = total charge (models.py, AtomicDielectricMACE.forward). Same architecture and optimiser
+# as the dipole-only config, for a direct comparison on dataset_v4.
+# - Positions enter raw, so train and evaluate on COM-centred geometries: d1/mlff_dipole_prep.py <ds> <ds>_com.
+# - total_charge is read from the `charge` info key (--total_charge_key charge, set below).
+# - The model always has a polarizability readout and run_train forces loss dipole_polar / error table DipolePolarRMSE.
+#   There are no polarizability labels (mace-torch fills zeros); polarizability_weight 0 removes them from the loss.
+#   The logged polarizability RMSE is meaningless.
+# Run (x86 venv or container; see d1/mace_torch_dielectric.sh):
+#   d1/mace_torch_dielectric.sh <ds>_com <run dir> --train_file <ds>_com/train_q1.extxyz \
+#     --valid_file <ds>_com/validation_q1.extxyz
+model: AtomicDielectricMACE
+r_max: 5.0
+num_channels: 64
+max_L: 1
+max_ell: 3
+correlation: 3
+num_interactions: 2
+MLP_irreps: 16x0e
+default_dtype: float32
+dipole_key: dft_dipole
+total_charge_key: charge
+compute_stress: false
+loss: dipole_polar
+dipole_weight: 1.0
+polarizability_weight: 0.0
+optimizer: adam
+amsgrad: true
+lr: 0.01
+scheduler: ReduceLROnPlateau
+scheduler_patience: 10
+batch_size: 10
+valid_batch_size: 20
+max_num_epochs: 300
+patience: 40
+ema: true
+ema_decay: 0.99
+clip_grad: 10.0
+eval_interval: 1
+error_table: DipolePolarRMSE
+seed: 7
+device: cuda
+save_cpu: true
+E0s: "{1: 0.0, 6: 0.0}"   # required by run_train even without energies; unused (atomic_energies None)
