@@ -4,9 +4,12 @@
 # mu - q R_COM (d1/dft_seed_run.py, isotopic masses as g16_io.MASS), i.e. the dipole about the centre of mass. Putting
 # each geometry's COM at the origin makes model and label refer to the same point; inference must centre the same way
 # (d1/mlff_dipole_eval.py does).
-#   python d1/mlff_dipole_prep.py <dataset dir> <out dir>
+#   python d1/mlff_dipole_prep.py <dataset dir> <out dir> [--delta-xtb]
+# --delta-xtb: also add info key dipole_minus_xtb = dft_dipole - xtb_dipole (e*A, both about the COM; xtb_dipole from
+# d1/mlff_qa.py, GFN2-xTB), the label of the Delta-xTB dipole model (d1/mace_torch_dipole_dxtb.yaml); the residual has
+# zero net charge, so models of it need no total_charge.
 # Rewrites only the three position columns of every frame (text level, so every info field, the forces and the
-# Properties header stay byte-identical). total_charge comes from the existing `charge` info key at training time
+# Properties header stay byte-identical, apart from the added dipole_minus_xtb key). total_charge comes from the existing `charge` info key at training time
 # (--total_charge_key charge); polarizability labels are not needed (mace-torch fills zeros, and the loss weight is 0).
 # Checks per frame: |COM| < 1e-6 A after centring, interatomic distances unchanged, and the uniform-charge identity
 # q * mean(r') = q (R_geo - R_COM) evaluated on the raw geometry.
@@ -17,7 +20,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from g16_io import MASS  # noqa: E402  (same isotopic masses as the dft_dipole label)
 
 
-def centre_file(src, dst):
+def centre_file(src, dst, delta_xtb=False):
     lines = open(src).read().splitlines()
     out, i, n_frames, worst = [], 0, 0, 0.0
     while i < len(lines):
@@ -34,6 +37,10 @@ def centre_file(src, dst):
         d_new = np.linalg.norm(new[:, None] - new[None], axis=-1)
         uni = q * new.mean(0) - q * (pos.mean(0) - com)
         worst = max(worst, np.abs(com_new).max(), np.abs(d_new - d_old).max(), np.abs(uni).max())
+        if delta_xtb:
+            vec = lambda k: np.array([float(x) for x in hdr.split(f' {k}="', 1)[1].split('"', 1)[0].split()])
+            d = vec("dft_dipole") - vec("xtb_dipole")
+            hdr = hdr.replace(' dft_dipole="', ' dipole_minus_xtb="' + " ".join(f"{x:.6f}" for x in d) + '" dft_dipole="', 1)
         out += [lines[i], hdr]
         for r, p in zip(rows, new):
             out.append(" ".join([r[0]] + [f"{x:.8f}" for x in p] + r[4:]))
@@ -46,12 +53,13 @@ def centre_file(src, dst):
 
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("dataset"); ap.add_argument("out")
+    ap.add_argument("--delta-xtb", action="store_true")
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
     files = sorted(glob.glob(os.path.join(a.dataset, "*.extxyz")))
     assert files, f"no extxyz in {a.dataset}"
     for f in files:
-        n, w = centre_file(f, os.path.join(a.out, os.path.basename(f)))
+        n, w = centre_file(f, os.path.join(a.out, os.path.basename(f)), a.delta_xtb)
         print(f"{os.path.basename(f):26s} {n:5d} frames  max check residual {w:.1e}")
 
 

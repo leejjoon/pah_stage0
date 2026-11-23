@@ -1,0 +1,38 @@
+# Delta-xTB dipole model, charge-transfer variant: AtomicDielectricMACE on dipole_minus_xtb = dft_dipole - xtb_dipole
+# (d1/mlff_dipole_prep.py --delta-xtb, COM-centred), atomic charges constrained to sum to 0 (the residual carries no
+# net charge; total_charge is read from a key that does not exist, so mace-torch fills 0), plus atomic dipoles.
+# Prediction = xTB dipole + model; eval: d1/mlff_dipole_eval.py --add-xtb --model-type DipolePolarizabilityMACE.
+# Otherwise as d1/mace_torch_dielectric.yaml (polarizability weight 0, error table DipolePolarRMSE).
+model: AtomicDielectricMACE
+r_max: 5.0
+num_channels: 64
+max_L: 1
+max_ell: 3
+correlation: 3
+num_interactions: 2
+MLP_irreps: 16x0e
+default_dtype: float32
+dipole_key: dipole_minus_xtb
+total_charge_key: no_total_charge   # absent key -> total_charge 0: the residual is neutral
+compute_stress: false
+loss: dipole_polar
+dipole_weight: 1.0
+polarizability_weight: 0.0
+optimizer: adam
+amsgrad: true
+lr: 0.01
+scheduler: ReduceLROnPlateau
+scheduler_patience: 10
+batch_size: 10
+valid_batch_size: 20
+max_num_epochs: 300
+patience: 40
+ema: true
+ema_decay: 0.99
+clip_grad: 10.0
+eval_interval: 1
+error_table: DipolePolarRMSE
+seed: 7
+device: cuda
+save_cpu: true
+E0s: "{1: 0.0, 6: 0.0}"   # required by run_train even without energies; unused (atomic_energies None)

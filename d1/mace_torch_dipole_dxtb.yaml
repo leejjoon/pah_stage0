@@ -1,0 +1,37 @@
+# Delta-xTB dipole model, local part: AtomicDipolesMACE (sum of local atomic dipoles) on the residual
+# dipole_minus_xtb = dft_dipole - xtb_dipole (d1/mlff_dipole_prep.py --delta-xtb, COM-centred). Prediction = xTB dipole
+# (GFN2, about the COM) + model; eval: d1/mlff_dipole_eval.py --add-xtb. Motivation: plan 2026-11-23 (wasp33a) -- the
+# untrained xTB dipole beats both MACE dipole models, so the delocalised-charge term is left to xTB and MACE learns
+# only the correction. Same size/optimiser as d1/mace_torch_dipole.yaml for comparison.
+#   d1/mace_torch_dielectric.sh <ds>_dxtb <run> (CONFIG=d1/mace_torch_dipole_dxtb.yaml) --train_file ... --valid_file ...
+model: AtomicDipolesMACE
+r_max: 5.0
+num_channels: 64
+max_L: 1
+max_ell: 3
+correlation: 3
+num_interactions: 2
+MLP_irreps: 16x0e
+default_dtype: float32
+dipole_key: dipole_minus_xtb
+compute_stress: false
+loss: dipole
+dipole_weight: 1.0
+optimizer: adam
+amsgrad: true
+lr: 0.01
+scheduler: ReduceLROnPlateau
+scheduler_patience: 10
+batch_size: 10
+valid_batch_size: 20
+max_num_epochs: 300
+patience: 40
+ema: true
+ema_decay: 0.99
+clip_grad: 10.0
+eval_interval: 1
+error_table: DipoleRMSE
+seed: 7
+device: cuda
+save_cpu: true
+E0s: "{1: 0.0, 6: 0.0}"   # required by run_train even for a dipole-only model; unused (atomic_energies None)
