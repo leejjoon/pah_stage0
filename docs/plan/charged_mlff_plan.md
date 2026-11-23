@@ -896,6 +896,26 @@ flagged). Mixed-guess singlets for dications come with the dication phase.
   held-out anthracene/phenanthrene skeletons (5), 4H-cyclopenta[def]phenanthrene (in PAHdb). Driver `al4t/run_al4t.sh`
   (track 2 recipe: B3LYP minima of both charges, graph check, 32 frames per pair and charge, manifest, labels here in
   8 shards over both GPUs, collect), started 22:02.
+- 2026-11-23 (wasp33a, branch feat-dipole): **Charge-constrained dipole model (AtomicDielectricMACE) on dataset_v4
+  also fails G2 and is no better than AtomicDipolesMACE; untrained GFN2-xTB beats both.** Model μ = Σ qᵢ rᵢ + Σ pᵢ,
+  charges shifted to sum to q (mace-torch 0.3.17), same size/optimiser as the 2026-11-22 test, polarizability weight
+  0, trained on COM-centred geometries (`d1/mlff_dipole_prep.py`, `d1/mace_torch_dielectric.{yaml,sh}`, commit
+  eb958dd; x86 venv, RTX 5000 Ada, 300 epochs: q0 2.5 h, q1 4.3 h). Eval `d1/mlff_dipole_eval.py` (now COM-centres
+  every frame), wasp33a `~/pah/dipole/runs/diel_v4.{json}`, `diel_v4_eval.log`. Component MAE (D), new / old /
+  zero-model: q0 validation 0.198 / 0.159 / 0.331, final_test 0.156 / 0.161 / 0.298, transfer 0.191 / 0.158 / 0.313,
+  train 0.141 / 0.098; q1 validation 0.526 / 0.517 / 0.673, final_test 0.481 / 0.444 / 0.576, transfer 0.700 / 0.584
+  / 0.719, train 0.310 / 0.302. **q1 size trend unchanged** (held-out MAE <20 atoms 0.13, 20–39 0.34, 40–59 0.44,
+  60–79 0.61, ≥80 0.86 D; old 0.15/0.34/0.44/0.57/0.74). Both still underfit (train ≈ held-out; q0 best validation at
+  epoch 35). Checks: labels are clean — all 38 centrosymmetric cation minima have |μ| = 0.000 D (no electronic
+  symmetry breaking); the large cation dipoles at minima (median 0.57 D, max 3.7 D) belong to non-centrosymmetric
+  species, i.e. the delocalised-charge term itself. **GFN2-xTB's dipole (`xtb_dipole`, same convention) used as a
+  model, no training:** held-out MAE q0 0.136 D, q1 0.351 D (q1 by size 0.08/0.28/0.29/0.38/0.53; `min` 0.18), better
+  than both MACE models on both charges. Reading: per-atom charges from a 2 × 5 Å receptive field cannot place a hole
+  delocalised over a 10–20 Å molecule; something that sees the whole π system can. mace-torch 0.3.17's `patience`
+  never stops single-GPU runs (train.py sets only `exit_now`, None unless distributed), so all these runs did 300
+  epochs; the saved model is the best checkpoint. Options: (a) Δ-learning on xTB, MACE learning μ_DFT − μ_xTB (xTB
+  needed at every frame where intensities are computed); (b) long range, MACELES or EPNN (handoff step 2); (c) retune
+  the local models (lr, size) only to measure the underfit, as no local fix removes the size trend.
 
 ## Phase 3 working notes
 
