@@ -94,6 +94,8 @@ def run(a):
     for spec in a.dipole:
         name, mtype, m0, m1 = spec.split(":")
         from mace.calculators import MACECalculator
+        if mtype == "PolarMACE":
+            import polar_fastgraph; polar_fastgraph.install()
         dips.append((name, {0: MACECalculator(model_paths=m0, device=a.device, default_dtype="float64", model_type=mtype),
                             1: MACECalculator(model_paths=m1, device=a.device, default_dtype="float64", model_type=mtype)}))
     ctx = mp.get_context("spawn")
@@ -136,7 +138,7 @@ def run(a):
                 continue
             mus = []
             for p in geo:
-                b = at.copy(); b.positions = p - (m[:, None] * p).sum(0) / m.sum(); b.info["charge"] = q
+                b = at.copy(); b.positions = p - (m[:, None] * p).sum(0) / m.sum(); b.info["charge"] = q; b.info["spin"] = 1 if q == 0 else 2
                 b.calc = cs[q]; mus.append(np.asarray(cs[q].get_property("dipole", b)))
             res[f"dmu_{name}"] = fd(mus, n, a.h)
         np.savez(out, **res)

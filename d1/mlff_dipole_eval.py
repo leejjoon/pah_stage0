@@ -76,6 +76,15 @@ def main():
             for r in frames.get(f"{q}|{sp}", []):
                 by[r["ct"]].append(np.abs(np.subtract(r["pred"], r["ref"])).mean())
         print(f"{q}: " + ", ".join(f"{ct} {np.mean(v):.3f}{'*' if np.mean(v) > lim else ''} ({len(v)})" for ct, v in sorted(by.items())))
+    print("\n### dipole MAE by atom count, held-out splits pooled, D (gate (a) of the coordinator plan: >=80 bin)")
+    for q in sorted(models):
+        lim = 0.06 if q == "q0" else 0.1
+        by = collections.defaultdict(list)
+        for sp in SPLITS[:3]:
+            for r in frames.get(f"{q}|{sp}", []):
+                by[min(r["n"] // 20, 4)].append(np.abs(np.subtract(r["pred"], r["ref"])).mean())
+        lab = ["<20", "20-39", "40-59", "60-79", ">=80"]
+        print(f"{q}: " + ", ".join(f"{lab[k]} {np.mean(v):.3f}{'*' if np.mean(v) > lim else ''} ({len(v)})" for k, v in sorted(by.items())))
     print("\n### worst held-out species (MAE, D)")
     for q in sorted(models):
         by = collections.defaultdict(list)

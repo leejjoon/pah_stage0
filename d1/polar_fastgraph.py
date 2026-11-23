@@ -6,6 +6,9 @@
 # sorted, as mace's are) with tensor ops only. install() patches the module attribute, which all callers look up.
 #   python d1/polar_fastgraph.py check                       # equality test against the original
 #   python d1/polar_fastgraph.py train <run_train args...>   # mace.cli.run_train with the patch (torchrun-able)
+# DIPOLE_LOSS=total | sqrtN (environment, train only): replaces mace's per-atom dipole loss ((dmu/N)^2, which gives a
+# 126-atom cation ~1/49 of the weight of an 18-atom one) with (dmu)^2 or (dmu/sqrt N)^2, for every loss class that
+# uses mace.modules.loss.weighted_mean_squared_error_dipole (energy_forces_dipole included).
 import sys
 import torch
 
@@ -51,5 +54,16 @@ if __name__ == "__main__":
         check()
     elif cmd == "train":
         install()
+        import os
+        mode = os.environ.get("DIPOLE_LOSS", "per_atom")
+        if mode != "per_atom":
+            from mace.modules import loss as L
+            p = {"total": 0.0, "sqrtN": 0.5}[mode]
+
+            def dipole_loss(ref, pred, ddp=None):
+                n = (ref.ptr[1:] - ref.ptr[:-1]).unsqueeze(-1).to(pred["dipole"].dtype)
+                return L.reduce_loss(torch.square((ref["dipole"] - pred["dipole"]) / n ** p), ddp)
+            L.weighted_mean_squared_error_dipole = dipole_loss
+            print(f"polar_fastgraph: dipole loss = (dmu / N^{p})^2", flush=True)
         from mace.cli.run_train import main
         main()
