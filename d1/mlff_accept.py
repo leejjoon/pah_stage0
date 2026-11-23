@@ -126,14 +126,16 @@ def _rep(op, perm):
     return M
 
 
-def sym_resolve(pos, sym, masses, Hmw, labels):
-    """Pair model and PAHdb frequencies within irreps. Returns (per-mode model freq in PAHdb order, info)."""
+def sym_resolve(pos, sym, masses, Hmw, labels, vectors=False):
+    """Pair model and PAHdb frequencies within irreps. Returns (per-mode model freq in PAHdb order, info); with
+    vectors=True also the mass-weighted model mode vectors (3N x n_modes, PAHdb order; None where unresolved)."""
     want = {}
     for l in labels:
         want[l] = want.get(l, 0) + 1
     group = next((g for g, (ops, t) in TABLES.items() if set(t) == set(want)), None)
     if group is None:
-        return None, dict(sym="unsupported", pahdb_irreps=sorted(want))
+        info = dict(sym="unsupported", pahdb_irreps=sorted(want))
+        return (None, info, None) if vectors else (None, info)
     ops, table = TABLES[group]
     com = (masses[:, None] * pos).sum(0) / masses.sum(); p0 = pos - com
     sols = []
@@ -154,7 +156,7 @@ def sym_resolve(pos, sym, masses, Hmw, labels):
         tr += [np.cross(np.eye(3)[k], p0).ravel() * sqm for k in range(3)]
         Q, _ = np.linalg.qr(np.array(tr).T)
         Pvib = np.eye(len(Q)) - Q @ Q.T
-        out = {}
+        out, vec = {}, {}
         for lab, chi in table.items():
             Pr = sum(c * R for c, R in zip(chi, reps)) / len(ops)
             Pr = Pvib @ Pr @ Pvib                       # projector onto vibrations of this irrep
@@ -162,27 +164,32 @@ def sym_resolve(pos, sym, masses, Hmw, labels):
             B = U[:, w > 0.5]                           # orthonormal basis of the subspace
             if B.shape[1] != want.get(lab, 0):
                 break
-            e = np.linalg.eigvalsh(B.T @ Hmw @ B) if B.shape[1] else np.array([])
-            out[lab] = np.sort(np.sign(e) * np.sqrt(np.abs(e)) * CM1)
+            e, V = np.linalg.eigh(B.T @ Hmw @ B) if B.shape[1] else (np.array([]), np.zeros((0, 0)))
+            out[lab] = np.sign(e) * np.sqrt(np.abs(e)) * CM1      # eigh order is ascending, so already sorted
+            vec[lab] = B @ V
         else:
-            sols.append((perm, out))
+            sols.append((perm, out, vec))
     if not sols:
-        return None, dict(sym=group, status="no axis permutation reproduces the PAHdb irrep counts")
+        info = dict(sym=group, status="no axis permutation reproduces the PAHdb irrep counts")
+        return (None, info, None) if vectors else (None, info)
     status = "ok"
     if len(sols) > 1 and any(any(not np.allclose(sols[0][1][k], s[1][k]) for k in table) for s in sols[1:]):
         # Several axis choices reproduce the counts but label modes differently (e.g. D2 B1/B2/B3). PAHdb geometries
         # are in Gaussian's standard orientation (every unambiguous case so far selects the file's own axes), so use
         # those if they are among the solutions, and say so.
         if tuple(sols[0][0]) != (0, 1, 2):
-            return None, dict(sym=group, status="ambiguous axis convention")
+            info = dict(sym=group, status="ambiguous axis convention")
+            return (None, info, None) if vectors else (None, info)
         status = "ok_file_axes"
-    out = sols[0][1]; f = np.empty(len(labels)); idx = {}
+    out, vec = sols[0][1], sols[0][2]; f = np.empty(len(labels)); idx = {}
+    W = np.zeros((len(Hmw), len(labels)))
     for k, l in enumerate(labels):
         idx.setdefault(l, []).append(k)
     for l, ks in idx.items():
         ks = sorted(ks)                     # PAHdb lists modes in ascending frequency
-        f[ks] = out[l]
-    return f, dict(sym=group, status=status, perm=list(sols[0][0]))
+        f[ks] = out[l]; W[:, ks] = vec[l]
+    info = dict(sym=group, status=status, perm=list(sols[0][0]))
+    return (f, info, W) if vectors else (f, info)
 
 
 def symfreq(a):
