@@ -1,0 +1,58 @@
+# mace-torch self-consistent charge-equilibration model (PolarMACE / MACE-POLAR, mace-torch 0.3.17 + graph_longrange
+# 0.4.4) for the charged-state MLFF dipole, the pivot of the coordinator plan 2026-11-23 21:06 after Delta-xTB failed
+# gate (a). One model for both charge states: total charge and spin (multiplicity 2S+1) are inputs, and learnable
+# Fukui functions equilibrate a spin-resolved charge density (atomic charges + dipoles, l <= 1) to them, iterated with
+# the long-range electrostatic potential (num_recursion_steps fixed-point updates). Dipole = sum over the density about
+# the coordinate origin, so geometries are COM-centred (d1/mlff_dipole_prep.py <ds> <ds>_com) as for the label.
+# Training is joint energy + forces + dipole (run_train supports PolarMACE only with loss energy_forces_dipole).
+# Field / update hyperparameters copied from the MACE-POLAR-1-S foundation checkpoint; trunk sized as our dipole
+# models (r_max 5, 64 channels, l <= 1, 2 interactions). The foundation model zero-shot is far off on PAH dipoles
+# (held-out >= 80 atoms: q0 1.37 D, q1 1.40 D), so this trains from scratch.
+# Train files: train_q0 + train_q1 concatenated (d1/mace_torch_polar.sh does it).
+model: PolarMACE
+r_max: 5.0
+num_channels: 64
+max_L: 1
+max_ell: 3
+correlation: 3
+num_interactions: 2
+MLP_irreps: 16x0e
+default_dtype: float32
+energy_key: dft_energy
+forces_key: dft_forces
+dipole_key: dft_dipole
+total_charge_key: charge
+total_spin_key: mult
+compute_stress: false
+loss: energy_forces_dipole
+energy_weight: 1.0
+forces_weight: 10.0
+dipole_weight: 100.0
+atomic_multipoles_max_l: 1
+atomic_multipoles_smearing_width: 1.5
+field_feature_max_l: 1
+field_feature_widths: "[1.5, 3.0]"
+field_feature_norms: "[20.0, 20.0, 0.5, 0.5]"
+field_norm_factor: 1.0
+num_recursion_steps: 2
+include_electrostatic_self_interaction: true
+add_local_electron_energy: true
+fixedpoint_update_config: "{'type': 'AgnosticEmbeddedOneBodyVariableUpdate', 'potential_embedding_cls': 'AgnosticChargeBiasedLinearPotentialEmbedding', 'nonlinearity_cls': 'MLPNonLinearity'}"
+field_readout_config: "{'type': 'OneBodyMLPFieldReadout'}"
+optimizer: adam
+amsgrad: true
+lr: 0.01
+scheduler: ReduceLROnPlateau
+scheduler_patience: 10
+batch_size: 10
+valid_batch_size: 20
+max_num_epochs: 300
+ema: true
+ema_decay: 0.99
+clip_grad: 10.0
+eval_interval: 1
+error_table: EnergyDipoleRMSE
+seed: 7
+device: cuda
+save_cpu: true
+E0s: average

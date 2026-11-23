@@ -6,6 +6,8 @@
 # Every geometry is moved to its centre of mass (isotopic masses, g16_io.MASS, as the label) before prediction: the
 # dielectric model's sum q_i r_i depends on the origin for ions and was trained on COM-centred data
 # (d1/mlff_dipole_prep.py); for the translation-invariant AtomicDipolesMACE centring changes nothing.
+# PolarMACE (d1/mace_torch_polar.yaml, --model-type PolarMACE): one model for both charges, so pass the same path
+# twice (--models q0=<m>,q1=<m>); charge and spin multiplicity come from the frame's info keys charge and mult.
 # --add-xtb: Delta-xTB models (d1/mace_torch_*_dxtb.yaml) predict dft_dipole - xtb_dipole; the frame's xtb_dipole
 # (GFN2-xTB, about the COM, d1/mlff_qa.py) is added to every prediction.
 # Label dft_dipole = mu - q R_COM in e*A (d1/dft_seed_run.py); reported in Debye. MAE is over Cartesian components (as
@@ -25,6 +27,8 @@ SPLITS = ("validation", "final_test", "transfer_test", "train")
 def centred(at):
     m = np.array([MASS[s] for s in at.get_chemical_symbols()])
     b = at.copy(); b.positions -= (m[:, None] * b.positions).sum(0) / m.sum()
+    if "mult" in b.info:          # PolarMACE reads the spin multiplicity (2S+1) from info["spin"]
+        b.info["spin"] = int(b.info["mult"])
     return b
 
 
