@@ -896,6 +896,29 @@ flagged). Mixed-guess singlets for dications come with the dication phase.
   held-out anthracene/phenanthrene skeletons (5), 4H-cyclopenta[def]phenanthrene (in PAHdb). Driver `al4t/run_al4t.sh`
   (track 2 recipe: B3LYP minima of both charges, graph check, 32 frames per pair and charge, manifest, labels here in
   8 shards over both GPUs, collect), started 22:02.
+- 2026-11-23 (project node): **dataset_v7, v7 (two seeds): G2 passes with more margin; G4 first pass shows no net gain.**
+  Targeted species labelled 832/832 (22.1 GPU-h; 1 neutral `unstable_rhf_uhf` dropped by rule, 1 cation ⟨S²⟩ 0.808
+  kept). dataset_v7 = v6 + these: train q0 6,054, q1 8,635; held-out files byte-identical to v4's. `mace_torch_v2.yaml`,
+  seeds 7/8, 300 epochs. Force MAE (meV/Å) v4 / v4_seed8 / v7 / v7_seed8: final_test q0 32.0/29.7/20.5/22.4, q1
+  54.4/52.0/42.3/43.1; transfer_test q0 20.8/20.1/21.0/22.5, q1 39.0/38.2/40.0/39.6; worst config_type (q1 md_1500K)
+  57.6/55.8/51.0/51.9. The final_test gain sits on C16H12_337, C10H12_332, C10H10_331, the species whose G4 failures
+  chose the targeted species: final_test is no longer blind for these three; transfer_test (unchanged) is the blind
+  figure. G4 first pass (the three species × q0/q1 × 900/1200 K × seeds 0–1, 23 of 24 scored): 900 K 12/12, 1200 K
+  7/11. v4 on the same jobs: 4 failures; v7: 4, different ones. C16H12_337 q1 now intact; q0 1200 K s0 still moves
+  interior H. New: the CH2–CH2 C–C bond (C4–C8) breaks in C10H10_331 (q0 s1, q1 s0, 1200 K) and C10H12_332 q1 1200 K
+  s0 loses C2–C6 and C4–C8 (C2H4 leaves).
+- 2026-11-23 (project node): **DFT along the four v7 failure paths: the breaks are model artefacts, in v4 as much as
+  v7.** `d1/g4_fail_frames.py` picks 22 frames per failed run (MD start, 3 early thermal frames, 18 frames with the
+  stretch s = d/cutoff of the changing bonds spread from 0.8 to 2.5 over the first break held 100 fs);
+  B3LYP/6-31G* labels (88 frames, 6.8 GPU-h) and a broken-symmetry UKS check of the 44 neutral frames (`run --stab-all
+  --bs`); `d1/g4_path_energy.py` compares energies relative to the MD start. Near the start (s < 1) every model is
+  within 0.05 eV of DFT. With the bond broken (s > 1.1), model minus DFT (BS-UKS where lower), mean eV, v4 / v7 /
+  v7_seed8: C10H10_331 q1 −0.70/−0.60/−0.52; C10H10_331 q0 −1.04/−1.19/−1.14; C10H12_332 q1 −0.70/−0.76/−0.54;
+  C16H12_337 q0 −1.37/−0.98/−1.16; force MAE there 170–700 meV/Å. All models put the broken region 0.5–1.4 eV too
+  low, so v4's intact runs on these jobs were luck, not a better surface. Neutral broken frames: RKS unstable (19),
+  BS-UKS 0.1–1.2 eV lower, ⟨S²⟩ up to 1.1 (biradical); under the standing drop rule such frames need the BS label
+  (`collect --bs-label`) to enter training. These frames are of held-out (final_test) species, so they are a diagnosis,
+  not training data. Output `/var/tmp/jjlee-pah/d1/al5g4/` (`dft.extxyz`, `dft_bs.extxyz`, `path_energy.{json,log}`).
 
 ## Phase 3 working notes
 
