@@ -11,7 +11,7 @@
 #       positions/velocities alone for runs without frames; ratio to k_B T (run's NVE mean T); and the predicted band
 #       strength factor F = sum_W I_k E_k/kT / sum_W I_k for the bands W of aimd_slopes.py (scaled axis), next to the
 #       measured strength (qm=3 makes the classical estimator give the harmonic intensity when E_k = kT).
-import argparse, json, os, sys, time
+import argparse, json, os, re, sys, time
 import numpy as np
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -131,9 +131,34 @@ def analyse(a):
         out[run] = o
         print(f"{run[5:]:16s} {T:5.0f} {src:>6s}  " + " ".join(f"{wn_s[k]:6.0f}:{r[k]:5.2f}" for k in top).ljust(44)
               + "  " + "  ".join(cells))
+    # normalised slope: strength per unit mode energy (measured / predicted) for runs with frames, mean and standard
+    # error per nominal temperature, then the change from the lowest to the highest temperature as a fraction of the
+    # low-T value per 100 K (actual mean NVE temperatures), errors propagated from the two standard errors
+    slopes = {}
+    grp = {}
+    for run, o in out.items():
+        if o["src"] != "final":
+            grp.setdefault(int(re.search(r"_(\d+)K_", run).group(1)), []).append(o)
+    if len(grp) >= 2:
+        lo, hi = min(grp), max(grp)
+        print(f"\nnormalised slope (runs with frames: {len(grp[lo])} at {lo} K, {len(grp[hi])} at {hi} K): "
+              "measured/predicted mean +- s.e.; slope % per 100 K")
+        for b in BANDS:
+            st = {}
+            for T in (lo, hi):
+                rr = np.array([o["bands"][b]["measured"] / o["bands"][b]["predicted"] for o in grp[T]])
+                st[T] = (rr.mean(), rr.std(ddof=1) / np.sqrt(len(rr)) if len(rr) > 1 else np.nan,
+                         np.mean([o["T"] for o in grp[T]]))
+            (m0, e0, T0), (m1, e1, T1) = st[lo], st[hi]
+            dT = (T1 - T0) / 100; s = (m1 / m0 - 1) / dT
+            es = np.hypot(e1 / m0, m1 * e0 / m0 ** 2) / dT
+            slopes[b] = dict(ratio_lo=m0, se_lo=e0, T_lo=T0, ratio_hi=m1, se_hi=e1, T_hi=T1, pct_per_100K=100 * s,
+                             se_pct_per_100K=100 * es)
+            print(f"  {b:10s} {m0:.3f} +- {e0:.3f} ({T0:.0f} K)   {m1:.3f} +- {e1:.3f} ({T1:.0f} K)   "
+                  f"{100 * s:+.2f} +- {100 * es:.2f} %/100 K")
     if a.json:
-        json.dump(dict(top_modes=[dict(wn_scaled=float(wn_s[k]), I=float(I[k])) for k in top], runs=out),
-                  open(a.json, "w"), indent=1)
+        json.dump(dict(top_modes=[dict(wn_scaled=float(wn_s[k]), I=float(I[k])) for k in top], runs=out,
+                       normalised_slopes=slopes), open(a.json, "w"), indent=1)
 
 
 def main():
