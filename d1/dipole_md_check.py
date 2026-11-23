@@ -9,6 +9,11 @@
 #          guess (as in production); per frame: dipole about the COM (e*A), failure flag, frontier orbital energies
 #          (SOMO/HOMO and LUMO), wall time. A failed SCF is retried from scratch and counted. -> xtb.npz
 #   mace   python dipole_md_check.py mace <out dir> --charge 1 --dipole name:model_type:model ...  -> mace_<name>.npz
+#   mace-batch python dipole_md_check.py mace-batch <out dir> --charge 1 --mult 2 --dipole name:model_type:model
+#          [--batch 64] [--stride 1] [--dtype float32]
+#          Production mode (coordinator 2026-11-24): MD runs on the force model alone (d1/mace_md_batch.py) and the
+#          dipole model is evaluated offline on saved frames, B frames per forward pass, compute_force=False (no
+#          autograd graph). ms/frame = wall of the whole loop (graph building included) / frames. -> mace_<name>.npz
 #   report python dipole_md_check.py report <out dir> [--dipole-names dxtb_dip,...]
 # Jumps: |second difference| of the 1 fs dipole series beyond 10 robust sigma (MAD) and 0.02 D; reported for xTB and
 # for each MACE term (which is smooth by construction), with the frontier gap at the flagged frames.
@@ -117,6 +122,40 @@ def mace(a):
         print(f"mace {name}: median {np.median(wall) * 1e3:.2f} ms/frame (ASE calculator, one frame per call)")
 
 
+def mace_batch(a):
+    import torch
+    from ase import Atoms
+    from mace.calculators import MACECalculator
+    from mace import data as mace_data
+    from mace.tools import torch_geometric
+    traj = np.load(f"{a.out}/traj.npy", mmap_mode="r"); num = np.load(f"{a.out}/numbers.npy")
+    m = np.array([MASS[z] for z in num]); idx = np.arange(0, len(traj), a.stride)
+    if not a.slow_graph:
+        import polar_fastgraph; polar_fastgraph.install()      # vectorised PolarMACE all-pairs graph (no-op otherwise)
+    for spec in a.dipole:
+        name, mtype, path = spec.split(":")
+        calc = MACECalculator(model_paths=path, device=a.device, default_dtype=a.dtype, model_type=mtype)
+        model = calc.models[0]; keyspec = mace_data.KeySpecification(info_keys=calc.info_keys, arrays_keys=calc.arrays_keys)
+        mu = np.empty((len(idx), 3)); torch.cuda.synchronize(); t0 = time.perf_counter(); tg = 0.0
+        for s0 in range(0, len(idx), a.batch):
+            tb = time.perf_counter(); graphs = []
+            for k in idx[s0:s0 + a.batch]:
+                p = np.asarray(traj[k], dtype=float)
+                at = Atoms(num, positions=p - (m[:, None] * p).sum(0) / m.sum()); at.info.update(charge=a.charge, spin=a.mult)
+                cfg = mace_data.config_from_atoms(at, key_specification=keyspec, head_name=calc.head)
+                graphs.append(mace_data.AtomicData.from_config(cfg, z_table=calc.z_table, cutoff=calc.r_max, heads=calc.available_heads))
+            batch = next(iter(torch_geometric.dataloader.DataLoader(graphs, batch_size=len(graphs), shuffle=False))).to(a.device)
+            tg += time.perf_counter() - tb
+            with torch.no_grad():
+                out = model(batch.to_dict(), training=False, compute_force=False)
+            mu[s0:s0 + len(graphs)] = out["dipole"].detach().cpu().numpy()
+        torch.cuda.synchronize(); wall = time.perf_counter() - t0
+        np.savez(f"{a.out}/mace_{name}.npz", mu=mu, wall=np.full(len(idx), wall / len(idx)), stride=a.stride, batch=a.batch,
+                 graph_s=tg)
+        print(f"mace-batch {name}: B={a.batch} {len(idx)} frames {wall:.1f} s -> {wall / len(idx) * 1e3:.2f} ms/frame "
+              f"(graph building {tg / len(idx) * 1e3:.2f} ms/frame)")
+
+
 def jumps(mu_D):
     """Second differences of a 1 fs dipole series (D); a from-scratch SCF at an xTB chunk start that lands on another
     solution shows up here like any other jump."""
@@ -162,9 +201,14 @@ def main():
     p.add_argument("--frames", type=int, default=0); p.add_argument("--tag", default="")
     p = sub.add_parser("mace"); p.add_argument("out"); p.add_argument("--charge", type=int, default=1)
     p.add_argument("--dipole", action="append", default=[]); p.add_argument("--device", default="cuda")
+    p = sub.add_parser("mace-batch"); p.add_argument("out"); p.add_argument("--charge", type=int, default=1)
+    p.add_argument("--mult", type=int, default=2); p.add_argument("--dipole", action="append", default=[])
+    p.add_argument("--batch", type=int, default=64); p.add_argument("--stride", type=int, default=1)
+    p.add_argument("--dtype", default="float32"); p.add_argument("--device", default="cuda")
+    p.add_argument("--slow-graph", action="store_true", help="keep graph_longrange's looped all-pairs graph")
     p = sub.add_parser("report"); p.add_argument("out"); p.add_argument("--dipole-names", default=""); p.add_argument("--tag", default="")
     a = ap.parse_args()
-    dict(md=md, xtb=xtb, mace=mace, report=report)[a.cmd](a)
+    dict(md=md, xtb=xtb, mace=mace, report=report)[a.cmd](a) if a.cmd != "mace-batch" else mace_batch(a)
 
 
 if __name__ == "__main__":

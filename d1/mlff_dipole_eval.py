@@ -39,6 +39,8 @@ def main():
     a = ap.parse_args()
     from ase.io import read
     from mace.calculators import MACECalculator
+    if a.model_type == "PolarMACE":
+        import polar_fastgraph; polar_fastgraph.install()
     models = dict(x.split("=", 1) for x in a.models.split(","))
     res, frames = {}, {}
     for q, path in sorted(models.items()):

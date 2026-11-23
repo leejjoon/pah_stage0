@@ -7,6 +7,7 @@
 set -euo pipefail
 DS=$1; RUN=$2; shift 2
 PY=${PY:-$HOME/pah/mace-venv/bin/python}; NGPU=${NGPU:-4}; CONFIG=${CONFIG:-$(dirname "$0")/mace_torch_polar.yaml}
+REPO_D1=$(cd "$(dirname "$0")" && pwd)
 mkdir -p "$RUN"
 cat "$DS/train_q0.extxyz" "$DS/train_q1.extxyz" > "$RUN/train.extxyz"
 cat "$DS/validation_q0.extxyz" "$DS/validation_q1.extxyz" > "$RUN/valid.extxyz"
@@ -14,5 +15,6 @@ cp "$CONFIG" "$RUN/config.yaml"
 cd "$RUN"
 export NVIDIA_TF32_OVERRIDE=0 TORCH_ALLOW_TF32_CUBLAS_OVERRIDE=0 OMP_NUM_THREADS=4
 DIST=(); [ "$NGPU" -gt 1 ] && DIST=(--distributed --launcher torchrun)
-"$PY" -m torch.distributed.run --standalone --nproc_per_node "$NGPU" -m mace.cli.run_train --config config.yaml \
+# d1/polar_fastgraph.py train = mace.cli.run_train with graph_longrange's per-molecule loop vectorised
+"$PY" -m torch.distributed.run --standalone --nproc_per_node "$NGPU" "$REPO_D1/polar_fastgraph.py" train --config config.yaml \
   --name polar --work_dir "$RUN" --train_file train.extxyz --valid_file valid.extxyz "${DIST[@]}" "$@"

@@ -916,6 +916,49 @@ flagged). Mixed-guess singlets for dications come with the dication phase.
   epochs; the saved model is the best checkpoint. Options: (a) Δ-learning on xTB, MACE learning μ_DFT − μ_xTB (xTB
   needed at every frame where intensities are computed); (b) long range, MACELES or EPNN (handoff step 2); (c) retune
   the local models (lr, size) only to measure the underfit, as no local fix removes the size trend.
+- 2026-11-24 (wasp33a, feat-dipole): **Δ-xTB fails the coordinator's three gates (plan 2026-11-23 21:06); pivot to
+  PolarMACE.**
+  - **Gate (a), large-cation dipoles:** q1 held-out MAE for ≥80 atoms is 0.50 D with xTB + Δ-AtomicDipolesMACE and
+    0.53 D with xTB + Δ-AtomicDielectricMACE; xTB alone gives 0.53 D, the target is 0.10 D. All sizes pooled: q1 0.296
+    and 0.365 D, q0 0.084 and 0.136 D. The Δ-AtomicDielectricMACE q0 model learned essentially nothing: its MAE and
+    its G5 intensities equal xTB's.
+  - **Gate (b), G5 intensities** (`d1/dipole_g5.py`; v7 minimum and Hessian, modes paired with PAHdb by irrep, FD
+    dμ/dr):
+    - Primary metric: integrated band shares over the 3.3/6.2/7.7/8.6/11.2/12.7 µm windows, both sides at PAHdb's
+      frequency.
+    - Best combination is xTB + Δ-AtomicDipolesMACE: 32 % of species pass on q0 and 17 % on q1; strong modes within
+      20 %: 25 % / 18 %. Everything else is worse.
+    - Reference level: PAHdb v4.00 is B3LYP/6-31G* for 10,703 of its 10,749 species (only 14 are 4-31G). All 128
+      held-out references are 6-31G*, i.e. our label level, so a basis mismatch does not explain the misses.
+    - Two held-out q0 references are on gh200's non-Kekulé list and are left out: C72H22_9911 and C96H26_9397. Their
+      own high-spin spectra are triplets, not the singlet surface.
+    - Still unmeasured: the ceiling, i.e. how a perfect label-level model at the v7 geometry would score.
+  - **Gate (c), xTB along 50 ps NVE at 1200 K** (v7 force model; coronene⁺ and C100H26_7494⁺, 50,000 frames each,
+    warm-started SCF):
+    - SCF: 0 failures. Dipole jumps: 1 marginal outlier on coronene⁺, not at a near-degeneracy.
+    - Cost: 68 ms/frame (coronene⁺) and 1.48 s/frame (C100H26⁺) on one core. At 0.8–1.6M frames, that is
+      330–660 core-hours per species-temperature for a 126-atom cation: fails on cost.
+  - **Pivot: PolarMACE (MACE-POLAR, in mace-torch 0.3.17 with graph_longrange 0.4.4).**
+    - Model: a spin-resolved charge and dipole density, equilibrated to the total charge and multiplicity by learnable
+      Fukui functions and iterated with the long-range potential. One model covers q0 and q1.
+    - MACELES rejected: its latent charges are learned from energies only, with no dipole loss or total-charge
+      constraint.
+    - Foundation `polar-1-s` zero-shot rejected: ≥80-atom MAE q0 1.37, q1 1.40 D.
+    - Setup: `d1/mace_torch_polar.{yaml,sh}`, from scratch, loss `energy_forces_dipole` (E 1, F 10, μ 100).
+    - v4 smoke run (2 epochs): q1 held-out 0.46 / 0.41 / 0.51 D, already better than AtomicDielectricMACE after 300
+      epochs.
+    - Full run `polar_v7`: dataset_v7, 4 GPUs, max 200 epochs.
+  - **graph_longrange performance bug:** it builds the all-pairs electrostatic graph with a per-molecule Python loop,
+    5× per forward pass, which made batched dipole evaluation no cheaper than single frames (5.8 ms/frame for
+    coronene⁺ at B = 64 and B = 256).
+    - Fix: `d1/polar_fastgraph.py` (identical edge lists, monkeypatched) gives 2.9 ms/frame, of which about 1 ms is
+      graph building on the CPU, with the GPU shared with training.
+    - The training driver now uses it; `polar_v7` was started before the fix.
+  - **Production dipole mode** (`dipole_md_check.py mace-batch`): MD runs on the force model alone, and the dipole
+    is evaluated offline on saved frames in batches of 64–256, forward-only (`compute_force=False`).
+  - **Remaining risk:** mace-torch's dipole loss is per-atom, (Δμ/N)², which gives a 126-atom cation about 1/49 the
+    weight of an 18-atom one. If ≥80-atom q1 stays above 0.10 D, the single follow-up is `polar_v7_totmu`: total-dipole
+    loss, with energy and forces off or at regularising weights.
 
 ## Phase 3 working notes
 

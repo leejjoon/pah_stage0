@@ -11,6 +11,17 @@
 #       [--splits validation,final_test,transfer_test] [--pairs A,B] [--xtb]
 #       [--dipole name:model_type:q0_model:q1_model ...] [--workers 32] [--device cuda] [--h 0.005]
 #   python dipole_g5.py report <out dir> <out.json> --combo xtb --combo xtb+dxtb_dip --combo diel ...
+#       [--pahdb <xml>] [--ref-flags pahdb_v4_replacements_v1.csv]
+# report, primary metric = band-integrated strengths: model and PAHdb intensities summed over the 3.3, 6.2, 7.7, 8.6,
+# 11.2 and 12.7 um windows, both placed at PAHdb's (paired) frequency, so intensity the force model's modes redistribute
+# among nearby modes of a window does not count as error. Per band: share of the six-band sum relative to PAHdb's
+# (G5 is about relative intensities; species passes if every band carrying > 10 % is within 20 %) and the absolute
+# ratio. Secondary: per-mode shares of the strong (> 10 % of max) PAHdb modes.
+# --pahdb: each reference's basis from its Gaussian route comment, results grouped by it (PAHdb v4.00: 10,703 of
+# 10,749 species B3LYP/6-31G*, 14 4-31G; all 128 held-out references here 6-31G*, the label level).
+# --ref-flags (gh200-containers d1/pahdb_v4_replacements_v1.csv): references flagged there (non-Kekule neutrals listed
+# as closed-shell singlets, intensities ~7x too high) are left out of the summary. Their own high-spin spectra
+# (d1/own_spectra, UB3LYP/6-31G* triplets) are not a reference for the singlet q0 surface the models describe.
 # run writes <out dir>/<pair>_q<c>.npz: PAHdb freq (unscaled) / intensity / labels, model freq, mass-weighted mode
 # vectors (PAHdb order), masses, and dmu_<predictor> (3N x 3, e*A/A). species.csv and xyz dir lists pair up in order
 # (species_v2.csv with mlff_seed/xyz, species_transfer2.csv with transfer2/xyz).
@@ -22,7 +33,8 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 KM_MOL = 974.8645          # km/mol per (e/amu^1/2)^2: N_A e^2 / (12 eps0 c^2 amu) / 1e3 (as d1/pyscf_freq_fd.py)
 DEBYE_EA = 0.2081943
 SCALE = 0.9578             # harmonic scale factor (d1/mlmd_spectra.py), only to place modes in the band windows
-BANDS = {"6.2": (6.0, 6.5), "7.7": (7.0, 8.2), "8.6": (8.2, 8.9), "11.2": (10.8, 11.6)}   # um, scaled frequency
+BANDS = {"3.3": (3.1, 3.6), "6.2": (6.0, 6.5), "7.7": (7.0, 8.2), "8.6": (8.2, 8.9), "11.2": (10.8, 11.6),
+         "12.7": (12.4, 13.2)}   # um, at the scaled PAHdb frequency of each (paired) mode
 MASS = {"H": 1.00782503, "C": 12.0}
 _XTB = {}
 
@@ -163,7 +175,20 @@ def score(d, I):
                 band_abs_ratio={b: float(Bm[b] / Bp[b]) if Bp[b] > 0 else None for b in BANDS})
 
 
+def pahdb_basis(path):
+    import re
+    out = {}
+    for m in re.finditer(r'<specie uid="(\d+)">(.*?)</specie>', open(path).read(), re.S):
+        for c in re.findall(r"<comment[^>]*>([^<]*)</comment>", m.group(2)):
+            r = re.search(r"(?i)/\s*([0-9a-z\-+*(),]+g[*()dp,]*)", c)
+            if r:
+                out[int(m.group(1))] = r.group(1).lower(); break
+    return out
+
+
 def report(a):
+    basis = pahdb_basis(a.pahdb[:-3] if a.pahdb.endswith(".gz") else a.pahdb) if a.pahdb else {}
+    flags = {int(r["pahdb_v4_uid"]): r["action"] for r in csv.DictReader(open(a.ref_flags))} if a.ref_flags else {}
     rows = []
     for f in sorted(glob.glob(f"{a.out}/*_q[01].npz")):
         d = np.load(f, allow_pickle=False); info = json.loads(str(d["info"]))
@@ -172,21 +197,28 @@ def report(a):
             if not all(k in d for k in keys):
                 continue
             I = intensities(d, sum(d[k] for k in keys))
-            rows.append(dict(combo=combo, pair=info["pair"], charge=info["charge"], split=info["split"],
+            rows.append(dict(combo=combo, pair=info["pair"], charge=info["charge"], split=info["split"], uid=info["uid"],
+                             basis=basis.get(info["uid"], "?"), ref_flag=flags.get(info["uid"], ""),
                              n_atoms=len(d["masses"]), pairing=info["pairing"], **score(d, I)))
     json.dump(rows, open(a.json, "w"), indent=1)
-    print(f"G5 intensity half: mode = strong PAHdb modes (> 10 % of max), share of strong-mode intensity within 20 %;"
-          f"\nband = 6.2/7.7/8.6/11.2 um shares of their sum, species passes if every band > 10 % is within 20 %.")
-    for combo in a.combo:
+    dropped = sorted({(r["pair"], r["charge"], r["ref_flag"]) for r in rows if r["ref_flag"]})
+    print(f"G5 intensity half. Primary: band-integrated 3.3/6.2/7.7/8.6/11.2/12.7 um shares of their sum; a species passes"
+          f"\nif every band > 10 % is within 20 % (band-pass). |dev| = median |share/share_PAHdb - 1|, abs = median"
+          f" model/PAHdb band strength.\nSecondary: strong PAHdb modes (> 10 % of max) within 20 %.\n"
+          f"Left out (--ref-flags): {dropped}")
+    for grp in sorted({r["basis"] for r in rows}):
+      print(f"-- PAHdb reference basis {grp}")
+      for combo in a.combo:
         for q in (0, 1):
-            R = [r for r in rows if r["combo"] == combo and r["charge"] == q]
+            R = [r for r in rows if r["combo"] == combo and r["charge"] == q and r["basis"] == grp and not r["ref_flag"]]
             if not R:
                 continue
             big = [r for r in R if r["n_atoms"] >= 80]
             dev = lambda b: np.nanmedian([abs(r["band_rel_dev"][b]) for r in R])
             print(f"{combo:18s} q{q} n={len(R):3d}  modes within 20 %: {np.mean([r['mode_pass'] for r in R]):.2f}"
                   f"  species band-pass {np.mean([r['band_pass'] for r in R]):.2f} (>=80 atoms {np.mean([r['band_pass'] for r in big]) if big else float('nan'):.2f}, {len(big)})"
-                  f"  median |dev| " + " ".join(f"{b}:{dev(b):.2f}" for b in BANDS) +
+                  f"  |dev| " + " ".join(f"{b}:{dev(b):.2f}" for b in BANDS) +
+                  f"  abs " + " ".join(f"{b}:{np.nanmedian([r['band_abs_ratio'][b] if r['band_abs_ratio'][b] is not None else np.nan for r in R]):.2f}" for b in BANDS) +
                   f"  6.2/11.2 {np.nanmedian([abs(r['r62_112_dev']) for r in R]):.2f}  total {np.median([r['total_ratio'] for r in R]):.2f}")
 
 
@@ -200,6 +232,7 @@ def main():
     r.add_argument("--workers", type=int, default=32); r.add_argument("--device", default="cuda")
     r.add_argument("--h", type=float, default=0.005); r.add_argument("--fmax", type=float, default=1e-4)
     p = sub.add_parser("report"); p.add_argument("out"); p.add_argument("json"); p.add_argument("--combo", action="append", required=True)
+    p.add_argument("--pahdb", default=""); p.add_argument("--ref-flags", default="")
     a = ap.parse_args()
     run(a) if a.cmd == "run" else report(a)
 
