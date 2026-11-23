@@ -73,6 +73,20 @@ CH stretch 2700–3300 cm⁻¹; linear in T; the slope is a fraction of the fitt
   charge (hole) localisation, i.e. symmetry breaking, frozen in at 300 K and averaged at 900 K; the high-strength
   runs tend to have a larger mean dipole (zero for D2h). Next check: single points on the r2–r7 frames, charge
   asymmetry against the 1000–1300 cm⁻¹ strength.
+- **Electronic-state check (2026-11-23, wasp12): ruled out.** `d1/frame_sp.py` ran cold-start single points on
+  500 frames of each of r2–r7 and 900 K r2, r3 (every 10 fs; 4,000 in all), with UKS stability tests (Stable=Opt)
+  on 25 per run (`d1/frame_sp_summary.py`; output in the gh200 copy under `aimd_naph_short/analysis/frame_sp/`).
+  Every SCF converged without Newton; every cold-start dipole matches the MD's at the same step to ≤ 4×10⁻⁴ e·Å;
+  all 200 stability tests stable, no re-optimisation; ⟨S²⟩ 0.7633–0.7637 at 300 K for every replica. So the MD stayed
+  on the stable ground-state solution and the replicas do not differ in electronic state. Across the six 300 K
+  replicas the 1000–1300 cm⁻¹ strength tracks the rms long-axis dipole (r = 0.94; ring A − B spin asymmetry 0.71),
+  which only restates that this band is charge moving between the rings.
+- New working explanation (untested): frozen vibrational energy. At 300 K the modes that carry the 1000–1300 cm⁻¹
+  intensity keep whatever energy they had at the end of NVT through the whole NVE (r1 is steady over 20 ps). A single
+  mode's canonical energy is exponentially distributed (coefficient of variation 1); the 300 K replicas' 1000–1300
+  cm⁻¹ strengths have CV 0.73 (8 runs). At 900 K energy flows between modes within a run, so replicas agree. Test:
+  harmonic normal modes of the cation, mode energies per replica from `frames_pos`/`frames_vel`, against the band
+  strength. If confirmed, the replica average needs normalising by the mode energies (or many more replicas).
 - The narrow 11.2-type windows go negative in the 5 ps runs (unclipped truncated-ACF estimator around sharp lines);
   use only the broad bands for them.
 
