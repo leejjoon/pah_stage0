@@ -95,6 +95,12 @@ CH stretch 2700–3300 cm⁻¹; linear in T; the slope is a fraction of the fitt
   replica fit. 1000–1300 cm⁻¹ alone: −2.3 %/100 K. The neutral needs the same treatment before the gate can be read:
   its main runs saved no frames and its raw +4.5 % has the same problem. Proposed: short neutral replicas with
   frames (300 K ×4, 900 K ×2; 2 ps NVT + 5 ps NVE, `FRAMES_FS=5`) on wasp12.
+- **Neutral short replicas, running on wasp12 since 2026-11-23 11:06:** `naph_q0_300K_r2`…`r5` and
+  `naph_q0_900K_r2`, `r3` in `~/aimd/run` (next to the finished cation replicas), 2 ps NVT + 5 ps NVE, frames every
+  5 fs, seeds T·10 + 2r, 32 cores each (cores 0–191), user unit `aimd` with `NVE_PS=5 FRAMES_FS=5 AIMD_TAG=wasp12`.
+  Status: `RUNS=<the 6 names> ~/aimd/code/cloud/launch_aimd.sh status ~/aimd/run`. When done: copy back as
+  `aimd_naph_short_q0`, archive, then `mode_energy.py analyse` with `ref_q0.npz` for the normalised neutral slope
+  and the cation − neutral difference for the B4 gate.
 - The narrow 11.2-type windows go negative in the 5 ps runs (unclipped truncated-ACF estimator around sharp lines);
   use only the broad bands for them.
 
