@@ -137,8 +137,11 @@ CH stretch 2700–3300 cm⁻¹; linear in T; the slope is a fraction of the fitt
 - **Neutral short replicas: done 2026-11-24 14:07.** `naph_q0_300K_r2`…`r5` and `naph_q0_900K_r2`, `r3` on
   wasp12 (user unit `aimd`, 32 cores each, 6.8–7.0 s/step), 2 ps NVT + 5 ps NVE, frames every 5 fs, seeds T·10 + 2r;
   logs clean, 8–9 SCF cycles, NVE energy conserved. Results: `gh200:/var/tmp/jjlee-pah/d1/aimd_naph_short_q0/` and
-  `aimd_naph_short_q0.tgz` (5.5 MB, sha256 `2addd067…`), hashes checked on wasp12, z2mini and gh200; manifest
-  `data/manifests/aimd_naph_short_q0.yaml`. Normalised neutral slopes in the B4 section at the top.
+  `aimd_naph_short_q0.tgz` (5.5 MB, sha256 `2addd067…`), hashes checked on wasp12, z2mini and gh200. Archived 2026-11-24 22:20 to
+  `oras://myhub.ksc.re.kr/pah-data/aimd_naph_short_q0:2026-11-24` (pulled back, sha256 matches; anonymous pull
+  refused), manifest `data/manifests/aimd_naph_short_q0.yaml`. The push waited 8 h: myhub first refused connections
+  (from ~14:20), then served its new certificate without the Sectigo DV R36 intermediate; pushed with `--ca-file`
+  holding the system bundle plus that intermediate (see the manifest's `retrieve`). Normalised neutral slopes in the B4 section at the top.
 - The narrow 11.2-type windows go negative in the 5 ps runs (unclipped truncated-ACF estimator around sharp lines);
   use only the broad bands for them.
 

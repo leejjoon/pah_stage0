@@ -1,0 +1,30 @@
+# Data manifest (CLAUDE.md, "Closing out a compute campaign and archiving")
+dataset: aimd_naph_short_q0
+description: >
+  Neutral naphthalene DFT MD, extra short replicas for committee review B3 part one (Gate B4): 300 K r2-r5 and
+  900 K r2, r3 (6 runs), each 2 ps Langevin NVT + 5 ps NVE at 0.5 fs (14,000 steps), dipole every 1 fs, NVE positions
+  and velocities every 5 fs (frames_pos/frames_vel, 1,000 frames). Final checkpoints, the two PAHdb input geometries,
+  and all run logs. Complements aimd_naph_done (neutral r0, r1) and aimd_naph_short (cation replicas).
+sha256: 2addd067662a82bba9d38fd87f58f511519e960a54b96fcb72a3892d29b2aeef   # aimd_naph_short_q0.tgz
+size: 5.5 MB
+files: aimd_naph_short_q0/SHA256SUMS inside the tarball (6 npz + 2 xyz + logs/)
+left_out: lock files, ALL_DONE marker
+code: 8ba78b0 (branch cloud-aimd); MD code d1/aimd_pyscf.py --frames-fs 5, launcher d1/cloud/launch_aimd.sh
+produced: 2026-11-23 11:06..2026-11-24 14:07 on wasp12 (systemd user unit); `engines` in each npz
+settings: B3LYP (VWN3, PySCF b3lypg)/6-31G* with 6D d functions, RKS-equivalent (<S^2> = 0); PySCF 2.15.0
+  (conda-forge); seeds T*10 + 2r
+checks: all runs at 14,000 of 14,000 steps; frames and dipoles finite; 5,000 x 3 NVE dipoles each; max SCF cycles 9;
+  NVE drift -0.25..+0.14 meV/ps
+locations:
+  - oras://myhub.ksc.re.kr/pah-data/aimd_naph_short_q0:2026-11-24   # private; manifest digest sha256:179d148a0ea53242e37515aa767c3e9bb0c352dc1f186873477ceba8bef99b12
+  - gh200:/var/tmp/jjlee-pah/d1/aimd_naph_short_q0.tgz (and unpacked aimd_naph_short_q0/; working copy, no backup)
+  - wasp12:~/aimd/run (originals; kept until myhub backups are known)
+retrieve: >
+  oras pull -u "$HARBOR_DATA_USER" --password-stdin myhub.ksc.re.kr/pah-data/aimd_naph_short_q0:2026-11-24
+  (credentials of a pah-data robot account, from .env), then sha256sum the tarball against `sha256` above.
+  On 2026-11-24 myhub served its certificate without the Sectigo intermediate, so curl/oras failed with "unable to
+  get local issuer certificate"; fetch http://crt.sectigo.com/SectigoPublicServerAuthenticationCADVR36.crt, append it
+  (PEM) to the system CA bundle and pass that with --ca-file (not --insecure).
+record: docs/plan/cloud_aimd_handoff.md ("Result and Gate B4 decision"; the "Neutral short replicas" bullet)
+analysis: d1/mode_energy.py (commit 4a58623) ref/analyse with ref_q0.npz; d1/aimd_slopes.py over all 22 runs; output
+  in the gh200 copy under aimd_naph_short_q0/analysis/modes/ (not in the tarball)
