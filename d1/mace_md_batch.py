@@ -12,6 +12,9 @@
 #   dt_fs, save_fs) and <prefix>.json (settings, per-replica NVE drift in meV/atom over the run from a linear fit, mean
 #   T, bond-graph integrity per replica as g4_score.py: changes against the start held over the last 100 fs, the first
 #   change, blow-up time if T exceeds 3x the target; steps/s and atom-steps/s).
+# intact: no persistent change over the last 100 fs, the NVE start graph equal to the minimum's (no change during NVT) and no
+#   blow-up. Without --cueq, batches above 30,720 atoms are refused: at 1024 x 60 atoms the plain e3nn path gave
+#   non-physical forces to replicas 318-1023 from the start (512 x 60 clean; all cueq runs to 1024 x 60 clean).
 # check: the same initial state propagated by this runner's NVE and by ASE VelocityVerlet + MACECalculator (float64,
 #   one replica), max |dx| after --steps; checks units (TorchSim takes dt in internal units here: dt_fs * ase.units.fs)
 #   and the head.
@@ -54,6 +57,9 @@ def run(a):
     import torch, torch_sim as ts
     from ase import units
     dtype = torch.float64 if a.float64 else torch.float32
+    n_at = len(read_xyz(a.xyz)[0]) * a.replicas
+    if n_at > 30720 and not a.cueq:   # without cuEquivariance, 1024 x 60 atoms corrupted replicas >= 318 (T ~1e15 K from the first
+        sys.exit(f"{n_at} atoms in the batch: use --cueq above 30720 atoms (the plain e3nn path corrupts large batches)")   # NVT steps); 512 x 60 was clean
     at, model, state = setup(a, a.replicas, dtype); B = a.replicas; N = len(at); sym = at.get_chemical_symbols()
     kT = a.temp * units.kB; dt = a.dt_fs * units.fs; gamma = a.gamma / (1000 * units.fs)      # internal units
     gen = torch.Generator(device="cuda"); gen.manual_seed(a.seed)
@@ -89,7 +95,7 @@ def run(a):
         first = next((t_ps[k] for k in range(len(g)) if g[k] != b0r), None)
         blow = next((t_ps[k] for k in range(len(g)) if Tm[k, r] > 3 * a.temp), None)
         reps.append(dict(replica=r, drift_meV_atom=1000 * slope * a.nve_ps / N, T_mean=float(Tm[:, r].mean()),
-                         intact=not (lost or gained), change=describe(sym, gained, lost) if (lost or gained) else "",
+                         intact=not (lost or gained) and b0r == frozenset(b0) and blow is None, change=describe(sym, gained, lost) if (lost or gained) else "",
                          first_change_ps=first, blowup_ps=blow, start_graph_as_minimum=b0r == frozenset(b0)))
     steps = n_nvt + n_nve
     res = dict(model=a.model, xyz=a.xyz, charge=a.charge, temp=a.temp, replicas=B, atoms=N, nvt_ps=a.nvt_ps, nve_ps=a.nve_ps,
