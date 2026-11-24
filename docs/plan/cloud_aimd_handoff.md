@@ -12,6 +12,45 @@ with the same conda-forge PySCF the runs started with.
 abandoned part-way, carry its latest checkpoints to the other (`make_bundle.sh` takes any tarball of the same
 layout).
 
+## Result and Gate B4 decision (2026-11-24)
+
+**What ran (2026-11-12..2026-11-24):** naphthalene neutral and cation, B3LYP(VWN3)/6-31G\* 6D, PySCF on CPU and
+GPU: 8 main runs (2 ps NVT + 20 ps NVE; project node, GCP, gmunu, wasp12) and 14 short replicas with saved frames
+(2 ps NVT + 5 ps NVE; wasp12): 22 runs. Data: myhub `pah-data/aimd_naph_done:2026-11-21`,
+`aimd_naph_short:2026-11-23`, `aimd_naph_short_q0:2026-11-24` (manifests in `data/manifests/`). Code at tag
+`aimd-naph-b3p1` once merged (branch `cloud-aimd`).
+
+**Finding 1, method:** at 300 K the NVE band strengths of a replica are set by the energy its few IR-active modes
+happen to hold, which stays frozen for the whole run (20 ps tested). Raw replica fits therefore scatter by up to
+±15 % per 100 K. Normalising each run's strength by its own mode energies (`d1/mode_energy.py`: strength / Σ I_k·E_k/kT)
+removes this; it needs saved frames (`aimd_pyscf.py --frames-fs`). See "Extra cation replicas" below.
+
+**Finding 2, the numbers** (in-plane CC band 1000–1700 cm⁻¹, strength per unit mode energy, % per 100 K, ± 1 s.e.;
+runs with frames only; `mode_energy.py analyse`, outputs in the gh200 copies under `*/analysis/modes/`):
+
+| | 300 K runs | 900 K runs | Slope |
+|---|---|---|---|
+| Cation | 0.989 ± 0.017 (6) | 0.884 ± 0.014 (2) | **−1.72 ± 0.34** |
+| Neutral | 1.198 ± 0.073 (4) | 1.183 ± 0.082 (2) | **−0.24 ± 1.74** |
+| Cation − neutral | | | **−1.5 ± 1.8** |
+
+Raw fits over all 22 runs, for comparison: cation −2.6 %, neutral +3.7 %, difference −6.2 % (frozen-mode scatter;
+not used). The neutral is the noisy side: its in-plane band is weak (harmonic 33.5 km/mol against 410 for the
+cation) and only partly harmonic (measured/predicted 1.2–1.6 in 1300–1700 cm⁻¹), so the normalisation is weaker there.
+
+**Gate B4 decision:** the rule (`docs/plan/b4_diagnostic_impact.md`, "Reading against the gate") is that the
+charge-dependent correction matters if |cation − neutral| ≳ 2 % per 100 K and does not if ≲ 1.5 %. The DFT result is
+−1.5 ± 1.8 %: the central value sits on the "does not matter" edge, but the uncertainty covers both outcomes (about
+45 % probability of ≤ 1.5 %, 40 % of ≥ 2 %). **B3 part one does not decide B4.** It does establish that the cation CC
+slope is small and negative (−1.7 ± 0.3 %, against xTB's −0.9 % and the +2.2 % MLMD neutral mean), so the deciding
+uncertainty is now the neutral slope. As the B4 document staged it, the gate passes to step (b), the pilot models
+on the seed set, with these 22 runs as their DFT reference. Narrowing the neutral to ±0.5 % with DFT MD would need
+roughly 12× the neutral replicas (~70 short runs, about two weeks of wasp12); not proposed.
+
+**For downstream MLMD (`feat-gpu-gh200`):** below ~35 C at 300 K, use many independent short NVE replicas from
+canonical (Langevin) snapshots, or save decimated frames for the `mode_energy.py` normalisation; a few long replicas
+are not enough.
+
 ## Done: all 8 runs at 44,000 steps (2026-11-21)
 
 The neutrals finished on gmunu on 2026-11-20 at 18:16 (job 29751, launcher exit 0, no resubmit). The cations finished
@@ -95,12 +134,11 @@ CH stretch 2700–3300 cm⁻¹; linear in T; the slope is a fraction of the fitt
   replica fit. 1000–1300 cm⁻¹ alone: −2.3 %/100 K. The neutral needs the same treatment before the gate can be read:
   its main runs saved no frames and its raw +4.5 % has the same problem. Proposed: short neutral replicas with
   frames (300 K ×4, 900 K ×2; 2 ps NVT + 5 ps NVE, `FRAMES_FS=5`) on wasp12.
-- **Neutral short replicas, running on wasp12 since 2026-11-23 11:06:** `naph_q0_300K_r2`…`r5` and
-  `naph_q0_900K_r2`, `r3` in `~/aimd/run` (next to the finished cation replicas), 2 ps NVT + 5 ps NVE, frames every
-  5 fs, seeds T·10 + 2r, 32 cores each (cores 0–191), user unit `aimd` with `NVE_PS=5 FRAMES_FS=5 AIMD_TAG=wasp12`.
-  Status: `RUNS=<the 6 names> ~/aimd/code/cloud/launch_aimd.sh status ~/aimd/run`. When done: copy back as
-  `aimd_naph_short_q0`, archive, then `mode_energy.py analyse` with `ref_q0.npz` for the normalised neutral slope
-  and the cation − neutral difference for the B4 gate.
+- **Neutral short replicas: done 2026-11-24 14:07.** `naph_q0_300K_r2`…`r5` and `naph_q0_900K_r2`, `r3` on
+  wasp12 (user unit `aimd`, 32 cores each, 6.8–7.0 s/step), 2 ps NVT + 5 ps NVE, frames every 5 fs, seeds T·10 + 2r;
+  logs clean, 8–9 SCF cycles, NVE energy conserved. Results: `gh200:/var/tmp/jjlee-pah/d1/aimd_naph_short_q0/` and
+  `aimd_naph_short_q0.tgz` (5.5 MB, sha256 `2addd067…`), hashes checked on wasp12, z2mini and gh200; manifest
+  `data/manifests/aimd_naph_short_q0.yaml`. Normalised neutral slopes in the B4 section at the top.
 - The narrow 11.2-type windows go negative in the 5 ps runs (unclipped truncated-ACF estimator around sharp lines);
   use only the broad bands for them.
 

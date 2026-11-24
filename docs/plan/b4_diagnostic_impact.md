@@ -71,6 +71,11 @@ numbers: `run2.txt`.)
 
 ## Reading against the gate
 
+**Update 2026-11-24 (B3 part one, DFT):** mode-energy-normalised in-plane CC slopes for naphthalene: cation
+−1.72 ± 0.34 % per 100 K, neutral −0.24 ± 1.74 %, difference −1.5 ± 1.8 %. That is on the edge of the "does not
+matter" side but does not exclude ≳ 2 %, so B4 is not decided by part one and passes to step (b) below. Details:
+`docs/plan/cloud_aimd_handoff.md`, "Result and Gate B4 decision".
+
 - The committee's question is whether the correction materially improves the inference. On this prototype it does if
   the true cation-minus-neutral difference in CC-band strength slopes is ≳ 2 % per 100 K (the xTB size, ~3 %, gives
   0.03–0.14), and it does not if it is ≲ 1.5 % per 100 K (half the xTB size gives ≤ 0.037).

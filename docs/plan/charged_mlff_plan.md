@@ -592,6 +592,12 @@ disagreement stay low on unseen species. Budget at 6-31G\*: of order 100–200k 
   component 26.1 eV/Å (C28H16_2185_q1_f002, disp). Nothing dropped. Ranks 33–100 not run. Tarball
   `/appsdata/t641a02/d1/al3_hangang_dft.tgz` (9.2 MB, sha256 `419122aa9b46a18fbe45620226119cbc2b9781974ab2550d5f69555d4817a36d`;
   `dft/`, `dft.extxyz`, `frames/`, `gjf/manifest.json`, `minima/`), myhub `pah-data/al3_hangang_dft:2026-11-22`.
+- 2026-11-24: B3 part one closed (branch `cloud-aimd`): 22 naphthalene DFT MD runs (8 × 22 ps, 14 × 7 ps with saved
+  frames), archived in myhub `pah-data` (`aimd_naph_done`, `aimd_naph_short`, `aimd_naph_short_q0`). At 300 K a
+  replica's band strengths follow the energy frozen in a few IR-active modes, so slopes are normalised by mode energy
+  (`d1/mode_energy.py`). In-plane CC slopes: cation −1.72 ± 0.34 % per 100 K, neutral −0.24 ± 1.74 %, difference
+  −1.5 ± 1.8 %: Gate B4 is not decided by part one and goes to the pilot models. Record:
+  `docs/plan/cloud_aimd_handoff.md` ("Result and Gate B4 decision").
 
 ## Phase 1 run-book
 
