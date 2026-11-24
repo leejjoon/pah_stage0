@@ -7,7 +7,8 @@
 #               finite-difference Hessian at the minimum (--nms "300:2,1000:2")
 #   md_<T>K     GFN2-xTB Langevin MD (centre of mass fixed): --equil-ps, then --per-T frames --gap-ps apart
 #   bound_ch    controlled C-H stretches of one random H to --ch-lengths (A), at the edge of and past the bond cut
-#   bound_oop   one random atom pushed out of the molecular plane by --oop-range (A)
+#   bound_oop   one random atom pushed out of the molecular plane by --oop-range (A); a push that shortens a
+#               distance to that atom below 0.8 x its value is redrawn (non-planar molecules; planar ones never are)
 # Labels on every frame: sample_T (MD/NMS temperature, "none" otherwise); max_stretch (largest d/d0 over the input's
 # bonds) and max_elong (largest d - d0, A); graph_changed (bond graph at 1.2 x covalent radii differs from the input).
 # MD frames also carry changed_n: of three checks (the frame, +50 fs, +100 fs), how many show a changed graph
@@ -123,9 +124,20 @@ def main():
             emit(p, "bound_ch", bound_atom=h, bound_value=f"{L:.3f}")
         lo, hi = [float(x) for x in a.oop_range.split(",")]
         c0 = p_ref - p_ref.mean(0); normal = np.linalg.svd(c0)[2][-1]   # least-variance axis = plane normal
+        d_ref = np.linalg.norm(p_ref[:, None] - p_ref[None], axis=-1)
         for _ in range(a.n_oop):
-            k = int(rng.integers(len(sym))); dz = rng.uniform(lo, hi) * rng.choice([-1, 1])
-            p = p_ref.copy(); p[k] += dz * normal
+            # In a planar molecule every distance to the pushed atom grows. In sp3 / non-planar ones the global normal
+            # can point along a bond and drive an H into its carbon (C-H 0.62-0.74 A seen, 2026-11-21): redraw any
+            # push that shortens a distance (< 3 A) to the atom below 0.8 x its value at the minimum. Planar molecules
+            # never redraw, so their frames are unchanged.
+            for _try in range(50):
+                k = int(rng.integers(len(sym))); dz = rng.uniform(lo, hi) * rng.choice([-1, 1])
+                p = p_ref.copy(); p[k] += dz * normal
+                d = np.linalg.norm(p - p[k], axis=1); near = (d_ref[k] < 3.0) & (np.arange(len(sym)) != k)
+                if (d[near] >= 0.8 * d_ref[k][near]).all():
+                    break
+            else:
+                continue
             emit(p, "bound_oop", bound_atom=k, bound_value=f"{dz:.3f}")
 
         n_check = 100                                    # 50 fs between persistence checks

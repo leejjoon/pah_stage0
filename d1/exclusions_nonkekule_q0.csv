@@ -1,0 +1,14 @@
+pair,charges,reason
+C60H20_10225,0,non-Kekule: q0 labels are broken-symmetry (Ms=0) solutions; the triplet is 7.2 mHa lower at f000 (handoff_highspin_to_charged_mlff.md on gh200-containers, section 1)
+C72H22_9911,0,non-Kekule: q0 labels are broken-symmetry; the triplet is 7.4 mHa lower at f000
+C96H26_9397,0,non-Kekule: q0 labels are broken-symmetry; triplet computed on gh200 2026-11-21 (triplet_relabel/)
+C30H14_10770,0,non-Kekule high-spin seed pair: q0 is a triplet (mult 3), kept out of the closed-shell q0 head
+C38H16_10753,0,non-Kekule high-spin seed pair: q0 triplet
+C38H16_10754,0,non-Kekule high-spin seed pair: q0 triplet
+C44H20_10622,0,non-Kekule high-spin seed pair: q0 triplet
+C48H18_10537,0,non-Kekule high-spin seed pair: q0 triplet
+C54H20_10440,0,non-Kekule high-spin seed pair: q0 triplet
+C60H20_10169,0,non-Kekule high-spin seed pair: q0 triplet
+C60H20_10211,0,non-Kekule high-spin seed pair: q0 triplet
+C62H20_10176,0,non-Kekule high-spin seed pair: q0 triplet
+C70H22_9932,0,non-Kekule high-spin seed pair: q0 triplet

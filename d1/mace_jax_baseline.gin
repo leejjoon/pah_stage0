@@ -1,0 +1,39 @@
+# mace-jax baseline for the charged-state MLFF (docs/plan/charged_mlff_plan.md, Phase 2): one model, one head per
+# charge state (q0, q1), trained on dataset_v1 (d1/mlff_dataset.py) after mace-jax-preprocess. Paths, heads and E0s
+# come from the command line (d1/mace_jax_baseline.sh). Float32, no TF32 (JAX_DEFAULT_MATMUL_PRECISION=highest).
+flags.dtype = "float32"
+flags.debug = False
+flags.seed = 7
+
+datasets.n_edge = 16384          # largest frame ~150 atoms x ~20 neighbours ~ 3,000 edges
+
+model.r_max = 5.0
+model.radial_basis = @bessel_basis
+bessel_basis.number = 8
+model.radial_envelope = @soft_envelope
+model.num_bessel = 8
+model.num_polynomial_cutoff = 6
+model.max_ell = 3
+model.num_interactions = 2
+model.hidden_irreps = "64x0e + 64x1o"
+model.MLP_irreps = "16x0e"
+model.correlation = 3
+model.gate = @silu
+model.avg_num_neighbors = "average"
+# Isolated-atom E0s (UKS b3lypg/6-31G* cart, /var/tmp/jjlee-pah/d1/e0s/e0s_b3lypg_631gs_eV.json), keyed by the
+# z_table INDEX, not the atomic number: mace-jax 0.2.0 gin_model.model() builds its table from the species indices
+# of the graphs (0 = H, 1 = C) and looks E0s up by index, so --E0s '{1: .., 6: ..}' leaves C at 0 (error ~685 eV/atom).
+model.atomic_energies = {0: -13.613116, 1: -1029.849742}
+
+loss.energy_weight = 1.0
+loss.forces_weight = 100.0
+loss.stress_weight = 0.0
+
+optimizer.algorithm = @adam       # mace-jax 0.2.0 amsgrad calls optax.utils.cast_tree, missing in the image's optax
+optimizer.lr = 0.01
+optimizer.max_epochs = 300
+
+train.patience = 50
+train.ema_decay = 0.99
+train.eval_test = False
+train.log_errors = "PerAtomRMSE"

@@ -1,0 +1,38 @@
+# mace-torch dipole-only model (AtomicDipolesMACE) for the charged-state MLFF, one model per charge state (no heads):
+# feasibility test of the dipole half of G2 and the intensity half of G5 (docs/plan/charged_mlff_plan.md, 2026-11-22).
+# Label dft_dipole = mu - q R_COM (e*A, d1/dft_seed_run.py), translation invariant for ions as for neutrals; the model
+# is a sum of local atomic dipoles (no fixed-charge term: no per-atom charges given, so that baseline is zero), also
+# translation invariant. Whether local atomic dipoles can carry a delocalised +1 charge's dipole is what is tested.
+#   CONFIG=d1/mace_torch_dipole.yaml d1/mace_torch_baseline.sh <dataset> <run> \
+#     --train_file /ds/train_q1.extxyz --valid_file /ds/validation_q1.extxyz
+model: AtomicDipolesMACE
+r_max: 5.0
+num_channels: 64
+max_L: 1
+max_ell: 3
+correlation: 3
+num_interactions: 2
+MLP_irreps: 16x0e
+default_dtype: float32
+dipole_key: dft_dipole
+compute_stress: false
+loss: dipole
+dipole_weight: 1.0
+optimizer: adam
+amsgrad: true
+lr: 0.01
+scheduler: ReduceLROnPlateau
+scheduler_patience: 10
+batch_size: 10
+valid_batch_size: 20
+max_num_epochs: 300
+patience: 40
+ema: true
+ema_decay: 0.99
+clip_grad: 10.0
+eval_interval: 1
+error_table: DipoleRMSE
+seed: 7
+device: cuda
+save_cpu: true
+E0s: "{1: 0.0, 6: 0.0}"   # required by run_train even for a dipole-only model; unused (atomic_energies None)

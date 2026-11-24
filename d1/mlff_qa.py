@@ -1,22 +1,28 @@
 # Data QA for the charged-state MLFF DFT data (committee review M2, gate G1; docs/plan/charged_mlff_plan.md).
 # Nothing is dropped: every frame is written back with a qa_flags label, and a quarantine report lists the reasons.
-#   python mlff_qa.py <parsed.extxyz> <out prefix> [--manifest gjf/manifest.json] [--no-xtb]
-# Checks, per species and charge (the frames of one sampling run, "group"):
+#   python mlff_qa.py <parsed.extxyz> <out prefix> [--manifest gjf/manifest.json] [--no-xtb] [--reuse-xtb]
+# --reuse-xtb re-runs the QA on an already QA'd file (e.g. after relabelling, d1/mlff_relabel.py): the stored
+# xtb_energy / xtb_dipole are used instead of new xTB runs, and the old qa_flags / xtb_* keys are replaced.
+# Checks, per species, charge and multiplicity (the frames of one sampling run, "group"):
 #   missing          manifest entries with no parsed result (failed jobs; listed in <prefix>_missing.txt)
 #   unstable         stability test found an instability that was not re-optimised (closed-shell RKS->UKS, or internal)
-#   s2_review        open shell with <S^2> before annihilation > 0.80, or > group median + 0.05 (a trigger for review,
-#                    not a certificate either way)
+#   s2_review        open shell with <S^2> before annihilation above the limit for its multiplicity (S2_LIMIT: doublet
+#                    0.80 = 0.75 + 0.05; triplet 2.35 = 2.0 + 0.35, since clean triplet minima of the non-Kekule
+#                    neutrals already reach 2.25-2.28), or > group median + 0.05 (a trigger for review, not a
+#                    certificate either way). Groups are per species, charge and multiplicity.
 #   energy_outlier   E - E(min frame) disagrees with GFN2-xTB's E - E(min frame) on the same geometries by more than
 #                    max(6 robust sigma of the group's residuals, 0.5 eV): the SCF likely landed on another state
 #   dipole_outlier   |mu_DFT - mu_xTB| (about the centre of mass) beyond max(6 robust sigma, 0.3 e*A) of the group
 # Informational (not quarantined): reoptimized (Stable=Opt changed the wavefunction, result is stable),
 # persistent_change (MD frame whose bond graph change lasted 100 fs), graph_changed, boundary (bound_* frames).
 # Writes <prefix>.extxyz (all frames, qa_flags added, plus xtb_energy / xtb_dipole), <prefix>_report.csv (one row per
-# flagged frame) and prints a summary. xTB needs the micromamba env /var/tmp/$USER-pah/mamba/xtb (one core).
+# flagged frame) and prints a summary. xTB needs the micromamba env /var/tmp/$USER-pah/mamba/xtb (one core per
+# process; --procs N runs N in parallel, with OMP_NUM_THREADS=1).
 import argparse, collections, csv, json, os, re, sys
 import numpy as np
 
 QUARANTINE = {"unstable", "s2_review", "energy_outlier", "dipole_outlier"}
+S2_LIMIT = {2: 0.80, 3: 2.35}          # other multiplicities: S(S+1) + 0.35
 MASS = {"H": 1.00782503, "C": 12.0, "N": 14.00307401, "O": 15.99491462}
 
 
@@ -50,13 +56,18 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("parsed"); ap.add_argument("prefix")
     ap.add_argument("--manifest", default=None, help="gjf/manifest.json for the missing-job check ('none' to skip)"); ap.add_argument("--no-xtb", action="store_true")
+    ap.add_argument("--reuse-xtb", action="store_true")
+    ap.add_argument("--procs", type=int, default=1, help="xTB processes (one frame each; results are identical)")
     a = ap.parse_args()
     frames = read(a.parsed)
+    if a.reuse_xtb:
+        for fr in frames:
+            fr["head"] = re.sub(r' (qa_flags|xtb_energy|xtb_dipole)=("[^"]*"|\S+)', "", fr["head"])
     for fr in frames:
         fr["flags"] = []
         i = fr["info"]
         fr["name"] = i.get("log", "?").rsplit(".", 1)[0]
-        fr["group"] = (i.get("source", "?"), i.get("charge", "?"))
+        fr["group"] = (i.get("source", "?"), i.get("charge", "?"), i.get("mult", "?"))
         if i.get("stability") in ("unstable_internal", "unstable_rhf_uhf"):
             fr["flags"].append("unstable")
         if i.get("stability") == "reoptimized":
@@ -70,16 +81,27 @@ def main():
     groups = collections.defaultdict(list)
     for fr in frames:
         groups[fr["group"]].append(fr)
+    if a.procs > 1 and not (a.no_xtb or a.reuse_xtb):        # every frame's xTB is independent: compute up front
+        import multiprocessing as mp
+        with mp.get_context("fork").Pool(a.procs) as pool:
+            for f, v in zip(frames, pool.map(xtb_values, frames, chunksize=4)):
+                f["xtb_pre"] = v
     for g, fs in groups.items():
-        if int(fs[0]["info"].get("mult", 1)) > 1:
+        m = int(fs[0]["info"].get("mult", 1))
+        if m > 1:
             s2 = np.array([float(f["info"].get("s2", 0)) for f in fs]); med = np.median(s2)
+            lim = S2_LIMIT.get(m, (m - 1) / 2 * ((m - 1) / 2 + 1) + 0.35)
             for f, v in zip(fs, s2):
-                if v > 0.80 or v > med + 0.05:
+                if v > lim or v > med + 0.05:
                     f["flags"].append("s2_review")
         if a.no_xtb:
             continue
         for f in fs:
-            f["xtb_E"], f["xtb_mu"] = xtb_values(f)
+            if a.reuse_xtb:
+                f["xtb_E"] = float(f["info"]["xtb_energy"])
+                f["xtb_mu"] = np.array([float(x) for x in f["info"]["xtb_dipole"].split()])
+            else:
+                f["xtb_E"], f["xtb_mu"] = f.pop("xtb_pre") if "xtb_pre" in f else xtb_values(f)
         ref = next((f for f in fs if f["info"].get("config_type") == "min"), None) or min(fs, key=lambda f: float(f["info"]["dft_energy"]))
         res = np.array([(float(f["info"]["dft_energy"]) - float(ref["info"]["dft_energy"])) - (f["xtb_E"] - ref["xtb_E"]) for f in fs])
         dmu = np.array([np.linalg.norm(np.array([float(x) for x in f["info"]["dft_dipole"].split()]) - f["xtb_mu"]) for f in fs])
@@ -87,7 +109,9 @@ def main():
             lim = max(6 * robust_sigma(arr), floor); med = np.median(arr)
             for f, v in zip(fs, arr):
                 f.setdefault("qa", {})[flag] = v - med
-                if abs(v - med) > lim:
+                # the reference frame's energy residual is 0 by construction: if it lies far from the group median,
+                # the other frames share a DFT-xTB offset (hot groups: most frames at one high T), not a wrong state
+                if abs(v - med) > lim and not (flag == "energy_outlier" and f is ref):
                     f["flags"].append(flag)
     missing = []
     mp = a.manifest or os.path.join(os.path.dirname(os.path.abspath(a.parsed)), "gjf", "manifest.json")

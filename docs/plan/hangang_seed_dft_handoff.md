@@ -112,8 +112,8 @@ What to expect:
   - a per-process summary;
   - `frames done in OUT: 15`.
 
-  `--names` is applied after sharding, so the 15 frames are spread unevenly. Some shards report `0 frames`, which
-  is fine.
+  `--names` was applied after sharding in this run, so the 15 frames were spread unevenly and some shards reported
+  `0 frames`. Since 2026-11-15 `--names` filters before sharding, so named frames spread over all shards.
 - **`compare`:** must end in `PASS`. Expect energy differences of 1e-10 Ha or smaller; the targets are 1e-7 Ha,
   1e-5 Ha/bohr, 1e-3 D and 1e-4 for ⟨S²⟩. Stability verdicts must match.
 - **Timing:** the `t` pairs give Hangang's time per frame against the project node's (left column). Note the ratio.
