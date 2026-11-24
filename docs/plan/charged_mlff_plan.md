@@ -959,6 +959,21 @@ flagged). Mixed-guess singlets for dications come with the dication phase.
   - **Remaining risk:** mace-torch's dipole loss is per-atom, (Δμ/N)², which gives a 126-atom cation about 1/49 the
     weight of an 18-atom one. If ≥80-atom q1 stays above 0.10 D, the single follow-up is `polar_v7_totmu`: total-dipole
     loss, with energy and forces off or at regularising weights.
+  - **Results (2026-11-24, wasp33a).**
+    - `polar_v7` (200 epochs; validation E 14.9 meV/atom, F 48.1 meV/Å, μ 1.4 mD/atom) **fails gate (a)**.
+      Held-out MAE by atom count (D), <20 / 20–39 / 40–59 / 60–79 / ≥80:
+      q0 0.015 / 0.061 / 0.102 / 0.096 / **0.127**; q1 0.045 / 0.149 / 0.229 / 0.304 / **0.466**.
+      Pooled q1 final_test 0.243 D (train 0.062): a generalisation gap, not underfitting.
+    - **Batched gate (c) passes:** forward-only, 50k frames of 50 ps 1200 K: coronene⁺ 1.43 / 1.38 ms/frame and
+      C100H26_7494⁺ 4.69 / 4.75 ms/frame at B = 64 / 256, graph building 0.6–0.9 ms/frame, 0 dipole jumps
+      (d²μ max 0.34 and 0.85 D). About 300× cheaper than serial xTB.
+    - **Gate (b), G5 band-integrated, 6-31G\* references:** PolarMACE is the best candidate so far, but still short.
+      Species band-pass q0 0.52 (≥80 atoms 0.15), q1 0.44 (≥80 0.28); modes within 20 % 0.34 / 0.23.
+      Previous best (xTB + Δ-dip) was 0.32 / 0.17.
+    - **`polar_v7_totmu`** (total-dipole loss, E 0.01, F 0.1, μ 1): stopped by patience at epoch 122 and is
+      **worse**: ≥80-atom q0 0.128, q1 0.545 D; pooled q1 final_test 0.282 D. Weighting large molecules more does
+      not help; the large-cation error is not a loss-weighting artefact.
+    - Neither model is frozen or pushed to `pah-data`.
 
 ## Phase 3 working notes
 
