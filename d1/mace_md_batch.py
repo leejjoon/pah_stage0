@@ -4,6 +4,14 @@
 #   python mace_md_batch.py run <model> <minimum.xyz> <out prefix> --charge Q --temp T [--replicas 32] [--nvt-ps 10]
 #                               [--nve-ps 50] [--save-fs 25] [--dt-fs 0.5] [--gamma 10] [--seed 0] [--cueq] [--float64]
 #   python mace_md_batch.py check <model> <minimum.xyz> --charge Q --temp T [--steps 400]
+#   python mace_md_batch.py multi <model> <jobs.txt> <xyz dir> <out prefix> --charge Q [--cueq] [--nvt-ps 20] [--nve-ps 50]
+#                               [--save-fs 10] [--gamma 10] [--seed 0] [--float64] [--parity K]
+# multi: several species and temperatures in one batch (regression G4 / production sweeps). jobs.txt lines
+#   "<pair> <T> <replicas>", minimum <xyz dir>/<pair>_q<Q>.xyz; per-system kT. NVT frames every 100 fs, NVE every
+#   --save-fs; npz: pos [frames, all atoms, 3] with per-system offsets, epot, ekin, t_ps, temps, pairs. json per system:
+#   intact (no bond-graph change vs the minimum held over the last 100 fs), change, first_change_ps, frames_changed,
+#   blowup_ps (T > 3 x target), NVE drift, T_nve. --parity K: forces and energies of K saved NVE frame sets
+#   recomputed with the other backend (cueq <-> plain e3nn), max |dF| and |dE|/atom.
 # run: B copies of the minimum, Maxwell-Boltzmann velocities at T (per-replica seeds), Langevin NVT (BAOAB, friction
 #   --gamma ps^-1) for --nvt-ps: the replicas share no noise, so their NVE starts are decorrelated snapshots; centre-of-
 #   mass velocity of every replica set to zero at the start of NVE (no rotation removal; the COM policy of this runner);
@@ -109,6 +117,93 @@ def run(a):
           f"T_NVE mean {np.mean([r['T_mean'] for r in reps]):.0f} K")
 
 
+def multi(a):
+    # Several species and temperatures in one batch (one charge = one head): jobs file lines "<pair> <T> <replicas>",
+    # minimum <xyz dir>/<pair>_q<charge>.xyz. Langevin NVT (per-system kT) then NVE as run(); frames every --save-fs
+    # over NVE (and every 100 fs over NVT, for the first change). Per system, G4 scoring as g4_score.py, against the
+    # species' minimum graph: intact = no persistent change over the last 100 fs (lost/gained bonds present in every
+    # frame of it), plus first change, blow-up (T > 3x target) and NVE drift. --parity K: energies and forces of K
+    # saved NVE frame sets (all systems) with the cuEquivariance and the plain e3nn backend, max |dF| and |dE|/atom.
+    import torch, torch_sim as ts
+    from ase import Atoms, units
+    from torch_sim.models.mace import MaceModel
+    dtype = torch.float64 if a.float64 else torch.float32; dev = torch.device("cuda")
+    jobs = [l.split() for l in open(a.jobs) if l.strip() and not l.startswith("#")]
+    ats, temps, meta = [], [], []
+    for pair, T, n in jobs:
+        sym, pos = read_xyz(f"{a.xyz_dir}/{pair}_q{a.charge}.xyz")
+        for r in range(int(n)):
+            ats.append(Atoms(sym, positions=pos, cell=np.eye(3) * 100.0, pbc=False)); temps.append(float(T))
+            meta.append(dict(pair=pair, temp=float(T), replica=r, atoms=len(sym)))
+    n_at = sum(len(x) for x in ats); B = len(ats)
+    if n_at > 30720 and not a.cueq:
+        sys.exit(f"{n_at} atoms in the batch: use --cueq above 30720 atoms")
+    raw = torch.load(a.model, map_location=dev, weights_only=False)
+    model = MaceModel(model=raw, device=dev, dtype=dtype, compute_stress=False, enable_cueq=a.cueq, head=f"q{a.charge}")
+    state = ts.initialize_state(ats, device=dev, dtype=dtype)
+    kT = torch.tensor(temps, device=dev, dtype=dtype) * units.kB
+    dt = a.dt_fs * units.fs; gamma = a.gamma / (1000 * units.fs)
+    gen = torch.Generator(device="cuda"); gen.manual_seed(a.seed)
+    state = ts.nvt_langevin_init(state, model, kT=kT)
+    state.momenta = ts.integrators.initialize_momenta(state.positions, state.masses, state.system_idx, kT, gen)
+    n_nvt = int(round(a.nvt_ps * 1000 / a.dt_fs)); n_nve = int(round(a.nve_ps * 1000 / a.dt_fs))
+    every = int(round(a.save_fs / a.dt_fs)); every_nvt = int(round(100 / a.dt_fs))
+    m = state.masses; POS, EP, EK, TT = [], [], [], []
+    def save(s, t_ps):
+        POS.append(s.positions.float().cpu().numpy()); TT.append(t_ps)
+        EP.append(s.energy.double().cpu().numpy()); EK.append(per_system(0.5 * (s.momenta ** 2).sum(1) / m, s, B).double().cpu().numpy())
+    torch.cuda.synchronize(); t0 = time.time()
+    for k in range(n_nvt):
+        state = ts.nvt_langevin_step(state, model, dt=dt, kT=kT, gamma=gamma)
+        if (k + 1) % every_nvt == 0 and k + 1 < n_nvt:
+            save(state, (k + 1) * a.dt_fs / 1000)
+    state = zero_com(state); n_save_nvt = len(POS); save(state, a.nvt_ps)
+    for k in range(1, n_nve + 1):
+        state = ts.nve_step(state, model, dt=dt)
+        if k % every == 0:
+            save(state, a.nvt_ps + k * a.dt_fs / 1000)
+    torch.cuda.synchronize(); wall = time.time() - t0
+    pos = np.array(POS); ep, ek, tps = np.array(EP), np.array(EK), np.array(TT)
+    off = np.concatenate([[0], np.cumsum([x["atoms"] for x in meta])])
+    np.savez_compressed(a.out + ".npz", pos=pos, epot=ep, ekin=ek, t_ps=tps, n_save_nvt=n_save_nvt, offsets=off,
+                        temps=np.array(temps), pairs=np.array([x["pair"] for x in meta]), dt_fs=a.dt_fs, save_fs=a.save_fs)
+    win = max(1, int(round(100 / a.save_fs))); nve = slice(n_save_nvt, None); res = []
+    for i, x in enumerate(meta):
+        sym = ats[i].get_chemical_symbols(); P = pos[:, off[i]:off[i + 1]]; N = x["atoms"]
+        b0 = frozenset(bonds(sym, ats[i].positions)); g = [frozenset(bonds(sym, P[k])) for k in range(len(P))]
+        lost = set.intersection(*(set(b0 - y) for y in g[-win:])); gained = set.intersection(*(set(y - b0) for y in g[-win:]))
+        Tm = 2 * ek[:, i] / ((3 * N - 3) * units.kB)
+        t_nve = tps[nve] - a.nvt_ps; etot = ep[nve, i] + ek[nve, i]
+        x.update(intact=not (lost or gained), change=describe(sym, gained, lost) if (lost or gained) else "",
+                 first_change_ps=next((float(tps[k]) for k in range(len(g)) if g[k] != b0), None),
+                 frames_changed=float(np.mean([y != b0 for y in g])),
+                 blowup_ps=next((float(tps[k]) for k in range(len(g)) if Tm[k] > 3 * x["temp"]), None),
+                 drift_meV_atom=float(1000 * np.polyfit(t_nve, etot, 1)[0] * a.nve_ps / N), T_nve=float(Tm[nve].mean()))
+        res.append(x)
+    out = dict(model=a.model, jobs=a.jobs, charge=a.charge, systems=B, atoms=n_at, nvt_ps=a.nvt_ps, nve_ps=a.nve_ps,
+               dt_fs=a.dt_fs, save_fs=a.save_fs, gamma_ps=a.gamma, seed=a.seed, cueq=a.cueq, dtype=str(dtype), wall_s=wall,
+               steps_per_s=(n_nvt + n_nve) / wall, atom_steps_per_s=n_at * (n_nvt + n_nve) / wall, systems_detail=res)
+    if a.parity:
+        other = MaceModel(model=torch.load(a.model, map_location=dev, weights_only=False), device=dev, dtype=dtype,
+                          compute_stress=False, enable_cueq=not a.cueq, head=f"q{a.charge}")
+        dF, dE = [], []
+        for k in np.linspace(n_save_nvt, len(pos) - 1, a.parity).astype(int):
+            st = ts.initialize_state(ats, device=dev, dtype=dtype); st.positions = torch.tensor(pos[k], device=dev, dtype=dtype)
+            o1, o2 = model(st), other(st)
+            dF.append(float((o1["forces"] - o2["forces"]).abs().max())); dE.append(float(((o1["energy"] - o2["energy"]).abs() / torch.tensor([x["atoms"] for x in meta], device=dev)).max()))
+        out["parity"] = dict(frames=a.parity, max_dF_eV_A=max(dF), max_dE_eV_atom=max(dE))
+    json.dump(out, open(a.out + ".json", "w"), indent=1)
+    print(f"{os.path.basename(a.out)}: {B} systems, {n_at} atoms, {a.nvt_ps}+{a.nve_ps} ps, {wall:.0f} s, "
+          f"{(n_nvt + n_nve) / wall:.1f} steps/s" + (f"; parity max |dF| {out['parity']['max_dF_eV_A']:.2e} eV/A, |dE| {out['parity']['max_dE_eV_atom']:.2e} eV/atom" if a.parity else ""))
+    groups = {}
+    for r in res:
+        groups.setdefault((r["pair"], r["temp"]), []).append(r)
+    for (pair, T), grp in sorted(groups.items()):
+        bad = [r for r in grp if not r["intact"]]
+        print(f"  {pair} q{a.charge} {T:.0f} K: intact {len(grp) - len(bad)}/{len(grp)}; |drift| max {max(abs(r['drift_meV_atom']) for r in grp):.2f} meV/atom"
+              + "".join(f"; r{r['replica']}: {r['change']}" for r in bad))
+
+
 def check(a):
     import torch, torch_sim as ts
     from ase import units
@@ -148,8 +243,14 @@ def main():
             p.add_argument("--float64", action="store_true")
         else:
             p.add_argument("--steps", type=int, default=400)
+    p = sp.add_parser("multi"); p.add_argument("model"); p.add_argument("jobs"); p.add_argument("xyz_dir"); p.add_argument("out")
+    p.add_argument("--charge", type=int, required=True); p.add_argument("--dt-fs", type=float, default=0.5)
+    p.add_argument("--cueq", action="store_true"); p.add_argument("--nvt-ps", type=float, default=20)
+    p.add_argument("--nve-ps", type=float, default=50); p.add_argument("--save-fs", type=float, default=10)
+    p.add_argument("--gamma", type=float, default=10.0); p.add_argument("--seed", type=int, default=0)
+    p.add_argument("--float64", action="store_true"); p.add_argument("--parity", type=int, default=0)
     a = ap.parse_args()
-    run(a) if a.cmd == "run" else check(a)
+    {"run": run, "check": check, "multi": multi}[a.cmd](a)
 
 
 if __name__ == "__main__":

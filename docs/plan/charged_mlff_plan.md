@@ -976,6 +976,26 @@ flagged). Mixed-guess singlets for dications come with the dication phase.
   `44e49a89…ea746bb`, digest `sha256:a768f7a5…37c554`). Batched MLMD (`d1/mace_md_batch.py`, C42H18_105 q1, 600 K):
   cueq + 512 replicas 13,254 replica-steps/s (serial ASE ~95); without cueq, batches > 30,720 atoms are refused
   (1024 × 60 atoms corrupted replicas ≥ 318).
+- 2026-11-25/26 (project node): **v8 pre-freeze checks; v8 frozen as the D1 force model.** (a) Regression G4,
+  batched (`d1/mace_md_batch.py multi --cueq --parity 4`: mixed species and per-system T in one TorchSim batch, float32):
+  held-out sp2 species C12H8_385, C16H12_335, C28H14_2226, C72H22_9911, C96H26_9397 × 300/900/1200 K × 8 replicas ×
+  q1 and q0, 20 ps NVT + 50 ps NVE (`accept/g4_v8_regression_q{0,1}.json`): **240/240 intact** (v4 also held these
+  species); |NVE drift| ≤ 0.19 meV/atom; NVE ⟨T⟩ within 2 % of target; no blow-ups; transient bond-graph changes in
+  ≤ 11 % of frames at 1200 K, none persistent. 120 systems / 7,344 atoms ran at 24 (q1) and 14 (q0) steps/s.
+  cueq vs plain e3nn on 4 saved NVE frame sets incl. 1200 K: max |ΔF| 3.8e-6 eV/Å, max |ΔE| 9e-4 eV/atom (float32
+  rounding of the total energy): equivalent. (b) q0 C–C stretch kink scan (`d1/q0_kink_scan.py`, relaxed, 1.40–3.00 Å,
+  every C–C bond with an sp3 C in C10H10_331, C13H10_55, C16H12_337; v7 / v8 / v8_seed8, 30 curves): every model has
+  a curvature maximum at 1.9–2.15 Å (the region where RKS gives way to BS-UKS); v8's is equal or lower than v7's
+  (e.g. C10H10_331 C4–C8 40 → 20 eV/Å²) except C16H12_337 C0–C6 for v8_seed8 (44.6 vs 34.6); v7's spurious step on
+  C13H10_55 at 2.9 Å (637 eV/Å², 1.6 eV at 3.0 Å) is gone in v8 (smooth, 3.5 eV). No v8-specific kink; whether
+  the ~2.1 Å maximum is physical would need DFT on the scan geometries (not run). (c) q0 label check: the C27H14_73
+  q0 minimum (f000) and frames f006, f008–f011 and the C19H12_63 q0 minimum are RKS-unstable, BS-UKS 0.48–0.60 eV
+  lower with ⟨S²⟩ 1.00–1.03: open-shell singlet diradicaloid neutrals, but all their q0 labels (incl. the C27H14_73
+  frames in `keep_frames_v6.csv`) are RKS. Decision (course correction: freeze or stratify scope): v8 unchanged;
+  **C27H14_73 and C19H12_63 neutrals are out of scope for neutral MLMD with v8** (their cations are unaffected).
+  Other q0 minima were also labelled RKS without a stability test; a stability screen of all q0 minima is open.
+  **v8 (`mace_torch/v8/baseline.model`, store `mace_v8-2026-11-25.tgz`) is frozen as the D1 force model**, scope:
+  sp2 PAHs to 1200 K (both charges), the labile sp3 species as tested in G4, excluding the two diradicaloid neutrals.
 
 ## Phase 3 working notes
 
