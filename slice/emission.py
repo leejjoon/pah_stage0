@@ -17,6 +17,14 @@
 # --clamps adds two variants that bound the extrapolation of the rules above 900 K (small molecules reach
 # 1,000-1,600 K): tdep900 holds the rules at their 900 K values; tdeplin extrapolates them linearly without an upper
 # limit (strength factors within [0.05, 20] only). tdep itself is the middle case.
+# --rules <csv> takes another rules table (d1/tdep_rules_v1_clean.csv: the refit on spin-consistent closed-shell
+# singlets); the default is d1/tdep_rules_v1.csv.
+# --b4 adds variants in which only the rules of charged species are changed (Gate B4 step b; neutrals keep tdep, and
+# so does every species in a table without charged rows):
+#   cc17, cc30     strength slope of the lines of the 6.2, 7.7 and 8.6 um features lower by 1.7 and 3.0 % of the
+#                  300 K value per 100 K (the cloud-aimd cation - neutral difference: central value and 95 % bound)
+#   shp30, shm30   position slopes of every feature times 1.3 and 0.7
+#   wdp30, wdm30   width growth of every line family times 1.3 and 0.7
 # Output (HDF5): grid (cm^-1), energies (eV), species, tmax[species, E] (K), tdep and harm[species, E, grid] in eV
 # per cm^-1 per absorbed photon, in_grid[species, E, variant] = share of E emitted inside the grid.
 import argparse, csv, gzip, os, sys
@@ -38,11 +46,18 @@ FEATURES = [("3.3", 2800, 3300), ("6.2", 1540, 1700), ("7.7", 1220, 1470), ("8.6
 # line families of perline_widths_v2.csv; lines outside every family take the nearest family's width
 WIDTH_FALLBACK = [(0, 650, 650), (1000, 1100, 1100), (1700, 2800, 1470), (3300, 1e9, 2800)]   # lo, hi, family lo
 PED = (1700.0, 2800.0, 0.016, 0.009)                                                # range, share at 300 K, per 100 K
-VARIANTS = {"tdep": (T_HI, 0.5, 2.0), "tdep900": (900.0, 0.5, 2.0), "tdeplin": (np.inf, 0.05, 20.0)}   # upper T of the rules, strength clip
+# upper T of the rules, strength clip (lo, hi); for charged species only: CC strength-slope offset, position-slope
+# factor, width-growth factor
+VARIANTS = {"tdep": (T_HI, 0.5, 2.0, 0.0, 1.0, 1.0), "tdep900": (900.0, 0.5, 2.0, 0.0, 1.0, 1.0), "tdeplin": (np.inf, 0.05, 20.0, 0.0, 1.0, 1.0),
+            "cc17": (T_HI, 0.5, 2.0, -0.017, 1.0, 1.0), "cc30": (T_HI, 0.5, 2.0, -0.030, 1.0, 1.0),
+            "shp30": (T_HI, 0.5, 2.0, 0.0, 1.3, 1.0), "shm30": (T_HI, 0.5, 2.0, 0.0, 0.7, 1.0),
+            "wdp30": (T_HI, 0.5, 2.0, 0.0, 1.0, 1.3), "wdm30": (T_HI, 0.5, 2.0, 0.0, 1.0, 0.7)}
+CLAMPS = ["tdep900", "tdeplin"]; B4 = ["cc17", "cc30", "shp30", "shm30", "wdp30", "wdm30"]
+CC_FEATURES = ("6.2", "7.7", "8.6")
 
 
-def load_rules():
-    R = {(r["band"], r["quantity"]): r for r in csv.DictReader(open(os.path.join(D1, "tdep_rules_v1.csv")))}
+def load_rules(path=None):
+    R = {(r["band"], r["quantity"]): r for r in csv.DictReader(open(path or os.path.join(D1, "tdep_rules_v1.csv")))}
 
     def rule(band, q):
         r = R[(band, q)]; a, b, sb = float(r["at_Nc50"]), float(r["per_decade_Nc"]), float(r["se_decade"])
@@ -73,7 +88,7 @@ def line_rules(nu, nc):
 
 
 def cascade(args):
-    name, nc, nu, A, energies, variants = args
+    name, nc, nu, A, energies, variants, charge = args
     keep = nu > 0; nu, A = nu[keep], A[keep]
     Tg = np.geomspace(10.0, 6000.0, 4000)
     x = HC_K * nu[None, :] / Tg[:, None]; ex = np.exp(-x)
@@ -84,6 +99,10 @@ def cascade(args):
     ps, ss, w0, ws = line_rules(nu, nc)
     act = A > 1e-6 * A.sum()                                                          # lines that can emit
     nua, Aa, psa, ssa, w0a, wsa = nu[act], A[act], ps[act], ss[act], w0[act], ws[act]
+    cc = np.zeros(nua.size, bool)
+    for b, lo, hi in FEATURES:
+        if b in CC_FEATURES:
+            cc |= (nua >= lo) & (nua < hi)
     ped = (GRID >= PED[0]) & (GRID < PED[1]); dg = GRID[1] - GRID[0]
     harm = np.zeros((len(energies), GRID.size), np.float32); tdep = {v: np.zeros_like(harm) for v in variants}
     acc = {v: np.zeros(GRID.size) for v in variants}; eline = np.zeros(nua.size); done = 0
@@ -94,19 +113,20 @@ def cascade(args):
         w = Aa * nua ** 3 / np.expm1(HC_K * nua / T)
         eline += dU * w / w.sum()
         # temperature rules (variants that share the rule temperature and the clip share the step)
-        step = {}
+        step = {}; key = {}
         for v in variants:
-            thi, c0, c1 = VARIANTS[v]; dTe = (min(max(T, T_LO), thi) - 300.0) / 100.0
-            if (dTe, c0, c1) not in step:
-                p = nua + psa * dTe; g = np.clip(1 + ssa * dTe, c0, c1); gam = 0.5 * (w0a + wsa * dTe)
+            thi, c0, c1, dcc, fsh, fwd = VARIANTS[v] if charge else VARIANTS[v][:3] + (0.0, 1.0, 1.0)
+            dTe = (min(max(T, T_LO), thi) - 300.0) / 100.0; key[v] = (dTe, c0, c1, dcc, fsh, fwd)
+            if key[v] not in step:
+                p = nua + psa * fsh * dTe; g = np.clip(1 + (ssa + dcc * cc) * dTe, c0, c1); gam = 0.5 * (w0a + wsa * fwd * dTe)
                 w = Aa * g * p ** 3 / np.expm1(HC_K * p / T)
                 wped = np.zeros(GRID.size)
                 wped[ped] = (PED[2] + PED[3] * dTe) * (Aa * g).sum() / (PED[1] - PED[0]) * GRID[ped] ** 3 / np.expm1(HC_K * GRID[ped] / T)
                 norm = w.sum() + wped.sum() * dg
                 big = w > 1e-7 * norm
                 L = (gam[big, None] / np.pi) / ((GRID[None, :] - p[big, None]) ** 2 + gam[big, None] ** 2)
-                step[(dTe, c0, c1)] = dU / norm * ((w[big, None] * L).sum(0) + wped)
-            acc[v] += step[(dTe, c0, c1)]
+                step[key[v]] = dU / norm * ((w[big, None] * L).sum(0) + wped)
+            acc[v] += step[key[v]]
         while done < len(energies) and hi >= tmax[done] - 1e-9:                      # snapshot when T_max(E) is reached
             for v in variants:
                 tdep[v][done] = acc[v] / EV_CM
@@ -121,8 +141,11 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("species"); ap.add_argument("xml"); ap.add_argument("out")
     ap.add_argument("--jobs", type=int, default=32); ap.add_argument("--energies", default="3,4,5,6,8,10,12")
-    ap.add_argument("--clamps", action="store_true")
+    ap.add_argument("--clamps", action="store_true"); ap.add_argument("--b4", action="store_true"); ap.add_argument("--rules")
     a = ap.parse_args()
+    global RULES, WIDTHS
+    if a.rules:
+        RULES, WIDTHS = load_rules(a.rules)                                           # before the pool forks
     import h5py
     energies = [float(x) for x in a.energies.split(",")]
     rows = [r for r in csv.DictReader(open(a.species)) if r["status"] == "use"]
@@ -137,10 +160,10 @@ def main():
                 sticks[int(el.get("uid"))] = (np.array([float(m.find(NS + "frequency").text) for m in ms]),
                                               np.array([float(m.find(NS + "intensity").text) for m in ms]))
             el.clear()
-    tasks = []; variants = list(VARIANTS) if a.clamps else ["tdep"]
+    tasks = []; variants = ["tdep"] + (CLAMPS if a.clamps else []) + (B4 if a.b4 else [])
     for r in rows:
         nu, A = own[r["species"]] if r["source"] == "own" else sticks[int(r["uid"])]
-        tasks.append((r["species"], int(r["nC"]), nu, A, energies, variants))
+        tasks.append((r["species"], int(r["nC"]), nu, A, energies, variants, int(r["charge"])))
     print(f"{len(tasks)} species, {len(energies)} photon energies, grid {GRID[0]:.0f}-{GRID[-1]:.0f} cm^-1 ({GRID.size} points)", flush=True)
     with Pool(a.jobs) as pool, h5py.File(a.out, "w") as h:
         h["grid"] = GRID; h["energies"] = energies
@@ -156,7 +179,9 @@ def main():
             if (k + 1) % 100 == 0:
                 print(f"  {k + 1}/{len(tasks)}", flush=True)
         h["tmax"] = tm; h["in_grid"] = ing
-        h.attrs["variants"] = "tdep: d1/tdep_rules_v1 + perline_widths_v2; harm: fixed lines, Gaussian FWHM 15 cm^-1"
+        h.attrs["variants"] = (f"tdep: {os.path.basename(a.rules or 'tdep_rules_v1.csv')} + perline_widths_v2; "
+                               "harm: fixed lines, Gaussian FWHM 15 cm^-1")
+        h.attrs["rules"] = os.path.basename(a.rules or "tdep_rules_v1.csv")
     nc = np.array([t[1] for t in tasks])
     for j, E in enumerate(energies):
         print(f"  {E:4.0f} eV: T_max median {np.median(tm[:, j]):5.0f} K (Nc<40: {np.median(tm[nc < 40, j]):5.0f}, Nc>=100: "

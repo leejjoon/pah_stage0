@@ -33,6 +33,14 @@
 #   edge structure still varies with size, and the per-molecule means (*_num) stay tied to size. Three further axes are drawn for the
 #   continuum of measure.py and stored as labels: cont_type (orion, pl, mbb), cont_level (0.5-2, log-uniform) and
 #   cont_par (0-1).
+# --design v3 (2026-11-25): neutrals and cations as two sub-populations. The species table holds cations that are not
+#   partners of the neutrals (slice/species_nc_v1.csv: every screened PAHdb cation), so each charge state gets its own
+#   v2 weights (own size bins, the same size distribution, the same edge targets, the same N fraction), and the
+#   population is (1 - f) x neutral weights + f x cation weights by number. Both sub-populations meet the edge targets,
+#   so the mixture does. The own high-spin species exist only as neutrals: pOwn is their number fraction among the
+#   neutrals (label own_frac_neutral); the population's own_frac is (1 - f) times that and falls with f by
+#   construction. Further labels: logNc_q0 and logNc_q1 (mean log10 Nc of each charge state). One more variant is
+#   written, harmq: the cations take their harmonic spectra and the neutrals keep tdep.
 # --fixed: comma-separated logNc0 centres (as Nc) and one photon energy, e.g. "40,60,90@6": populations on a regular
 #   grid of f (0, 0.1, ..., 1) at fixed size distributions, v1 weights with equal shares (the analytic-endpoint
 #   control, plan 5.9 control 2; endpoint.py).
@@ -77,13 +85,16 @@ def main():
     h = h5py.File(a.emission, "r")
     names = [s.decode() for s in h["species"][:]]; grid = h["grid"][:]; en = h["energies"][:]
     sel = np.array([n in meta for n in names]); names = [n for n in names if n in meta]   # the table may use fewer species
-    S = {v: h[v][:][sel] for v in h if h[v].ndim == 3 and h[v].shape[2] == grid.size}
+    # [energy, species, grid], contiguous per energy: a population spectrum is then two matrix-vector products
+    S = {v: np.ascontiguousarray(h[v][:][sel].transpose(1, 0, 2)) for v in h if h[v].ndim == 3 and h[v].shape[2] == grid.size}
     M = [meta[n] for n in names]
     nc = np.array([int(m["nC"]) for m in M]); q = np.array([int(m["charge"]) for m in M])
     sid = np.array([m["structure_id"] for m in M]); nH = np.array([int(m["nH"]) for m in M])
     adj = {k: np.array([int(m[k]) for m in M]) for k in ("solo", "duo", "trio", "quartet")}
     own = np.array([m["source"] == "own" for m in M]); hasN = np.array([int(m["nN"]) > 0 for m in M])
     charged = bool((q != 0).any())
+    if a.design == "v3" and "harm" in S and "tdep" in S:                            # Gate B4 step b, case c: only the cations harmonic
+        S["harmq"] = np.where((q != 0)[None, :, None], S["harm"], S["tdep"])
     # structures: one per (structure_id, source); partners in other charge states share the structure
     skey = np.array([f"{s}|{m['source']}" for s, m in zip(sid, M)]); ust, sidx = np.unique(skey, return_inverse=True)
     first = np.array([np.where(sidx == k)[0][0] for k in range(len(ust))])
@@ -104,16 +115,20 @@ def main():
     else:
         design = a.design
         EDGE = [(x.split(":")[0], float(x.split(":")[1]), float(x.split(":")[2])) for x in a.edge.split(",")]; ne = len(EDGE)
-        d = (4 if a.tilt else 3) if design == "v1" else ne + 8
+        d = (4 if a.tilt else 3) if design == "v1" else ne + 8                         # v2 and v3: the same axes
         u = qmc.LatinHypercube(d=d, seed=a.seed).random(a.n)
         plan = [dict(mu=lo + (hi - lo) * u[k, 0], E=e0 + (e1 - e0) * u[k, 1], f=u[k, 2] if charged else 0.0) for k in range(a.n)]
-    if design == "v2":
-        be = size_bins(slg, scl == 0); nb = len(be) - 1; sbin = np.clip(np.searchsorted(be, slg, side="right") - 1, 0, nb - 1)
-        has = np.array([[((sbin == b) & (scl == k)).any() for k in range(3)] for b in range(nb)])
-        cid = sbin * 3 + scl; ncell = nb * 3
+    if design in ("v2", "v3"):
         SA = np.stack([snc * adj[n_][first] for n_, _, _ in EDGE], 1) / 1e3; SH = snc * nH[first] / 1e3   # Nc n_x, Nc n_H
-        print(f"v2 size bins (Nc): {np.round(10 ** be).astype(int).tolist()}; C/H, N, own structures per bin: "
-              f"{np.bincount(cid, minlength=ncell).reshape(nb, 3).tolist()}; edge targets {EDGE}")
+        sq = q[first]; GR = []
+        for gname, gm in ([("all", np.ones(len(ust), bool))] if design == "v2" else [("neutral", sq == 0), ("cation", sq != 0)]):
+            gi = np.where(gm)[0]
+            be = size_bins(slg[gi], scl[gi] == 0); nb = len(be) - 1; sbin = np.clip(np.searchsorted(be, slg[gi], side="right") - 1, 0, nb - 1)
+            has = np.array([[((sbin == b) & (scl[gi] == k)).any() for k in range(3)] for b in range(nb)])
+            GR.append(dict(gi=gi, be=be, nb=nb, has=has, cid=sbin * 3 + scl[gi], ncell=nb * 3, SA=SA[gi], SH=SH[gi], slg=slg[gi]))
+            print(f"{design} {gname}: size bins (Nc) {np.round(10 ** be).astype(int).tolist()}; C/H, N, own structures per bin: "
+                  f"{np.bincount(GR[-1]['cid'], minlength=nb * 3).reshape(nb, 3).tolist()}")
+        print(f"edge targets {EDGE}")
     dg = grid[1] - grid[0]; miri = (grid >= 500) & (grid <= 2000); w112 = (grid >= 860) & (grid < 925); w615 = (grid >= 1e4 / 15) & (grid <= 1e4 / 6)
     out = {v: np.zeros((a.n, grid.size), np.float32) for v in S}; lab = []; miss = 0.0
     for k in range(a.n):
@@ -133,49 +148,60 @@ def main():
             ct = CONT_TYPES[min(int(3 * u[k, ne + 5]), 2)]
             row.update(**{f"{n_}_target": t_ for (n_, _, _), t_ in zip(EDGE, tgt)}, pN=pN, pOwn=pO, cont_type=ct,
                        cont_level=float(np.exp(np.log(0.5) + np.log(4.0) * u[k, ne + 6])), cont_par=u[k, ne + 7])
-            cdf = 0.5 * (1 + erf((be - mu) / SIG / np.sqrt(2))); Mb = np.diff(cdf); Mb /= Mb.sum()
-            aN = min(pN / max(Mb[has[:, 1]].sum(), 1e-9), 0.55); aO = min(pO / max(Mb[has[:, 2]].sum(), 1e-9), 0.35)
-            share = np.stack([np.zeros(nb), aN * has[:, 1], aO * has[:, 2]], 1); share[:, 0] = 1 - share.sum(1)
-            Mc = (Mb[:, None] * share).ravel()                                        # weight of every (bin, class) cell
-            base = rng.exponential(size=len(ust)) * np.exp(-0.5 * ((slg - mu) / SIG) ** 2)   # Dirichlet(1) shares x density
-            X = SA - tgt[None, :] * SH[:, None]                                         # zero mean <=> sum w Nc n_x / sum w Nc n_H = target
+            draw = rng.exponential(size=len(ust)); neff = []                          # Dirichlet(1) shares
+            for g in GR:
+                be, nb, has, cid, ncell = g["be"], g["nb"], g["has"], g["cid"], g["ncell"]
+                cdf = 0.5 * (1 + erf((be - mu) / SIG / np.sqrt(2))); Mb = np.diff(cdf); Mb /= Mb.sum()
+                aN = min(pN / max(Mb[has[:, 1]].sum(), 1e-9), 0.55) if has[:, 1].any() else 0.0
+                aO = min(pO / max(Mb[has[:, 2]].sum(), 1e-9), 0.35) if has[:, 2].any() else 0.0
+                share = np.stack([np.zeros(nb), aN * has[:, 1], aO * has[:, 2]], 1); share[:, 0] = 1 - share.sum(1)
+                Mc = (Mb[:, None] * share).ravel()                                    # weight of every (bin, class) cell
+                base = draw[g["gi"]] * np.exp(-0.5 * ((g["slg"] - mu) / SIG) ** 2)    # shares x density
+                X = g["SA"] - tgt[None, :] * g["SH"][:, None]                         # zero mean <=> sum w Nc n_x / sum w Nc n_H = target
 
-            def tilted(sv):
-                e = X @ sv; e0 = np.full(ncell, -np.inf); np.maximum.at(e0, cid, e)
-                wv = base * np.exp(e - e0[cid]); Z = np.bincount(cid, wv, ncell)
-                return Mc[cid] * wv / Z[cid], (Mc * (np.log(np.where(Z > 0, Z, 1)) + np.where(np.isfinite(e0), e0, 0))).sum()
-            sv = np.zeros(ne); wv, phi = tilted(sv)
-            for it in range(60):                                                      # Newton with backtracking (convex problem)
-                mom = wv @ X
-                if np.abs(mom).max() < 1e-5:
-                    break
-                mcell = np.stack([np.bincount(cid, wv * X[:, i_], ncell) for i_ in range(ne)], 1)
-                J = (X * wv[:, None]).T @ X - (mcell / np.where(Mc > 0, Mc, 1)[:, None]).T @ mcell
-                step = -np.linalg.solve(J + 1e-7 * np.eye(ne), mom); lam = 1.0
-                while lam > 1e-4:
-                    s2 = np.clip(sv + lam * step, -150, 150); w2, p2 = tilted(s2)
-                    if p2 <= phi + 1e-12:
+                def tilted(sv):
+                    e = X @ sv; e0 = np.full(ncell, -np.inf); np.maximum.at(e0, cid, e)
+                    wv = base * np.exp(e - e0[cid]); Z = np.bincount(cid, wv, ncell)
+                    return Mc[cid] * wv / Z[cid], (Mc * (np.log(np.where(Z > 0, Z, 1)) + np.where(np.isfinite(e0), e0, 0))).sum()
+                sv = np.zeros(ne); wv, phi = tilted(sv)
+                for it in range(60):                                                  # Newton with backtracking (convex problem)
+                    mom = wv @ X
+                    if np.abs(mom).max() < 1e-5:
                         break
-                    lam *= 0.5
-                if lam <= 1e-4:
-                    break
-                sv, wv, phi = s2, w2, p2
-            miss += np.abs(wv @ X).max(); ws = wv / wv.sum()
-            row["n_eff"] = float(np.exp(-(ws[ws > 0] * np.log(ws[ws > 0])).sum()))
+                    mcell = np.stack([np.bincount(cid, wv * X[:, i_], ncell) for i_ in range(ne)], 1)
+                    J = (X * wv[:, None]).T @ X - (mcell / np.where(Mc > 0, Mc, 1)[:, None]).T @ mcell
+                    step = -np.linalg.solve(J + 1e-7 * np.eye(ne), mom); lam = 1.0
+                    while lam > 1e-4:
+                        s2 = np.clip(sv + lam * step, -150, 150); w2, p2 = tilted(s2)
+                        if p2 <= phi + 1e-12:
+                            break
+                        lam *= 0.5
+                    if lam <= 1e-4:
+                        break
+                    sv, wv, phi = s2, w2, p2
+                miss += np.abs(wv @ X).max() / len(GR); wg = wv / wv.sum(); ws[g["gi"]] = wg
+                neff.append(float(np.exp(-(wg[wg > 0] * np.log(wg[wg > 0])).sum())))
+            row["n_eff"] = min(neff)
+        if design != "v3":
+            ws = ws / ws.sum()
         w = ws[sidx] * np.where(q == 0, 1 - f, f) if charged else ws[sidx]          # number weight of each species row
         w = w / w.sum(); wa = w * nc; wa = wa / wa.sum()                            # absorbed-photon weights
         j = min(np.searchsorted(en, E) - 1, len(en) - 2); j = max(j, 0); t = (E - en[j]) / (en[j + 1] - en[j])
+        wa32 = wa.astype(np.float32); wc32 = (wa * (q != 0)).astype(np.float32)
         for v in S:
-            sp = np.tensordot(wa, (1 - t) * S[v][:, j, :] + t * S[v][:, j + 1, :], axes=1)
+            sp = (1 - t) * (wa32 @ S[v][j]) + t * (wa32 @ S[v][j + 1])
             out[v][k] = sp
             if v in ("tdep", "harm"):
                 row[f"share112_{v}"] = sp[w112].sum() / sp[miri].sum()
                 if charged:
-                    spc = np.tensordot(wa * (q != 0), (1 - t) * S[v][:, j, :] + t * S[v][:, j + 1, :], axes=1)
+                    spc = (1 - t) * (wc32 @ S[v][j]) + t * (wc32 @ S[v][j + 1])
                     row[f"cation_emission_share_{v}"] = spc[w615].sum() / sp[w615].sum()
         lm = (w * np.log10(nc)).sum()
         row.update(logNc=lm, sig_logNc=np.sqrt((w * (np.log10(nc) - lm) ** 2).sum()), logNc_abs=(wa * np.log10(nc)).sum(),
                    own_frac=w[own].sum(), N_frac=w[hasN].sum(), irr_num=(w * irr).sum(),
+                   **(dict(own_frac_neutral=w[own].sum() / max(w[q == 0].sum(), 1e-12),
+                           logNc_q0=(w * np.log10(nc))[q == 0].sum() / max(w[q == 0].sum(), 1e-12),
+                           logNc_q1=(w * np.log10(nc))[q != 0].sum() / max(w[q != 0].sum(), 1e-12)) if design == "v3" else {}),
                    **{f"{a_}_num": (w * num[a_]).sum() for a_ in adj},
                    **{f"{a_}_frac": (w * nc * adj[a_]).sum() / (w * nc * nH).sum() for a_ in adj})
         lab.append(row)
@@ -198,11 +224,22 @@ def main():
         cc = lambda x, y: np.corrcoef(L[x], L[y])[0, 1]
         print("  correlation with logNc: " + ", ".join(f"{c} {cc('logNc', c):+.3f}" for c in
               ("E_eV", "irr_num", "solo_frac", "duo_frac", "trio_frac", "quartet_frac", "N_frac", "own_frac") if L[c].std() > 0))
-        if design == "v2":
+        if design == "v3":
+            cs = [c for c in ("logNc", "E_eV", "solo_frac", "duo_frac", "trio_frac", "quartet_frac", "N_frac", "own_frac_neutral", "own_frac",
+                              "cont_level", "cont_par", "logNc_q0", "logNc_q1") if L[c].std() > 0]
+            print("  correlation with f_cation: " + ", ".join(f"{c} {cc('f_cation', c):+.3f}" for c in cs))
+            print("  correlation with logNc: own_frac_neutral " + f"{cc('logNc', 'own_frac_neutral'):+.3f}, cont_level {cc('logNc', 'cont_level'):+.3f}, "
+                  f"cont_par {cc('logNc', 'cont_par'):+.3f}; mean logNc_q1 - logNc_q0 {np.mean(L['logNc_q1'] - L['logNc_q0']):+.4f} dex "
+                  f"(rms {np.sqrt(np.mean((L['logNc_q1'] - L['logNc_q0']) ** 2)):.4f})")
+            for v in ("tdep", "harm"):
+                if f"cation_emission_share_{v}" in L:
+                    print(f"  cation share of 6-15 um emission, {v}: correlation with f {cc('f_cation', f'cation_emission_share_{v}'):+.3f}; "
+                          f"at f 0.4-0.6 median {np.median(L[f'cation_emission_share_{v}'][(L['f_cation'] > 0.4) & (L['f_cation'] < 0.6)]):.3f}")
+        if design in ("v2", "v3"):
             print("  correlation with logNc, per-molecule shares: " + ", ".join(f"{c} {cc('logNc', c + '_num'):+.3f}" for c in adj if L[c + "_num"].std() > 0))
             r = lambda x, y: np.sqrt(np.mean((L[x] - L[y]) ** 2))
             print("  targets met (rms of realised - target): " + ", ".join(f"{n_} {r(n_ + '_frac', n_ + '_target'):.4f}" for n_, _, _ in EDGE)
-                  + f", N {r('N_frac', 'pN'):.4f}, own {r('own_frac', 'pOwn'):.4f}; mean largest miss {miss / a.n:.5f}; "
+                  + f", N {r('N_frac', 'pN'):.4f}, own {r('own_frac_neutral' if design == 'v3' else 'own_frac', 'pOwn'):.4f}; mean largest miss {miss / a.n:.5f}; "
                   f"effective number of species per population: median {np.median(L['n_eff']):.0f}, min {L['n_eff'].min():.0f}")
             print("  ranges: " + ", ".join(f"{c} {L[c].min():.3f}..{L[c].max():.3f}" for c in ("solo_frac", "duo_frac", "trio_frac", "quartet_frac", "N_frac", "own_frac"))
                   + f"; continuum types { {t: sum(r_['cont_type'] == t for r_ in lab) for t in CONT_TYPES} }")

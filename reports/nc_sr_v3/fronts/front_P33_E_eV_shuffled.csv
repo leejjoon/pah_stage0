@@ -1,0 +1,11 @@
+complexity,train_loss,equation
+1,6.75096,7.532214
+3,6.74911,r135 + 7.352417
+4,6.74652,7.8812685 - sqrt(r170)
+5,6.74245,7.697309 - (r127 / 2.7744024)
+6,6.72006,square(r33 - r120) + 7.429131
+7,6.71049,square(r120 - square(r33)) + 7.417426
+9,6.70422,square((r120 - square(r33)) - r135) + 7.417426
+10,6.70168,square((r33 - r120) - square(square(r33))) + 7.446906
+11,6.6994,square(log((square(square(r33)) + r127) + r120)) + 7.397835
+12,6.68246,square(square(log((r120 + square(square(r33))) + r127))) + 7.4809656

@@ -1,0 +1,13 @@
+date: 2026-11-25T11:06:32+09:00
+host: gh200
+repo commit: unknown
+container C sha256: 5a0fd1b3048749ddd6a558835ebd132fb1585ebb8cd763b6ea12b01c398b268d
+PAHdb: e1c2efd3468558c934d7d49c9417e18580baf63f8af980ae5941009230f0d319  pahdb-complete-theoretical-v4.00.xml.gz
+rules: d1/tdep_rules_v1_clean.csv 32b72793580cac0f118dcf23f235b5d4e861f84f574d38c2cae4363b99545bed
+pahfit 2.6.dev93+gca599f9a1
+wall time: 737 s
+(gh200 ran a copy of the working tree without .git: commit c18301c plus the version 3 scripts of this commit)
+date: 2026-11-25T11:57:52+09:00
+host: z2mini (x86_64)
+repo commit: c18301c015042dc0219af459defcf0e496d8e174
+pysr 2.7.2 | scikit-learn 1.9.1 | julia 1.13.4

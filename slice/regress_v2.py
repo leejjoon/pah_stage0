@@ -10,6 +10,9 @@
 #   LL, LL33      the same with straight-segment continuum (random forest only)
 #   P33x, L33x    the 3.3 um ratio times a 5 % (1 sigma, log-normal) cross-calibration error between NIRSpec and MIRI
 #   T, T33        noise-free window integrals of the input PAH spectrum (not observable; what the spectrum holds)
+#   Pn, Ln, P33n, L33n, Tn, T33n   the same without the 17 um ratio (version 3)
+# --sets A,B restricts a run to some sets, so that two runs can share a machine; --merge dir1 dir2 joins their
+# results.json into <out dir> (the labels and features arguments are then ignored).
 # Split, targets and selection rules as regress.py (70/15/15 by the same seeded permutation; everything chosen on
 # validation; test scored once). Per set and target: constant, random forest, best one-ratio isotonic fit, PySR
 # formulas (complexity <= 7 and <= 12) for the sets named in --pysr.
@@ -22,7 +25,12 @@
 #                 error and bias of the predictors trained on the main table, all rows and logNc0 < log10(50)
 #   --clean csv   injection-recovery of band/11.2 for PAHFIT and for the local integrals, with and without continuum
 #   shuffled labels, deterministic repeat: as regress.py
-#   --orion csv   the five Orion Bar templates: kNN domain check per MIRI set (no 3.3 um in the template file)
+#   --orion csv   the five Orion Bar templates: kNN domain check per set, each ratio against the 1-99 % range of the
+#                 training set, and every predictor's value with the scatter of the Monte Carlo refits
+# Version 3 (2026-11-25): f_cation as a target (populations.py --design v3); residual correlations also against the
+# other labels (f_cation, logNc, E_eV); every single-ratio fit is kept (one_ratio.all_val: the rediscovery check).
+# Gate B4 step b uses --ctl with the tables measured from the cation-perturbed emission variants (cc17, cc30, shp30,
+# shm30, wdp30, wdm30, harm): `other - main` is the change of RMSE, `bias` and `shift` the systematic error.
 import argparse, csv, json, os, sys, warnings
 import numpy as np
 
@@ -34,7 +42,9 @@ BK = {"62": "6.2", "77": "7.7", "86": "8.6", "112": "11.2", "120": "12.0", "127"
 SETS = {"P": [f"r{b}" for b in B], "L": [f"s{b}" for b in B], "LL": [f"l{b}" for b in B], "T": [f"w{b}" for b in B]}
 SETS.update({"P33": SETS["P"] + ["r33"], "L33": SETS["L"] + ["s33"], "LL33": SETS["LL"] + ["l33"], "T33": SETS["T"] + ["w33"],
              "P33x": SETS["P"] + ["r33x"], "L33x": SETS["L"] + ["s33x"]})
-STRUCT = ["solo_frac", "trio_frac", "quartet_frac", "N_frac", "own_frac", "cont_level"]
+# the same sets without the 17 um band (name + "n"): the Orion Bar templates lie outside the library in that ratio only
+SETS.update({k + "n": [c for c in v if not c.endswith("170")] for k, v in list(SETS.items()) if k in ("P", "L", "P33", "L33", "T", "T33")})
+STRUCT = ["solo_frac", "trio_frac", "quartet_frac", "N_frac", "own_frac", "cont_level", "f_cation", "logNc", "E_eV"]
 ABS_TARGET = R1.ABS_TARGET
 rmse, fl = R1.rmse, R1.fl
 
@@ -81,7 +91,14 @@ def main():
     ap.add_argument("--niter", type=int, default=200); ap.add_argument("--procs", type=int, default=16)
     ap.add_argument("--clean"); ap.add_argument("--ctl", action="append", default=[]); ap.add_argument("--orion")
     ap.add_argument("--seed", type=int, default=0); ap.add_argument("--rf-jobs", type=int, default=16)
+    ap.add_argument("--sets", default=""); ap.add_argument("--merge", nargs="*")
     a = ap.parse_args()
+    if a.merge:                                                                       # join the results of runs split with --sets
+        parts = [json.load(open(os.path.join(d, "results.json"))) for d in a.merge]; res = parts[0]
+        for p in parts[1:]:
+            res["sets"].update(p["sets"])
+        res["sets"] = {k: res["sets"][k] for k in SETS if k in res["sets"]}
+        json.dump(res, open(os.path.join(a.out, "results.json"), "w"), indent=1, default=float); print("merged", list(res["sets"])); return
     from sklearn.ensemble import RandomForestRegressor
     from sklearn.isotonic import IsotonicRegression
     from sklearn.neighbors import NearestNeighbors
@@ -126,9 +143,10 @@ def main():
     if a.orion:
         r = R1.read(a.orion); orion = (features(r), [x["template"] for x in r], np.array([int(x["mc"]) for x in r]))
     pysr_sets = [x for x in a.pysr.split(",") if x]
+    only = [x for x in a.sets.split(",") if x]
     for sname, cols in SETS.items():
         ok = okset(F, sname)
-        if ok is None:
+        if ok is None or (only and sname not in only):
             continue
         tr, va, te = [np.array([i for i in part[p] if ok[i]]) for p in ("train", "val", "test")]
         X = lambda Fo, idx: R1.mat(Fo, cols, idx)
@@ -144,7 +162,8 @@ def main():
             for j, c in enumerate(cols):
                 m = IsotonicRegression(increasing="auto", out_of_bounds="clip").fit(F[c][tr], y[tr])
                 one[c] = (m, rmse(y[va], m.predict(F[c][va])))
-            b1 = min(one, key=lambda c: one[c][1]); T["one_ratio"] = dict(feature=b1, val=one[b1][1], test=rmse(y[te], one[b1][0].predict(F[b1][te])))
+            b1 = min(one, key=lambda c: one[c][1]); T["one_ratio"] = dict(feature=b1, val=one[b1][1], test=rmse(y[te], one[b1][0].predict(F[b1][te])),
+                                                                          all_val={c: one[c][1] for c in cols})
             preds["one_ratio"] = lambda Xm, m=one[b1][0], j=cols.index(b1): m.predict(Xm[:, j])
             if sname in pysr_sets:
                 runs, T["pysr_log"] = R1.pysr_runs(X(F, tr), y[tr], cols, a.out, f"{sname}_{tgt}", a.niter, a.procs)
@@ -170,7 +189,7 @@ def main():
             # ---- diagnostics of every predictor on the test rows
             for pn, pf in preds.items():
                 p = pf(X(F, te)); r = p - y[te]; g = np.isfinite(r); d = T[pn]
-                d["resid_corr"] = {c: float(np.corrcoef(r[g], L[c][te][g])[0, 1]) for c in STRUCT if c in L and L[c][te].std() > 0}
+                d["resid_corr"] = {c: float(np.corrcoef(r[g], L[c][te][g])[0, 1]) for c in STRUCT if c in L and c != tgt and L[c][te].std() > 0}
                 d["test_by_cont"] = {t: rmse(y[te][ctype[te] == t], p[ctype[te] == t]) for t in sorted(set(ctype))}
                 d["bias_by_cont"] = {t: float(np.mean(r[ctype[te] == t])) for t in sorted(set(ctype))}
             # ---- forest trained on the orion continuum only
@@ -192,14 +211,24 @@ def main():
                     d[pn] = dict(main=rmse(y[ev], pm), other=rmse(y[ev], po), bias=float(np.mean(po - y[ev])), shift=float(np.mean(po - pm)),
                                  shift_small=float(np.mean((po - pm)[small])), shift_large=float(np.mean((po - pm)[~small])))
                 T[f"control_{cname}"] = d
-            # ---- Orion templates: domain only
+            # ---- Orion templates: domain check and application (never a gate)
             if orion and okset(orion[0], sname) is not None:
-                Fo, tn, mc = orion; Xo = X(Fo, slice(None)); mu, sd = X(F, tr).mean(0), X(F, tr).std(0); Z = (X(F, tr) - mu) / sd
+                Fo, tn, mc = orion; Xo = X(Fo, slice(None)); oko = okset(Fo, sname)
+                mu, sd = X(F, tr).mean(0), X(F, tr).std(0); Z = (X(F, tr) - mu) / sd
                 nn = NearestNeighbors(n_neighbors=6).fit(Z); thr = float(np.percentile(nn.kneighbors(Z)[0][:, 5], 99))
                 do = nn.kneighbors(np.nan_to_num((Xo - mu) / sd, nan=99.0), n_neighbors=5)[0][:, 4]
-                T["orion"] = {t: dict(knn_dist=float(do[k]), knn_threshold=thr, extrapolation=bool(do[k] > thr),
-                                      features={c: float(Fo[c][k]) for c in cols}, rf=float(rf.predict(np.nan_to_num(Xo[k:k + 1]))[0]))
-                              for k, t in enumerate(tn) if mc[k] == 0}
+                q1, q99 = np.percentile(X(F, tr), [1, 99], axis=0); P = {pn: pf(np.nan_to_num(Xo)) for pn, pf in preds.items()}
+                O = {}
+                for t in dict.fromkeys(tn):
+                    k = [i for i in range(len(tn)) if tn[i] == t and mc[i] == 0][0]
+                    km = np.array([i for i in range(len(tn)) if tn[i] == t and mc[i] > 0 and oko[i]], int)
+                    e = dict(fit_ok=bool(oko[k]), knn_dist=float(do[k]), knn_threshold=thr, extrapolation=bool(do[k] > thr),
+                             features={c: float(Fo[c][k]) for c in cols},
+                             outside_train_1_99=[c for j, c in enumerate(cols) if not (q1[j] <= Fo[c][k] <= q99[j])], n_mc=len(km))
+                    for pn in preds:
+                        e[pn] = float(P[pn][k]); e[pn + "_mc_sd"] = float(np.nanstd(P[pn][km])) if len(km) else None
+                    O[t] = e
+                T["orion"] = O; T["train_1_99"] = {c: [float(q1[j]), float(q99[j])] for j, c in enumerate(cols)}
             # ---- held-out predictions
             with open(os.path.join(a.out, f"pred_{sname}_{tgt}.csv"), "w", newline="") as fo:
                 w = csv.writer(fo); w.writerow(["pop", "split", "cont_type", "y"] + list(preds))

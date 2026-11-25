@@ -25,6 +25,12 @@
 #              integrated over the band window (LBANDS)
 #   --pick heldout   only the validation + test populations of regress (seeded permutation, last 30 %)
 #   --no-pahfit      local integration only
+# Version 3 (2026-11-25), orion mode: the NIRSpec G395H templates (CDS J/A+A/685/A74, --nir-template) give the 3.3 um
+#   band of the same five regions, with their listed errors for the Monte Carlo draws. The local integrals of the
+#   templates are taken on a running median of 11 pixels (MIRI) or 9 pixels (NIRSpec), which removes the gas lines
+#   inside the band and anchor windows ([Ne II] 12.81, H2, H I Pf-delta 3.297 um) and leaves the PAH bands, at least
+#   ten times wider; PAHFIT fits the lines itself and sees the spectrum as it is. The synthetic spectra have no lines
+#   and are not filtered. Not removed: the 3.4 um aliphatic band, whose blue side lies inside the 3.3 um window.
 # PAHFIT: classic.yaml, maxiter 10000, fitter message recorded. Output per spectrum: P_<feature> (PAHFIT power of
 # every dust feature), Win_<band> / Wfit_<band> (integrals of F_nu d nu of the input PAH-only spectrum and of
 # PAHFIT's PAH-only model over the same windows, same units), reduced chi-square, convergence flag.
@@ -42,6 +48,22 @@ NIRS = np.arange(2.95, 3.85, 0.0006); NIR_R = 2700.0; NBAND = (3.18, 3.40); NANC
 ANCHORS = [(5.45, 5.55), (5.88, 5.95), (9.3, 9.55), (10.1, 10.4), (14.6, 14.9), (15.0, 15.4), (18.0, 18.5), (19.2, 20.0)]
 HC_K = 1.438776877
 TEMPLATES = ["HII", "APDR", "DF3", "DF2", "DF1"]
+
+
+def read_nir_templates(path):
+    """NIRSpec templates (A74): wavelength, {template: (flux, error)} on 2.95-3.85 um; masked pixels (0, 0) dropped per template."""
+    rows = []
+    for line in open(path):
+        p = line.split()
+        if len(p) == 12 and p[0].isdigit():
+            rows.append([float(x) for x in p[1:]])
+    d = np.array(rows); d = d[(d[:, 0] >= NIRS[0]) & (d[:, 0] <= NIRS[-1])]
+    order = ["HII", "APDR", "DF1", "DF2", "DF3"]                                      # column order of A74 (A75: HII APDR DF3 DF2 DF1)
+    out = {}
+    for i, t in enumerate(order):
+        f, e = d[:, 1 + 2 * i], d[:, 2 + 2 * i]; g = (f != 0) | (e != 0)
+        out[t] = (d[g, 0], f[g], e[g])
+    return out
 
 
 def read_templates(path, thin=4):
@@ -128,6 +150,7 @@ def win(wav, f, lo, hi):
 def fit(job):
     key, wav, flux, sig, pah, extra = job[:6]
     nir, do_pahfit = (job[6], job[7]) if len(job) > 6 else (None, True)
+    despike = job[8] if len(job) > 8 else None                                        # (MIRI px, NIRSpec px, NIRSpec wavelengths)
     import astropy.units as u
     from astropy.nddata import StdDevUncertainty
     from specutils import Spectrum1D
@@ -136,11 +159,17 @@ def fit(job):
     s = Spectrum1D(spectral_axis=wav * u.um, flux=flux * u.MJy / u.sr, uncertainty=StdDevUncertainty(sig * np.ones_like(flux)))
     s.meta["instrument"] = SEG
     row = dict(key=key, **extra)
-    row.update(local_bands(wav, flux, LANCH, LBANDS))
+    if despike:
+        from scipy.ndimage import median_filter
+        row.update(local_bands(wav, median_filter(flux, despike[0], mode="nearest"), LANCH, LBANDS))
+        if nir is not None:
+            row.update(local_bands(despike[2], median_filter(nir[0], despike[1], mode="nearest"), NANCH, {"3.3": NBAND}))
+    else:
+        row.update(local_bands(wav, flux, LANCH, LBANDS))
+        if nir is not None:
+            fn, pn = nir; row.update(local_bands(NIRS, fn, NANCH, {"3.3": NBAND})); row["Win_3.3"] = win(NIRS, pn, *NBAND)
     if pah is not None:
         row.update({f"Win_{b}": win(wav, pah, lo, hi) for b, (lo, hi) in WINDOWS.items()})
-    if nir is not None:
-        fn, pn = nir; row.update(local_bands(NIRS, fn, NANCH, {"3.3": NBAND})); row["Win_3.3"] = win(NIRS, pn, *NBAND)
     if not do_pahfit:
         return row
     try:
@@ -168,6 +197,7 @@ def main():
     ap.add_argument("--jobs", type=int, default=48); ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--template", default="/data/pdrs4all/J_A+A_685_A75/sptemp.tsv"); ap.add_argument("--nmc", type=int, default=30)
     ap.add_argument("--pick", default="all"); ap.add_argument("--no-pahfit", action="store_true")
+    ap.add_argument("--nir-template", default="/data/pdrs4all/J_A+A_685_A74/t-g395h.tsv")
     a = ap.parse_args()
     from joblib import Parallel, delayed
     from pahfit.model import Model
@@ -181,6 +211,13 @@ def main():
                 jobs.append((f"{t}:{k}", wav, f + (rng.normal(0, sg) if k else 0), np.median(sg), None, dict(template=t, mc=k)))
         # PAHFIT takes one uncertainty per pixel; pass the per-pixel 1 % through a wrapper below
         jobs = [(k, w, f, 0.01 * tmpl[e["template"]], p, e) for k, w, f, s, p, e in jobs]
+        jobs = [j + (None, True, (11, 9, None)) for j in jobs]                         # local integrals on a running median
+        if os.path.exists(a.nir_template):
+            nt = read_nir_templates(a.nir_template); nj = []
+            for (key, w, f, s, p, e, *_) in jobs:
+                wn, fn, en_ = nt[e["template"]]; rng = np.random.default_rng([a.seed, 100 + TEMPLATES.index(e["template"]), e["mc"]])
+                nj.append((key, w, f, s, p, e, (fn + (rng.normal(0, 1, fn.size) * en_ if e["mc"] else 0), None), True, (11, 9, wn)))
+            jobs = nj
     else:
         import h5py
         h = h5py.File(a.pop, "r"); grid = h["grid"][:]; S = h[a.variant]
