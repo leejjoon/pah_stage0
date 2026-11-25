@@ -959,6 +959,23 @@ flagged). Mixed-guess singlets for dications come with the dication phase.
   other conformers: 1.3 and 0.6 Å). Rule for any later q0 labelling: for a species whose minimum is `bs_relabel`, every
   q0 frame goes to the BS run. C13H10_55 q0 already spans two regimes in v7 (its 600 K MD frames, RKS-stable, lie
   below the BS minimum: another isomer), so it joins C10H10_331 on the Coulson–Fischer kink-scan list (item 2).
+- 2026-11-24/25 (project node): **v8 (two seeds) and its G4.** G2 (force MAE meV/Å, v7 / v8 / v8_seed8): final_test
+  q0 20.5 / 21.0 / 21.5, q1 42.3 / 43.3 / 43.4; transfer_test q0 21.0 / 21.1 / 21.0, q1 40.0 / 38.5 / 39.6; worst q1
+  config_type 51.0 / 50.8 / 51.1; offset-removed energy RMSE 0.3–1.1 meV/atom: pass. q0 per config_type within
+  ±0.6 meV/Å of v7, raw q0 energy RMSE lower (final_test 12.2 → 7.6): the BS-UKS stretched-neutral labels did not
+  degrade the neutral head on held-out data. Failure paths (al5g4, not trained on), model − DFT at broken frames:
+  cations from −0.6…−1.1 eV (v7) to ±0.3 eV; neutrals from −1.0…−1.5 eV to −0.4…−0.9 eV (vs BS-UKS where lower).
+  **G4 at 1200 K on v8** (C16H12_337, C10H10_331, C10H12_332 × q0/q1 × seeds 0–7, 20 ps NVT + 50 ps NVE,
+  `accept/g4_v8_score.json`): q0 24/24, q1 23/24, all 47/48 = 97.9 % (≥ 95 %): **pass**. The one failure,
+  C16H12_337 q1 seed 1, is two H shifts (C0→C13, C6→C12) at 68.5 ps, no C–C break; |NVE drift| median 0.17, max
+  0.94 meV/atom over 50 ps. v4 and v7 failed 4–5 of the 24 1200 K runs of the first pass. Per the course correction,
+  v8 is the D1 force model candidate (freeze after the regression G4 on the other species and the q0 kink scan);
+  no v9 reactive round. Archived to myhub `pah-data`, pull-back verified: `dataset_v8:2026-11-25` (dataset_v8 +
+  _work; tgz sha256 `ad1e3d04…292d27`, digest `sha256:600ca085…dc10a0`), `mace_v8:2026-11-25` (v8, v8_seed8: model,
+  compiled model, config, logs, results, training logs, eval/v8_on_v8, g4_v8_score, al5g4 path_energy_v8; tgz sha256
+  `44e49a89…ea746bb`, digest `sha256:a768f7a5…37c554`). Batched MLMD (`d1/mace_md_batch.py`, C42H18_105 q1, 600 K):
+  cueq + 512 replicas 13,254 replica-steps/s (serial ASE ~95); without cueq, batches > 30,720 atoms are refused
+  (1024 × 60 atoms corrupted replicas ≥ 318).
 
 ## Phase 3 working notes
 
