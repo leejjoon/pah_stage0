@@ -974,6 +974,26 @@ flagged). Mixed-guess singlets for dications come with the dication phase.
       **worse**: ≥80-atom q0 0.128, q1 0.545 D; pooled q1 final_test 0.282 D. Weighting large molecules more does
       not help; the large-cation error is not a loss-weighting artefact.
     - Neither model is frozen or pushed to `pah-data`.
+  - **Zero-new-DFT diagnostics (2026-11-25, wasp33a; `d1/dipole_diag.py`, `d1/mlmd_polar.py`, `d1/mlmd_tslopes.py`).**
+    Full numbers in pah-shared-notes `feat-dipole.md` (2026-11-25).
+    - **Static error:** static |Δμ| tracks size, not G5 failure (Spearman within ≥60 atoms: q0 −0.22, q1 +0.27).
+      The worst static errors are the non-Kekulé-derived cations (1.0–2.6 D).
+    - **DFT-FD G5 ceiling** (B3LYP dipoles along v7 modes; 5 pairs ≤12 C):
+      - q0 6.2 µm |dev| is 0.13 for DFT against 0.72 for polar, so that miss is the dipole model's.
+      - q1 band-pass is 0.20 for both, so for small cations the ceiling is set by v7's Hessian.
+    - **Finite-T observables are insensitive to the static error:**
+      - A 1 D body-fixed offset changes slopes by ≤0.03 %/100 K.
+      - polar_v7 on the DFT-AIMD frames of naphthalene gives a dipole-only slope error ≤0.4 %/100 K.
+      - C92H24_6477⁺ (static 1.90 D) has smooth 300/600/900 K slopes, shifts and widths, like C74H22_6602⁺ (0.22 D).
+    - **Naphthalene v7 MLMD vs cloud-aimd:** neutral in-plane +5.4 ± 0.8 vs −0.65 ± 1.9 %/100 K. This is a force-model
+      effect; the v8 rerun is the check.
+  - **Freeze (coordinator, 2026-11-25 20:10 KST):** `polar_v7` is the D1 finite-T dipole model.
+    - Gate (a) at ≥80 atoms is replaced by a finite-T criterion: paired dipole-only slope error ≤0.4 %/100 K, against
+      B4's ±3 %/100 K bar.
+    - Non-Kekulé-derived cations are out of scope.
+    - No 50–85 C dipole DFT batch.
+    - Archived as `gh200:~/projects/pah-data/polar_v7-2026-11-25.tgz` (sha256 `145bb7da…6715`; model, configs,
+      `polar_fastgraph.py`, eval, G5/diag/MLMD analysis JSON, scripts). myhub `pah-data` is deprecated.
 
 ## Phase 3 working notes
 
