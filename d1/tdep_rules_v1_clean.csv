@@ -1,0 +1,33 @@
+band,kind,quantity,unit,n_species,at_Nc50,se,per_decade_Nc,se_decade,scatter,quad_minus_lin_1200K
+3.3,"complex (centroid, FWHM)",position,cm-1 per 100 K,385,-9.15,0.0153,-0.077,0.0854,0.2398,6.9952
+3.3,"complex (centroid, FWHM)",width,cm-1 per 100 K,385,6.6106,0.0613,1.1921,0.342,0.9895,7.9197
+3.3,"complex (centroid, FWHM)",strength,fraction of 300 K per 100 K,385,-0.0428,0.0002,-0.0125,0.0012,0.0032,-0.0287
+3.3,"complex (centroid, FWHM)",width300,cm-1 at 300 K,385,22.2901,0.2992,-6.4406,1.6702,3.5601,nan
+6.2,"complex (peak, rms width)",position,cm-1 per 100 K,385,-4.2605,0.1483,0.4343,0.8276,2.2282,5.1217
+6.2,"complex (peak, rms width)",width,cm-1 per 100 K,385,0.7612,0.0315,0.9046,0.1759,0.618,0.4011
+6.2,"complex (peak, rms width)",strength,fraction of 300 K per 100 K,385,-0.0047,0.0011,0.0293,0.0059,0.0175,-0.1172
+6.2,"complex (peak, rms width)",width300,cm-1 at 300 K,385,28.797,0.1514,-3.3199,0.8451,2.8564,nan
+7.7,"complex (peak, rms width)",position,cm-1 per 100 K,385,-3.0098,0.3546,1.3082,1.979,3.5415,-4.7106
+7.7,"complex (peak, rms width)",width,cm-1 per 100 K,385,0.6945,0.0363,0.2427,0.2024,0.5575,-0.2277
+7.7,"complex (peak, rms width)",strength,fraction of 300 K per 100 K,385,-0.0109,0.0006,-0.0064,0.0033,0.0097,-0.0017
+7.7,"complex (peak, rms width)",width300,cm-1 at 300 K,385,62.8617,0.2684,-2.4449,1.498,4.6527,nan
+8.6,"complex (peak, rms width)",position,cm-1 per 100 K,385,-0.1444,0.198,-4.4146,1.1053,2.3542,-4.1196
+8.6,"complex (peak, rms width)",width,cm-1 per 100 K,385,0.3757,0.0248,-0.0048,0.1383,0.4103,0.6422
+8.6,"complex (peak, rms width)",strength,fraction of 300 K per 100 K,385,0.0323,0.0013,0.0098,0.0073,0.0205,0.0122
+8.6,"complex (peak, rms width)",width300,cm-1 at 300 K,385,29.3543,0.1909,0.1524,1.0656,3.3372,nan
+11.2,isolated oop band (truncated-Lorentzian fit),position,cm-1 per 100 K,294,-1.9328,0.0936,0.8471,0.484,0.5706,-1.4964
+11.2,isolated oop band (truncated-Lorentzian fit),width,cm-1 per 100 K,294,0.6389,0.0652,0.0248,0.3373,0.6472,-1.1085
+11.2,isolated oop band (truncated-Lorentzian fit),strength,fraction of 300 K per 100 K,294,-0.0341,0.0367,0.2801,0.1898,0.0829,-0.0291
+11.2,isolated oop band (truncated-Lorentzian fit),width300,cm-1 at 300 K,294,4.6929,0.2851,-3.2436,1.4745,1.2599,nan
+12.0,isolated oop band (truncated-Lorentzian fit),position,cm-1 per 100 K,251,-1.7859,0.1382,-0.4288,0.8604,1.2832,-0.3528
+12.0,isolated oop band (truncated-Lorentzian fit),width,cm-1 per 100 K,251,0.6254,0.0628,0.9334,0.3911,0.9431,-0.6033
+12.0,isolated oop band (truncated-Lorentzian fit),strength,fraction of 300 K per 100 K,251,0.0213,0.02,0.1204,0.1246,0.1126,-0.1144
+12.0,isolated oop band (truncated-Lorentzian fit),width300,cm-1 at 300 K,251,4.4719,0.259,-5.002,1.6132,1.3905,nan
+12.7,isolated oop band (truncated-Lorentzian fit),position,cm-1 per 100 K,312,-1.0558,0.1079,1.3671,0.5896,0.9292,-2.6863
+12.7,isolated oop band (truncated-Lorentzian fit),width,cm-1 per 100 K,312,0.5325,0.0574,0.2618,0.3137,0.7541,-0.4223
+12.7,isolated oop band (truncated-Lorentzian fit),strength,fraction of 300 K per 100 K,312,0.0024,0.0202,0.2676,0.1106,0.1007,-0.0607
+12.7,isolated oop band (truncated-Lorentzian fit),width300,cm-1 at 300 K,312,4.9661,0.2327,-2.7324,1.2716,1.523,nan
+13.5,isolated oop band (truncated-Lorentzian fit),position,cm-1 per 100 K,379,-1.0296,0.0492,2.6276,0.2928,0.4952,-2.6874
+13.5,isolated oop band (truncated-Lorentzian fit),width,cm-1 per 100 K,379,0.7646,0.0396,-0.6974,0.2361,0.472,0.2137
+13.5,isolated oop band (truncated-Lorentzian fit),strength,fraction of 300 K per 100 K,379,-0.0093,0.0051,0.007,0.0303,0.0623,-0.0611
+13.5,isolated oop band (truncated-Lorentzian fit),width300,cm-1 at 300 K,379,4.2637,0.1524,-5.7908,0.9077,1.2547,nan
