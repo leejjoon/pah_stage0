@@ -986,7 +986,10 @@ flagged). Mixed-guess singlets for dications come with the dication phase.
       - polar_v7 on the DFT-AIMD frames of naphthalene gives a dipole-only slope error ≤0.4 %/100 K.
       - C92H24_6477⁺ (static 1.90 D) has smooth 300/600/900 K slopes, shifts and widths, like C74H22_6602⁺ (0.22 D).
     - **Naphthalene v7 MLMD vs cloud-aimd:** neutral in-plane +5.4 ± 0.8 vs −0.65 ± 1.9 %/100 K. This is a force-model
-      effect; the v8 rerun is the check.
+      effect.
+    - **v8 rerun (2026-11-25):** v8 + polar_v7 gives neutral in-plane +5.15 ± 0.84 (unchanged) and cation in-plane
+      −0.95 ± 0.30 (AIMD −2.08 ± 0.47). Cation slopes are inside B4's ±3 %/100 K but about 1 %/100 K shallow.
+      Neutral in-plane MLMD slopes need an AIMD cross-check.
   - **Freeze (coordinator, 2026-11-25 20:10 KST):** `polar_v7` is the D1 finite-T dipole model.
     - Gate (a) at ≥80 atoms is replaced by a finite-T criterion: paired dipole-only slope error ≤0.4 %/100 K, against
       B4's ±3 %/100 K bar.
