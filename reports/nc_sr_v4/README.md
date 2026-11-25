@@ -64,6 +64,16 @@ Continuum level as a fraction of the template flux (`orion_gap.py`):
 | DF2 | 0.15 / 0.27 / 0.37 | 0.23 / 0.28 / 0.22 | 0.84 / 1.03 / 1.00 |
 | DF3 | 0.18 / 0.32 / 0.44 | 0.30 / 0.36 / 0.29 | 0.83 / 1.03 / 1.00 |
 
+One template in detail (DF3, where the methods differ most; `slice/figure_df3.py`):
+
+![DF3 under three continua](figs/fig_df3_continuum.png)
+
+- The shaded flux is band for PAHFIT and continuum for the spline. At 11.2 µm the two continua coincide, so only
+  the numerator of 7.7/11.2 changes: 3.5 with PAHFIT, 3.4 with straight segments, 1.9 with the spline.
+- The library mixture of section 2.2 puts its continuum higher than PAHFIT's: a third level for the same spectrum.
+
+All five templates:
+
 ![Continua and library mixtures](figs/fig_orion_gap.png)
 
 - **Left panels:** the natural spline rises into a hump between its anchors at 5.9 and 9.7 µm, most in DF3 and DF2.
