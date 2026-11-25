@@ -16,9 +16,17 @@ layout).
 
 **What ran (2026-11-12..2026-11-24):** naphthalene neutral and cation, B3LYP(VWN3)/6-31G\* 6D, PySCF on CPU and
 GPU: 8 main runs (2 ps NVT + 20 ps NVE; project node, GCP, gmunu, wasp12) and 14 short replicas with saved frames
-(2 ps NVT + 5 ps NVE; wasp12): 22 runs. Data: myhub `pah-data/aimd_naph_done:2026-11-21`,
-`aimd_naph_short:2026-11-23`, `aimd_naph_short_q0:2026-11-24` (manifests in `data/manifests/`). Code at tag
+(2 ps NVT + 5 ps NVE; wasp12): 22 runs. Data: `aimd_naph_done-2026-11-21.tgz`,
+`aimd_naph_short-2026-11-23.tgz`, `aimd_naph_short_q0-2026-11-24.tgz` (manifests in `data/manifests/`). Code at tag
 `aimd-naph-b3p1` once merged (branch `cloud-aimd`).
+
+**Archive (since 2026-11-25):** primary copy in `gh200:~/projects/pah-data/<name>-<tag>.tgz` (directory mode 700,
+files 400, a `.sha256` sidecar each and entries in its `SHA256SUMS`), mirrored off the server in
+`z2mini:~/projects/pah-data-mirror/` (same layout). Both copies passed `sha256sum -c` on 2026-11-25 and match the
+manifests' `sha256`. All three were first pushed to myhub `pah-data` (2026-11-21..24); myhub is deprecated and may go
+down, so its references below and the OCI digests in the manifests (`provenance`) are history, not a location. The
+wasp12 and gmunu `~/aimd/run` originals are no longer the only second copy; removing them needs the user's
+go-ahead.
 
 **Finding 1, method:** at 300 K the NVE band strengths of a replica are set by the energy its few IR-active modes
 happen to hold, which stays frozen for the whole run (20 ps tested). Raw replica fits therefore scatter by up to
@@ -58,7 +66,8 @@ on wasp12 on 2026-11-21 at 08:19 (unit `aimd` inactive). Both machines wrote `AL
 
 **Results on the project node:** `/var/tmp/jjlee-pah/d1/aimd_naph_done/` and `aimd_naph_done.tgz` (3.9 MB, sha256
 `442d9aa55326feab940777b39b12dde1b369d86821ec168e63a39d5ef359a8d6`), archived 2026-11-21 as
-`oras://myhub.ksc.re.kr/pah-data/aimd_naph_done:2026-11-21` (private; manifest `data/manifests/aimd_naph_done.yaml`). The layout follows the Hangang inputs tarball:
+`oras://myhub.ksc.re.kr/pah-data/aimd_naph_done:2026-11-21` (now history; primary archive since 2026-11-25
+`gh200:~/projects/pah-data/aimd_naph_done-2026-11-21.tgz`, private; manifest `data/manifests/aimd_naph_done.yaml`). The layout follows the Hangang inputs tarball:
 the 8 `naph_q*_*K_r*.npz` and the 2 xyz files, plus `SHA256SUMS`. The logs are in `logs/gmunu/` (with the GCP segment
 in `gcp/`) and `logs/wasp12/` (with the cations' earlier gmunu logs in `gmunu/`). The hashes match the copies on
 gmunu and wasp12. Every npz is at 44,000 of 44,000 steps, with no non-finite values and a full NVE dipole series
@@ -101,8 +110,9 @@ CH stretch 2700–3300 cm⁻¹; linear in T; the slope is a fraction of the fitt
   ASE deprecation warning); max SCF 15, ⟨S²⟩ ≤ 0.776, NVE drift −1.4 to +0.8 meV/ps.
 - Results: `gh200:/var/tmp/jjlee-pah/d1/aimd_naph_short/` and `aimd_naph_short.tgz` (7.4 MB, sha256 `571c10a0…`),
   hashes checked on wasp12, z2mini and gh200. Archived to `oras://myhub.ksc.re.kr/pah-data/aimd_naph_short:2026-11-23`
-  (pull-back hash matches; anonymous pull refused); manifest `data/manifests/aimd_naph_short.yaml`. wasp12
-  `~/aimd/run` kept as the second copy.
+  (pull-back hash matches; anonymous pull refused); manifest `data/manifests/aimd_naph_short.yaml`. Since
+  2026-11-25 the primary archive is `gh200:~/projects/pah-data/aimd_naph_short-2026-11-23.tgz` (z2mini mirror); myhub
+  is history.
 - Slopes over all 16 runs (`aimd_slopes.py`, commit `fc6522c`; `analysis/aimd_slopes_all.{txt,json}` in the gh200
   copy), fraction of the 300 K value per 100 K: cation in-plane −2.6 % (pairings −13 to +17 %, rough 1σ ±3.5 %),
   neutral in-plane +4.5 % (+0.3 to +7.8 %), cation minus neutral −7 %. **The B4 gate is still not decided.**
@@ -141,7 +151,8 @@ CH stretch 2700–3300 cm⁻¹; linear in T; the slope is a fraction of the fitt
   `oras://myhub.ksc.re.kr/pah-data/aimd_naph_short_q0:2026-11-24` (pulled back, sha256 matches; anonymous pull
   refused), manifest `data/manifests/aimd_naph_short_q0.yaml`. The push waited 8 h: myhub first refused connections
   (from ~14:20), then served its new certificate without the Sectigo DV R36 intermediate; pushed with `--ca-file`
-  holding the system bundle plus that intermediate (see the manifest's `retrieve`). Normalised neutral slopes in the B4 section at the top.
+  holding the system bundle plus that intermediate (manifest `provenance`). Since 2026-11-25 the primary archive is
+  `gh200:~/projects/pah-data/aimd_naph_short_q0-2026-11-24.tgz` (z2mini mirror); myhub is history. Normalised neutral slopes in the B4 section at the top.
 - The narrow 11.2-type windows go negative in the 5 ps runs (unclipped truncated-ACF estimator around sharp lines);
   use only the broad bands for them.
 

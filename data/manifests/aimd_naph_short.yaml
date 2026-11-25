@@ -15,12 +15,20 @@ settings: B3LYP (VWN3, PySCF b3lypg)/6-31G* with 6D d functions; PySCF 2.15.0 (c
 checks: all runs at 14,000 of 14,000 steps; frames and dipoles finite; 5,000 x 3 NVE dipoles each; max SCF cycles
   15; <S^2> <= 0.776; NVE drift -1.4..+0.8 meV/ps
 locations:
-  - oras://myhub.ksc.re.kr/pah-data/aimd_naph_short:2026-11-23   # private; manifest digest sha256:8e4900f17eeab3a62087cce07401035a5b2a42dee0594db4203d50fa85ef56bf
+  - gh200:~/projects/pah-data/aimd_naph_short-2026-11-23.tgz   # primary archive since 2026-11-25
+    # (dir 700, file 400; .sha256 sidecar and an entry in SHA256SUMS)
+  - z2mini:~/projects/pah-data-mirror/aimd_naph_short-2026-11-23.tgz   # off-server mirror (same layout)
   - gh200:/var/tmp/jjlee-pah/d1/aimd_naph_short.tgz (and unpacked aimd_naph_short/; working copy, no backup)
-  - wasp12:~/aimd/run (originals; kept until myhub backups are known)
+  - wasp12:~/aimd/run (originals; since 2026-11-25 no longer the only second copy; removal needs the user's go-ahead)
 retrieve: >
-  oras pull -u "$HARBOR_DATA_USER" --password-stdin myhub.ksc.re.kr/pah-data/aimd_naph_short:2026-11-23
-  (credentials of a pah-data robot account, from .env), then sha256sum the tarball against `sha256` above
+  scp gh200:projects/pah-data/aimd_naph_short-2026-11-23.tgz{,.sha256} . &&
+  sha256sum -c aimd_naph_short-2026-11-23.tgz.sha256
+  (the hash equals `sha256` above; the tarball unpacks to aimd_naph_short/ whatever its file name)
+provenance: >
+  Also pushed to oras://myhub.ksc.re.kr/pah-data/aimd_naph_short:2026-11-23 (private; manifest digest
+  sha256:8e4900f17eeab3a62087cce07401035a5b2a42dee0594db4203d50fa85ef56bf; layer digest = `sha256`).
+  myhub is deprecated since 2026-11-25 and may go down permanently; kept as provenance only,
+  do not rely on it or push there.
 record: docs/plan/cloud_aimd_handoff.md ("Extra cation replicas")
 analysis: d1/aimd_slopes.py (commit fc6522c) over both datasets; output in the gh200 copy under
   aimd_naph_short/analysis/aimd_slopes_all.{txt,json} (not in the tarball)

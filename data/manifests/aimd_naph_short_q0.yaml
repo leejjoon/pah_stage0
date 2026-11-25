@@ -16,15 +16,22 @@ settings: B3LYP (VWN3, PySCF b3lypg)/6-31G* with 6D d functions, RKS-equivalent 
 checks: all runs at 14,000 of 14,000 steps; frames and dipoles finite; 5,000 x 3 NVE dipoles each; max SCF cycles 9;
   NVE drift -0.25..+0.14 meV/ps
 locations:
-  - oras://myhub.ksc.re.kr/pah-data/aimd_naph_short_q0:2026-11-24   # private; manifest digest sha256:179d148a0ea53242e37515aa767c3e9bb0c352dc1f186873477ceba8bef99b12
+  - gh200:~/projects/pah-data/aimd_naph_short_q0-2026-11-24.tgz   # primary archive since 2026-11-25
+    # (dir 700, file 400; .sha256 sidecar and an entry in SHA256SUMS)
+  - z2mini:~/projects/pah-data-mirror/aimd_naph_short_q0-2026-11-24.tgz   # off-server mirror (same layout)
   - gh200:/var/tmp/jjlee-pah/d1/aimd_naph_short_q0.tgz (and unpacked aimd_naph_short_q0/; working copy, no backup)
-  - wasp12:~/aimd/run (originals; kept until myhub backups are known)
+  - wasp12:~/aimd/run (originals; since 2026-11-25 no longer the only second copy; removal needs the user's go-ahead)
 retrieve: >
-  oras pull -u "$HARBOR_DATA_USER" --password-stdin myhub.ksc.re.kr/pah-data/aimd_naph_short_q0:2026-11-24
-  (credentials of a pah-data robot account, from .env), then sha256sum the tarball against `sha256` above.
-  On 2026-11-24 myhub served its certificate without the Sectigo intermediate, so curl/oras failed with "unable to
-  get local issuer certificate"; fetch http://crt.sectigo.com/SectigoPublicServerAuthenticationCADVR36.crt, append it
-  (PEM) to the system CA bundle and pass that with --ca-file (not --insecure).
+  scp gh200:projects/pah-data/aimd_naph_short_q0-2026-11-24.tgz{,.sha256} . &&
+  sha256sum -c aimd_naph_short_q0-2026-11-24.tgz.sha256
+  (the hash equals `sha256` above; the tarball unpacks to aimd_naph_short_q0/ whatever its file name)
+provenance: >
+  Also pushed to oras://myhub.ksc.re.kr/pah-data/aimd_naph_short_q0:2026-11-24 (private; manifest digest
+  sha256:179d148a0ea53242e37515aa767c3e9bb0c352dc1f186873477ceba8bef99b12; layer digest = `sha256`).
+  myhub is deprecated since 2026-11-25 and may go down permanently; kept as provenance only,
+  do not rely on it or push there.
+  On 2026-11-24 myhub served its certificate without the Sectigo DV R36 intermediate; oras needed --ca-file
+  with the system bundle plus http://crt.sectigo.com/SectigoPublicServerAuthenticationCADVR36.crt.
 record: docs/plan/cloud_aimd_handoff.md ("Result and Gate B4 decision"; the "Neutral short replicas" bullet)
 analysis: d1/mode_energy.py (commit 4a58623) ref/analyse with ref_q0.npz; d1/aimd_slopes.py over all 22 runs; output
   in the gh200 copy under aimd_naph_short_q0/analysis/modes/ (not in the tarball)

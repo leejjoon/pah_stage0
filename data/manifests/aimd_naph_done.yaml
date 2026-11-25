@@ -17,11 +17,20 @@ settings: B3LYP (VWN3, PySCF b3lypg)/6-31G* with 6D d functions; PySCF 2.15.0 (c
 checks: all runs at 44,000 of 44,000 steps; no non-finite values; full 20,000 x 3 NVE dipole series; max SCF cycles
   9 (neutral) / 15 (cation); cation <S^2> <= 0.772
 locations:
-  - oras://myhub.ksc.re.kr/pah-data/aimd_naph_done:2026-11-21   # private; manifest digest sha256:0670264f52953e94038c8b7d2de7abb7aa8c9dbd332dbc7c45b881920d674b12
+  - gh200:~/projects/pah-data/aimd_naph_done-2026-11-21.tgz   # primary archive since 2026-11-25
+    # (dir 700, file 400; .sha256 sidecar and an entry in SHA256SUMS)
+  - z2mini:~/projects/pah-data-mirror/aimd_naph_done-2026-11-21.tgz   # off-server mirror (same layout)
   - gh200:/var/tmp/jjlee-pah/d1/aimd_naph_done.tgz (and unpacked aimd_naph_done/; working copy, no backup)
-  - gmunu.kasi.re.kr:~/aimd/run (neutral originals; may be removed now that the archive is confirmed)
+  - gmunu.kasi.re.kr:~/aimd/run (neutral originals; since 2026-11-25 no longer the only second copy; removal needs the
+    user's go-ahead)
 retrieve: >
-  oras pull -u "$HARBOR_DATA_USER" --password-stdin myhub.ksc.re.kr/pah-data/aimd_naph_done:2026-11-21
-  (credentials of a pah-data robot account, from .env), then sha256sum the tarball against `sha256` above
-record: docs/plan/cloud_aimd_handoff.md ("Done: all 8 runs at 44,000 steps")
+  scp gh200:projects/pah-data/aimd_naph_done-2026-11-21.tgz{,.sha256} . &&
+  sha256sum -c aimd_naph_done-2026-11-21.tgz.sha256
+  (the hash equals `sha256` above; the tarball unpacks to aimd_naph_done/ whatever its file name)
+provenance: >
+  Also pushed to oras://myhub.ksc.re.kr/pah-data/aimd_naph_done:2026-11-21 (private; manifest digest
+  sha256:0670264f52953e94038c8b7d2de7abb7aa8c9dbd332dbc7c45b881920d674b12; layer digest = `sha256`).
+  myhub is deprecated since 2026-11-25 and may go down permanently; kept as provenance only,
+  do not rely on it or push there.
+record: 'docs/plan/cloud_aimd_handoff.md ("Done: all 8 runs at 44,000 steps")'
 analysis: d1/aimd_slopes.py; output in the gh200 copy under aimd_naph_done/analysis/ (not in the tarball)
