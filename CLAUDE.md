@@ -9,8 +9,8 @@ This is the planning stage of the **T0 / T0b** work for the "Interpretable PAH D
 - `docs/plan/T0_T0b_execution_plan_GH200.md`: the authoritative work plan.
 - `docs/plan/T0_T0b_plan_review.md`: the first readiness review, dated 2026-11-06.
 - `docs/plan/GH200_feasibility_check_2026-11-07.md`: measured checks on the project GH200 node (venvs first, then the built containers). The plan's GH200 facts cite it.
-- `containers/`: the tested Apptainer recipes (`A_jax`, `B_torch`, `B_torchsim`, `C_cpu`, and since 2026-11-14 `D_gpu4pyscf`), the in-image package lists, the image hashes and `tests/` (`run_all.sh` re-runs the feasibility checks). Images are built to local NVMe, `/var/tmp/jjlee-pah/sif/`, not into the repo. Container A is also in the public KSC Harbor registry as a SIF (ORAS artifact, byte-identical, sha256 `7304b1be…`): `apptainer pull oras://myhub.ksc.re.kr/pah/a_jax:gh200-2026-11-07`, no login needed. Pushing needs `HARBOR_USER`/`HARBOR_SECRET` from `.env`. For running the D1 MLMD work on the Slurm GH200 cluster (KISTI Hangang), see `docs/plan/cluster_migration.md`; run `docs/external/fetch_ksc_docs.sh` to mirror KISTI's Hangang, MyKSC and myhub guides as Markdown into `docs/external/` (gitignored).
-  - `containers/D_gpu4pyscf.def` (2026-11-14): GPU4PySCF 1.9.2 for the charged-MLFF DFT, built from source for aarch64/sm_90 on `nvidia/cuda:12.9.1-devel` (no aarch64 wheels exist; CuPy is rebuilt because its aarch64 wheel lacks cuTENSOR). Notes and tests in `containers/D_gpu4pyscf.md`; results in `docs/research/pyscf_gpu_jax.md` §5. Also in myhub (public, byte-identical): `oras://myhub.ksc.re.kr/pah/d_gpu4pyscf:gh200-2026-11-14`. Its CUDA 12.9 runs on the host driver directly, so a host MPS daemon works (MPS gave no gain).
+- `containers/`: the tested Apptainer recipes (`A_jax`, `B_torch`, `B_torchsim`, `C_cpu`, and since 2026-11-14 `D_gpu4pyscf`), the in-image package lists, the image hashes and `tests/` (`run_all.sh` re-runs the feasibility checks). Images are built to local NVMe, `/var/tmp/jjlee-pah/sif/`, not into the repo. Container A is also in the public KSC Harbor registry as a SIF (ORAS artifact, byte-identical, sha256 `7304b1be…`): `apptainer pull oras://myhub.ksc.re.kr/pah/a_jax:gh200-2026-11-07`, no login needed. myhub is deprecated (may go down; 2026-11-25): byte-identical copies of all five images are in the shared data store as `gh200:~/projects/pah-data/<a_jax|b_torch|b_torchsim|c_cpu>-gh200-2026-11-07.sif` and `d_gpu4pyscf-gh200-2026-11-14.sif` (see "Shared data store"). Pushing needs `HARBOR_USER`/`HARBOR_SECRET` from `.env`. For running the D1 MLMD work on the Slurm GH200 cluster (KISTI Hangang), see `docs/plan/cluster_migration.md`; run `docs/external/fetch_ksc_docs.sh` to mirror KISTI's Hangang, MyKSC and myhub guides as Markdown into `docs/external/` (gitignored).
+  - `containers/D_gpu4pyscf.def` (2026-11-14): GPU4PySCF 1.9.2 for the charged-MLFF DFT, built from source for aarch64/sm_90 on `nvidia/cuda:12.9.1-devel` (no aarch64 wheels exist; CuPy is rebuilt because its aarch64 wheel lacks cuTENSOR). Notes and tests in `containers/D_gpu4pyscf.md`; results in `docs/research/pyscf_gpu_jax.md` §5. Also in myhub (public, byte-identical, deprecated): `oras://myhub.ksc.re.kr/pah/d_gpu4pyscf:gh200-2026-11-14`; store copy `gh200:~/projects/pah-data/d_gpu4pyscf-gh200-2026-11-14.sif`. Its CUDA 12.9 runs on the host driver directly, so a host MPS daemon works (MPS gave no gain).
   - `containers/C_cpu_x86.def` rebuilds container C for x86-64 CPU-only machines, pinned to the GH200 versions through `containers/C_cpu_lock/`. It has been tested only on ARM so far. Build, test and run instructions are in `containers/C_cpu_x86.md`, and `tests/run_c.sh` holds the C checks.
 - `docs/plan/T0_T0b_committee_review.md`: a later three-round committee review (Fable 5.1 and GPT-6-Astra, with Opus 5.5 as a non-voting reviewer). It corrects several of the first review's fixes.
 
@@ -141,3 +141,25 @@ keep the branch's row in the project `SUMMARY.md` current, and run
 On KISTI Hangang (account `t641a02`) the clone is at `~/work/pah-shared-notes`, not `~/projects/`; use that path
 in the commands above. There `hostname` is the login node you are on (e.g. `glogin04`), which can differ between
 sessions; name the machine that way in handoffs and note entries.
+
+## Shared data store
+
+Data never goes in git; git holds manifests. Since 2026-11-25 the canonical store for packages shared between
+machines (gh200, z2mini, wasp33a) is **`gh200:~/projects/pah-data/`** (NFS, directory mode `700`, private from other
+gh200 users). myhub (`myhub.ksc.re.kr/pah-data`, `pah/`) is deprecated and may go down permanently: push nothing new
+there. Its contents were copied into the store on 2026-11-25 (byte-identical, checked against the layer digests).
+
+- Name each package `<name>-<tag>.tgz` (tag = date, `YYYY-MM-DD`, with a letter suffix for a same-day rebuild); never
+  overwrite one: a changed package gets a new tag.
+- Next to it a sidecar `<name>-<tag>.tgz.sha256` (`sha256sum <file> > <file>.sha256`, run in the store), and the
+  same line in the store's `SHA256SUMS` (regenerate it from the sidecars: `cat *.sha256 > SHA256SUMS`).
+- Verify with `sha256sum -c SHA256SUMS`, then `chmod 400` the package and its sidecar.
+- From z2mini or wasp33a, transfer over SSH (`rsync`/`scp` to `gh200:~/projects/pah-data/`); check the sidecar on
+  arrival.
+- Commit a manifest in `data/manifests/` naming the store file and its sha256. gh200's packages are listed in
+  `data/manifests/pah_data_store_gh200.yaml`; per-dataset manifests (e.g. `aimd_naph_*.yaml` on `cloud-aimd`) keep
+  their myhub reference as history and add the store path.
+- `/var/tmp` on gh200 is local NVMe without backup: a working copy, not an archive. The store is on `/home` (NFS).
+- Never put Mai et al. C90H24_618 / C144H30_641 files (CC BY-NC-SA) in a shared package.
+- Raw Hangang MLMD units (`hangang_mlmd_units_*`, ~27 GB on myhub) are not in the store: the same files are in
+  `gh200:~/projects/hangang_appdata/d1/runs/` (2,309 files, byte-compared with the myhub tars on 2026-11-25).

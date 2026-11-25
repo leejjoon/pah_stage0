@@ -1,0 +1,186 @@
+# gh200:~/projects/pah-data/ — packages placed by gh200 (feat-gpu-gh200), 2026-11-25
+# Store rules: CLAUDE.md "Shared data store"; pah-shared-notes README rule 8. Other machines' packages
+# (polar_v7, sr_*_proto_v2/v3, ...) are recorded on their own branches. sha256 = file sha256 (also the
+# <file>.sha256 sidecar and SHA256SUMS in the store). origin: the myhub artifact it was copied from (myhub
+# is deprecated; identical bytes, layer digest = file sha256) or 'local' (never on myhub).
+packages:
+  - file: seed_dft_transfer2-2026-11-16.tgz
+    sha256: 083ca247a59fbfc373388bdd845dbc8181d3ee8f638052d42893552321fcc202
+    size: 1950002
+    origin: local
+    content: transfer2 seed DFT labels (Hangang)
+  - file: d_gpu4pyscf-gh200-2026-11-14.sif
+    sha256: 09afb47a44974c8b4575ba18b8664e6eb0f681bd3264c47c858be0d5ae20893b
+    size: 6077169664
+    origin: oras://myhub.ksc.re.kr/pah/d_gpu4pyscf:gh200-2026-11-14
+    content: container D (GPU4PySCF 1.9.2) SIF
+  - file: al2_dft-2026-11-21.tgz
+    sha256: 0efad4568f57b525e9327e089f241692be1c6f707353fa8a99803a5225e9fc1c
+    size: 4829180
+    origin: myhub.ksc.re.kr/pah-data/al2_dft:2026-11-21
+    content: AL round 2 DFT labels (Hangang)
+  - file: al2_hangang-2026-11-21.tgz
+    sha256: 17caf2a9e2c37f1fab739d753e1f49ecd2b857150b3306ca77b414260e2d6ef4
+    size: 840239
+    origin: myhub.ksc.re.kr/pah-data/al2_hangang:2026-11-21
+    content: AL round 2 package sent to Hangang
+  - file: g4_v4-2026-11-22.tgz
+    sha256: 1d3e671852c9dead80beab4b74fb76385062076dd147c2b44b605b58101ce4f2
+    size: 962933
+    origin: myhub.ksc.re.kr/pah-data/g4_v4:2026-11-22
+    content: G4-on-v4 job package for Hangang
+  - file: aimd_naph_short_q0-2026-11-24.tgz
+    sha256: 2addd067662a82bba9d38fd87f58f511519e960a54b96fcb72a3892d29b2aeef
+    size: 5757870
+    origin: myhub.ksc.re.kr/pah-data/aimd_naph_short_q0:2026-11-24
+    content: naphthalene neutral short DFT MD replicas (cloud-aimd)
+  - file: b_torchsim-gh200-2026-11-07.sif
+    sha256: 3ab99a073538ae06937bd55d961344d26c4482716d937ae25556fada81b6a525
+    size: 12929110016
+    origin: local (container build)
+    content: container B_torchsim SIF
+  - file: dipole_pkg-2026-11-23.tgz
+    sha256: 3b8ea88a2f7cd9c2e299a938e0e95c0d549d413462819d88bd2a593e1c54b9e4
+    size: 53571854
+    origin: myhub.ksc.re.kr/pah-data/dipole_pkg:2026-11-23
+    content: dipole-model package (feat-dipole input)
+  - file: al3_hangang_dft-2026-11-22.tgz
+    sha256: 419122aa9b46a18fbe45620226119cbc2b9781974ab2550d5f69555d4817a36d
+    size: 9227406
+    origin: myhub.ksc.re.kr/pah-data/al3_hangang_dft:2026-11-22
+    content: AL3 track 1 DFT labels (Hangang)
+  - file: aimd_naph_done-2026-11-21.tgz
+    sha256: 442d9aa55326feab940777b39b12dde1b369d86821ec168e63a39d5ef359a8d6
+    size: 4046106
+    origin: myhub.ksc.re.kr/pah-data/aimd_naph_done:2026-11-21
+    content: naphthalene DFT MD (cloud-aimd; manifest data/manifests/aimd_naph_done.yaml on cloud-aimd)
+  - file: mace_v8-2026-11-25.tgz
+    sha256: 44e49a89b0c5dbb4ce2d9ee2e2f5c3a00a773d0d980a423e14eaa4fd7ea746bb
+    size: 23162090
+    origin: myhub.ksc.re.kr/pah-data/mace_v8:2026-11-25
+    content: MACE v8 + v8_seed8 (D1 force model), eval/v8_on_v8, g4_v8_score, al5g4 path_energy_v8
+  - file: sr_neutral_proto_v1-2026-11-24.tgz
+    sha256: 491383054a9b72a93621bfcea0a82f5e6334d2ef6180dee768fdd436282e2432
+    size: 258031874
+    origin: myhub.ksc.re.kr/pah-data/sr_neutral_proto_v1:2026-11-24
+    content: neutral SR prototype v1 outputs (gh200-containers); README alongside
+  - file: hangang_d1_misc-2026-11-22.tgz
+    sha256: 4b02c7701c16172c5e9893b78c217494b2e6ad689a25fc0d851d195982296098
+    size: 51265427
+    origin: myhub.ksc.re.kr/pah-data/hangang_d1_misc:2026-11-22
+    content: Hangang runs logs/meta, triplet_v1, XYZ_*, seed, figs (Mai et al. 618/641 excluded)
+  - file: hangang_spectra_v1-2026-11-22.tgz
+    sha256: 54b0af8182513b53acb78806ce1e4af5d36cafac20a4a7dcfe9e9d7060985b09
+    size: 649656386
+    origin: myhub.ksc.re.kr/pah-data/hangang_spectra_v1:2026-11-22
+    content: Hangang d1/spectra (MLMD spectra)
+  - file: hangang_remainder_v1-2026-11-22.tgz
+    sha256: 54ea8d8107eb107af7359fe7ae716c3e85104e42517fecf6345c16993a06df29
+    size: 47245840
+    origin: myhub.ksc.re.kr/pah-data/hangang_remainder_v1:2026-11-22
+    content: Hangang remainder files
+  - file: al3_own_dft-2026-11-22.tgz
+    sha256: 565f17295bff5d90f8af9c19ac10eea370ac3a6c38903752d7728bb0a8e98e62
+    size: 5735902
+    origin: myhub.ksc.re.kr/pah-data/al3_own_dft:2026-11-22
+    content: AL3 track 2 DFT labels (Hangang)
+  - file: aimd_naph_short-2026-11-23.tgz
+    sha256: 571c10a0fb47a850a70d6b728b5fff8ff1921be1ea1daed9f386e27a12d7ea23
+    size: 7715356
+    origin: myhub.ksc.re.kr/pah-data/aimd_naph_short:2026-11-23
+    content: naphthalene cation short DFT MD replicas (cloud-aimd)
+  - file: c_cpu-gh200-2026-11-07.sif
+    sha256: 5a0fd1b3048749ddd6a558835ebd132fb1585ebb8cd763b6ea12b01c398b268d
+    size: 1299992576
+    origin: local (container build)
+    content: container C (PySR, PAHFIT) SIF
+  - file: xtb_env_aarch64-2026-11-22.tgz
+    sha256: 5aa1c3d1eedb6478036456dc7ef986cc4d5b35631bac81027d6649a539bd7644
+    size: 204428004
+    origin: myhub.ksc.re.kr/pah-data/xtb_env_aarch64:2026-11-22
+    content: aarch64 xTB conda env (Hangang)
+  - file: a_jax-gh200-2026-11-07.sif
+    sha256: 7304b1becb903c165694c9cc2233335621ed65e39e73f8a2cc724a867a75adc2
+    size: 7517806592
+    origin: oras://myhub.ksc.re.kr/pah/a_jax:gh200-2026-11-07
+    content: container A (JAX + mace-jax) SIF
+  - file: al1_hangang-2026-11-20.tgz
+    sha256: 7d58f6d72449e8afc16163e2421f1d671c9171dd6b883ed3cfcd3077656b2836
+    size: 1926606
+    origin: local
+    content: AL round 1 package sent to Hangang
+  - file: seed_dft_bs_check-2026-11-16.tgz
+    sha256: 8d8091fd782bd1bdab2a97eb58adead54948ccc9da3bfb7993ccae878241bb93
+    size: 397742
+    origin: local
+    content: seed BS-UKS check (Hangang)
+  - file: seed_dft_hot_t2md-2026-11-16.tgz
+    sha256: 92fac185c1c14a17ef677af8d4d64da680f1e19768327e920c59a348f03cc9f7
+    size: 3181983
+    origin: local
+    content: hot/t2md seed DFT labels (Hangang)
+  - file: al3_track1-2026-11-22.tgz
+    sha256: a5ef156726eed126403ea5e904bdeffca9e533e2d3679acfd2e7591696a5f27b
+    size: 154515
+    origin: myhub.ksc.re.kr/pah-data/al3_track1:2026-11-22
+    content: AL3 track 1 package (100 non-planar PAHdb pairs)
+  - file: al1_dft-2026-11-20.tgz
+    sha256: a6f21e39641f862cdf08920ca8071bc07d06092fcc749f25e764d4f0bf6c5a81
+    size: 10357941
+    origin: local
+    content: AL round 1 DFT labels (Hangang)
+  - file: dataset_v8-2026-11-25.tgz
+    sha256: ad1e3d0466c514e1578471e2eaf06cb6f3173dee2581b3c667106afbe1292d27
+    size: 27089171
+    origin: myhub.ksc.re.kr/pah-data/dataset_v8:2026-11-25
+    content: D1 MLFF dataset v8 + _work (v7 + al5 broken-bond frames, drop_frames_v8)
+  - file: highspin_seed_run-2026-11-21.tgz
+    sha256: ca1de823e248b3b0d0b5a5bb6504f38844f3d5cbaf7e4ab88d1878461591385e
+    size: 3150855
+    origin: myhub.ksc.re.kr/pah-data/highspin_seed_run:2026-11-21
+    content: high-spin cation seed DFT (Hangang)
+  - file: b_torch-gh200-2026-11-07.sif
+    sha256: d34401fbc5a1eacb676a7974aee5acac0a8e602efaa210b6a30fba9bd3a5d81e
+    size: 12589895680
+    origin: local (container build)
+    content: container B (NGC PyTorch + mace-torch) SIF
+  - file: mace_v7-2026-11-23.tgz
+    sha256: d5a73b904fea82e7af508d39245a394824a2715c8a65dfd5bebce1b37ee48336
+    size: 22689208
+    origin: myhub.ksc.re.kr/pah-data/mace_v7:2026-11-23
+    content: MACE v7 + v7_seed8 (model, compiled, config, logs, results), eval/v7_on_v7
+  - file: seed_hangang-2026-11-14.tgz
+    sha256: d711af72fcb77c88440d5ec72fe51ad20d0000bae93f63afc873c6625ad17f63
+    size: 5696259
+    origin: local
+    content: seed DFT package sent to Hangang
+  - file: seed_dft_open_shell-2026-11-17.tgz
+    sha256: d9eb252b83bfa908633da9d923f6b756257b16a9953580a783ed9ec6a0936c0a
+    size: 2696255
+    origin: local
+    content: open-shell seed relabels (Hangang)
+  - file: seed_dft_hangang-2026-11-16.tgz
+    sha256: dd3c845c5811eb5c7a66e864b85c56254618d071e210eb9b4b1ed6be3caef2ea
+    size: 30791326
+    origin: local
+    content: seed DFT labels (Hangang)
+  - file: al3_own-2026-11-22.tgz
+    sha256: e618d2f8f5c1eb92c98c0ac5db40916729f6e7050afd89d4cba6bb413abb072d
+    size: 1032813
+    origin: myhub.ksc.re.kr/pah-data/al3_own:2026-11-22
+    content: AL3 track 2 package (37 hand-built pairs); 2026-11-22b is the one labelled
+  - file: al3_own-2026-11-22b.tgz
+    sha256: e9b5c544f6730e972f0236c289dbe9ecbb72d3b666c95576012953f7a04a7b74
+    size: 1035873
+    origin: myhub.ksc.re.kr/pah-data/al3_own:2026-11-22b
+    content: AL3 track 2 package (37 hand-built pairs); 2026-11-22b is the one labelled
+  - file: g4_v4_out-2026-11-22.tgz
+    sha256: f9c693b682f045616356fdd822e5a04bcc0e0308ee64ed70d6f0ea0f1419ef0c
+    size: 1948543897
+    origin: myhub.ksc.re.kr/pah-data/g4_v4_out:2026-11-22
+    content: G4-on-v4 MD outputs from Hangang (trajectories)
+  - file: dataset_v7-2026-11-23.tgz
+    sha256: f9f615154ce3da001f5402788c3655b962e8e732609feef013625a4d330bc65f
+    size: 27498984
+    origin: myhub.ksc.re.kr/pah-data/dataset_v7:2026-11-23
+    content: D1 MLFF dataset v7 + _work (train/validation/final_test/transfer_test per charge)
