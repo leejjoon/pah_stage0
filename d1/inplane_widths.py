@@ -2,7 +2,8 @@
 # A component counts as isolated if, in the replica-mean fit at each of 300, 600 and 900 K, the nearest other
 # component is farther away than SEP x the sum of the two FWHMs and its FWHM is off the fit bounds (0.5-50 cm^-1), and it carries at least MIN_AREA of the total intensity at
 # 300 K. Per isolated band: FWHM at 300 K and the slope of FWHM against the replicas' NVE T. Families by 300 K centre.
-#   python inplane_widths.py <fits csv> [more csv ...]
+#   python inplane_widths.py <fits csv> [more csv ...] [--keep <file with one species per line>]
+# --keep restricts the fit to the listed species (perline_widths_clean.py: the 385 spin-consistent closed-shell singlets).
 import csv, sys, collections
 import numpy as np
 
@@ -12,8 +13,9 @@ FAMILIES = [("CC stretch (6.2 um)", 1540, 1700), ("1470-1540", 1470, 1540), ("CC
             ("CH in-plane (8.6 um)", 1100, 1220)]
 
 
-def main(files):
-    R = [r for f in files for r in csv.DictReader(open(f)) if r["region"] == "inplane"]
+def collect(files, keep=None):
+    """{family: [(nC, FWHM at 300 K, slope per 100 K, fit rms)]} of the isolated bands, species count, component count."""
+    R = [r for f in files for r in csv.DictReader(open(f)) if r["region"] == "inplane" and (keep is None or r["species"] in keep)]
     mean = collections.defaultdict(dict)                     # (species, T) -> comp -> (centre, fwhm, area)
     reps = collections.defaultdict(list)                     # (species, comp) -> replica rows
     for r in R:
@@ -41,7 +43,12 @@ def main(files):
         x = np.array([float(r["T_nve"]) for r in v]) / 100; y = np.array([float(r["fwhm"]) for r in v])
         out[fam].append((int(v[0]["nC"]), np.mean([float(r["fwhm"]) for r in v if r["T"] == "300"]), np.polyfit(x, y, 1)[0],
                          np.median([float(r["rms"]) for r in v])))
-    print(f"{len({k[0] for k in reps})} species, {n_all} components; isolated at all three T and >= {MIN_AREA:.1%} of the "
+    return out, len({k[0] for k in reps}), n_all
+
+
+def main(files, keep=None):
+    out, n_sp, n_all = collect(files, keep)
+    print(f"{n_sp} species, {n_all} components; isolated at all three T and >= {MIN_AREA:.1%} of the "
           f"total at 300 K (separation >= {SEP} x sum of FWHMs), per family: per-line FWHM at 300 K and its slope per 100 K, median [16-84 %]")
     for fam, *_ in FAMILIES:
         v = np.array(out.get(fam, []))
@@ -55,4 +62,7 @@ def main(files):
 
 
 if __name__ == "__main__":
-    main(sys.argv[1:])
+    a = sys.argv[1:]; keep = None
+    if "--keep" in a:
+        i = a.index("--keep"); keep = set(open(a[i + 1]).read().split()); a = a[:i] + a[i + 2:]
+    main(a, keep)

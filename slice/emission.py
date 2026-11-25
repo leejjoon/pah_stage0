@@ -19,6 +19,12 @@
 # limit (strength factors within [0.05, 20] only). tdep itself is the middle case.
 # --rules <csv> takes another rules table (d1/tdep_rules_v1_clean.csv: the refit on spin-consistent closed-shell
 # singlets); the default is d1/tdep_rules_v1.csv.
+# --widths <csv> takes another per-line width table (d1/perline_widths_v2_clean.csv); the default is
+# d1/perline_widths_v2.csv.
+# --rules-cation <csv> [--widths-cation <csv>] gives the charged species their own tables (d1/tdep_rules_cation_v1.csv
+# once the cation MLMD profile fits exist; same columns as the neutral tables). A (band, quantity) row or a line
+# family missing from a cation table is taken from the neutral table, and the log says which. Without these
+# options charged species take the neutral tables (the Gate B4 assumption).
 # --b4 adds variants in which only the rules of charged species are changed (Gate B4 step b; neutrals keep tdep, and
 # so does every species in a table without charged rows):
 #   cc17, cc30     strength slope of the lines of the 6.2, 7.7 and 8.6 um features lower by 1.7 and 3.0 % of the
@@ -56,22 +62,41 @@ CLAMPS = ["tdep900", "tdeplin"]; B4 = ["cc17", "cc30", "shp30", "shm30", "wdp30"
 CC_FEATURES = ("6.2", "7.7", "8.6")
 
 
-def load_rules(path=None):
+def load_rules(path=None, wpath=None, base=None, log=None):
+    """Rules per feature and per-line widths. base = (rules, widths) fills what the tables at path/wpath lack."""
     R = {(r["band"], r["quantity"]): r for r in csv.DictReader(open(path or os.path.join(D1, "tdep_rules_v1.csv")))}
 
     def rule(band, q):
         r = R[(band, q)]; a, b, sb = float(r["at_Nc50"]), float(r["per_decade_Nc"]), float(r["se_decade"])
         return a, (b if abs(b) > 2 * sb else 0.0)
-    W = [(float(r["lo_cm1"]), float(r["hi_cm1"]), float(r["fwhm_300K"]), float(r["fwhm_slope_per_100K"]))
-         for r in csv.DictReader(open(os.path.join(D1, "perline_widths_v2.csv"))) if r["fwhm_300K"]]
-    return {b: dict(pos=rule(b, "position"), strength=rule(b, "strength")) for b, *_ in FEATURES}, W
+    if base is None:
+        W = [(float(r["lo_cm1"]), float(r["hi_cm1"]), float(r["fwhm_300K"]), float(r["fwhm_slope_per_100K"]))
+             for r in csv.DictReader(open(wpath or os.path.join(D1, "perline_widths_v2.csv"))) if r["fwhm_300K"]]
+        return {b: dict(pos=rule(b, "position"), strength=rule(b, "strength")) for b, *_ in FEATURES}, W
+    out = {}; miss = []
+    for b, *_ in FEATURES:
+        out[b] = {}
+        for k, q in (("pos", "position"), ("strength", "strength")):
+            out[b][k] = rule(b, q) if (b, q) in R else base[0][b][k]
+            if (b, q) not in R:
+                miss.append(f"{b} {q}")
+    own = {float(r["lo_cm1"]): (float(r["lo_cm1"]), float(r["hi_cm1"]), float(r["fwhm_300K"]), float(r["fwhm_slope_per_100K"]))
+           for r in csv.DictReader(open(wpath)) if r["fwhm_300K"]} if wpath else {}
+    W = [own.get(w[0], w) for w in base[1]]
+    miss += [f"width {w[0]:.0f}-{w[1]:.0f}" for w in base[1] if w[0] not in own]
+    if log is not None:
+        log.append("charged species: own rules for " + (", ".join(f"{b} {q}" for b, q in sorted(R) if q in ("position", "strength")) or "nothing")
+                   + f"; own widths for {len(own)} line families; from the neutral tables: " + (", ".join(miss) or "nothing"))
+    return out, W
 
 
 RULES, WIDTHS = load_rules()
+RULES_Q = WIDTHS_Q = None                                                           # charged species; None = as neutral
 
 
-def line_rules(nu, nc):
+def line_rules(nu, nc, charge=0):
     """Per line: position slope (cm^-1 per 100 K), strength slope (fraction per 100 K), FWHM at 300 K and its slope."""
+    RULES, WIDTHS = (RULES_Q, WIDTHS_Q) if charge and RULES_Q is not None else (globals()["RULES"], globals()["WIDTHS"])
     x = np.log10(nc / 50.0)
     ps = np.zeros_like(nu); ss = np.zeros_like(nu); w0 = np.zeros_like(nu); ws = np.zeros_like(nu)
     for b, lo, hi in FEATURES:
@@ -96,7 +121,7 @@ def cascade(args):
     U = np.concatenate([[0.0], np.cumsum(0.5 * (C[1:] + C[:-1]) * np.diff(Tg))])
     tmax = np.interp(np.array(energies) * EV_CM, U, Tg)
     edges = np.unique(np.concatenate([np.arange(T_START, tmax.max(), DT), tmax]))
-    ps, ss, w0, ws = line_rules(nu, nc)
+    ps, ss, w0, ws = line_rules(nu, nc, charge)
     act = A > 1e-6 * A.sum()                                                          # lines that can emit
     nua, Aa, psa, ssa, w0a, wsa = nu[act], A[act], ps[act], ss[act], w0[act], ws[act]
     cc = np.zeros(nua.size, bool)
@@ -142,10 +167,15 @@ def main():
     ap.add_argument("species"); ap.add_argument("xml"); ap.add_argument("out")
     ap.add_argument("--jobs", type=int, default=32); ap.add_argument("--energies", default="3,4,5,6,8,10,12")
     ap.add_argument("--clamps", action="store_true"); ap.add_argument("--b4", action="store_true"); ap.add_argument("--rules")
+    ap.add_argument("--widths"); ap.add_argument("--rules-cation"); ap.add_argument("--widths-cation")
     a = ap.parse_args()
-    global RULES, WIDTHS
-    if a.rules:
-        RULES, WIDTHS = load_rules(a.rules)                                           # before the pool forks
+    global RULES, WIDTHS, RULES_Q, WIDTHS_Q
+    if a.rules or a.widths:
+        RULES, WIDTHS = load_rules(a.rules, a.widths)                                 # before the pool forks
+    if a.rules_cation or a.widths_cation:
+        log = []
+        RULES_Q, WIDTHS_Q = load_rules(a.rules_cation or os.devnull, a.widths_cation, base=(RULES, WIDTHS), log=log)
+        print(log[0], flush=True)
     import h5py
     energies = [float(x) for x in a.energies.split(",")]
     rows = [r for r in csv.DictReader(open(a.species)) if r["status"] == "use"]
@@ -179,9 +209,12 @@ def main():
             if (k + 1) % 100 == 0:
                 print(f"  {k + 1}/{len(tasks)}", flush=True)
         h["tmax"] = tm; h["in_grid"] = ing
-        h.attrs["variants"] = (f"tdep: {os.path.basename(a.rules or 'tdep_rules_v1.csv')} + perline_widths_v2; "
-                               "harm: fixed lines, Gaussian FWHM 15 cm^-1")
         h.attrs["rules"] = os.path.basename(a.rules or "tdep_rules_v1.csv")
+        h.attrs["widths"] = os.path.basename(a.widths or "perline_widths_v2.csv")
+        h.attrs["rules_cation"] = os.path.basename(a.rules_cation or "") or "as neutral"
+        h.attrs["widths_cation"] = os.path.basename(a.widths_cation or "") or "as neutral"
+        h.attrs["variants"] = (f"tdep: {h.attrs['rules']} + {h.attrs['widths']} (charged species: {h.attrs['rules_cation']}, "
+                               f"{h.attrs['widths_cation']}); harm: fixed lines, Gaussian FWHM 15 cm^-1")
     nc = np.array([t[1] for t in tasks])
     for j, E in enumerate(energies):
         print(f"  {E:4.0f} eV: T_max median {np.median(tm[:, j]):5.0f} K (Nc<40: {np.median(tm[nc < 40, j]):5.0f}, Nc>=100: "

@@ -11,6 +11,8 @@
 #   P33x, L33x    the 3.3 um ratio times a 5 % (1 sigma, log-normal) cross-calibration error between NIRSpec and MIRI
 #   T, T33        noise-free window integrals of the input PAH spectrum (not observable; what the spectrum holds)
 #   Pn, Ln, P33n, L33n, Tn, T33n   the same without the 17 um ratio (version 3)
+#   H, H33, Hn, H33n   local integrals above the monotone piecewise-cubic continuum (measure.py version 4: Lpch)
+#   LLn, LL33n         straight-segment continuum without the 17 um ratio
 # --sets A,B restricts a run to some sets, so that two runs can share a machine; --merge dir1 dir2 joins their
 # results.json into <out dir> (the labels and features arguments are then ignored).
 # Split, targets and selection rules as regress.py (70/15/15 by the same seeded permutation; everything chosen on
@@ -25,6 +27,11 @@
 #                 error and bias of the predictors trained on the main table, all rows and logNc0 < log10(50)
 #   --clean csv   injection-recovery of band/11.2 for PAHFIT and for the local integrals, with and without continuum
 #   shuffled labels, deterministic repeat: as regress.py
+#   --mc name=csv,csv,...   Monte Carlo error bars (version 4): the test populations measured again with other noise
+#                 draws (measure.py --pick test --seed k [--snr X]). Per predictor: the scatter of its prediction
+#                 between draws (rms over populations of the per-population sd: the observational error at that
+#                 S/N) and its mean RMSE against the truth; per ratio: the median sd of ln(ratio). The part of the
+#                 test error that is not noise follows as sqrt(RMSE^2 - sd^2).
 #   --orion csv   the five Orion Bar templates: kNN domain check per set, each ratio against the 1-99 % range of the
 #                 training set, and every predictor's value with the scatter of the Monte Carlo refits
 # Version 3 (2026-11-25): f_cation as a target (populations.py --design v3); residual correlations also against the
@@ -39,11 +46,11 @@ import regress as R1  # noqa: E402
 
 B = ["62", "77", "86", "120", "127", "135", "170"]
 BK = {"62": "6.2", "77": "7.7", "86": "8.6", "112": "11.2", "120": "12.0", "127": "12.7", "135": "13.5", "170": "17", "33": "3.3"}
-SETS = {"P": [f"r{b}" for b in B], "L": [f"s{b}" for b in B], "LL": [f"l{b}" for b in B], "T": [f"w{b}" for b in B]}
+SETS = {"P": [f"r{b}" for b in B], "L": [f"s{b}" for b in B], "LL": [f"l{b}" for b in B], "T": [f"w{b}" for b in B], "H": [f"h{b}" for b in B]}
 SETS.update({"P33": SETS["P"] + ["r33"], "L33": SETS["L"] + ["s33"], "LL33": SETS["LL"] + ["l33"], "T33": SETS["T"] + ["w33"],
-             "P33x": SETS["P"] + ["r33x"], "L33x": SETS["L"] + ["s33x"]})
+             "P33x": SETS["P"] + ["r33x"], "L33x": SETS["L"] + ["s33x"], "H33": SETS["H"] + ["h33"]})
 # the same sets without the 17 um band (name + "n"): the Orion Bar templates lie outside the library in that ratio only
-SETS.update({k + "n": [c for c in v if not c.endswith("170")] for k, v in list(SETS.items()) if k in ("P", "L", "P33", "L33", "T", "T33")})
+SETS.update({k + "n": [c for c in v if not c.endswith("170")] for k, v in list(SETS.items()) if k in ("P", "L", "P33", "L33", "T", "T33", "H", "H33", "LL", "LL33")})
 STRUCT = ["solo_frac", "trio_frac", "quartet_frac", "N_frac", "own_frac", "cont_level", "f_cation", "logNc", "E_eV"]
 ABS_TARGET = R1.ABS_TARGET
 rmse, fl = R1.rmse, R1.fl
@@ -51,7 +58,7 @@ rmse, fl = R1.rmse, R1.fl
 
 def features(rows, pops=None):
     F = R1.features(rows) if "P_PAH_6.2" in rows[0] else {"ok": np.zeros(len(rows), bool), "chi2": np.full(len(rows), np.nan)}
-    C = {c: np.array([fl(r.get(c)) for r in rows]) for c in rows[0] if c.startswith(("Llin_", "Lspl_", "Win_", "Wfit_"))}
+    C = {c: np.array([fl(r.get(c)) for r in rows]) for c in rows[0] if c.startswith(("Llin_", "Lspl_", "Lpch_", "Win_", "Wfit_"))}
     with np.errstate(divide="ignore", invalid="ignore"):
         for b in B + ["33"]:
             k = BK[b]
@@ -60,6 +67,8 @@ def features(rows, pops=None):
             num = C[f"Llin_{k}"] if b == "33" else None
             F[f"s{b}"] = (num if b == "33" else C[f"Lspl_{k}"]) / C["Lspl_11.2"]
             F[f"l{b}"] = (num if b == "33" else C[f"Llin_{k}"]) / C["Llin_11.2"]
+            if "Lpch_11.2" in C:
+                F[f"h{b}"] = (num if b == "33" else C[f"Lpch_{k}"]) / C["Lpch_11.2"]
             if f"Win_{k}" in C:
                 F[f"w{b}"] = C[f"Win_{k}"] / C["Win_11.2"]
                 F[f"recL{b}"] = F[f"s{b}"] / F[f"w{b}"]; F[f"recLL{b}"] = F[f"l{b}"] / F[f"w{b}"]
@@ -80,7 +89,7 @@ def okset(F, name):
     cols = SETS[name]
     if any(c not in F for c in cols):
         return None
-    base = F["ok"] if name.startswith("P") else (F["okL"] if name[0] == "L" else np.ones(len(F["okL"]), bool))
+    base = F["ok"] if name.startswith("P") else (F["okL"] if name[0] in "LH" else np.ones(len(F["okL"]), bool))
     return base & np.all(np.isfinite(R1.mat(F, cols, slice(None))), 1)
 
 
@@ -91,7 +100,7 @@ def main():
     ap.add_argument("--niter", type=int, default=200); ap.add_argument("--procs", type=int, default=16)
     ap.add_argument("--clean"); ap.add_argument("--ctl", action="append", default=[]); ap.add_argument("--orion")
     ap.add_argument("--seed", type=int, default=0); ap.add_argument("--rf-jobs", type=int, default=16)
-    ap.add_argument("--sets", default=""); ap.add_argument("--merge", nargs="*")
+    ap.add_argument("--sets", default=""); ap.add_argument("--merge", nargs="*"); ap.add_argument("--mc", action="append", default=[])
     a = ap.parse_args()
     if a.merge:                                                                       # join the results of runs split with --sets
         parts = [json.load(open(os.path.join(d, "results.json"))) for d in a.merge]; res = parts[0]
@@ -139,6 +148,11 @@ def main():
             print(f"  {lab_} " + "  ".join(f"{b}: {e[f'{kind}_{b}'][1]:.2f} [{e[f'{kind}_{b}'][0]:.2f},{e[f'{kind}_{b}'][2]:.2f}]"
                                            for b in B + ["33", "112"] if f"{kind}_{b}" in e), flush=True)
     res["injection_recovery"] = rec
+    mcs = {}
+    for spec in a.mc:
+        name, paths = spec.split("=", 1); mcs[name] = []
+        for path in paths.split(","):
+            r = R1.read(path); mcs[name].append((features(r, np.array([int(x["pop"]) for x in r])), np.array([int(x["pop"]) for x in r])))
     orion = None
     if a.orion:
         r = R1.read(a.orion); orion = (features(r), [x["template"] for x in r], np.array([int(x["mc"]) for x in r]))
@@ -211,6 +225,22 @@ def main():
                     d[pn] = dict(main=rmse(y[ev], pm), other=rmse(y[ev], po), bias=float(np.mean(po - y[ev])), shift=float(np.mean(po - pm)),
                                  shift_small=float(np.mean((po - pm)[small])), shift_large=float(np.mean((po - pm)[~small])))
                 T[f"control_{cname}"] = d
+            # ---- Monte Carlo noise draws of the test populations
+            for mname, tabs in mcs.items():
+                oks = [okset(Fo, sname) for Fo, _ in tabs]
+                if any(o is None for o in oks):
+                    continue
+                poss = [{int(q): k for k, q in enumerate(pp) if o[k]} for (Fo, pp), o in zip(tabs, oks)]
+                ev = np.array([i for i in te if all(i in pos for pos in poss)]); d = dict(n=len(ev), n_draws=len(tabs))
+                Xs = [X(Fo, np.array([pos[i] for i in ev])) for (Fo, _), pos in zip(tabs, poss)]
+                with np.errstate(all="ignore"):
+                    d["sd_ln_ratio"] = {c: float(np.nanmedian(np.nanstd(np.log(np.array([Xm[:, j] for Xm in Xs])), 0))) for j, c in enumerate(cols)}
+                for pn, pf in preds.items():
+                    Pm = np.array([pf(Xm) for Xm in Xs]); sdp = np.nanstd(Pm, 0, ddof=1)
+                    d[pn] = dict(sd_rms=float(np.sqrt(np.nanmean(sdp ** 2))), sd_median=float(np.nanmedian(sdp)),
+                                 sd_p90=float(np.nanpercentile(sdp, 90)), rmse=float(np.sqrt(np.nanmean((Pm - y[ev][None, :]) ** 2))),
+                                 rmse_of_mean=float(np.sqrt(np.nanmean((np.nanmean(Pm, 0) - y[ev]) ** 2))))
+                T[f"mc_{mname}"] = d
             # ---- Orion templates: domain check and application (never a gate)
             if orion and okset(orion[0], sname) is not None:
                 Fo, tn, mc = orion; Xo = X(Fo, slice(None)); oko = okset(Fo, sname)

@@ -31,6 +31,24 @@
 #   inside the band and anchor windows ([Ne II] 12.81, H2, H I Pf-delta 3.297 um) and leaves the PAH bands, at least
 #   ten times wider; PAHFIT fits the lines itself and sees the spectrum as it is. The synthetic spectra have no lines
 #   and are not filtered. Not removed: the 3.4 um aliphatic band, whose blue side lies inside the 3.3 um window.
+# Version 4 (2026-11-25):
+#   Lpch_<band>   a third local continuum: monotone piecewise-cubic (PCHIP) through the same anchor medians. It cannot
+#                 overshoot between anchors; the natural spline does, in the 4 um gap under the 6-9 um bands, when the
+#                 continuum turns steep beyond 15 um (the Orion Bar templates; slice/orion_gap.py).
+#   --plateau     adds broad nuisance emission to every synthetic spectrum before the noise: three Gaussians in
+#                 wavelength (PLATEAU: 6-9, 10-15 and 15-18 um; centre, FWHM and peak drawn per population, the peak
+#                 uniform between 0 and a maximum given relative to the 11.2 um peak). The maxima are 1.3 x the
+#                 largest broad component that a free library mixture plus continuum leaves in the five Orion Bar
+#                 templates (orion_gap.py, fit B). The draws are independent of every label and of the noise
+#                 (0, population, 77), whatever --seed is, and are written to the output (plat_c<i>, plat_w<i>, plat_a<i>).
+#   --wings       band wings as nuisance: a share g of the PAH spectrum (uniform 0-0.5) is replaced by the same
+#                 spectrum convolved with a Lorentzian of FWHM w (log-uniform 40-160 cm^-1), before the instrument
+#                 model. Every band then carries wide wings in proportion to its strength, as the Drude profiles
+#                 of observed bands do (Smith et al. 2007, section 4.1.4), and the wings of neighbouring bands fill
+#                 the gaps where the local continuum is anchored. Draws from (0, population, 78); written as wing_g,
+#                 wing_w. The true window integrals (Win_*) are taken on the spectrum with wings.
+#   --snr X       S/N per pixel at the 11.2 um peak (default 50); --seed changes the noise draws only
+#   --pick test   the test populations of regress only (last 15 % of the seeded permutation)
 # PAHFIT: classic.yaml, maxiter 10000, fitter message recorded. Output per spectrum: P_<feature> (PAHFIT power of
 # every dust feature), Win_<band> / Wfit_<band> (integrals of F_nu d nu of the input PAH-only spectrum and of
 # PAHFIT's PAH-only model over the same windows, same units), reduced chi-square, convergence flag.
@@ -48,6 +66,17 @@ NIRS = np.arange(2.95, 3.85, 0.0006); NIR_R = 2700.0; NBAND = (3.18, 3.40); NANC
 ANCHORS = [(5.45, 5.55), (5.88, 5.95), (9.3, 9.55), (10.1, 10.4), (14.6, 14.9), (15.0, 15.4), (18.0, 18.5), (19.2, 20.0)]
 HC_K = 1.438776877
 TEMPLATES = ["HII", "APDR", "DF3", "DF2", "DF1"]
+# plateau nuisance: centre (um) +- half range, FWHM range (um), largest peak / 11.2 um peak
+PLATEAU = [(7.7, 0.3, 2.0, 4.0, 0.25), (12.3, 0.4, 2.5, 5.0, 0.5), (17.0, 0.3, 1.5, 3.0, 1.5)]
+
+
+def plateau(wav, seed, k):
+    """Parameters and a function of wavelength for the broad nuisance emission of population k (11.2 um peak = 1)."""
+    rng = np.random.default_rng([seed, k, 77]); par = {}; comps = []
+    for i, (c0, dc, wlo, whi, amax) in enumerate(PLATEAU):
+        c, fw, a = c0 + rng.uniform(-dc, dc), rng.uniform(wlo, whi), rng.uniform(0, amax)
+        par.update({f"plat_c{i}": round(c, 3), f"plat_w{i}": round(fw, 3), f"plat_a{i}": round(a, 4)}); comps.append((c, fw / 2.3548, a))
+    return par, lambda w: sum(a * np.exp(-0.5 * ((w - c) / sg) ** 2) for c, sg, a in comps)
 
 
 def read_nir_templates(path):
@@ -103,6 +132,15 @@ def cont_at(wav, ctype, par, cw, temps):
     return f(wav) / f(11.25)
 
 
+def wings(grid, spec, k):
+    """Parameters and the spectrum with a share g moved into Lorentzian wings of FWHM w (cm^-1); flux is conserved
+    except at the grid edges."""
+    from scipy.signal import fftconvolve
+    rng = np.random.default_rng([0, k, 78]); g = rng.uniform(0, 0.5); w = float(np.exp(rng.uniform(np.log(40.0), np.log(160.0))))
+    dg = grid[1] - grid[0]; x = np.arange(-1500.0, 1500.0 + dg, dg); ker = (0.5 * w / np.pi) / (x ** 2 + (0.5 * w) ** 2) * dg
+    return dict(wing_g=round(g, 4), wing_w=round(w, 2)), (1 - g) * spec + g * fftconvolve(spec, ker / ker.sum(), mode="same")
+
+
 def to_nirspec(grid, spec):
     from scipy.ndimage import gaussian_filter1d
     sg = (1e4 / 3.3) / NIR_R / 2.3548 / (grid[1] - grid[0])
@@ -110,13 +148,16 @@ def to_nirspec(grid, spec):
 
 
 def local_bands(wav, flux, anchors, bands):
-    """Band integrals above a continuum through the anchor medians: straight segments (Llin) and natural spline (Lspl)."""
-    from scipy.interpolate import CubicSpline
+    """Band integrals above a continuum through the anchor medians: straight segments (Llin), natural spline (Lspl)
+    and monotone piecewise cubic (Lpch)."""
+    from scipy.interpolate import CubicSpline, PchipInterpolator
     x = np.array([0.5 * (lo + hi) for lo, hi in anchors]); y = np.array([np.median(flux[(wav >= lo) & (wav <= hi)]) for lo, hi in anchors])
     lin = np.interp(wav, x, y); spl = CubicSpline(x, y, bc_type="natural")(wav) if len(x) > 2 else lin
+    pch = PchipInterpolator(x, y, extrapolate=True)(wav) if len(x) > 2 else lin
     out = {}
     for b, (lo, hi) in bands.items():
         out[f"Llin_{b}"] = win(wav, flux - lin, lo, hi); out[f"Lspl_{b}"] = win(wav, flux - spl, lo, hi)
+        out[f"Lpch_{b}"] = win(wav, flux - pch, lo, hi)
     return out
 
 
@@ -198,6 +239,8 @@ def main():
     ap.add_argument("--template", default="/data/pdrs4all/J_A+A_685_A75/sptemp.tsv"); ap.add_argument("--nmc", type=int, default=30)
     ap.add_argument("--pick", default="all"); ap.add_argument("--no-pahfit", action="store_true")
     ap.add_argument("--nir-template", default="/data/pdrs4all/J_A+A_685_A74/t-g395h.tsv")
+    ap.add_argument("--plateau", action="store_true"); ap.add_argument("--snr", type=float, default=50.0)
+    ap.add_argument("--wings", action="store_true")
     a = ap.parse_args()
     from joblib import Parallel, delayed
     from pahfit.model import Model
@@ -224,7 +267,8 @@ def main():
         n = S.shape[0] if a.n == "all" else int(a.n)
         lp = a.pop.replace(".h5", "_labels.csv"); lab = list(csv.DictReader(open(lp))) if os.path.exists(lp) else []
         v2 = bool(lab) and "cont_type" in lab[0]
-        pops = range(n) if a.pick == "all" else sorted(np.random.default_rng(0).permutation(S.shape[0])[int(0.7 * S.shape[0]):].tolist())
+        cut = {"heldout": 0.7, "test": 0.85}.get(a.pick)
+        pops = range(n) if cut is None else sorted(np.random.default_rng(0).permutation(S.shape[0])[int(cut * S.shape[0]):].tolist())
         seg = segment_of(wav)
         ft = Model.from_yaml("classic.yaml").features
         temps = sorted(float(t) for t in ft["temperature"]["val"][np.asarray(ft["kind"]) == "dust_continuum"])
@@ -232,18 +276,23 @@ def main():
         print("continuum: modified blackbodies at", temps, "K; weights at 11.25 um", np.round(cw / cw.sum(), 3), flush=True)
         for k in pops:
             rng = np.random.default_rng([a.seed, k])
-            pah = to_mrs(grid, S[k], wav, seg)
+            Sk = S[k]; wpar = {}
+            if a.wings:
+                wpar, Sk = wings(grid, Sk, k)
+            pah = to_mrs(grid, Sk, wav, seg)
             pk = pah[(wav > 11.0) & (wav < 11.6)].max(); pah = pah * (100.0 / pk)   # 11.2 um peak = 100 MJy/sr
             if v2:
                 L = lab[k]; ct, par, lev = L["cont_type"], float(L["cont_par"]), float(L["cont_level"])
-                pn = to_nirspec(grid, S[k]) * (100.0 / pk); noise = rng.normal(0, 1, wav.size); nn = rng.normal(0, 1, NIRS.size)
-                extra = dict(pop=k, variant=a.variant, mode=a.mode, scale=100.0 / pk)
+                pn = to_nirspec(grid, Sk) * (100.0 / pk); noise = rng.normal(0, 1, wav.size); nn = rng.normal(0, 1, NIRS.size)
+                extra = dict(pop=k, variant=a.variant, mode=a.mode, scale=100.0 / pk, seed=a.seed, **wpar)
                 if a.mode == "clean":
                     flux, sig, fn = pah, 0.1, pn
                 else:
-                    tot = pah + 30.0 * lev * cont_at(wav, ct, par, cw, temps)
-                    sig = float(np.interp(11.25, wav, tot) / 50.0); flux = tot + sig * noise
-                    fn = pn + 30.0 * lev * cont_at(NIRS, ct, par, cw, temps) + sig * nn
+                    tot = pah + 30.0 * lev * cont_at(wav, ct, par, cw, temps); totn = pn + 30.0 * lev * cont_at(NIRS, ct, par, cw, temps)
+                    if a.plateau:
+                        pp, pf = plateau(wav, 0, k); extra.update(pp); tot = tot + 100.0 * pf(wav); totn = totn + 100.0 * pf(NIRS)
+                    sig = float(np.interp(11.25, wav, tot) / a.snr); flux = tot + sig * noise
+                    fn = totn + sig * nn
                 jobs.append((k, wav, flux, sig, pah, dict(extra, sigma=round(sig, 4)), (fn, pn), not a.no_pahfit))
                 continue
             cf = float(np.exp(rng.uniform(np.log(0.5), np.log(2.0)))); idx = float(rng.uniform(1.5, 3.5))

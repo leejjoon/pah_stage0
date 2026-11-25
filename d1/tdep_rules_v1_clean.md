@@ -14,7 +14,7 @@ spin-consistent PAHdb entry. Use this table for new runs. Requested by the coord
   exactly. Command: `python d1/profile_fit.py rules d1/tdep_rules_v1_clean.csv <the three tables, filtered>`.
 - **Table:** `d1/tdep_rules_v1_clean.csv`, same columns as `tdep_rules_v1.csv`.
 
-Apply as in `tdep_rules_v1.md` ("How to apply"); only table 1 changes.
+Apply as in `tdep_rules_v1.md` ("How to apply"), with tables 1 and 2 below.
 
 ## Table 1: feature shifts and strengths
 
@@ -40,15 +40,36 @@ Value at Nc = 50; a size term is given where it exceeds 2 standard errors; ± is
   term grows from +18.7 to +26.8 % per decade of Nc. The other size terms keep their sign and significance.
 - For the 6.2/11.2 ratio the statement of version 1 holds: 11.2 µm loses 3.4 % per 100 K, 6.2 µm 0.5 %.
 
-## Not refitted
+## Table 2: per-line widths, refitted (2026-11-25, `d1/perline_widths_v2_clean.csv`)
 
-- **Per-line widths** (`d1/perline_widths_v2.csv`, table 2 of version 1). The 3.3 µm entry already excludes the
-  non-Kekule singlets. The in-plane and out-of-plane entries come from isolated bands of all species
-  (`inplane_widths.py`, `profile_fit.py`); they were not redone here, because their inputs are on Hangang.
-- **Background** (1700–2800 cm⁻¹) and the validity limits: as version 1. The rules are still for neutral, planar,
+`d1/perline_widths_clean.py` repeats each step of version 2 on the clean species. Run with `--all` it reproduces
+`perline_widths_v2.csv` (14.31 / +9.36, 7.43 / +2.05, 5.88 / +1.75, 5.95 / +2.47, 10.57 / +5.86).
+
+| Line family | Range (cm⁻¹) | FWHM at 300 K (cm⁻¹) | Growth (cm⁻¹ per 100 K) | Version 2 | Basis (clean species) |
+| --- | --- | --- | --- | --- | --- |
+| CH stretch (3.3 µm) | 2800-3300 | 10.57 | 5.86 | 10.6, 5.9 | unchanged: all 60 species of the fit were already clean |
+| CC stretch (6.2 µm) | 1540-1700 | 14.17 | 8.96 | 14.3, 9.3 | 11 isolated bands (+3.70) plus an empirical +5.26 (117 species) |
+| 1470-1540 cm⁻¹ | 1470-1540 | 7.42 | 2.03 | 7.4, 2.1 | 30 isolated bands |
+| CC/CH in-plane (7.7 µm) | 1220-1470 | 5.45 | 1.65 | 5.9, 1.75 | 111 isolated bands |
+| CH in-plane (8.6 µm) | 1100-1220 | 5.50 | 2.38 | 6.0, 2.5 | 65 isolated bands |
+| CH out-of-plane (11.2-13.5 µm) | 650-1000 | 4.69 | 0.64 | 4.5, 0.67 | the 11.2 µm rule at Nc = 50 (1,236 isolated bands in the four oop rules) |
+
+- **Nothing moves by more than 8 %.** The in-plane widths at 300 K fall by 0.4-0.5 cm⁻¹ (7.7 and 8.6 µm); the oop
+  width rises by 0.2 cm⁻¹. 130 of the 200 species with in-plane fits are clean.
+- **The empirical 6.2 µm term depends on the sample.** It is +5.58 on the 57 clean species of the 60 that version 2
+  used (version 2: +5.64 on all 60) and +4.27 on 60 other clean species. The table takes the pooled value, +5.26
+  (117 species), so the term is known to about ±0.7. The gap between species at that value is −4 to +4 cm⁻¹
+  (16-84 %), as before: the term fixes the mean, not each species.
+- **7.7 µm:** still no extra line broadening closes the width growth of the complex (−4.7 cm⁻¹ at k = 0, −2.2 at
+  k = 16). Carried as an uncertainty, as in version 2.
+- **Background** (1700–2800 cm⁻¹) and the validity limits: as version 1. The rules are for neutral, planar,
   closed-shell PAHs at 300–900 K; applying them to cations is an assumption (Gate B4).
 
 ## Use
 
-`slice/emission.py --rules d1/tdep_rules_v1_clean.csv` (the default is still version 1, so that the v1 and v2
-prototype runs reproduce). `reports/nc_sr_v3/` is the first run with the clean table.
+`slice/emission.py --rules d1/tdep_rules_v1_clean.csv --widths d1/perline_widths_v2_clean.csv` (the defaults are
+still version 1 and `perline_widths_v2.csv`, so that the earlier prototype runs reproduce). `reports/nc_sr_v3/` used
+the clean rules with the version-2 widths; `reports/nc_sr_v4/` uses both clean tables.
+
+Cation tables plug in with `--rules-cation <csv>` and `--widths-cation <csv>` (same columns; a missing row falls
+back to the neutral value and is logged). `d1/tdep_rules_cation_v1.csv` does not exist yet.

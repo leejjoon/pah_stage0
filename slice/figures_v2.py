@@ -9,7 +9,9 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 NAME = {"P": "PAHFIT\nMIRI", "P33": "PAHFIT\n+ 3.3", "L": "local\nMIRI", "L33": "local\n+ 3.3", "T": "noise-free\nMIRI", "T33": "noise-free\n+ 3.3"}
-NAME_ALL = dict(NAME); NAME_ALL.update({"Ln": "local MIRI\nno 17", "L33n": "local + 3.3\nno 17", "Pn": "PAHFIT MIRI\nno 17", "P33n": "PAHFIT + 3.3\nno 17"})
+NAME_ALL = dict(NAME); NAME_ALL.update({"Ln": "local MIRI\nno 17", "L33n": "local + 3.3\nno 17", "Pn": "PAHFIT MIRI\nno 17", "P33n": "PAHFIT + 3.3\nno 17",
+                                      "Hn": "local (PCHIP) MIRI\nno 17", "H33n": "local (PCHIP) + 3.3\nno 17", "LLn": "local (straight) MIRI\nno 17",
+                                      "LL33n": "local (straight) + 3.3\nno 17", "H": "local (PCHIP)\nMIRI", "H33": "local (PCHIP)\n+ 3.3"})
 UNIT = {"logNc": "log$_{10}$ N$_C$ (dex)", "E_eV": "photon energy (eV)", "f_cation": "cation fraction"}
 KIND = [("one_ratio", "best single ratio", "#9aa0a6"), ("rf", "random forest", "#1f6feb"), ("formula_compact", "formula, complexity ≤ 7", "#d1495b"),
         ("formula_full", "formula, complexity ≤ 12", "#edae49")]
