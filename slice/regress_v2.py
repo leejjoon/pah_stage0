@@ -13,6 +13,7 @@
 #   Pn, Ln, P33n, L33n, Tn, T33n   the same without the 17 um ratio (version 3)
 #   H, H33, Hn, H33n   local integrals above the monotone piecewise-cubic continuum (measure.py version 4: Lpch)
 #   LLn, LL33n         straight-segment continuum without the 17 um ratio
+#   Hc, Hc33           Hn, H33n plus c170: the 17 um complex above the curved continuum (measure.py version 5: Lcrv_17)
 # --sets A,B restricts a run to some sets, so that two runs can share a machine; --merge dir1 dir2 joins their
 # results.json into <out dir> (the labels and features arguments are then ignored).
 # Split, targets and selection rules as regress.py (70/15/15 by the same seeded permutation; everything chosen on
@@ -51,6 +52,8 @@ SETS.update({"P33": SETS["P"] + ["r33"], "L33": SETS["L"] + ["s33"], "LL33": SET
              "P33x": SETS["P"] + ["r33x"], "L33x": SETS["L"] + ["s33x"], "H33": SETS["H"] + ["h33"]})
 # the same sets without the 17 um band (name + "n"): the Orion Bar templates lie outside the library in that ratio only
 SETS.update({k + "n": [c for c in v if not c.endswith("170")] for k, v in list(SETS.items()) if k in ("P", "L", "P33", "L33", "T", "T33", "H", "H33", "LL", "LL33")})
+# version 5: the monotone-continuum sets with the 17 um complex above the curved continuum (measure.py: Lcrv_17)
+SETS.update({"Hc": SETS["Hn"] + ["c170"], "Hc33": SETS["H33n"] + ["c170"]})
 STRUCT = ["solo_frac", "trio_frac", "quartet_frac", "N_frac", "own_frac", "cont_level", "f_cation", "logNc", "E_eV"]
 ABS_TARGET = R1.ABS_TARGET
 rmse, fl = R1.rmse, R1.fl
@@ -58,7 +61,7 @@ rmse, fl = R1.rmse, R1.fl
 
 def features(rows, pops=None):
     F = R1.features(rows) if "P_PAH_6.2" in rows[0] else {"ok": np.zeros(len(rows), bool), "chi2": np.full(len(rows), np.nan)}
-    C = {c: np.array([fl(r.get(c)) for r in rows]) for c in rows[0] if c.startswith(("Llin_", "Lspl_", "Lpch_", "Win_", "Wfit_"))}
+    C = {c: np.array([fl(r.get(c)) for r in rows]) for c in rows[0] if c.startswith(("Llin_", "Lspl_", "Lpch_", "Lcrv_", "Win_", "Wfit_"))}
     with np.errstate(divide="ignore", invalid="ignore"):
         for b in B + ["33"]:
             k = BK[b]
@@ -72,6 +75,8 @@ def features(rows, pops=None):
             if f"Win_{k}" in C:
                 F[f"w{b}"] = C[f"Win_{k}"] / C["Win_11.2"]
                 F[f"recL{b}"] = F[f"s{b}"] / F[f"w{b}"]; F[f"recLL{b}"] = F[f"l{b}"] / F[f"w{b}"]
+        if "Lcrv_17" in C and "Lpch_11.2" in C:
+            F["c170"] = C["Lcrv_17"] / C["Lpch_11.2"]
         if "Llin_3.3" in C and "Wfit_11.2" in C:
             F["r33"] = C["Llin_3.3"] / C["Wfit_11.2"]
         if "Win_11.2" in C:

@@ -25,6 +25,9 @@
 # once the cation MLMD profile fits exist; same columns as the neutral tables). A (band, quantity) row or a line
 # family missing from a cation table is taken from the neutral table, and the log says which. Without these
 # options charged species take the neutral tables (the Gate B4 assumption).
+# --alt name:band:value[,name:band:value] adds variants in which the strength slope of one feature of the charged
+# species is replaced (fraction of 300 K per 100 K at every size; neutrals keep tdep): the sensitivity check of version 5,
+# s112:11.2:-0.004 (the cation 11.2 um slope at L = 5.1 ps instead of -0.047 at 16 ps; d1/tdep_rules_cation_v1.md).
 # --b4 adds variants in which only the rules of charged species are changed (Gate B4 step b; neutrals keep tdep, and
 # so does every species in a table without charged rows):
 #   cc17, cc30     strength slope of the lines of the 6.2, 7.7 and 8.6 um features lower by 1.7 and 3.0 % of the
@@ -60,6 +63,7 @@ VARIANTS = {"tdep": (T_HI, 0.5, 2.0, 0.0, 1.0, 1.0), "tdep900": (900.0, 0.5, 2.0
             "wdp30": (T_HI, 0.5, 2.0, 0.0, 1.0, 1.3), "wdm30": (T_HI, 0.5, 2.0, 0.0, 1.0, 0.7)}
 CLAMPS = ["tdep900", "tdeplin"]; B4 = ["cc17", "cc30", "shp30", "shm30", "wdp30", "wdm30"]
 CC_FEATURES = ("6.2", "7.7", "8.6")
+ALT = {}                                                                            # variant: (feature, strength slope); charged only
 
 
 def load_rules(path=None, wpath=None, base=None, log=None):
@@ -128,6 +132,10 @@ def cascade(args):
     for b, lo, hi in FEATURES:
         if b in CC_FEATURES:
             cc |= (nua >= lo) & (nua < hi)
+    ssalt = {}
+    for v, (b, val) in (ALT.items() if charge else ()):
+        lo, hi = next((lo, hi) for f, lo, hi in FEATURES if f == b)
+        ssalt[v] = np.where((nua >= lo) & (nua < hi), val, ssa)
     ped = (GRID >= PED[0]) & (GRID < PED[1]); dg = GRID[1] - GRID[0]
     harm = np.zeros((len(energies), GRID.size), np.float32); tdep = {v: np.zeros_like(harm) for v in variants}
     acc = {v: np.zeros(GRID.size) for v in variants}; eline = np.zeros(nua.size); done = 0
@@ -140,10 +148,12 @@ def cascade(args):
         # temperature rules (variants that share the rule temperature and the clip share the step)
         step = {}; key = {}
         for v in variants:
-            thi, c0, c1, dcc, fsh, fwd = VARIANTS[v] if charge else VARIANTS[v][:3] + (0.0, 1.0, 1.0)
-            dTe = (min(max(T, T_LO), thi) - 300.0) / 100.0; key[v] = (dTe, c0, c1, dcc, fsh, fwd)
+            V = VARIANTS.get(v, VARIANTS["tdep"])
+            thi, c0, c1, dcc, fsh, fwd = V if charge else V[:3] + (0.0, 1.0, 1.0)
+            sv = ssalt.get(v, ssa)
+            dTe = (min(max(T, T_LO), thi) - 300.0) / 100.0; key[v] = (dTe, c0, c1, dcc, fsh, fwd, v if v in ssalt else "")
             if key[v] not in step:
-                p = nua + psa * fsh * dTe; g = np.clip(1 + (ssa + dcc * cc) * dTe, c0, c1); gam = 0.5 * (w0a + wsa * fwd * dTe)
+                p = nua + psa * fsh * dTe; g = np.clip(1 + (sv + dcc * cc) * dTe, c0, c1); gam = 0.5 * (w0a + wsa * fwd * dTe)
                 w = Aa * g * p ** 3 / np.expm1(HC_K * p / T)
                 wped = np.zeros(GRID.size)
                 wped[ped] = (PED[2] + PED[3] * dTe) * (Aa * g).sum() / (PED[1] - PED[0]) * GRID[ped] ** 3 / np.expm1(HC_K * GRID[ped] / T)
@@ -168,8 +178,11 @@ def main():
     ap.add_argument("--jobs", type=int, default=32); ap.add_argument("--energies", default="3,4,5,6,8,10,12")
     ap.add_argument("--clamps", action="store_true"); ap.add_argument("--b4", action="store_true"); ap.add_argument("--rules")
     ap.add_argument("--widths"); ap.add_argument("--rules-cation"); ap.add_argument("--widths-cation")
+    ap.add_argument("--alt", default="")
     a = ap.parse_args()
     global RULES, WIDTHS, RULES_Q, WIDTHS_Q
+    for x in filter(None, a.alt.split(",")):
+        n, b, val = x.split(":"); assert n not in VARIANTS and n != "harm" and b in [f[0] for f in FEATURES]; ALT[n] = (b, float(val))
     if a.rules or a.widths:
         RULES, WIDTHS = load_rules(a.rules, a.widths)                                 # before the pool forks
     if a.rules_cation or a.widths_cation:
@@ -190,7 +203,7 @@ def main():
                 sticks[int(el.get("uid"))] = (np.array([float(m.find(NS + "frequency").text) for m in ms]),
                                               np.array([float(m.find(NS + "intensity").text) for m in ms]))
             el.clear()
-    tasks = []; variants = ["tdep"] + (CLAMPS if a.clamps else []) + (B4 if a.b4 else [])
+    tasks = []; variants = ["tdep"] + (CLAMPS if a.clamps else []) + (B4 if a.b4 else []) + list(ALT)
     for r in rows:
         nu, A = own[r["species"]] if r["source"] == "own" else sticks[int(r["uid"])]
         tasks.append((r["species"], int(r["nC"]), nu, A, energies, variants, int(r["charge"])))
@@ -213,6 +226,7 @@ def main():
         h.attrs["widths"] = os.path.basename(a.widths or "perline_widths_v2.csv")
         h.attrs["rules_cation"] = os.path.basename(a.rules_cation or "") or "as neutral"
         h.attrs["widths_cation"] = os.path.basename(a.widths_cation or "") or "as neutral"
+        h.attrs["alt"] = a.alt
         h.attrs["variants"] = (f"tdep: {h.attrs['rules']} + {h.attrs['widths']} (charged species: {h.attrs['rules_cation']}, "
                                f"{h.attrs['widths_cation']}); harm: fixed lines, Gaussian FWHM 15 cm^-1")
     nc = np.array([t[1] for t in tasks])

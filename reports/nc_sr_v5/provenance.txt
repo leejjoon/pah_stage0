@@ -1,0 +1,16 @@
+date: 2026-11-27T00:50:29+09:00
+host: gh200
+repo commit: unknown
+container C sha256: 5a0fd1b3048749ddd6a558835ebd132fb1585ebb8cd763b6ea12b01c398b268d
+PAHdb: e1c2efd3468558c934d7d49c9417e18580baf63f8af980ae5941009230f0d319  pahdb-complete-theoretical-v4.00.xml.gz
+tdep_rules_v1_clean.csv 32b72793580cac0f118dcf23f235b5d4e861f84f574d38c2cae4363b99545bed
+perline_widths_v2_clean.csv 883d8d4a3b0573e90663335bc163d018a8ec66f6b44b35c9b4650fa5491dd264
+tdep_rules_cation_v1.csv 92b09e9ae54ada866967eb62309af316788062bf3285e40bd7b213788e2a15fd
+perline_widths_cation_v1.csv 40f7e2d5ac8990f8857c26603b2941bfbc49647a0a3acb96c35618085ab14ede
+cation rules: /r/d1/tdep_rules_cation_v1.csv; cation widths: /r/d1/perline_widths_cation_v1.csv; alternative variants: s112:11.2:-0.004
+pahfit 2.6.dev93+gca599f9a1
+wall time: 1724 s
+date: 2026-11-27T01:28:54+09:00
+host: z2mini (x86_64)
+repo commit: 2221acd5a6a92d478a703e2e432068818ce054c5
+pysr 2.7.2 | scikit-learn 1.9.1 | julia 1.13.4

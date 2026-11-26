@@ -32,6 +32,10 @@
 #   ten times wider; PAHFIT fits the lines itself and sees the spectrum as it is. The synthetic spectra have no lines
 #   and are not filtered. Not removed: the 3.4 um aliphatic band, whose blue side lies inside the 3.3 um window.
 # Version 4 (2026-11-25):
+#   Lcrv_17       the 17 um complex above a parabola in (log wavelength, log flux) through the four anchors at
+#                 14.6-15.4 and 18.5-20 um (least squares). The Orion Bar continuum is concave there in log-log, and the
+#                 parabola follows it to 3-4 % at the anchors (reports/nc_sr_v5); where an anchor median is not
+#                 positive, the Lpch continuum is used.
 #   Lpch_<band>   a third local continuum: monotone piecewise-cubic (PCHIP) through the same anchor medians. It cannot
 #                 overshoot between anchors; the natural spline does, in the 4 um gap under the 6-9 um bands, when the
 #                 continuum turns steep beyond 15 um (the Orion Bar templates; slice/orion_gap.py).
@@ -62,6 +66,8 @@ LBANDS = WINDOWS
 # anchor windows of the local continuum: where the neutral library emits least (2-5 % of the 11.2 um peak; the
 # 6.6-7.0 and 8.2 um gaps hold 10 %, so they are not anchors)
 LANCH = [(5.45, 5.55), (5.88, 5.95), (9.55, 9.9), (9.9, 10.1), (14.6, 14.9), (15.0, 15.4), (18.5, 19.2), (19.2, 20.0)]
+if os.environ.get("PAH_LANCH_BLUE"):                                               # test only (slice/orion_cont.py): blue anchor moved
+    LANCH = [tuple(float(v) for v in os.environ["PAH_LANCH_BLUE"].split(","))] + LANCH[2:]
 NIRS = np.arange(2.95, 3.85, 0.0006); NIR_R = 2700.0; NBAND = (3.18, 3.40); NANCH = [(3.05, 3.13), (3.60, 3.72)]
 ANCHORS = [(5.45, 5.55), (5.88, 5.95), (9.3, 9.55), (10.1, 10.4), (14.6, 14.9), (15.0, 15.4), (18.0, 18.5), (19.2, 20.0)]
 HC_K = 1.438776877
@@ -158,6 +164,10 @@ def local_bands(wav, flux, anchors, bands):
     for b, (lo, hi) in bands.items():
         out[f"Llin_{b}"] = win(wav, flux - lin, lo, hi); out[f"Lspl_{b}"] = win(wav, flux - spl, lo, hi)
         out[f"Lpch_{b}"] = win(wav, flux - pch, lo, hi)
+    if "17" in bands:                                                                 # curved continuum under the 17 um complex
+        m = (x > 14.0) & (y > 0); lo, hi = bands["17"]
+        crv = np.exp(np.polyval(np.polyfit(np.log(x[m]), np.log(y[m]), 2), np.log(wav))) if m.sum() == 4 else pch
+        out["Lcrv_17"] = win(wav, flux - crv, lo, hi)
     return out
 
 
