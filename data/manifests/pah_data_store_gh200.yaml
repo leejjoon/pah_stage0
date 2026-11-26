@@ -189,3 +189,18 @@ packages:
     size: 1050734823
     origin: local
     content: "D1 cation MLMD (MACE v8 q1, 100 cations x 300/600/900 K x 8 replicas, 64 ps NVE) polar_v7 dipoles + Rule B1 spectra (L = 16 and 5.11 ps), profile fits, rules/widths variants, 1 vs 2 fs gate; source of d1/tdep_rules_cation_v1.{csv,md} and d1/perline_widths_cation_v1.csv (trajectories not included)"
+  - file: cation_mlmd_traj_T300_v1-2026-11-26.tgz
+    sha256: 3b197076148249782c49eb967f8c39ad114a8ba98567303313346c65aa13c699
+    size: 24368883802
+    origin: local
+    content: "D1 cation MLMD trajectories at 300 K (traj/<uid>_T300.npz, 100 cations; MACE v8 q1, 8 replicas x 32,000 frames at 2 fs (64 ps NVE): positions [8, 32000, N, 3] float32, epot/ekin, T_nve, intact flags, model/seed/thermostat metadata); input of cation_mlmd_spectra_v1-2026-11-26.tgz; kept for mode_energy IVR, Eckart-frame and paired re-evaluations (coordinator 2026-11-27 00:09). Contents checked with tar -d before /var/tmp/jjlee-pah/d1/cation_mlmd/traj/ was deleted"
+  - file: cation_mlmd_traj_T600_v1-2026-11-26.tgz
+    sha256: c20c29d0c925f807514a98376b2d140e7bab24575b1f9029a25e48513b95cf82
+    size: 24370570757
+    origin: local
+    content: "D1 cation MLMD trajectories at 600 K (traj/<uid>_T600.npz, 100 cations; MACE v8 q1, 8 replicas x 32,000 frames at 2 fs (64 ps NVE): positions [8, 32000, N, 3] float32, epot/ekin, T_nve, intact flags, model/seed/thermostat metadata); input of cation_mlmd_spectra_v1-2026-11-26.tgz; kept for mode_energy IVR, Eckart-frame and paired re-evaluations (coordinator 2026-11-27 00:09). Contents checked with tar -d before /var/tmp/jjlee-pah/d1/cation_mlmd/traj/ was deleted"
+  - file: cation_mlmd_traj_T900_v1-2026-11-26.tgz
+    sha256: f6c405cea5e796c98d11b0a6861ed9b1e963337f466ab1e0aaa88c6886e11efe
+    size: 24368811171
+    origin: local
+    content: "D1 cation MLMD trajectories at 900 K (traj/<uid>_T900.npz, 100 cations; MACE v8 q1, 8 replicas x 32,000 frames at 2 fs (64 ps NVE): positions [8, 32000, N, 3] float32, epot/ekin, T_nve, intact flags, model/seed/thermostat metadata); input of cation_mlmd_spectra_v1-2026-11-26.tgz; kept for mode_energy IVR, Eckart-frame and paired re-evaluations (coordinator 2026-11-27 00:09). Contents checked with tar -d before /var/tmp/jjlee-pah/d1/cation_mlmd/traj/ was deleted"
