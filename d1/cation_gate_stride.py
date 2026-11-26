@@ -13,8 +13,9 @@
 # oop components); (3) the individual profile components (limit 1 %). On the ovalene+ gate (2026-11-26) (1) is 9e-5,
 # (2) slopes within 3.4 % (300 K values within 0.3 %; the 3.3 um centre within 0.11 cm^-1) and (3) fails on weak 7.7/12.0 sub-components: profile_fit's decomposition responds to a 1e-4 random
 # perturbation of the same spectra by up to 2 % at rule level, so (2)-(3) measure fit sensitivity, not the stride.
-# --long: also the 2 fs series with a 16 ps ACF (FRACTION 0.25 of 64 ps) as a resolution diagnostic (not gated).
-#   python cation_gate_stride.py <dipoles_gate dir> <work dir> [--uid 5] [--long]
+# --acf-ps: the ACF window, 16 ps by default (the Step 4 primary; no refinement) or 5.11 (production _spec.npz; spectra
+# spline-refined 3x). Until 4bbdd38 the 5.1 ps spectra were zero-padded, which distorts them (cation_spec_export.py header).
+#   python cation_gate_stride.py <dipoles_gate dir> <work dir> [--uid 5] [--acf-ps 16|5.11]
 import argparse, csv, os, sys
 import numpy as np
 
@@ -77,13 +78,15 @@ def slopes(rows):
 
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("gate"); ap.add_argument("work"); ap.add_argument("--uid", default="5")
-    ap.add_argument("--long", action="store_true")
+    ap.add_argument("--acf-ps", type=float, default=16.0, help="ACF window: 16 (primary, 8,000 lags at 2 fs) or 5.11 (production _spec.npz)")
     a = ap.parse_args()
     Z = {T: dict(np.load(f"{a.gate}/{a.uid}_T{T}_fine_spec.npz")) for T in TS}
     sp = str(Z[300]["species"])
     print(f"{sp}: {[Z[T]['dipole'].shape for T in TS]} at {float(Z[300]['dt_fs'])} fs; T_nve " +
           ", ".join(f"{T}: {np.mean(Z[T]['T_nve']):.0f}" for T in TS))
-    runs = {"1fs": (1, None), "2fs": (2, None)} | ({"2fs_L16": (2, 0.25)} if a.long else {})
+    F2 = Z[300]["dipole"].shape[1] * float(Z[300]["dt_fs"]) / 2; frac = (round(a.acf_ps * 500) + 0.5) / F2
+    print(f"ACF: {int(F2 * frac)} lags at 2 fs ({int(F2 * frac) * 2e-3:.2f} ps), 1 fs {2 * (int(F2 * frac) - 1) + 1} lags")
+    runs = {"1fs": (1, frac), "2fs": (2, frac)}
     fits, b1 = {}, {}
     for name, (stride, frac) in runs.items():
         root = f"{a.work}/{name}"
@@ -99,7 +102,7 @@ def main():
         d = {b: b1["2fs"][T][b] / b1["1fs"][T][b] - 1 for b in b1["1fs"][T] if b[0] != "_" and b1["1fs"][T][b] > 1e-3 * (b != "total")}
         print(f"  {T} K: " + ", ".join(f"{b} {v:+.1e}" for b, v in d.items()))
     FLOOR = {"position": 0.02, "width": 0.01, "strength": 0.03}      # per 100 K: cm^-1, cm^-1, fraction of 300 K (strength: the rule tolerance, 3 %/100 K)
-    print("profile_fit slopes per 100 K: 1 fs | 2 fs | |diff| / max(|1 fs slope|, floor)" + (" | 2 fs with a 16 ps ACF (component nearest in 300 K centre)" if a.long else "")
+    print("profile_fit slopes per 100 K: 1 fs | 2 fs | |diff| / max(|1 fs slope|, floor)" + ("")
           + f"; floors {FLOOR}; 300 K values compared relatively (positions: |diff| / 1 cm^-1).\nGated: oop and in-plane profile components; complexes (fixed windows) information only.")
     print("Spectra (unpadded, replica mean, matched lags): max |2 fs - 1 fs| / max(1 fs):")
     spec = 0.0
@@ -114,15 +117,13 @@ def main():
             r.setdefault("nC", "0")
         getattr(cr, "_A", {}).clear(); rl[n] = cr.per_species(rows)
     rworst = r0worst = 0.0
-    for b in rl["1fs"]:
+    for b in sorted(set(rl["1fs"]) | set(rl["2fs"])):
+        if b not in rl["1fs"] or b not in rl["2fs"]:
+            print(f"  {b:5s} only in the {'1' if b in rl['1fs'] else '2'} fs fit (isolated-component filter)"); continue
         for q in ("position", "width", "strength"):
             s1, _, v1 = rl["1fs"][b][0][1][q]; s2, _, v2 = rl["2fs"][b][0][1][q]
             rel = abs(s2 - s1) / max(abs(s1), FLOOR[q]); rel0 = abs(v2 - v1) / abs(v1); rworst = max(rworst, rel); r0worst = max(r0worst, rel0)
             print(f"  {b:5s} {q:9s} {s1:+8.4f} | {s2:+8.4f} | {rel:.1e} (300 K {v1:.5g}, {rel0:.1e})")
-    def near(k, q):
-        c = [(abs(v["position"][1] - fits["1fs"][k]["position"][1]), v) for kk, v in fits.get("2fs_L16", {}).items() if kk[0] == k[0]]
-        c = min(c, key=lambda t: t[0], default=None)
-        return f" | {c[1][q][0]:+.3f}" if c and c[0] < 3 else " | -"
     for k in sorted(fits["1fs"], key=lambda k: (k[0], str(k[1]), str(k[2]))):
         gated = k[0] != "complex"
         if k not in fits["2fs"]:
@@ -133,7 +134,7 @@ def main():
             if gated:
                 worst = max(worst, rel, rel0)
             lines.append(f"  {k[0]:7s} {k[1]:>5s} {k[2]!s:>4s} {q:9s} {s1:+8.3f} | {s2:+8.3f} | {rel:.1e} (300 K {v1:.4g}, {rel0:.1e})"
-                         + (near(k, q) if a.long else "") + ("" if gated else "  [info]"))
+                         + ("" if gated else "  [info]"))
     print("\n".join(lines))
     print(f"spectra: {'PASS' if spec <= 0.01 else 'FAIL'} (largest {spec:.1e}, limit 1e-2)")
     print(f"rule-level band quantities: slopes within {rworst:.1e} (relative to the 1 fs slope or floor), 300 K values within {r0worst:.1e} (relative)")
