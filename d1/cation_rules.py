@@ -13,7 +13,7 @@
 #     band by their 300 K replica-mean centre in emission.py's line ranges (6.2: 1540-1700, 7.7: 1220-1470, 8.6:
 #     1100-1220); position = area-weighted mean centre, strength = summed area (fraction of the 300-3800 total),
 #     relative to its 300 K value; tracked components whose FWHM reaches MAXW = 100 cm^-1 at any T are dropped (failed
-#     fits). 8.6 um strength: the fixed-window area instead (tracked sum not estimable; cmd_rules, --tracked-strength).
+#     fits; also applied to the isolated oop components). 8.6 um strength: the fixed-window area instead (tracked sum not estimable; cmd_rules, --tracked-strength).
 #     Width and width300 of these bands: the fixed-window rms width, as the neutral table (not used by emission.py).
 #   - 3.3 um: the fixed-window complex (2850-3250; the band stays inside it to 900 K), as the neutral table.
 #   - 11.2, 12.0, 12.7, 13.5 um: isolated oop profile components, as the neutral table (components overlapping
@@ -99,12 +99,16 @@ def per_species(rows, fixed=False, maxw=None):
                     if len(w) >= 9:
                         _A.setdefault("cw", {})[(sp, b)] = slope(w, "rmsw")
         elif reg == "oop":
-            comps = {}
+            comps = {}; owmax = {}
             for r in v:
                 comps.setdefault(r["comp"], []).append(r)
+            for r in rows:                                       # the MAXW failed-fit cut, as for the tracked bands
+                if r["species"] == sp and r["region"] == "oop" and r["replica"] == "mean":
+                    owmax[r["comp"]] = max(owmax.get(r["comp"], 0.0), float(r["fwhm"]))
             for c, w in comps.items():
                 b300 = [r for r in w if r["T"] == "300"]
-                if len(b300) < 3 or len(w) < 9 or not b300[0]["band"] or any(r["overlap"] == "1" for r in w if r["T"] == "900"):
+                if len(b300) < 3 or len(w) < 9 or not b300[0]["band"] or any(r["overlap"] == "1" for r in w if r["T"] == "900") \
+                        or owmax.get(c, 0.0) >= (MAXW if maxw is None else maxw):
                     continue
                 ww = [dict(T=int(r["T"]), x=float(r["T_nve"]) / 100, center=float(r["center"]), fwhm=float(r["fwhm"]), area=float(r["area"])) for r in w]
                 res.setdefault(b300[0]["band"], []).append((nc, dict(position=slope(ww, "center"), width=slope(ww, "fwhm"), strength=slope(ww, "area", True))))

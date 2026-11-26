@@ -10,9 +10,14 @@ head) and the polar_v7 dipole model. This follows the coordinator's decoupled 5-
   - `slice/emission.py --rules-cation d1/tdep_rules_cation_v1.csv --widths-cation d1/perline_widths_cation_v1.csv`
     reads them. Checked with its `load_rules`: it takes all 16 position and strength rules and all 6 width families
     from these tables, and nothing from the neutral tables.
-  - Size terms pass its 2-s.e. test only for the 3.3 µm strength and the 11.2 µm position.
+  - Size terms pass its 2-s.e. test only for the 3.3 µm strength.
+  - The 11.2 µm position term (−0.77 ± 0.58 per decade) does not pass. Before the oop MAXW cut it was −1.46 ± 0.73,
+    a borderline pass driven by the one failed fit, with the opposite sign at 5.1 ps.
 - **Neutral species keep `tdep_rules_v1_clean.csv`** (Mai et al. style MLMD). These rules are for cations only.
 - **Archive:** `gh200:~/projects/pah-data/cation_mlmd_spectra_v1-2026-11-26.tgz`, described below.
+  - Its rules and widths CSVs predate the oop MAXW cut (commit after d8ebf4f, same evening). They differ only in the 11.2
+    rows and the oop width family.
+  - The archived fits are the inputs, so `cation_rules.py rules` / `widths` on them reproduce the tables in git.
 
 ## Data
 
@@ -63,8 +68,8 @@ quad−lin at 1200 K. Per band:
 - **11.2, 12.0, 12.7, 13.5 µm:** isolated oop profile components, as in the neutral table. A component that overlaps
   another at 900 K is dropped.
 
-**Tracked-component cut (MAXW = 100 cm⁻¹):** a tracked component whose replica-mean FWHM reaches 100 cm⁻¹ at any
-temperature is dropped from its band at every temperature.
+**Failed-fit cut (MAXW = 100 cm⁻¹):** a tracked in-plane component, or an isolated oop component, whose replica-mean
+FWHM reaches 100 cm⁻¹ at any temperature is dropped from its band at every temperature.
 
 - **Mechanism:** a weak, narrow line at 300 K is refitted at 600 and 900 K into a broad pedestal-like component, up to
   the 150 cm⁻¹ bound, that takes up background.
@@ -74,6 +79,9 @@ temperature is dropped from its band at every temperature.
   - 6.2: 3/194 and 4/156
   - 7.7: 50/649 and 37/674
   - 8.6: 8/227 and 10/237
+  - oop: one component, the 11.2 µm band of C120H28⁺ (3221) at 16 ps, with FWHM 116 cm⁻¹ at 300 K and a species
+    width300 of 92. Dropping it reduces the 11.2 width300 s.e. from 1.72 to 0.77 and the width-slope s.e. from 0.30
+    to 0.17. Nothing is dropped at 5.1 ps.
 - **Effect:** the cut changes the 6.2 and 7.7 rules little. It removes the four worst 8.6 µm fits. See the second table
   below.
 - **Rationale:** the cut is a fit-quality rule of the same kind as the oop overlap drop. Without the cut:
@@ -110,10 +118,10 @@ Columns:
 | 8.6 | width | +0.368 ± 0.062 (94) | +1.153 | 0.545 | +0.377 ± 0.061 (96) | -0.008 | +0.376 |
 | 8.6 | strength | +0.020 ± 0.006 (100) | -0.058 | 0.032 | +0.020 ± 0.006 (100) | +0.000 | +0.032 |
 | 8.6 | width300 | +27.100 ± 0.415 (94) | -2.540 | 3.837 | +27.198 ± 0.406 (96) | -0.098 | +29.354 |
-| 11.2 | position | -1.500 ± 0.156 (67) | -1.462 | 0.422 | -1.449 ± 0.164 (73) | -0.050 | -1.933 |
-| 11.2 | width | +0.278 ± 0.303 (67) | -1.160 | 0.568 | +0.457 ± 0.083 (73) | -0.179 | +0.639 |
-| 11.2 | strength | -0.047 ± 0.009 (67) | -0.002 | 0.057 | -0.004 ± 0.027 (73) | -0.043 | -0.034 |
-| 11.2 | width300 | +5.792 ± 1.725 (67) | -1.047 | 1.200 | +5.621 ± 0.447 (73) | +0.171 | +4.693 |
+| 11.2 | position | -1.486 ± 0.121 (66) | -0.769 | 0.317 | -1.449 ± 0.164 (73) | -0.036 | -1.933 |
+| 11.2 | width | +0.313 ± 0.168 (66) | +0.610 | 0.503 | +0.457 ± 0.083 (73) | -0.143 | +0.639 |
+| 11.2 | strength | -0.047 ± 0.009 (66) | +0.004 | 0.056 | -0.004 ± 0.027 (73) | -0.043 | -0.034 |
+| 11.2 | width300 | +5.575 ± 0.769 (66) | -11.838 | 1.819 | +5.621 ± 0.447 (73) | -0.046 | +4.693 |
 | 12.0 | position | -1.207 ± 0.165 (51) | -0.848 | 0.285 | -1.266 ± 0.058 (54) | +0.059 | -1.786 |
 | 12.0 | width | +0.647 ± 0.119 (51) | -0.419 | 0.567 | +0.709 ± 0.085 (54) | -0.062 | +0.625 |
 | 12.0 | strength | -0.021 ± 0.013 (51) | -0.109 | 0.060 | -0.033 ± 0.007 (54) | +0.012 | +0.021 |
@@ -146,9 +154,9 @@ width growth ±30 %.
   - 12.0 and 12.7 µm width300 are 17 % and 26 % lower at 16 ps (finer grid, narrower fitted lines).
   - **3.3 µm FWHM slope**, about 40 % lower (2.27 vs 3.80), and width300 (20.5 vs 24.3). The finer 16 ps grid resolves the CH-stretch
     complex into narrower structure, so its FWHM is smaller and grows more slowly.
-  - **11.2 µm width slope**, about 40 % lower (0.28 ± 0.30 vs 0.46 ± 0.08). At 16 ps this row is poorly determined.
+  - **11.2 µm width slope**, about 30 % lower (0.31 ± 0.17 vs 0.46 ± 0.08).
 - **Species counts per oop band, 16 ps vs 5.1 ps:**
-  - 11.2: 67 vs 73
+  - 11.2: 66 vs 73
   - 12.0: 51 vs 54
   - 12.7: 58 vs 62
   - 13.5: 60 vs 66
@@ -157,7 +165,7 @@ width growth ±30 %.
   - On the gate species (ovalene⁺), 11.2 µm itself splits into an 880/885 cm⁻¹ pair at 16 ps. Its 1 fs and 2 fs fits
     disagree there, while at 5.1 ps they agree to 3e-5. That per-bin noise is the price of the 16 ps resolution on 64 ps
     runs.
-  - The in-plane and 3.3 µm counts are the same at both L.
+  - 3.3 and 7.7 have 100 species at both L. 6.2 has 95 vs 94, and 8.6 position 94 vs 96 (see "Other notes").
 
 ## 8.6 µm strength
 
@@ -222,7 +230,7 @@ Method as `perline_widths_clean.py` for the neutral table, on PAHdb 6-31G* catio
 | 1470–1540 | 1470–1540 | 6.72 | +1.36 | 30 | 8.38, +1.11 (25) | 7.42, +2.03 |
 | CC/CH in-plane (7.7 µm) | 1220–1470 | 3.86 | +1.45 | 97 | 4.60, +1.44 (133) | 5.45, +1.65 |
 | CH in-plane (8.6 µm) | 1100–1220 | 3.89 | +1.37 | 72 | 4.36, +1.44 (81) | 5.50, +2.38 |
-| CH out-of-plane | 650–1000 | 5.79 | +0.28 | 236 | 5.62, +0.46 (255) | 4.69, +0.64 |
+| CH out-of-plane | 650–1000 | 5.58 | +0.31 | 235 | 5.62, +0.46 (255) | 4.69, +0.64 |
 
 - **CH stretch:** obtained by inverting the cation 3.3 µm FWHM rule with `rules_closure`'s bisection. It inherits the
   rule's L dependence: slope 1.22 at 16 ps against 2.48 at 5.1 ps.
@@ -257,8 +265,8 @@ Method as `perline_widths_clean.py` for the neutral table, on PAHdb 6-31G* catio
   - The tracked aggregation damps this to the per-mille level at rule level on the gate species.
   - The pooled medians agree with the OLS for 6.2 and 7.7 (strength: −0.043 vs −0.050; −0.017 vs −0.006).
 - **11.2 µm at 16 ps:**
-  - fewer species (67);
-  - a width slope with s.e. 0.30;
+  - fewer species (66 vs 73);
+  - a width slope with s.e. 0.17;
   - a strength 4.3 % per 100 K away from 5.1 ps.
   - Use with that uncertainty, or take the 5.1 ps row (`rules_L5.csv` in the archive) if the coordinator prefers.
 

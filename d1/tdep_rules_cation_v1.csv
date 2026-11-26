@@ -15,10 +15,10 @@ band,kind,quantity,unit,n_species,at_Nc50,se,per_decade_Nc,se_decade,scatter,qua
 8.6,"tracked in-plane components (area-weighted centre, summed area); width: complex rms",width,cm-1 per 100 K,94,0.3685,0.0621,1.153,0.325,0.5448,-0.0759
 8.6,"complex window area (1100-1220; tracked sum not estimable, see md)",strength,fraction of 300 K per 100 K,100,0.0203,0.0057,-0.0581,0.0295,0.0323,0.0211
 8.6,"tracked in-plane components (area-weighted centre, summed area); width: complex rms",width300,cm-1 at 300 K,94,27.0997,0.4151,-2.5398,2.1722,3.8375,nan
-11.2,isolated oop band (truncated-Lorentzian fit),position,cm-1 per 100 K,67,-1.4996,0.1557,-1.4615,0.7285,0.4217,-0.6584
-11.2,isolated oop band (truncated-Lorentzian fit),width,cm-1 per 100 K,67,0.2779,0.3034,-1.1602,1.4193,0.5682,-1.2207
-11.2,isolated oop band (truncated-Lorentzian fit),strength,fraction of 300 K per 100 K,67,-0.0467,0.0089,-0.0023,0.0418,0.0565,-0.0177
-11.2,isolated oop band (truncated-Lorentzian fit),width300,cm-1 at 300 K,67,5.7916,1.7249,-1.0467,8.0697,1.2004,nan
+11.2,isolated oop band (truncated-Lorentzian fit),position,cm-1 per 100 K,66,-1.4857,0.1209,-0.7689,0.5752,0.3174,-0.7181
+11.2,isolated oop band (truncated-Lorentzian fit),width,cm-1 per 100 K,66,0.3134,0.1676,0.6102,0.7971,0.5027,-1.2361
+11.2,isolated oop band (truncated-Lorentzian fit),strength,fraction of 300 K per 100 K,66,-0.0466,0.0089,0.0045,0.0426,0.056,-0.0215
+11.2,isolated oop band (truncated-Lorentzian fit),width300,cm-1 at 300 K,66,5.5752,0.7694,-11.8378,3.6598,1.8191,nan
 12.0,isolated oop band (truncated-Lorentzian fit),position,cm-1 per 100 K,51,-1.2066,0.1648,-0.8484,0.8586,0.2852,0.3101
 12.0,isolated oop band (truncated-Lorentzian fit),width,cm-1 per 100 K,51,0.647,0.1189,-0.4192,0.6193,0.5673,-0.2943
 12.0,isolated oop band (truncated-Lorentzian fit),strength,fraction of 300 K per 100 K,51,-0.0211,0.0134,-0.1091,0.0698,0.0602,0.0782
