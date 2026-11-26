@@ -1,6 +1,8 @@
 # Species for the D1 cation finite-T rules (d1/tdep_rules_cation_v1; coordinator 2026-11-26 08:58):
-#   python cation_mlmd_select.py <species_nc_v1.csv> <pahdb_v4_exclude_nonkekule_v1.csv> <pahdb-v4.00.xml> <out.csv> <xyz dir> [--n 100]
-# Candidates: slice/species_nc_v1.csv (gh200-containers) rows with charge 1, status "use" (the table's verdict column),
+#   python cation_mlmd_select.py <species_nc_v1.csv> <pahdb_v4_exclude_nonkekule_v1.csv> <pahdb_v4_screen_spin_v1.csv>
+#                                <pahdb-v4.00.xml> <out.csv> <xyz dir> [--n 100]
+# Candidates: slice/species_nc_v1.csv (gh200-containers) rows with charge 1, status "use", verdict "ok" in
+# d1/pahdb_v4_screen_spin_v1.csv,
 # nN = 0 and atoms C/H only, 26 <= Nc <= 120, doublet (a singlet cation has a radical parent), no sp3 carbon, and a
 # Kekule carbon skeleton: the sp2 framework of the PAHdb cation geometry is bipartite with a perfect matching (the
 # test of docs/reports/pahdb_v4_nonkekule/pahdb_nonkekule.py; a cation shares its parent neutral's skeleton, and every
@@ -56,11 +58,12 @@ def kekule(el, nb):  # verbatim logic of pahdb_nonkekule.py: (has Kekule structu
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("species"); ap.add_argument("exclude"); ap.add_argument("xml"); ap.add_argument("out"); ap.add_argument("xyz_dir")
+    ap.add_argument("species"); ap.add_argument("exclude"); ap.add_argument("screen"); ap.add_argument("xml"); ap.add_argument("out"); ap.add_argument("xyz_dir")
     ap.add_argument("--n", type=int, default=100)
     a = ap.parse_args()
+    ok_uid = {r["uid"] for r in csv.DictReader(open(a.screen)) if r["charge"] == "1" and r["verdict"] == "ok"}
     rows = [r for r in csv.DictReader(open(a.species)) if r["charge"] == "1" and r["status"] == "use" and r["nN"] == "0"
-            and 26 <= int(r["nC"]) <= 120]
+            and 26 <= int(r["nC"]) <= 120 and r["uid"] in ok_uid]
     want = {r["uid"]: r for r in rows}
     ex_formula = {r["formula"] for r in csv.DictReader(open(a.exclude))}
     geo, why = {}, {}
@@ -92,7 +95,7 @@ def main():
         print(f"excluded {want[u]['species']}: {w}", file=sys.stderr)
     ok = [want[u] for u in geo]
     neutral_formula = lambda r: r["formula"].rstrip("+")
-    print(f"{len(rows)} C/H use cations with 26 <= Nc <= 120; {len(ok)} Kekule doublets; "
+    print(f"{len(rows)} C/H use + verdict ok cations with 26 <= Nc <= 120; {len(ok)} Kekule doublets; "
           f"{sum(neutral_formula(r) in ex_formula for r in ok)} share a formula with an excluded neutral (isomers; their own skeleton is Kekule)")
 
     def hclass(r):

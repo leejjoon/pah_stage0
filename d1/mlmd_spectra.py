@@ -1,16 +1,26 @@
 # IR spectra from mlmd_run.py dipoles, with the authors' 3_calc_IR.py maths (calc_MD_IR; Mai et al. 2025, code
 # Apache 2.0): autocorrelation of the dipole, first 7.987 % of it, DCT-I, field factor w (1 - exp(-hbar w / kT)),
 # optional quantum correction (qm 0-3), negative values set to 0, frequencies scaled by 0.9578, 300-3800 cm^-1.
-#   python mlmd_spectra.py <run outdir> <spectra outdir> [--qm 3] [--clip] [--tnom] [--xyz <dir>]
+#   python mlmd_spectra.py <run outdir> <spectra outdir> [--qm 3] [--clip] [--tnom] [--xyz <dir>] [--units a,b]
 # Production convention (committee review B1; d1/estimator_check.py, d1/estimator_xtb_check.py): qm=3 (harmonic
 # quantum correction), no clipping, each replica's mean NVE temperature in the prefactor. It reproduces harmonic
 # integrated intensities at every T. The authors' convention (qm=0, clipped, nominal T; their published IR_txt_*_qm0
 # files) weights bands by (1-exp(-x))/x, x = h c nu / kT, i.e. roughly 1/nu: at 300 K the CH stretch comes out at
 # ~0.07-0.09 of its harmonic intensity and the CH out-of-plane bands at ~0.2-0.3. --xyz <dir> also skips systems whose
-# end-of-run bond graph differs from the input (d1/mlmd_integrity.py).
+# end-of-run bond graph differs from the input (d1/mlmd_integrity.py). Runs with the per-chunk check (mlmd_run.py
+# flags.topo_change_chunk, 2026-11-15) skip any system whose topology changed at any chunk end; --keep-topo keeps them.
 # writes, per species and temperature, <spectra outdir>/<species>_<T>K.npz: freq (cm^-1, scaled), sigma (replicas,
 # freq) in cm^2 (unnormalised), mean (replica mean of sigma, normalised to a peak of 1), and <..>_qm<k>.txt in the
 # authors' format (normalised replica mean). Replicas are averaged before normalising. Flagged systems are skipped.
+# Hidden-event check: the screen (screen_check.py) sees only the final geometry, so an H that hops and returns
+# passes. A hop changes the slowly varying dipole. Over 1 ps windows: vec_shift = largest distance (e*A) of a window
+# mean of the dipole vector from the median window mean; mag_shift = the same for the window mean of |mu|; mu_med =
+# median of those |mu| means. The molecule tumbles, so for a polar molecule vec_shift reflects rotation, not
+# chemistry (overlap_v1: C11H7N_465, C59H20_96, 0.7-1.2 in every replica). mag_shift is rotation-invariant but
+# misses many events (sp3 ring openings barely change |mu|). Flag if mag_shift > MAG_FLAG, or if the molecule has
+# no permanent dipole (mu_med < POLAR) and vec_shift > VEC_FLAG. Calibrated 2026-11-14 on overlap_v1 and four
+# new300_v1 units: species passing the screen reach vec 0.16 (nonpolar) and mag 0.114. A partial check: it
+# catches most hops in nonpolar species, few in polar ones. Flagged systems still get spectra; qa.csv records it.
 #   python mlmd_spectra.py --check <dipole txt> <their spectrum txt> <T>   reproduce one 3_calc_IR.py output
 import argparse, glob, json, os, sys
 import numpy as np
@@ -18,6 +28,7 @@ from scipy import fftpack, signal
 from scipy.constants import physical_constants as pc
 
 FRACTION, SCALE, FMIN, FMAX = 0.07987, 0.9578, 300.0, 3800.0
+VEC_FLAG, MAG_FLAG, POLAR, SHIFT_WINDOW_FS = 0.2, 0.15, 0.25, 1000.0
 
 
 def ir_sigma(mu, T, dt_fs=1.0, qm=0, clip=True):
@@ -53,6 +64,16 @@ def ir_sigma(mu, T, dt_fs=1.0, qm=0, clip=True):
     return wn[m], sigma[m]
 
 
+def dipole_shift(mu, dt_fs=1.0):
+    """(vec_shift, mag_shift, mu_med, flag) over 1 ps windows; see the header."""
+    w = max(1, int(round(SHIFT_WINDOW_FS / dt_fs))); n = len(mu) // w
+    x = np.asarray(mu[:n * w], np.float64).reshape(n, w, 3)
+    m = x.mean(1); a = np.linalg.norm(x, axis=2).mean(1)
+    vec = float(np.linalg.norm(m - np.median(m, axis=0), axis=1).max())
+    mag = float(np.abs(a - np.median(a)).max()); med = float(np.median(a))
+    return vec, mag, med, int(mag > MAG_FLAG or (med < POLAR and vec > VEC_FLAG))
+
+
 def save_txt(path, f, y):
     np.savetxt(path, np.column_stack((f, y)), fmt="%.1f %.4e", header="Freq_MD (cm^-1) Inten_MD (Normalized intensity)")
 
@@ -72,37 +93,52 @@ def main():
     ap.add_argument("--clip", action="store_true", help="set negative values to 0, as the authors do")
     ap.add_argument("--tnom", action="store_true", help="nominal T in the prefactor (authors) instead of the replica NVE mean")
     ap.add_argument("--xyz", default=None, help="input xyz dir: skip systems whose bond graph changed by the end")
+    ap.add_argument("--units", default=None, help="comma-separated unit ids: only these (testing)")
+    ap.add_argument("--keep-topo", action="store_true",
+                    help="keep systems whose per-chunk topology check (mlmd_run.py flags.topo_change_chunk) fired")
     a = ap.parse_args()
     if a.xyz:
+        sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))   # python -I leaves the script dir off sys.path
         from mlmd_integrity import bonds, read_xyz
     os.makedirs(a.out, exist_ok=True)
     groups, skipped = {}, []
     for meta in sorted(glob.glob(f"{a.run}/units/*/meta.json")):
         d = os.path.dirname(meta)
-        if not os.path.exists(f"{d}/DONE"):
+        if not os.path.exists(f"{d}/DONE") or (a.units and os.path.basename(d) not in a.units.split(",")):
             continue
         m = json.load(open(meta)); fl = m["flags"]
-        mu = np.load(f"{d}/dipole.npy", mmap_mode="r")
         dt_fs = m["settings"]["dt_fs"] * m["settings"]["frame_every"]
         st = np.load(f"{d}/state.npz")
+        mu = np.load(f"{d}/dipole.npy")         # one unit at a time (a few hundred MB); keep only spectra
         for k, s in enumerate(m["systems"]):
             if fl["nonfinite"][k] or fl["hot"][k] or fl["max_neighbours"][k] > 25 or fl["edge_overflow"]:
                 skipped.append((s["species"], s["T"], s["replica"], "QA flag")); continue
+            if not a.keep_topo and fl.get("topo_change_chunk", [-1] * len(m["systems"]))[k] >= 0:
+                skipped.append((s["species"], s["T"], s["replica"], "topology changed during the run")); continue
             if a.xyz:
                 sym, p0 = read_xyz(f"{a.xyz}/{s['species']}.xyz")
                 if bonds(sym, p0) != bonds(sym, st["p"][k]):
                     skipped.append((s["species"], s["T"], s["replica"], "bond graph changed")); continue
             Tp = s["T"] if a.tnom else float(st["qa_T"][:, k].mean())
-            groups.setdefault((s["species"], s["T"]), []).append((s["replica"], np.asarray(mu[:, k]), dt_fs, Tp))
+            x = np.ascontiguousarray(mu[:, k])
+            groups.setdefault((s["species"], s["T"]), []).append(
+                (s["replica"], ir_sigma(x, Tp, dt_fs, a.qm, a.clip), dipole_shift(x, dt_fs), m["id"], Tp))
+        del mu
+    qa = []
     for (sp, T), reps in sorted(groups.items()):
         reps.sort(key=lambda r: r[0])
-        out = [ir_sigma(mu, Tp, dt_fs, a.qm, a.clip) for _, mu, dt_fs, Tp in reps]
-        f = out[0][0]; sig = np.array([o[1] for o in out]); mean = sig.mean(0); mean /= mean.max()
+        shift = [r[2] for r in reps]
+        qa += [(sp, T, r[0], r[3], *(round(v, 4) for v in x[:3]), x[3]) for r, x in zip(reps, shift)]
+        f = reps[0][1][0]; sig = np.array([r[1][1] for r in reps]); mean = sig.mean(0); mean /= mean.max()
         tag = f"{sp}_{T:g}K"
         np.savez(f"{a.out}/{tag}.npz", freq=f, sigma=sig, mean=mean, replicas=[r[0] for r in reps], qm=a.qm,
-                 clip=a.clip, prefactor_T=[r[3] for r in reps])
+                 clip=a.clip, prefactor_T=[r[4] for r in reps], dipole_shift=np.array(shift))
         save_txt(f"{a.out}/{tag}_qm{a.qm}.txt", f, mean)
-    print(f"{len(groups)} species x T spectra in {a.out}; {len(skipped)} flagged systems skipped")
+    with open(f"{a.out}/qa.csv", "w") as fo:
+        fo.write("species,T,replica,unit,vec_shift,mag_shift,mu_med,shift_flag\n")
+        fo.writelines(",".join(map(str, q)) + "\n" for q in qa)
+    print(f"{len(groups)} species x T spectra in {a.out}; {len(skipped)} flagged systems skipped; "
+          f"{sum(q[-1] for q in qa)} of {len(qa)} systems flagged by the dipole-shift check (qa.csv)")
     for x in skipped[:20]:
         print("   skipped", x)
 
