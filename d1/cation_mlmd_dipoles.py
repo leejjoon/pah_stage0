@@ -86,13 +86,21 @@ def work(a):
     me = f"{socket.gethostname()}:{os.getpid()}:{a.device}"
     while True:
         if a.remote:
-            r = sh(a.remote, f"cd {S} && ls {tdir} {odir} claims 2>/dev/null; test -e traj/ALL_MD_DONE && echo __DONE__")
-            names = r.stdout.split()
+            r = sh(a.remote, f"cd {S} && for d in {tdir} {odir} claims; do echo __DIR__ $d; ls $d; done 2>/dev/null; "
+                             f"test -e traj/ALL_MD_DONE && echo __DONE__")
+            lst, cur = {tdir: [], odir: [], "claims": []}, None
+            for t in r.stdout.split("\n"):
+                if t.startswith("__DIR__ "):
+                    cur = t.split(" ", 1)[1]
+                elif t.strip() and cur in lst and t != "__DONE__":
+                    lst[cur].append(t.strip())
+            alldone = "__DONE__" in r.stdout.split("\n")
         else:
-            names = os.listdir(f"{S}/{tdir}") + os.listdir(f"{S}/{odir}") + os.listdir(f"{S}/claims") + \
-                (["__DONE__"] if os.path.exists(f"{S}/traj/ALL_MD_DONE") else [])
-        ids = sorted(n[:-4] for n in names if n.endswith(f"{suf}.npz") and not n.endswith(".tmp.npz"))
-        done = {n[:-9] for n in names if n.endswith("_spec.npz")}; locked = {n[:-5] for n in names if n.endswith(".lock")}
+            lst = {d: os.listdir(f"{S}/{d}") for d in (tdir, odir, "claims")}
+            alldone = os.path.exists(f"{S}/traj/ALL_MD_DONE")
+        ids = sorted(n[:-4] for n in lst[tdir] if n.endswith(f"{suf}.npz") and not n.endswith(".tmp.npz"))   # jobs: the trajectory dir only
+        done = {n[:-9] for n in lst[odir] if n.endswith("_spec.npz") and not n.endswith(".tmp.npz")}
+        locked = {n[:-5] for n in lst["claims"] if n.endswith(".lock")}
         todo = [i for i in ids if i not in done and i not in locked]
         got = None
         for i in todo:
@@ -101,7 +109,7 @@ def work(a):
             if ok:
                 got = i; break
         if got is None:
-            if a.once or "__DONE__" in names and not todo or a.gate:
+            if a.once or a.gate or (alldone and not todo):
                 print("no job left", flush=True); return
             time.sleep(60); continue
         t0 = time.time(); src = f"{S}/{tdir}/{got}.npz"; dst = f"{S}/{odir}/{got}_spec.npz"
