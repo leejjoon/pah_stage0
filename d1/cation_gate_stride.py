@@ -113,11 +113,11 @@ def main():
         for r in rows:
             r.setdefault("nC", "0")
         getattr(cr, "_A", {}).clear(); rl[n] = cr.per_species(rows)
-    rworst = 0.0
+    rworst = r0worst = 0.0
     for b in rl["1fs"]:
         for q in ("position", "width", "strength"):
             s1, _, v1 = rl["1fs"][b][0][1][q]; s2, _, v2 = rl["2fs"][b][0][1][q]
-            rel = abs(s2 - s1) / max(abs(s1), FLOOR[q]); rel0 = abs(v2 - v1) / (1.0 if q == "position" else abs(v1)); rworst = max(rworst, rel, rel0)
+            rel = abs(s2 - s1) / max(abs(s1), FLOOR[q]); rel0 = abs(v2 - v1) / abs(v1); rworst = max(rworst, rel); r0worst = max(r0worst, rel0)
             print(f"  {b:5s} {q:9s} {s1:+8.4f} | {s2:+8.4f} | {rel:.1e} (300 K {v1:.5g}, {rel0:.1e})")
     def near(k, q):
         c = [(abs(v["position"][1] - fits["1fs"][k]["position"][1]), v) for kk, v in fits.get("2fs_L16", {}).items() if kk[0] == k[0]]
@@ -136,7 +136,7 @@ def main():
                          + (near(k, q) if a.long else "") + ("" if gated else "  [info]"))
     print("\n".join(lines))
     print(f"spectra: {'PASS' if spec <= 0.01 else 'FAIL'} (largest {spec:.1e}, limit 1e-2)")
-    print(f"rule-level band quantities: largest relative difference {rworst:.1e}")
+    print(f"rule-level band quantities: slopes within {rworst:.1e} (relative to the 1 fs slope or floor), 300 K values within {r0worst:.1e} (relative)")
     print(f"profile components: {'PASS' if worst <= 0.01 else 'FAIL'} (largest {worst:.2e}, limit 1e-2)")
 
 if __name__ == "__main__":
