@@ -12,8 +12,9 @@
 #     from 300 to 900 K (profile_fit refits each T from the previous one, shift bounds -40/+15 cm^-1), assigned to a
 #     band by their 300 K replica-mean centre in emission.py's line ranges (6.2: 1540-1700, 7.7: 1220-1470, 8.6:
 #     1100-1220); position = area-weighted mean centre, strength = summed area (fraction of the 300-3800 total),
-#     relative to its 300 K value. Width and width300 of these bands: the fixed-window rms width, as the neutral table
-#     (not used by emission.py).
+#     relative to its 300 K value; tracked components whose FWHM reaches MAXW = 100 cm^-1 at any T are dropped (failed
+#     fits). 8.6 um strength: the fixed-window area instead (tracked sum not estimable; cmd_rules, --tracked-strength).
+#     Width and width300 of these bands: the fixed-window rms width, as the neutral table (not used by emission.py).
 #   - 3.3 um: the fixed-window complex (2850-3250; the band stays inside it to 900 K), as the neutral table.
 #   - 11.2, 12.0, 12.7, 13.5 um: isolated oop profile components, as the neutral table (components overlapping
 #     another at 900 K dropped).
@@ -36,6 +37,10 @@ import rules_closure as rc  # noqa: E402
 import inplane_widths as iw  # noqa: E402
 
 TS = (300, 600, 900)
+MAXW = 100.0     # cm^-1: a tracked component whose replica-mean FWHM reaches this at any T is a failed fit, not a band (a weak
+                 # narrow line refitted from the previous T into a broad pedestal-like component, up to the 150 bound, that
+                 # takes up background: C34H16_v4u7230 8.6 um area 0.01 -> 0.65, FWHM 4 -> 148, 300 -> 900 K); dropped from
+                 # the band's sum at every T (cf. the oop rule's overlap drop). Real lines: median FWHM 5, 99th pct ~50 at 300 K.
 TRACKED = [("6.2", 1540, 1700), ("7.7", 1220, 1470), ("8.6", 1100, 1220)]       # emission.py FEATURES ranges
 OOP = ["11.2", "12.0", "12.7", "13.5"]
 KIND = {"3.3": "complex (centroid, FWHM)", "6.2": "tracked in-plane components (area-weighted centre, summed area); width: complex rms",
@@ -72,7 +77,7 @@ def slope(v, q, rel=False):
     return c1[0], np.polyval(c2, 12) - np.polyval(c1, 12), y300
 
 
-def per_species(rows, fixed=False):
+def per_species(rows, fixed=False, maxw=None):
     """{band: [(nC, {quantity: (slope per 100 K, quad - lin at 1200 K, value at 300 K)})]}"""
     res = {}; by = {}
     for r in rows:
@@ -104,12 +109,15 @@ def per_species(rows, fixed=False):
                 ww = [dict(T=int(r["T"]), x=float(r["T_nve"]) / 100, center=float(r["center"]), fwhm=float(r["fwhm"]), area=float(r["area"])) for r in w]
                 res.setdefault(b300[0]["band"], []).append((nc, dict(position=slope(ww, "center"), width=slope(ww, "fwhm"), strength=slope(ww, "area", True))))
         elif reg == "inplane" and not fixed:
-            c300 = {}                                            # component -> 300 K replica-mean centre
+            c300, wmax = {}, {}                                  # component -> 300 K replica-mean centre, max FWHM over T
             for r in rows:
-                if r["species"] == sp and r["region"] == "inplane" and r["replica"] == "mean" and r["T"] == "300":
-                    c300[r["comp"]] = float(r["center"])
+                if r["species"] == sp and r["region"] == "inplane" and r["replica"] == "mean":
+                    wmax[r["comp"]] = max(wmax.get(r["comp"], 0.0), float(r["fwhm"]))
+                    if r["T"] == "300":
+                        c300[r["comp"]] = float(r["center"])
+            mw = MAXW if maxw is None else maxw
             for b, lo, hi in TRACKED:
-                cs = {c for c, x0 in c300.items() if lo <= x0 < hi}
+                cs = {c for c, x0 in c300.items() if lo <= x0 < hi and wmax.get(c, 0.0) < mw}
                 if not cs:
                     continue
                 agg = {}
@@ -159,16 +167,33 @@ def write(rows, out):
               f"{r['se_decade']:.4f}  scatter {r['scatter']:.4f}  q-l {r['quad_minus_lin_1200K']:+.3f}  (n={r['n_species']})")
 
 
+FIXED_KIND = {"3.3": "complex (centroid, FWHM)", "6.2": "complex (peak, rms width)", "7.7": "complex (peak, rms width)",
+              "8.6": "complex (peak, rms width)"}
+WINDOW_STRENGTH = ("8.6",)   # bands whose strength row is the fixed-window area (see below)
+
+
 def cmd_rules(a):
+    """8.6 um strength: the fixed-window (1100-1220 = emission.py's FEATURES range, whose lines the strength rule scales)
+    area, not the tracked sum. The cation 8.6 band is weak (tracked 300 K area 0.4-4 % of the total), so area / area(300 K)
+    of its tracked components is not estimable: the fit moves intensity between overlapping weak components as they
+    broaden (per-species slopes up to +3.4 per 100 K after the MAXW cut; OLS +0.15 vs median +0.03, scatter 0.41). The band
+    shifts by only ~2 cm^-1 per 100 K, so it stays inside the window to 900 K (unlike 6.2, whose tracked strength is kept).
+    --tracked-strength keeps the tracked row."""
     rows = list(csv.DictReader(open(a.fits)))
-    write(table(per_species(rows), KIND), a.out)
+    main = table(per_species(rows, maxw=a.maxw), KIND); fixed = table(per_species(rows, fixed=True), FIXED_KIND)
+    if not a.tracked_strength:
+        fx = {(r["band"], r["quantity"]): r for r in fixed}
+        for i, r in enumerate(main):
+            if r["band"] in WINDOW_STRENGTH and r["quantity"] == "strength":
+                main[i] = dict(fx[(r["band"], "strength")], kind="complex window area (1100-1220; tracked sum not estimable, see md)")
+    write(main, a.out)
     if a.fixed:
-        write(table(per_species(rows, fixed=True), {"3.3": "complex (centroid, FWHM)", "6.2": "complex (peak, rms width)",
-                                                     "7.7": "complex (peak, rms width)", "8.6": "complex (peak, rms width)"}), a.fixed)
+        write(fixed, a.fixed)
 
 
 # ---- per-line widths ------------------------------------------------------------------------------------------------
-KGRID = np.arange(0, 16.1, 1.0)
+KGRID = np.arange(0, 16.1, 1.0)   # cap: k > 16 cm^-1 per 100 K (3x the neutral +5.26) would not be line broadening. Cations: the
+                                  # 6.2 um gap is -0.65 at k = 16, crosses at k ~ 19 (scan to 48), so no extra term is applied
 FAM = {"6.2": (1540, 1700, (1540, 1660)), "7.7": (1220, 1470, (1220, 1470))}
 
 
@@ -269,6 +294,8 @@ def cmd_widths(a):
     best = {}
     for f_ in FAM:
         d = np.array([v for (s, ff), v in res.items() if ff == f_]); med = np.median(d, 0); i = np.nonzero(np.diff(np.sign(med)))[0]
+        if f_ == "6.2":
+            _A["gap62"] = (med[0], med[-1])
         best[f_] = float(np.interp(0, med[i[0]:i[0] + 2], KGRID[i[0]:i[0] + 2])) if len(i) and med[i[0]] < med[i[0] + 1] else None
         print(f"  {f_} um, {len(d)} species: median (rules - MLMD) growth of the rms width {med[0]:+.2f} at k = 0, {med[-1]:+.2f} at k = {KGRID[-1]:.0f}; "
               + (f"k = {best[f_]:.2f} cm^-1 per 100 K" if best[f_] is not None else "no zero crossing"))
@@ -281,7 +308,8 @@ def cmd_widths(a):
         if name.startswith("CC stretch"):
             rows.append((name, lo, hi, a_, s_ + k, n, f"isolated bands {s_:+.2f}, plus an empirical {k:+.2f} fitted so that broadened PAHdb cation sticks "
                          f"reproduce the cation MLMD 6.2 um width growth ({len(d)} species)" if best["6.2"] is not None else
-                         f"isolated bands {s_:+.2f}; no extra term (no zero crossing of the 6.2 um growth gap)"))
+                         f"isolated bands {s_:+.2f}; no extra term: the 6.2 um growth gap (rules - MLMD rms width growth, median) is {_A['gap62'][0]:+.2f} at k = 0 and "
+                         f"{_A['gap62'][1]:+.2f} at k = {KGRID[-1]:.0f}, i.e. no crossing for k <= {KGRID[-1]:.0f} cm^-1 per 100 K (see md)"))
         else:
             rows.append((name, lo, hi, a_, s_, n, "isolated in-plane bands (inplane_widths.py), cation MLMD"))
     rows.append(("CH out-of-plane (11.2-13.5 um)", 650, 1000, oop[0], oop[1], oop[2], "isolated oop bands (profile_fit.py; tdep_rules_cation_v1.csv, 11.2 um rule at Nc = 50)"))
@@ -297,6 +325,8 @@ def main():
     ap = argparse.ArgumentParser(); sp = ap.add_subparsers(dest="cmd", required=True)
     f = sp.add_parser("fit"); f.add_argument("species"); f.add_argument("spec"); f.add_argument("out"); f.add_argument("--jobs", type=int, default=32)
     r = sp.add_parser("rules"); r.add_argument("fits"); r.add_argument("out"); r.add_argument("--fixed", default="")
+    r.add_argument("--tracked-strength", action="store_true", help="keep the tracked 8.6 um strength row")
+    r.add_argument("--maxw", type=float, default=None, help=f"tracked-component FWHM cut (default MAXW = {MAXW}; 1e9: no cut)")
     w = sp.add_parser("widths"); w.add_argument("fits"); w.add_argument("rules"); w.add_argument("species"); w.add_argument("xml"); w.add_argument("out")
     w.add_argument("--jobs", type=int, default=32)
     a = ap.parse_args()

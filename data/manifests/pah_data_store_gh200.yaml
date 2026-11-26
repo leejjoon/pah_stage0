@@ -184,3 +184,8 @@ packages:
     size: 27498984
     origin: myhub.ksc.re.kr/pah-data/dataset_v7:2026-11-23
     content: D1 MLFF dataset v7 + _work (train/validation/final_test/transfer_test per charge)
+  - file: cation_mlmd_spectra_v1-2026-11-26.tgz
+    sha256: 6eb77df65ff7a5c86733e63743e9b59fbc3605ed7d32a07c6e74ec5c31838580
+    size: 1050734823
+    origin: local
+    content: "D1 cation MLMD (MACE v8 q1, 100 cations x 300/600/900 K x 8 replicas, 64 ps NVE) polar_v7 dipoles + Rule B1 spectra (L = 16 and 5.11 ps), profile fits, rules/widths variants, 1 vs 2 fs gate; source of d1/tdep_rules_cation_v1.{csv,md} and d1/perline_widths_cation_v1.csv (trajectories not included)"

@@ -1,0 +1,8 @@
+family,lo_cm1,hi_cm1,fwhm_300K,fwhm_slope_per_100K,n_bands,source
+CH stretch (3.3 um),2800,3300,10.64,1.22,100 species,inversion of the 3.3 um feature FWHM on PAHdb cation sticks broadened with tdep_rules_cation_v1 (rules_closure bisection)
+CC stretch (6.2 um),1540,1700,6.63,2.16,15,"isolated bands +2.16; no extra term: the 6.2 um growth gap (rules - MLMD rms width growth, median) is -10.53 at k = 0 and -0.65 at k = 16, i.e. no crossing for k <= 16 cm^-1 per 100 K (see md)"
+1470-1540,1470,1540,6.72,1.36,30,"isolated in-plane bands (inplane_widths.py), cation MLMD"
+CC/CH in-plane (7.7 um),1220,1470,3.86,1.45,97,"isolated in-plane bands (inplane_widths.py), cation MLMD"
+CH in-plane (8.6 um),1100,1220,3.89,1.37,72,"isolated in-plane bands (inplane_widths.py), cation MLMD"
+CH out-of-plane (11.2-13.5 um),650,1000,5.79,0.28,236,"isolated oop bands (profile_fit.py; tdep_rules_cation_v1.csv, 11.2 um rule at Nc = 50)"
+note: 7.7 um complex,1220,1470,,,,extra line broadening that closes the cation 7.7 um width growth: k = 5.7792420137804665; not applied
